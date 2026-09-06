@@ -29,10 +29,7 @@ var scale_factor = 1.0
 var origin = Vector2.ZERO
 
 func _ready() -> void:
-	var campus_font := FontVariation.new()
-	campus_font.base_font = preload("res://assets/fonts/NotoSansSC.ttf")
-	campus_font.variation_opentype = {"wght": 400.0}
-	font = campus_font
+	font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	_build_units()
 	_note("点击同学，再点击目标格换位。前排承伤，技能每 3 次普攻自动释放。")
 	if "--demo-smoke" in OS.get_cmdline_user_args():
