@@ -1,168 +1,68 @@
-name: "Push Export"
+name: Publish Web to GitHub Pages
 on:
   push:
-    branches:
-      - main
-      # - "feature/**"
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
 env:
-  GODOT_VERSION: 4.7
-  EXPORT_NAME: godot-game-template
-  ITCH_IO: false #set to true if you want to enable automatic itch.io deploy
-
+  GODOT_VERSION: 4.7.2
 jobs:
-  export-windows:
-    if: true
-    name: Windows Export
+  build:
     runs-on: ubuntu-24.04
-    container:
-      image: davcri/godot-game-template-ci:4.7
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-      - name: Windows Build
-        run: |
-          mkdir -v -p builds/windows
-          godot --headless --export-release "Windows Desktop" ./builds/windows/$EXPORT_NAME.exe
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        id: cache
         with:
-          name: windows
-          path: builds/windows
-          retention-days: 1
-      - name: Zip Folder
-        run: zip -r itch.zip builds/windows
-      - name: Deploy to itch.io
-        if: ${{ env.ITCH_IO=='true' }}
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: windows
-          ITCH_GAME: ${{ secrets.ITCH_GAME }}
-          ITCH_USER: ${{ secrets.ITCH_USER }}
-          PACKAGE: itch.zip
-
-  export-linux:
-    if: true
-    name: Linux Export
-    runs-on: ubuntu-24.04
-    container:
-      image: davcri/godot-game-template-ci:4.7
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup
+          path: |
+            ~/.local/share/godot/export_templates
+            ~/godot-bin
+          key: godot-web-${{ runner.os }}-${{ env.GODOT_VERSION }}-v1
+      - name: Install official Godot and Web templates
+        if: steps.cache.outputs.cache-hit != 'true'
+        shell: bash
         run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-      - name: Linux Build
+          set -euo pipefail
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          engine="Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          templates="Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          curl --fail --location --retry 3 "$base/$engine" -o "$engine"
+          curl --fail --location --retry 3 "$base/$templates" -o "$templates"
+          curl --fail --location --retry 3 "$base/SHA512-SUMS.txt" -o SHA512-SUMS.txt
+          grep -F " $engine" SHA512-SUMS.txt | sha512sum --check --strict
+          grep -F " $templates" SHA512-SUMS.txt | sha512sum --check --strict
+          mkdir -p ~/godot-bin ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          unzip -j "$engine" -d ~/godot-bin
+          unzip -j "$templates" 'templates/web_nothreads_release.zip' 'templates/web_nothreads_debug.zip' -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          chmod +x ~/godot-bin/Godot*
+      - name: Import and export
+        shell: bash
         run: |
-          mkdir -v -p builds/linux
-          godot -v --headless --export-release "Linux/X11" ./builds/linux/$EXPORT_NAME.x86_64
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+          set -euo pipefail
+          godot="$HOME/godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+          "$godot" --headless --editor --path . --import
+          mkdir -p builds/web
+          "$godot" --headless --path . --export-release Web builds/web/index.html
+          test -s builds/web/index.html
+          test -s builds/web/index.wasm
+          test -s builds/web/index.pck
+          touch builds/web/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: linux
-          path: builds/linux
-          retention-days: 1
-      - name: Zip Folder
-        run: zip -r itch.zip builds/linux
-      - name: Deploy to itch.io
-        if: ${{ env.ITCH_IO=='true' }}
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: linux
-          ITCH_GAME: ${{ secrets.ITCH_GAME }}
-          ITCH_USER: ${{ secrets.ITCH_USER }}
-          PACKAGE: itch.zip
-
-  export-web:
-    if: true
-    name: Web Export
-    runs-on: ubuntu-24.04
-    container:
-      image: davcri/godot-game-template-ci:4.7
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-      - name: Web Build
-        run: |
-          mkdir -v -p builds/web
-          godot -v --headless --export-release "Web" ./builds/web/index.html
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web
           path: builds/web
-          retention-days: 1
-      # Installing rsync is needed in order to deploy to GitHub Pages. Without it, the build will fail.
-      - name: Install rsync 📚
-        run: |
-          apt-get update && apt-get install -y rsync
-      - name: Deploy to GitHub Pages 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v4
-        with:
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: builds/web # The folder the action should deploy.
-      - name: Zip Folder
-        run: zip -r itch.zip builds/web
-      - name: Deploy to itch.io
-        if: ${{ env.ITCH_IO=='true' }}
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: HTML
-          ITCH_GAME: ${{ secrets.ITCH_GAME }}
-          ITCH_USER: ${{ secrets.ITCH_USER }}
-          PACKAGE: itch.zip
-
-  export-mac:
-    if: false # currently broken, see https://github.com/crystal-bit/godot-game-template/issues/82
-    name: Mac Export
+  deploy:
+    needs: build
     runs-on: ubuntu-24.04
-    container:
-      image: davcri/godot-game-template-ci:4.7
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-      - name: Mac Build
-        run: |
-          mkdir -v -p builds/mac
-          godot --headless -v --export-release "macOS" ./builds/mac/$EXPORT_NAME.zip
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: mac
-          path: builds/mac
-          retention-days: 1
-      - name: Zip Folder
-        run: zip -r itch.zip builds/mac
-      - name: Deploy to itch.io
-        if: ${{ env.ITCH_IO=='true' }}
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: mac
-          ITCH_GAME: ${{ secrets.ITCH_GAME }}
-          ITCH_USER: ${{ secrets.ITCH_USER }}
-          PACKAGE: itch.zip
+      - uses: actions/deploy-pages@v4
+        id: deployment

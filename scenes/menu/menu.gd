@@ -15,18 +15,7 @@ func _ready():
 
 
 func _on_PlayButton_pressed() -> void:
-	var params = {
-		"show_progress_bar": true,
-		"a_number": 10,
-		"a_string": "Ciao!",
-		"an_array": [1, 2, 3, 4],
-		"a_dict": {
-			"name": "test",
-			"val": 15
-		},
-	}
-	GGT.change_scene("res://scenes/gameplay/gameplay.tscn", params)
-
+	GGT.change_scene("res://scenes/expedition/expedition.tscn", {"show_progress_bar": true})
 
 func _on_ExitButton_pressed() -> void:
 	# gently shutdown the game
