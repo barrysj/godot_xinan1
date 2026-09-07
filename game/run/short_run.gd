@@ -25,6 +25,96 @@ var points = 0
 var retries = 0
 var reward_taken = false
 var settled = false
+var run_id = Crypto.new().generate_random_bytes(16).hex_encode()
+var permanent_hp = 0
+func to_dict() -> Dictionary:
+	var saved_training = {}
+	for role in training: saved_training[str(role)] = int(training[role])
+	return {"schema":1, "id":run_id, "stage":stage, "visited":visited.duplicate(),
+		"node_id":node.get("id", ""), "roster":roster.duplicate(), "formation":formation.duplicate(),
+		"shoe_wearer":shoe_wearer, "badge_wearer":badge_wearer, "badge_owned":badge_owned,
+		"training":saved_training, "points":points, "retries":retries, "reward_taken":reward_taken,
+		"settled":settled, "permanent_hp":permanent_hp}
+
+func restore(data: Dictionary) -> bool:
+	if data.get("schema",0) != 1 or not data.get("id",null) is String: return false
+	if data.id.is_empty(): return false
+	for key in ["stage","shoe_wearer","badge_wearer","retries","permanent_hp"]:
+		var value = data.get(key,0)
+		if not (value is int or value is float) or not is_finite(float(value)) or int(value) != value: return false
+	for key in ["badge_owned","reward_taken","settled"]:
+		if not data.get(key,false) is bool: return false
+	var saved_stage = int(data.get("stage",-1))
+	if saved_stage < 0 or saved_stage > STAGES.size(): return false
+	if not data.get("visited",null) is Array or data.visited.size() != saved_stage: return false
+	var restored_visited: Array[String] = []
+	var derived_points = 0
+	for i in range(saved_stage):
+		var found = false
+		for item in STAGES[i]:
+			if item.id == data.visited[i]:
+				found = true
+				derived_points += 3 if item.kind == "boss" else (2 if item.kind == "elite" else 1)
+		if not found: return false
+		restored_visited.append(data.visited[i])
+	var saved_node: Dictionary = {}
+	var node_id = str(data.get("node_id",""))
+	if not node_id.is_empty():
+		if saved_stage >= STAGES.size(): return false
+		for item in STAGES[saved_stage]:
+			if item.id == node_id: saved_node = item.duplicate(true)
+		if saved_node.is_empty(): return false
+	if not data.get("roster",null) is Array or not data.get("formation",null) is Array: return false
+	var restored_roster: Array[int] = []
+	for value in data.roster:
+		if not (value is int or value is float) or int(value) != value: return false
+		var role = int(value)
+		if role < 0 or role > 4 or restored_roster.has(role): return false
+		restored_roster.append(role)
+	for role in range(4):
+		if not restored_roster.has(role): return false
+	if data.formation.size() != 6: return false
+	var restored_formation: Array = []
+	var active: Array[int] = []
+	for value in data.formation:
+		if not (value is int or value is float) or int(value) != value: return false
+		var role = int(value)
+		if role != -1:
+			if not restored_roster.has(role) or active.has(role): return false
+			active.append(role)
+		restored_formation.append(role)
+	if active.size() != 4: return false
+	var shoe = int(data.get("shoe_wearer",-1))
+	var badge = int(data.get("badge_wearer",-1))
+	if shoe != -1 and not restored_roster.has(shoe): return false
+	if badge != -1 and (not restored_roster.has(badge) or not data.get("badge_owned",false)): return false
+	if shoe >= 0 and shoe == badge: return false
+	if not data.get("training",{}) is Dictionary: return false
+	var restored_training = {}
+	for key in data.get("training",{}):
+		if not str(key).is_valid_int(): return false
+		var value = data.training[key]
+		if not (value is int or value is float) or not is_finite(float(value)) or int(value) != value: return false
+		var role = int(key)
+		var count = int(data.training[key])
+		if not restored_roster.has(role) or count < 0 or count > 100: return false
+		restored_training[role] = count
+	run_id = data.id
+	stage = saved_stage
+	visited = restored_visited
+	node = saved_node
+	roster = restored_roster
+	formation = restored_formation
+	shoe_wearer = shoe
+	badge_wearer = badge
+	badge_owned = bool(data.get("badge_owned",false))
+	training = restored_training
+	points = derived_points
+	retries = maxi(0,int(data.get("retries",0)))
+	reward_taken = bool(data.get("reward_taken",false))
+	settled = bool(data.get("settled",false))
+	permanent_hp = clampi(int(data.get("permanent_hp",0)),0,60)
+	return true
 
 func choose(index: int) -> bool:
 	if stage >= STAGES.size() or index < 0 or index >= STAGES[stage].size() or not node.is_empty():

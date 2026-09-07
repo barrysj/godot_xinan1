@@ -23,6 +23,13 @@ var leaving = false
 var previous_auto_quit = true
 var debug_shortcuts: Node
 var inspected_enemy_slot = -1
+var codex_panel: Control
+
+func _open_codex() -> void:
+	if is_instance_valid(codex_panel): return
+	codex_panel = load("res://scenes/codex/codex_panel.gd").new()
+	add_child(codex_panel)
+	codex_panel.closed.connect(func(): pause_actions.get_child(0).grab_focus())
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -361,6 +368,7 @@ func _gui_input(event: InputEvent) -> void:
 	super._gui_input(event)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(codex_panel): return
 	if leaving or pause_overlay == null:
 		return
 	if event.is_action_pressed("pause") or event.is_action_pressed("ggt_debug_pause_game"):
@@ -450,9 +458,11 @@ func _create_pause_menu() -> void:
 	pause_actions.add_theme_constant_override("separation", 12)
 	pause_actions.add_child(_menu_button("继续游戏", _resume_battle))
 	pause_actions.add_child(_menu_button("重新编队", _return_to_formation))
+	pause_actions.add_child(_menu_button("校园图鉴", _open_codex))
 	pause_actions.add_child(_menu_button("返回主菜单", func(): _request_exit("menu")))
 	if not OS.has_feature("web"):
 		pause_actions.add_child(_menu_button("退出游戏", func(): _request_exit("quit")))
+	panel.size.y = 530
 	confirm_actions = HBoxContainer.new()
 	pause_content.add_child(confirm_actions)
 	confirm_actions.position = Vector2(450, 340)
@@ -494,6 +504,7 @@ func _return_to_formation() -> void:
 	_note("已重新编队，保留阵型与装备，可以再次出发。")
 
 func _request_exit(destination: String) -> void:
+	if is_instance_valid(codex_panel): codex_panel.close_guide()
 	_open_pause()
 	pending_exit = destination
 	pause_heading.text = "返回主菜单？" if destination == "menu" else "退出游戏？"

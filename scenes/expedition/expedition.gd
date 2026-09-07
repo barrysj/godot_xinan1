@@ -16,8 +16,12 @@ var is_test = false
 func _ready() -> void:
 	super._ready()
 	is_test = "--run-smoke" in OS.get_cmdline_user_args() or "--run-capture" in OS.get_cmdline_user_args() or "--pause-flow-smoke" in OS.get_cmdline_user_args()
+	is_test = is_test or "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args()
+	is_test = is_test or "--codex-check" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"
+		if "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args():
+			progress.path = "res://.godot/meta-test-progress.json"
 	else:
 		progress.read_save()
 	notice = progress.error_message
@@ -90,7 +94,7 @@ func _process(delta: float) -> void:
 		if not paused:
 			visual_time += delta
 		queue_redraw()
-	if not paused and screen != "base" and screen != "summary":
+	if not paused and screen in ["map","battle","event","reward","report"]:
 		expedition_seconds += delta
 
 func _after_report() -> void:
@@ -471,7 +475,7 @@ func _run_smoke() -> void:
 	# Follow the same clickable controls as a player, in virtual canvas coordinates.
 	_resume_battle()
 	screen = "base"
-	_test_click(Vector2(1060, 640))
+	_new_run()
 	assert(screen == "map")
 	_test_click(Vector2(1050, 550))
 	assert(screen == "battle" and phase == "prepare")
