@@ -186,11 +186,8 @@ func assign_slot(index: int) -> void:
 
 func equip(kind: String) -> void:
 	if not editable: return
-	if kind == "badge" and not game.run.badge_owned: return
-	if game.equipment == selected_role: game.equipment = -1
-	if game.run.badge_wearer == selected_role: game.run.badge_wearer = -1
-	if kind == "shoe": game.equipment = selected_role
-	elif kind == "badge": game.run.badge_wearer = selected_role
+	if not game.run.equip_gear(kind, selected_role): return
+	game.equipment = game.run.shoe_wearer
 	apply_changes()
 
 func apply_changes() -> void:

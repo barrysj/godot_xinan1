@@ -17,9 +17,38 @@ var visited: Array[String] = []
 var node: Dictionary = {}
 var roster: Array[int] = [0, 1, 2, 3]
 var formation: Array = [0, -1, 3, 2, 1, -1]
-var shoe_wearer = 0
-var badge_wearer = -1
-var badge_owned = false
+const Content = preload("res://game/content/content_db.gd")
+var inventory: Dictionary = {"shoe": 0}
+var shoe_wearer: int:
+	get: return int(inventory.get("shoe", -1))
+	set(value): inventory["shoe"] = value
+var badge_wearer: int:
+	get: return int(inventory.get("badge", -1))
+	set(value):
+		if badge_owned or value >= 0: inventory["badge"] = value
+var badge_owned: bool:
+	get: return inventory.has("badge")
+	set(value):
+		if value and not inventory.has("badge"): inventory["badge"] = -1
+		elif not value: inventory.erase("badge")
+
+func grant_gear(id: String) -> bool:
+	if Content.gear(id) == null or inventory.has(id): return false
+	inventory[id] = -1
+	return true
+
+func equip_gear(id: String, role: int) -> bool:
+	if not roster.has(role) or (id != "none" and not inventory.has(id)): return false
+	for key in inventory:
+		if inventory[key] == role: inventory[key] = -1
+	if id != "none": inventory[id] = role
+	return true
+
+func worn_gear(role: int) -> String:
+	for key in inventory:
+		if inventory[key] == role: return key
+	return "empty"
+
 var training: Dictionary = {}
 var points = 0
 var retries = 0
@@ -63,7 +92,7 @@ static func generated_stages(seed_value: int) -> Array:
 func roll_rewards() -> void:
 	var rng = RandomNumberGenerator.new()
 	rng.seed = (str(route_seed)+":"+str(stage)+":"+str(node.get("id",""))).hash()
-	var pool = Rewards.eligible(badge_owned,roster).duplicate(true)
+	var pool = Rewards.eligible(badge_owned,roster,inventory).duplicate(true)
 	shuffle_with(pool,rng)
 	reward_ids.clear()
 	for i in range(3): reward_ids.append(pool[i].id)
@@ -71,13 +100,39 @@ func roll_rewards() -> void:
 func to_dict() -> Dictionary:
 	var saved_training = {}
 	for role in training: saved_training[str(role)] = int(training[role])
-	return {"schema":2 if route_seed >= 0 else 1, "seed":route_seed, "reward_ids":reward_ids.duplicate(), "id":run_id, "stage":stage, "visited":visited.duplicate(),
+	return {"schema":3, "legacy_schema":2 if route_seed >= 0 else 1, "inventory":inventory.duplicate(), "seed":route_seed, "reward_ids":reward_ids.duplicate(), "id":run_id, "stage":stage, "visited":visited.duplicate(),
 		"node_id":node.get("id", ""), "roster":roster.duplicate(), "formation":formation.duplicate(),
 		"shoe_wearer":shoe_wearer, "badge_wearer":badge_wearer, "badge_owned":badge_owned,
 		"training":saved_training, "points":points, "retries":retries, "reward_taken":reward_taken,
 		"settled":settled, "permanent_hp":permanent_hp}
 
 func restore(data: Dictionary) -> bool:
+	var candidate = get_script().new()
+	var source = data.duplicate(true)
+	var items = {}
+	if data.get("schema") == 3:
+		if not data.get("inventory") is Dictionary: return false
+		items = data.inventory.duplicate()
+		source.schema = data.get("legacy_schema", 0)
+		var owners = []
+		for id in items:
+			var owner = items[id]
+			if not id is String or Content.gear(id) == null: return false
+			if not (owner is int or owner is float) or not is_finite(owner) or int(owner) != owner: return false
+			if owner != -1 and (not data.get("roster", []).has(owner) or owners.has(owner)): return false
+			if owner != -1: owners.append(owner)
+		if not items.has("shoe"): return false
+		source.shoe_wearer = items.shoe
+		source.badge_owned = items.has("badge")
+		source.badge_wearer = items.get("badge", -1)
+	if not candidate._restore_legacy(source): return false
+	if not items.is_empty(): candidate.inventory = items
+	for property in candidate.get_property_list():
+		if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			set(property.name, candidate.get(property.name))
+	return true
+
+func _restore_legacy(data: Dictionary) -> bool:
 	if data.get("schema",0) != 1 and data.get("schema",0) != 2: return false
 	if not data.get("id",null) is String: return false
 	var restored_seed = -1
@@ -210,6 +265,8 @@ func take_reward(id: String) -> bool:
 			valid = true
 	if not valid:
 		return false
+	if Content.gear(id) != null:
+		if not grant_gear(id): return false
 	match id:
 		"badge": badge_owned = true
 		"recruit": roster.append(4)

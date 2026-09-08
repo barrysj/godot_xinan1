@@ -61,8 +61,7 @@ func _build_units() -> void:
 		var s: Array = stats[role]
 		var u = _unit(ROLES[role], role, 0, slot, s[0], s[1], s[2], s[3])
 		if role == equipment:
-			u.interval *= 0.75
-			u.timer = u.interval
+			preload("res://game/content/content_db.gd").gear("shoe").apply(u)
 		units.append(u)
 	if encounter == 0:
 		units.append(_unit("纸甲守卫", 0, 1, 0, 330, 27, 1.7, 25))

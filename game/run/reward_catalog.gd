@@ -9,11 +9,16 @@ const DEFINITIONS = [
 	{"id":"inventor_training","title":"改良实验","description":"发明家本局生命 +50。\n攻击 +5，可叠加。\n候补也能保留强化。","role":4}
 ]
 static func find(id: String) -> Dictionary:
+	var gear = preload("res://game/content/content_db.gd").gear(id)
+	if gear != null: return {"id":id,"title":gear.display_name,"description":gear.description,"role":-1}
 	for entry in DEFINITIONS:
 		if entry.id == id: return entry.duplicate(true)
 	return {}
-static func eligible(badge_owned: bool, roster: Array) -> Array:
-	return DEFINITIONS.filter(func(entry):
+static func eligible(badge_owned: bool, roster: Array, inventory: Dictionary = {}) -> Array:
+	var result = []
+	for gear in preload("res://game/content/content_db.gd").MANIFEST.equipment:
+		if gear.id not in ["shoe","badge"] and not inventory.has(gear.id): result.append(find(gear.id))
+	return result + DEFINITIONS.filter(func(entry):
 		if entry.id == "badge": return not badge_owned
 		if entry.id == "recruit": return not roster.has(4)
 		return roster.has(entry.role))

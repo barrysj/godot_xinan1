@@ -19,6 +19,7 @@ func _ready() -> void:
 	is_test = is_test or "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args()
 	is_test = is_test or "--codex-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--random-check" in OS.get_cmdline_user_args()
+	is_test = "--content-check" in OS.get_cmdline_user_args() or is_test
 	is_test = is_test or "--team-check" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"
@@ -75,8 +76,9 @@ func _build_units() -> void:
 			var levels = int(run.training.get(u.role, 0))
 			u.max_hp += levels * 50
 			u.atk += levels * 5
-			if run.badge_owned and u.role == run.badge_wearer:
-				u.max_hp += 80
+			for id in run.inventory:
+				if id != "shoe" and run.inventory[id] == u.role:
+					RunModel.Content.gear(id).apply(u)
 			u.hp = u.max_hp
 		elif not run.node.is_empty():
 			u.max_hp = roundf(u.max_hp * run.node.power)

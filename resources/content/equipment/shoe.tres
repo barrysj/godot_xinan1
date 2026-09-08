@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CampusEquipment" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/equipment_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "shoe"
+display_name = "篮球鞋"
+description = "攻击间隔 -25%。每次探索自带，可在战前转移。"
+interval_multiplier = 0.75

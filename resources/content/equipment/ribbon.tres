@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusEquipment" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/equipment_def.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/content/ribbon.svg" id="2"]
+[resource]
+script = ExtResource("1")
+id = "ribbon"
+display_name = "晨光发带"
+description = "攻击 +8，生命上限 +20。可复制的装备示例。"
+icon = ExtResource("2")
+health_bonus = 20
+attack_bonus = 8

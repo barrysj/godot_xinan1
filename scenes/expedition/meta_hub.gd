@@ -50,6 +50,9 @@ func _ready() -> void:
 	elif "--random-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/random_checks.gd").new()
 		test_runner.run_checks(self)
+	elif "--content-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://game/content/content_checks.gd").new()
+		test_runner.run_checks(self)
 	elif "--team-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/team/team_checks.gd").new()
 		test_runner.run_checks(self)

@@ -20,10 +20,9 @@ static func entries(category: int) -> Array:
 			for i in range(names.size()):
 				result.append({"name":names[i],"tag":"终点首领" if i == 6 else "校园异变","body":"战斗方式\n"+Battle.SKILLS[roles[i]]+"。\n\n应对建议\n"+["保护己方后排，集中输出突破前排。","留意残血同学，利用护盾与治疗保护他们。","优先打击治疗者，避免战斗被拖长。","保护己方后排，避免脆弱角色独自承伤。","分散站位，减少整排技能同时命中。","注意后排压力，及时调整装备与站位。","终点的强化敌人。利用本局装备和训练，分散站位迎战。"][i]+"\n\n实际生命与攻击随路线地点强度变化。","icon":roles[i]})
 		2:
-			result = [
-				{"name":"厚笔记本","tag":"装备 · 生命 +80","body":"装备者生命上限增加 80。不是消耗品，不需要战中使用。\n\n获取方式\n局内三选一奖励；或花 3 修复资源解锁“出发补给”，然后在基地选择携带。\n\n出发时先由应援者携带，战前可以重新分配。每位同学只能携带一件装备。"},
-				{"name":"篮球鞋","tag":"装备 · 攻击间隔 -25%","body":"缩短装备者的普通攻击间隔，让攻击与自动技能更频繁。\n\n每次新探索自带，初始由守护者携带。战前可重新分配。\n\n同一位同学换上厚笔记本时，篮球鞋退回背包，反之亦然。"},
-				{"name":"修复资源","tag":"局外资源","body":"完成探索或领取派遣成果获得。通关基础收益 7 点，每选一场精英战再增加 1 点，最多 9 点。\n\n用于解锁出发补给、基础体能、派遣功能、地点与后勤扩编，也用于支付派遣费用。\n\n探索资源在通关结算时带回；放弃未完成探索不会结算本局收入。"}]
+			for item in preload("res://game/content/content_db.gd").MANIFEST.equipment:
+				result.append({"name":item.display_name,"tag":"装备 · 每人一件","body":item.description,"texture":item.icon})
+			result.append({"name":"修复资源","tag":"成长资源","body":"完成地点积累，通关后带回基地。用于成长与派遣。"})
 		3:
 			for stage in Run.STAGES:
 				for place in stage:

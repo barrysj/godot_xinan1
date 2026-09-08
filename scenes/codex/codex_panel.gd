@@ -128,6 +128,9 @@ func select_entry(index: int) -> void:
 		atlas.atlas = preload("res://assets/pixel/kenney/tiny-dungeon.png")
 		atlas.region = Rect2(Vector2(cells[entry.icon])*16,Vector2(16,16))
 		portrait.texture = atlas
+	if entry.get("texture") != null:
+		portrait.visible = true
+		portrait.texture = entry.texture
 	detail.text = entry.tag + "\n\n" + entry.body
 	detail.scroll_to_line(0)
 	for i in range(listing.get_child_count()): listing.get_child(i).button_pressed = i == index

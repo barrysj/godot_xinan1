@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CampusEquipment" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/equipment_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "badge"
+display_name = "厚笔记本"
+description = "生命上限 +80。通过奖励或出发补给获得。"
+health_bonus = 80

@@ -69,7 +69,7 @@ func refresh() -> void:
 		caption(visual,"点击槽位查看与替换",Vector2(31,219),16,MUTED)
 		caption(visual,"背包",Vector2(246,21),22,INK)
 		var i = 0
-		for kind in ["shoe","badge"]:
+		for kind in game.run.inventory:
 			if kind == "badge" and not game.run.badge_owned: continue
 			var tile = icon(visual,kind,Vector2(247+i*141,64),Vector2(110,110),open_bag)
 			tile.tooltip_text = gear_name(kind)
@@ -191,7 +191,7 @@ func choose_candidate(role: int) -> void:
 	close_popup()
 
 func equipped_kind() -> String:
-	return "badge" if game.run.badge_wearer == selected_role else ("shoe" if game.equipment == selected_role else "empty")
+	return game.run.worn_gear(selected_role)
 
 func highlight(tile: Button) -> void:
 	var style = tile.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
@@ -200,7 +200,8 @@ func highlight(tile: Button) -> void:
 	tile.add_theme_stylebox_override("normal",style)
 
 func gear_name(kind: String) -> String:
-	return {"shoe":"篮球鞋","badge":"厚笔记本","empty":"空槽","remove":"卸下装备"}.get(kind,kind)
+	var item = game.RunModel.Content.gear(kind)
+	return item.display_name if item != null else {"empty":"空槽","remove":"卸下装备"}.get(kind,kind)
 
 func icon(parent: Control, kind: String, at: Vector2, extent: Vector2, callback: Callable, role_value: int = -1) -> Button:
 	var tile = Icon.new()
@@ -253,17 +254,17 @@ func open_bag() -> void:
 	var equipped = equipped_kind()
 	icon(popup,equipped,Vector2(335,253),Vector2(110,110),func(): pass)
 	caption(popup,gear_name(equipped),Vector2(472,251),23,ACCENT)
-	caption(popup,"生命上限 +80" if equipped == "badge" else ("攻击间隔 -25%" if equipped == "shoe" else "选择背包中的装备填入此槽位"),Vector2(472,299),18)
+	caption(popup,game.RunModel.Content.gear(equipped).description if equipped != "empty" else "选择背包中的装备填入此槽位",Vector2(472,299),18)
 	caption(popup,"背包备选 · 点选即装备" if editable else "战斗中只读",Vector2(334,383),19,MUTED)
 	bag_buttons.clear()
 	var i = 0
-	for kind in ["shoe","badge","remove"]:
+	for kind in game.run.inventory.keys()+["remove"]:
 		if kind == "badge" and not game.run.badge_owned: continue
 		var tile = icon(popup,kind,Vector2(335+i*178,421),Vector2(92,92),choose_gear.bind(kind))
 		tile.disabled = not editable or (kind == "remove" and equipped == "empty")
 		bag_buttons[kind] = tile
 		caption(popup,gear_name(kind),Vector2(337+i*178,527),17)
-		var owner_role = game.equipment if kind == "shoe" else (game.run.badge_wearer if kind == "badge" else -1)
+		var owner_role = int(game.run.inventory.get(kind,-1))
 		tile.tooltip_text = gear_name(kind)+(" · "+game.ROLES[owner_role]+"携带，点击转移" if owner_role >= 0 else "")
 		i += 1
 
