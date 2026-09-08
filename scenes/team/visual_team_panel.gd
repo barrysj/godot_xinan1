@@ -4,6 +4,10 @@ var visual: Control
 var popup: Control
 var equipment_slot: Button
 var bag_buttons: Dictionary = {}
+var roster_visual: Control
+var formation_buttons: Array[Button] = []
+var candidate_buttons: Dictionary = {}
+var formation_target = 0
 
 func _ready() -> void:
 	super._ready()
@@ -11,15 +15,33 @@ func _ready() -> void:
 	visual.position = Vector2(332,369)
 	visual.size = Vector2(906,295)
 	content.add_child(visual)
+	roster_visual = Control.new()
+	roster_visual.position = Vector2(40,128)
+	content.add_child(roster_visual)
 	refresh()
 
 func refresh() -> void:
 	super.refresh()
 	if not is_instance_valid(visual): return
+	roster_box.hide()
+	for child in roster_visual.get_children():
+		roster_visual.remove_child(child)
+		child.queue_free()
+	for i in range(game.run.roster.size()):
+		var role = game.run.roster[i]
+		var at = Vector2((i%2)*130,int(i/2)*153)
+		var tile = icon(roster_visual,"empty",at,Vector2(111,103),select_role.bind(role),role)
+		if role == selected_role: highlight(tile)
+		caption(roster_visual,game.ROLES[role],at+Vector2(14,105),17)
+		caption(roster_visual,"● 上阵" if game.formation.has(role) else "○ 候补",at+Vector2(16,128),14,ACCENT if game.formation.has(role) else MUTED)
 	for child in visual.get_children():
 		visual.remove_child(child)
 		child.queue_free()
-	visual.visible = tab == 1
+	visual.visible = tab in [0,1]
+	if tab == 0:
+		details.hide()
+		slot_box.hide()
+		draw_formation()
 	if tab == 1:
 		details.hide()
 		actions.hide()
@@ -36,10 +58,78 @@ func refresh() -> void:
 			caption(visual,gear_name(kind),Vector2(252+i*141,188),16,MUTED)
 			i += 1
 		caption(visual,"每人 1 件",Vector2(690,95),22,ACCENT)
-	else: details.show()
+	elif tab == 2: details.show()
+
+func draw_formation() -> void:
+	formation_buttons.clear()
+	var background = Panel.new()
+	background.size = Vector2(906,295)
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("142735")
+	style.set_corner_radius_all(14)
+	background.add_theme_stylebox_override("panel",style)
+	visual.add_child(background)
+	caption(visual,"前排",Vector2(8,46),16,MUTED)
+	caption(visual,"后排",Vector2(8,181),16,MUTED)
+	for i in range(6):
+		var role = game.formation[i]
+		var at = Vector2(61+(i%3)*140,10+int(i/3)*130)
+		var tile = icon(visual,"empty",at,Vector2(113,100),open_formation_slot.bind(i),role)
+		if role == selected_role: highlight(tile)
+		formation_buttons.append(tile)
+		if role >= 0: caption(visual,game.ROLES[role],at+Vector2(20,102),15,MUTED)
+	caption(visual,"点选头像格",Vector2(535,37),24,INK)
+	caption(visual,"查看同学 · 选择替换",Vector2(535,78),19,ACCENT)
+	caption(visual,"上阵 4 / 4",Vector2(535,135),22)
+	caption(visual,"点击空格可移动上阵同学" if editable else "战斗中阵容锁定",Vector2(535,185),17,MUTED)
+
+func open_formation_slot(index: int) -> void:
+	formation_target = index
+	var role = game.formation[index]
+	if role >= 0: select_role(role)
+	close_popup()
+	popup = Control.new()
+	popup.size = Vector2(1280,720)
+	popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	content.add_child(popup)
+	var shade = ColorRect.new()
+	shade.color = Color(0.02,0.04,0.07,0.96)
+	shade.size = Vector2(1280,720)
+	popup.add_child(shade)
+	caption(popup,("前排" if index < 3 else "后排")+str(index%3+1)+" / "+(game.ROLES[role] if role >= 0 else "空格"),Vector2(320,178),29)
+	icon(popup,"remove",Vector2(1034,179),Vector2(48,48),close_popup)
+	icon(popup,"empty",Vector2(320,244),Vector2(106,106),func(): pass,role)
+	var text = "选择已上阵同学移动到这里。" if role < 0 else game.SKILLS[role]
+	var description = RichTextLabel.new()
+	description.text = text
+	description.position = Vector2(461,254)
+	description.size = Vector2(586,99)
+	popup.add_child(description)
+	caption(popup,"选择同学替换 / 换位" if editable else "战斗中只读",Vector2(321,379),21,ACCENT)
+	candidate_buttons.clear()
+	for i in range(game.run.roster.size()):
+		var candidate = game.run.roster[i]
+		var at = Vector2(321+i*148,430)
+		var tile = icon(popup,"empty",at,Vector2(107,103),choose_candidate.bind(candidate),candidate)
+		tile.disabled = not editable or (role < 0 and not game.formation.has(candidate))
+		candidate_buttons[candidate] = tile
+		caption(popup,game.ROLES[candidate],at+Vector2(12,111),17)
+		caption(popup,"上阵" if game.formation.has(candidate) else "候补",at+Vector2(24,141),15,MUTED)
+
+func choose_candidate(role: int) -> void:
+	if not editable: return
+	selected_role = role
+	assign_slot(formation_target)
+	close_popup()
 
 func equipped_kind() -> String:
 	return "badge" if game.run.badge_wearer == selected_role else ("shoe" if game.equipment == selected_role else "empty")
+
+func highlight(tile: Button) -> void:
+	var style = tile.get_theme_stylebox("normal").duplicate() as StyleBoxFlat
+	style.border_color = ACCENT
+	style.set_border_width_all(3)
+	tile.add_theme_stylebox_override("normal",style)
 
 func gear_name(kind: String) -> String:
 	return {"shoe":"篮球鞋","badge":"厚笔记本","empty":"空槽","remove":"卸下装备"}.get(kind,kind)
