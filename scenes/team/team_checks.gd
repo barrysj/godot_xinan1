@@ -8,11 +8,13 @@ func run_checks(hub) -> void:
 	var panel = hub.team_panel
 	panel.select_role(1)
 	panel.select_tab(1)
-	panel.actions.get_child(1).pressed.emit()
+	panel.equipment_slot.pressed.emit()
+	panel.bag_buttons.badge.pressed.emit()
 	assert(hub.run.badge_wearer == 1)
-	panel.actions.get_child(0).pressed.emit()
+	panel.bag_buttons.shoe.pressed.emit()
 	assert(hub.equipment == 1 and hub.run.badge_wearer == -1)
-	panel.actions.get_child(2).pressed.emit()
+	panel.bag_buttons.remove.pressed.emit()
+	panel.close_popup()
 	assert(hub.equipment == -1)
 	panel.select_role(4)
 	panel.select_tab(0)
@@ -27,10 +29,12 @@ func run_checks(hub) -> void:
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/team_status.png")
 	panel.select_role(1)
 	panel.select_tab(1)
-	panel.equip("badge")
+	panel.equipment_slot.pressed.emit()
+	panel.bag_buttons.badge.pressed.emit()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/team_equipment.png")
+	panel.close_popup()
 	panel.close_panel()
 	await hub.get_tree().process_frame
 	assert(not hub.paused)

@@ -15,7 +15,7 @@ func _open_team_panel() -> void:
 	panel_was_paused = paused
 	if screen == "map": _build_units()
 	paused = true
-	team_panel = load("res://scenes/team/team_panel.gd").new()
+	team_panel = load("res://scenes/team/visual_team_panel.gd").new()
 	team_panel.game = self
 	team_panel.editable = screen == "map" or phase == "prepare"
 	team_panel.closed.connect(func(): paused = panel_was_paused)
