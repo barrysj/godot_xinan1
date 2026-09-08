@@ -8,6 +8,8 @@ var roster_visual: Control
 var formation_buttons: Array[Button] = []
 var candidate_buttons: Dictionary = {}
 var formation_target = 0
+var skill_buttons: Dictionary = {}
+var health_bar: ProgressBar
 
 func _ready() -> void:
 	super._ready()
@@ -18,11 +20,27 @@ func _ready() -> void:
 	roster_visual = Control.new()
 	roster_visual.position = Vector2(40,128)
 	content.add_child(roster_visual)
+	health_bar = ProgressBar.new()
+	health_bar.position = Vector2(448,246)
+	health_bar.size = Vector2(652,10)
+	health_bar.show_percentage = false
+	health_bar.add_theme_font_size_override("font_size",1)
+	for part in ["background","fill"]:
+		var style = StyleBoxFlat.new()
+		style.bg_color = ACCENT if part == "fill" else Color("304653")
+		style.set_corner_radius_all(5)
+		health_bar.add_theme_stylebox_override(part,style)
+	content.add_child(health_bar)
 	refresh()
 
 func refresh() -> void:
 	super.refresh()
 	if not is_instance_valid(visual): return
+	health_bar.hide()
+	for unit in game.units:
+		if unit.side == 0 and unit.role == selected_role:
+			health_bar.show()
+			health_bar.value = 100.0*unit.hp/unit.max_hp
 	roster_box.hide()
 	for child in roster_visual.get_children():
 		roster_visual.remove_child(child)
@@ -37,7 +55,7 @@ func refresh() -> void:
 	for child in visual.get_children():
 		visual.remove_child(child)
 		child.queue_free()
-	visual.visible = tab in [0,1]
+	visual.visible = true
 	if tab == 0:
 		details.hide()
 		slot_box.hide()
@@ -58,7 +76,51 @@ func refresh() -> void:
 			caption(visual,gear_name(kind),Vector2(252+i*141,188),16,MUTED)
 			i += 1
 		caption(visual,"每人 1 件",Vector2(690,95),22,ACCENT)
-	elif tab == 2: details.show()
+	elif tab == 2:
+		details.hide()
+		draw_skills()
+
+func draw_skills() -> void:
+	skill_buttons.clear()
+	var names = ["shield","arrow","heart","bolt","flask"]
+	skill_buttons.attack = icon(visual,"attack",Vector2(45,39),Vector2(114,114),open_skill.bind(false))
+	skill_buttons.ability = icon(visual,names[selected_role],Vector2(353,39),Vector2(114,114),open_skill.bind(true))
+	caption(visual,"普通攻击",Vector2(65,168),18)
+	caption(visual,game.SKILLS[selected_role].split("：")[0],Vector2(375,168),18)
+	caption(visual,"× 3   →",Vector2(212,74),26,ACCENT)
+	var count = 0
+	for unit in game.units:
+		if unit.side == 0 and unit.role == selected_role: count = int(unit.count)%3
+	for i in range(3):
+		var pip = ColorRect.new()
+		pip.position = Vector2(354+i*43,199)
+		pip.size = Vector2(29,9)
+		pip.color = ACCENT if i < count else Color("355161")
+		visual.add_child(pip)
+	caption(visual,"%d / 3" % count,Vector2(493,190),17,MUTED)
+	caption(visual,"自动释放",Vector2(631,59),25,ACCENT)
+	caption(visual,"点击图标查看效果",Vector2(631,106),19)
+	caption(visual,"角色专属 · 无需手动施放",Vector2(631,152),16,MUTED)
+
+func open_skill(ability: bool) -> void:
+	close_popup()
+	popup = Control.new()
+	popup.size = Vector2(1280,720)
+	popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	content.add_child(popup)
+	var shade = ColorRect.new()
+	shade.size = Vector2(1280,720)
+	shade.color = Color(0.02,0.04,0.07,0.96)
+	popup.add_child(shade)
+	var glyph = ["shield","arrow","heart","bolt","flask"][selected_role] if ability else "attack"
+	icon(popup,glyph,Vector2(305,246),Vector2(136,136),func(): pass)
+	icon(popup,"remove",Vector2(1034,179),Vector2(48,48),close_popup)
+	caption(popup,game.SKILLS[selected_role].split("：")[0] if ability else "普通攻击",Vector2(481,239),32,ACCENT)
+	var description = RichTextLabel.new()
+	description.position = Vector2(483,305)
+	description.size = Vector2(577,230)
+	description.text = (game.SKILLS[selected_role]+"\n\n每 3 次普攻自动触发。" if ability else "按角色的攻击间隔自动攻击。\n\n篮球鞋可以缩短攻击间隔，加快普攻和技能触发。")+"\n\n当前技能固定，通过角色、站位和装备配置改变战术。"
+	popup.add_child(description)
 
 func draw_formation() -> void:
 	formation_buttons.clear()

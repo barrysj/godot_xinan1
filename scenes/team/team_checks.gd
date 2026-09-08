@@ -52,6 +52,9 @@ func run_checks(hub) -> void:
 	hub._process(5)
 	assert(before == [hub.elapsed,hub.units,hub.formation,hub.equipment])
 	panel.select_tab(2)
+	panel.skill_buttons.ability.pressed.emit()
+	assert(is_instance_valid(panel.popup))
+	panel.close_popup()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/team_skills.png")
