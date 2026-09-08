@@ -12,3 +12,4 @@ route_pool = "final"
 power = 1.25
 encounter = ExtResource("encounter")
 rewards = ExtResource("pool")
+depth_scaled = false

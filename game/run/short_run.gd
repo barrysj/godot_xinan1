@@ -21,10 +21,17 @@ const Content = preload("res://game/content/content_db.gd")
 var inventory: Dictionary = {"shoe": 0}
 var shoe_wearer: int:
 	get: return int(inventory.get("shoe", -1))
-	set(value): inventory["shoe"] = value
+	set(value):
+		if value >= 0:
+			for id in inventory:
+				if inventory[id] == value: inventory[id] = -1
+		inventory["shoe"] = value
 var badge_wearer: int:
 	get: return int(inventory.get("badge", -1))
 	set(value):
+		if value >= 0:
+			for id in inventory:
+				if inventory[id] == value: inventory[id] = -1
 		if badge_owned or value >= 0: inventory["badge"] = value
 var badge_owned: bool:
 	get: return inventory.has("badge")
@@ -106,7 +113,7 @@ static func content_stages(seed_value: int) -> Array:
 	for i in range(3):
 		var layer = [safe[i],risk[i]]
 		for place in layer:
-			if place.kind != "event": place.power = float("%.2f" % ((0.78 if place.kind == "elite" else 0.68)+i*0.10))
+			if place.kind != "event" and place.get("depth_scaled",true): place.power = float("%.4f" % (((0.78 if place.kind == "elite" else 0.68)+i*0.10)*place.power))
 		shuffle_with(layer,rng)
 		result.append(layer)
 	result.append([pools.final[0]])
@@ -136,7 +143,21 @@ func to_dict() -> Dictionary:
 	var data = _legacy_dict()
 	data.schema = 5
 	data.stages = stages.duplicate(true)
+	for layer in data.stages:
+		for place in layer:
+			if not place.has("encounter_id"): place.encounter_id = "" if place.kind == "event" else ("encounter_final" if place.kind == "boss" else ("encounter_patrol" if place.encounter == 0 else "encounter_classroom"))
+			if not place.has("reward_pool"): place.reward_pool = "campus_rewards"
+			if place.kind == "event" and not place.has("event"):
+				for event in Content.MANIFEST.events:
+					if event.id == ("library_event" if place.id == "library" else "supply_event"): place.event = event.snapshot()
 	data.reward_snapshots = reward_snapshots.duplicate(true)
+	if route_seed < 0 and not node.is_empty() and data.reward_snapshots.is_empty():
+		for offer in offers():
+			var entry = Rewards.find(offer.id)
+			entry.title = offer.title
+			entry.description = offer.description
+			data.reward_snapshots.append(entry)
+		data.reward_ids = data.reward_snapshots.map(func(item): return item.id)
 	data.event_done = event_done
 	data.event_points = event_points
 	data.roster = roster.map(func(role): return Content.role_id(role))
@@ -199,6 +220,7 @@ func restore(data: Dictionary) -> bool:
 		if not data.get("event_done") is bool: return false
 		var delta = data.get("event_points")
 		if not (delta is int or delta is float) or not is_finite(delta) or int(delta) != delta or absi(int(delta)) > 10000: return false
+		if not data.get("reward_ids") is Array: return false
 		if not data.get("reward_snapshots") is Array: return false
 		if data.reward_snapshots.size() != data.get("reward_ids",[]).size(): return false
 		for i in range(data.reward_snapshots.size()):
@@ -207,13 +229,15 @@ func restore(data: Dictionary) -> bool:
 		candidate.event_done = data.event_done
 		candidate.event_points = int(delta)
 	if not candidate._restore_legacy(source, frozen): return false
+	if data.get("schema") == 5 and candidate.route_seed < 0:
+		candidate.reward_ids = data.reward_ids.duplicate()
 	if candidate.points + candidate.event_points < 0: return false
 	candidate.points += candidate.event_points
 	if data.get("schema") != 5 and candidate.route_seed >= 0:
 		for id in candidate.reward_ids: candidate.reward_snapshots.append(Rewards.find(id))
 	if not items.is_empty(): candidate.inventory = items
 	for property in candidate.get_property_list():
-		if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+		if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE and not property.name in ["shoe_wearer","badge_wearer","badge_owned"]:
 			set(property.name, candidate.get(property.name))
 	return true
 
@@ -326,12 +350,13 @@ func choose(index: int) -> bool:
 		return false
 	node = stages[stage][index].duplicate(true)
 	reward_taken = false
+	reward_snapshots.clear()
 	event_done = false
 	if route_seed >= 0: roll_rewards()
 	return true
 
 func offers() -> Array[Dictionary]:
-	if route_seed >= 0 and not reward_snapshots.is_empty():
+	if not reward_snapshots.is_empty():
 		var frozen_offers: Array[Dictionary] = []
 		for offer in reward_snapshots: frozen_offers.append(offer.duplicate(true))
 		return frozen_offers
@@ -456,12 +481,14 @@ static func valid_route(route) -> bool:
 			if ids.has(place.id) or not Content.MANIFEST.locations.any(func(item): return item.id == place.id): return false
 			ids.append(place.id)
 			if not place.kind in ["battle","elite","event","boss"]: return false
+			var encounter_value = place.get("encounter")
+			if not (encounter_value is int or encounter_value is float) or not is_finite(encounter_value) or int(encounter_value) != encounter_value or encounter_value < 0 or encounter_value > 1: return false
 			var power = place.get("power")
 			if not (power is int or power is float) or not is_finite(power) or power < 0 or power > 3: return false
 			# Legacy frozen routes may lack the newer references.
-			if place.has("encounter_id") and place.kind != "event" and Content.encounter(place.encounter_id) == null: return false
-			if place.has("event") and place.kind == "event" and not valid_event(place.event): return false
-			if place.has("reward_pool") and not Content.MANIFEST.reward_pools.any(func(item): return item.id == place.reward_pool): return false
+			if not place.get("encounter_id") is String or (place.kind != "event" and Content.encounter(place.encounter_id) == null): return false
+			if place.kind == "event" and not valid_event(place.get("event")): return false
+			if not place.get("reward_pool") is String or not Content.MANIFEST.reward_pools.any(func(item): return item.id == place.reward_pool): return false
 	return route[0].size() == 1 and route[4].size() == 1 and route[4][0].kind == "boss"
 
 static func normalize_snapshot(value):

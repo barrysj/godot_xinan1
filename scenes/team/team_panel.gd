@@ -154,7 +154,10 @@ func refresh() -> void:
 	clear_box(slot_box)
 	slot_box.visible = tab == 0
 	actions.visible = tab == 1
-	var gear = "厚笔记本 · 生命 +80" if game.run.badge_wearer == selected_role else ("篮球鞋 · 攻击间隔 -25%" if game.equipment == selected_role else "未装备")
+	var equipped = game.run.worn_gear(selected_role)
+	var definition = game.Content.gear(equipped)
+	var gear = definition.display_name+" · "+definition.description if definition != null else "未装备"
+
 	match tab:
 		0:
 			details.text = "当前装备    "+gear+"\n\n本局训练    %d 级（每级生命 +50 / 攻击 +5）\n永久加成    生命 +%d\n\n" % [game.run.training.get(selected_role,0),game.run.permanent_hp]
@@ -168,7 +171,7 @@ func refresh() -> void:
 			box_button(actions,"厚笔记本" if game.run.badge_owned else "未获得",equip.bind("badge"),editable and game.run.badge_owned)
 			box_button(actions,"卸下装备",equip.bind("none"),editable)
 		2:
-			details.text = game.SKILLS[selected_role]+"\n\n触发规则    每 3 次普攻自动释放，无需手动操作。\n"
+			details.text = game.SKILLS[selected_role]+"\n\n触发规则    每 %d 次普攻自动释放。\n" % game.Content.character(selected_role).skill.attacks_to_trigger
 			if not unit.is_empty(): details.text += "当前进度    %d / 3 次普攻    护盾 %d\n" % [int(unit.count)%3,unit.shield]
 			details.text += "\n当前角色的技能固定；可在战前通过换人、站位与装备调整战术。"
 

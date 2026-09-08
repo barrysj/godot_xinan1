@@ -9,7 +9,7 @@ const RED = Color("ff8c82")
 const GOLD = Color("f7cc78")
 const Content = preload("res://game/content/content_db.gd")
 var ROLES = Content.characters().map(func(item): return item.display_name)
-var SKILLS = Content.characters().map(func(item): return item.skill.display_name+"："+item.skill.description)
+var SKILLS = Content.characters().map(func(item): return item.skill.display_name+"："+item.skill.description if item.skill != null else "未配置技能")
 var encounter_id = ""
 
 var font: Font

@@ -9,6 +9,6 @@ display_name = "晨读教室"
 description = "窗边藏着一份晨光礼物。\\n可以交换装备，也可以一起训练。"
 kind = "event"
 route_pool = "safe"
-power = 0.1
+power = 1.0
 event = ExtResource("event")
 rewards = ExtResource("pool")

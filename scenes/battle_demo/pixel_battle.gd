@@ -223,7 +223,7 @@ func _draw_unit(u: Dictionary) -> void:
 	hp.size.x *= clampf(u.hp / u.max_hp, 0, 1)
 	draw_rect(hp, Color("a7d684") if u.side == 0 else Color("df9386"))
 	_center(p + Vector2(0, 41), u.name if alive else "已退场", DARK, 14)
-	for i in range(3):
+	for i in range(u.skill.attacks_to_trigger):
 		draw_rect(Rect2(p + Vector2(-10 + i * 8, 46), Vector2(5, 3)), GOLD if i < u.count else Color("747a62"))
 
 func _draw_effects() -> void:

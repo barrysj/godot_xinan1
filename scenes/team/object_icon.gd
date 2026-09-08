@@ -1,10 +1,14 @@
 extends Button
 var glyph = "empty"
 var role = -1
+var image_texture: Texture2D
 const CELLS = [Vector2i(1,8),Vector2i(3,7),Vector2i(0,7),Vector2i(2,7),Vector2i(3,8)]
 func _draw() -> void:
 	var edge = minf(size.x,size.y)*0.66
 	var at = (size-Vector2.ONE*edge)/2
+	if image_texture != null:
+		draw_texture_rect(image_texture,Rect2(at,Vector2.ONE*edge),false)
+		return
 	if role >= 0:
 		draw_texture_rect(preload("res://game/content/content_db.gd").character(role).portrait,Rect2(at,Vector2.ONE*edge),false)
 		return

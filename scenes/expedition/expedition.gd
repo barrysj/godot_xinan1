@@ -19,7 +19,7 @@ func _ready() -> void:
 	is_test = is_test or "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args()
 	is_test = is_test or "--codex-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--random-check" in OS.get_cmdline_user_args()
-	is_test = "--content-check" in OS.get_cmdline_user_args() or is_test
+	is_test = scene_file_path == "res://scenes/content/content_preview.tscn" or "--content-check" in OS.get_cmdline_user_args() or is_test
 	is_test = is_test or "--team-check" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"
@@ -276,10 +276,17 @@ func _draw_event() -> void:
 	_campus()
 	_pixel_panel(Rect2(165,166,950,420), PAPER)
 	_paragraph(Vector2(206,211),event.get("description",""),DARK,21)
+	for definition in Content.MANIFEST.events:
+		if definition.id == event.get("id") and definition.image != null:
+			draw_texture_rect(definition.image,Rect2(926,192,150,112),false)
 	for i in range(event.get("options",[]).size()):
 		var option = event.options[i]
 		_flow_button(Rect2(204,332+i*76,535,54),option.text,run.event_option_available(i))
-		_text(Vector2(760,365+i*76),option.description.left(19),DARK,16)
+		_text(Vector2(760,355+i*76),option.description.left(19),DARK,16)
+		var requirements = "资源 ≥ %d" % maxi(option.minimum_points,option.cost)
+		if not option.character.is_empty(): requirements += " / "+Content.character(Content.role_index(option.character)).display_name
+		if not option.equipment.is_empty(): requirements += " / "+Content.gear(option.equipment).display_name
+		_text(Vector2(760,379+i*76),requirements.left(23),Color("6b705a"),14)
 
 func _choose_event(index: int) -> void:
 	if screen != "event": return
@@ -297,7 +304,12 @@ func _draw_rewards() -> void:
 	for i in range(offers.size()):
 		var x = 58 + i * 409
 		_pixel_panel(Rect2(x, 174, 346, 391), PAPER)
-		if offers[i].id == "badge":
+		var reward_texture = null
+		if offers[i].get("operation") == "gear": reward_texture = Content.gear(offers[i].target).icon
+		elif offers[i].get("operation") == "recruit": reward_texture = Content.character(Content.role_index(offers[i].target)).portrait
+		if reward_texture != null:
+			draw_texture_rect(reward_texture,Rect2(x+125,206,90,90),false)
+		elif offers[i].id == "badge":
 			_book_icon(Vector2(x + 125, 206), 90)
 		elif offers[i].id == "recruit":
 			_tile(dungeon, 3, 8, Vector2(x + 125, 206), 6)

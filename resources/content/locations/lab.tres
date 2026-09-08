@@ -9,6 +9,6 @@ display_name = "实验室"
 description = "黑板释放整排攻击。\n尝试分散站位、提前叠盾。"
 kind = "battle"
 route_pool = "safe"
-power = 0.8
+power = 1.0
 encounter = ExtResource("encounter")
 rewards = ExtResource("pool")

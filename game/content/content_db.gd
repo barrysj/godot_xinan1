@@ -14,7 +14,7 @@ static func validate() -> Array[String]:
 			errors.append("manifest: 装备引用为空")
 			continue
 		var location = item.resource_path
-		if item.id.is_empty() or ids.has(item.id): errors.append(location+": 空 ID 或重复 ID: "+item.id)
+		if item.id.strip_edges().is_empty() or ids.has(item.id): errors.append(location+": 空 ID 或重复 ID: "+item.id)
 		ids[item.id] = true
 		if item.display_name.is_empty(): errors.append(location+": 名称为空")
 		if item.health_bonus < 0 or item.health_bonus > 10000 or item.attack_bonus < 0 or item.attack_bonus > 1000 or not is_finite(item.interval_multiplier) or item.interval_multiplier < 0.1 or item.interval_multiplier > 3:
@@ -24,7 +24,7 @@ static func validate() -> Array[String]:
 			if item == null:
 				errors.append("manifest: 空引用")
 				continue
-			if item.id.is_empty() or ids.has(item.id): errors.append(item.resource_path+": 空 ID 或重复 ID: "+item.id)
+			if item.id.strip_edges().is_empty() or ids.has(item.id): errors.append(item.resource_path+": 空 ID 或重复 ID: "+item.id)
 			ids[item.id] = true
 			if item.display_name.is_empty(): errors.append(item.resource_path+": 名称为空")
 	for unit in MANIFEST.characters + MANIFEST.enemies:
@@ -57,12 +57,13 @@ static func validate() -> Array[String]:
 			if item == null:
 				errors.append("manifest: 空内容引用")
 				continue
-			if item.id.is_empty() or local_ids.has(item.id): errors.append(item.resource_path+": 同类空 ID 或重复 ID: "+item.id)
+			if item.id.strip_edges().is_empty() or local_ids.has(item.id): errors.append(item.resource_path+": 同类空 ID 或重复 ID: "+item.id)
 			local_ids.append(item.id)
 	for reward in MANIFEST.rewards:
 		if reward == null: continue
 		if reward.display_name.is_empty() or reward.amount < 1 or reward.amount > 100: errors.append(reward.resource_path+": 奖励名称或数量无效")
 		if not reward.operation in ["gear","recruit","train","points"]: errors.append(reward.resource_path+": 无效奖励操作")
+		if reward.operation in ["gear","recruit"] and reward.amount != 1: errors.append(reward.resource_path+": 装备和招募数量须为 1")
 		if reward.operation == "gear" and not MANIFEST.equipment.has(reward.equipment): errors.append(reward.resource_path+": 装备未注册")
 		if reward.operation in ["train","recruit"] and not MANIFEST.characters.has(reward.character): errors.append(reward.resource_path+": 人物未注册")
 	for pool in MANIFEST.reward_pools:
@@ -100,8 +101,12 @@ static func validate() -> Array[String]:
 			if not MANIFEST.events.has(place.event): errors.append(place.resource_path+": 事件未注册")
 		elif not MANIFEST.encounters.has(place.encounter): errors.append(place.resource_path+": 敌群未注册")
 		if not MANIFEST.reward_pools.has(place.rewards): errors.append(place.resource_path+": 奖励池未注册")
+		if place.route_pool == "safe" and place.kind in ["elite","boss"]: errors.append(place.resource_path+": 安全路线不能配置精英或首领")
+		if place.route_pool == "risk" and place.kind != "elite": errors.append(place.resource_path+": 风险路线须为精英")
+		if place.route_pool == "start" and place.kind != "battle": errors.append(place.resource_path+": 起点须为普通战斗")
 		if place.route_pool == "final" and place.kind != "boss": errors.append(place.resource_path+": 终点须为首领")
 	if pool_counts.start != 1 or pool_counts.final != 1 or pool_counts.safe < 4 or pool_counts.risk < 2: errors.append("manifest: 路线须有 1 起点、1 终点、至少 4 安全地点和 2 风险地点")
+	if gear("shoe") == null: errors.append("manifest: 缺少初始装备 shoe")
 	return errors
 
 # 仅用于迁移旧整数身份；不得随展示排序修改。
@@ -111,9 +116,9 @@ static func characters() -> Array:
 	var result = []
 	for id in LEGACY_CHARACTERS:
 		for unit in MANIFEST.characters:
-			if unit.id == id: result.append(unit)
+			if unit != null and unit.id == id: result.append(unit)
 	for unit in MANIFEST.characters:
-		if not LEGACY_CHARACTERS.has(unit.id): result.append(unit)
+		if unit != null and not LEGACY_CHARACTERS.has(unit.id): result.append(unit)
 	return result
 
 static func character(role: int):

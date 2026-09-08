@@ -9,6 +9,6 @@ display_name = "教学走廊"
 description = "回声广播不断治疗敌人。\n后排打击可以打破僵局。"
 kind = "battle"
 route_pool = "safe"
-power = 0.92
+power = 1.0
 encounter = ExtResource("encounter")
 rewards = ExtResource("pool")

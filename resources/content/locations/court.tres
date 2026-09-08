@@ -9,6 +9,6 @@ display_name = "篮球场"
 description = "守卫与治疗者结伴巡游。\n额外获得 1 点修复资源。"
 kind = "elite"
 route_pool = "risk"
-power = 0.82
+power = 1.0
 encounter = ExtResource("encounter")
 rewards = ExtResource("pool")

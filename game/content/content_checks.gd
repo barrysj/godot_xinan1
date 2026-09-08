@@ -143,5 +143,51 @@ func run_checks(hub) -> void:
 	missing.stages[0][0].id = "removed_location"
 	assert(not frozen_clone.restore(missing))
 	print("CONTENT_CHECK conditional event, atomic grants, one-time payment, disk reload, frozen route/rewards and removed references passed")
+	# Inspector-equivalent copy/save/load/register: authored data only, no gameplay branches.
+	var authored = DB.character(1).duplicate(true)
+	authored.id = "fixture_reader"
+	authored.display_name = "录入验证"
+	authored.health = 207
+	assert(ResourceSaver.save(authored,"res://.godot/authored_character.tres") == OK)
+	var loaded_character = ResourceLoader.load("res://.godot/authored_character.tres","",ResourceLoader.CACHE_MODE_IGNORE)
+	DB.MANIFEST.characters.append(loaded_character)
+	DB.MANIFEST.skills.append(loaded_character.skill)
+	# A deep copy also duplicates its skill: reconnect to the existing shared definition as the guide describes.
+	DB.MANIFEST.skills.pop_back()
+	loaded_character.skill = DB.character(1).skill
+	assert(DB.validate().is_empty())
+	var custom_role = DB.role_index("fixture_reader")
+	var instance = hub._from_definition(loaded_character,custom_role,0,0)
+	assert(instance.name == "录入验证" and instance.hp == 207)
+	var fixture_run = hub.RunModel.new()
+	fixture_run.roster.append(custom_role)
+	fixture_run.formation[2] = custom_role
+	var fixture_clone = hub.RunModel.new()
+	assert(fixture_clone.restore(JSON.parse_string(JSON.stringify(fixture_run.to_dict()))))
+	assert(DB.role_id(fixture_clone.formation[2]) == "fixture_reader")
+	DB.MANIFEST.characters.pop_back()
+	var invalid_snapshot = fixture_run.to_dict()
+	assert(not fixture_clone.restore(invalid_snapshot))
+	var gear = DB.gear("ribbon")
+	DB.MANIFEST.equipment.append(gear)
+	assert(not DB.validate().is_empty())
+	DB.MANIFEST.equipment.pop_back()
+	var previous = gear.interval_multiplier
+	gear.interval_multiplier = NAN
+	assert(not DB.validate().is_empty())
+	gear.interval_multiplier = previous
+	var skill = DB.character(0).skill
+	var effect = skill.effects[0]
+	var previous_kind = effect.kind
+	effect.kind = "unsupported_effect"
+	assert(not DB.validate().is_empty())
+	effect.kind = previous_kind
+	var prior_skill = DB.character(0).skill
+	DB.character(0).skill = null
+	assert(not DB.validate().is_empty())
+	DB.character(0).skill = prior_skill
+	assert(DB.validate().is_empty())
+	print("CONTENT_CHECK copied resource registration, independent instance/save, duplicate IDs, missing references, NaN and unsupported effects passed")
+	print("CONTENT_CHECK_COMPLETE")
 	hub.get_tree().quit()
 

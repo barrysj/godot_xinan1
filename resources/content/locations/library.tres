@@ -9,6 +9,6 @@ display_name = "图书角"
 description = "翻开旧借阅册，找到同学留下的补给。\n无需战斗，选择一项构筑奖励。"
 kind = "event"
 route_pool = "safe"
-power = 0.1
+power = 1.0
 event = ExtResource("event")
 rewards = ExtResource("pool")

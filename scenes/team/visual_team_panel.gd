@@ -17,9 +17,7 @@ func _ready() -> void:
 	visual.position = Vector2(332,369)
 	visual.size = Vector2(906,295)
 	content.add_child(visual)
-	roster_visual = Control.new()
-	roster_visual.position = Vector2(40,128)
-	content.add_child(roster_visual)
+	roster_visual = scroll_strip(content,Vector2(40,128),Vector2(277,475),Vector2(255,475))
 	health_bar = ProgressBar.new()
 	health_bar.position = Vector2(448,246)
 	health_bar.size = Vector2(652,10)
@@ -45,6 +43,7 @@ func refresh() -> void:
 	for child in roster_visual.get_children():
 		roster_visual.remove_child(child)
 		child.queue_free()
+	roster_visual.custom_minimum_size.y = maxf(475,ceilf(game.run.roster.size()/2.0)*153)
 	for i in range(game.run.roster.size()):
 		var role = game.run.roster[i]
 		var at = Vector2((i%2)*130,int(i/2)*153)
@@ -68,12 +67,13 @@ func refresh() -> void:
 		caption(visual,"装备槽",Vector2(62,181))
 		caption(visual,"点击槽位查看与替换",Vector2(31,219),16,MUTED)
 		caption(visual,"背包",Vector2(246,21),22,INK)
+		var bag_strip = scroll_strip(visual,Vector2(247,64),Vector2(430,176),Vector2(game.run.inventory.size()*141,156))
 		var i = 0
 		for kind in game.run.inventory:
 			if kind == "badge" and not game.run.badge_owned: continue
-			var tile = icon(visual,kind,Vector2(247+i*141,64),Vector2(110,110),open_bag)
+			var tile = icon(bag_strip,kind,Vector2(i*141,0),Vector2(110,110),open_bag)
 			tile.tooltip_text = gear_name(kind)
-			caption(visual,gear_name(kind),Vector2(252+i*141,188),16,MUTED)
+			caption(bag_strip,gear_name(kind),Vector2(5+i*141,124),16,MUTED)
 			i += 1
 		caption(visual,"每人 1 件",Vector2(690,95),22,ACCENT)
 	elif tab == 2:
@@ -85,6 +85,7 @@ func draw_skills() -> void:
 	var names = ["shield","arrow","heart","bolt","flask"]
 	skill_buttons.attack = icon(visual,"attack",Vector2(45,39),Vector2(114,114),open_skill.bind(false))
 	skill_buttons.ability = icon(visual,game.Content.character(selected_role).skill.glyph,Vector2(353,39),Vector2(114,114),open_skill.bind(true))
+	skill_buttons.ability.image_texture = game.Content.character(selected_role).skill.icon
 	caption(visual,"普通攻击",Vector2(65,168),18)
 	caption(visual,game.SKILLS[selected_role].split("：")[0],Vector2(375,168),18)
 	caption(visual,"× %d   →" % game.Content.character(selected_role).skill.attacks_to_trigger,Vector2(212,74),26,ACCENT)
@@ -93,14 +94,14 @@ func draw_skills() -> void:
 		if unit.side == 0 and unit.role == selected_role: count = int(unit.count)
 	for i in range(game.Content.character(selected_role).skill.attacks_to_trigger):
 		var pip = ColorRect.new()
-		pip.position = Vector2(354+i*43,199)
-		pip.size = Vector2(29,9)
+		pip.position = Vector2(354+i*200.0/game.Content.character(selected_role).skill.attacks_to_trigger,199)
+		pip.size = Vector2(160.0/game.Content.character(selected_role).skill.attacks_to_trigger,9)
 		pip.color = ACCENT if i < count else Color("79737f")
 		visual.add_child(pip)
-	caption(visual,"%d / %d" % [count,game.Content.character(selected_role).skill.attacks_to_trigger],Vector2(493,190),17,MUTED)
+	caption(visual,"%d / %d" % [count,game.Content.character(selected_role).skill.attacks_to_trigger],Vector2(564,190),17,MUTED)
 	caption(visual,"自动释放",Vector2(631,59),25,ACCENT)
 	caption(visual,"点击图标查看效果",Vector2(631,106),19)
-	caption(visual,"角色专属 · 无需手动施放",Vector2(631,152),16,MUTED)
+	caption(visual,"资源配置 · 无需手动施放",Vector2(631,152),16,MUTED)
 
 func open_skill(ability: bool) -> void:
 	close_popup()
@@ -113,7 +114,8 @@ func open_skill(ability: bool) -> void:
 	shade.color = Color(0.02,0.04,0.07,0.96)
 	popup.add_child(shade)
 	var glyph = game.Content.character(selected_role).skill.glyph if ability else "attack"
-	icon(popup,glyph,Vector2(305,246),Vector2(136,136),func(): pass)
+	var skill_icon = icon(popup,glyph,Vector2(305,246),Vector2(136,136),func(): pass)
+	if ability: skill_icon.image_texture = game.Content.character(selected_role).skill.icon
 	icon(popup,"remove",Vector2(1034,179),Vector2(48,48),close_popup)
 	caption(popup,game.SKILLS[selected_role].split("：")[0] if ability else "普通攻击",Vector2(481,239),32,ACCENT)
 	var description = RichTextLabel.new()
@@ -175,14 +177,15 @@ func open_formation_slot(index: int) -> void:
 	popup.add_child(description)
 	caption(popup,"选择同学替换 / 换位" if editable else "战斗中只读",Vector2(321,379),21,ACCENT)
 	candidate_buttons.clear()
+	var candidates = scroll_strip(popup,Vector2(321,430),Vector2(755,185),Vector2(game.run.roster.size()*148,165))
 	for i in range(game.run.roster.size()):
 		var candidate = game.run.roster[i]
-		var at = Vector2(321+i*148,430)
-		var tile = icon(popup,"empty",at,Vector2(107,103),choose_candidate.bind(candidate),candidate)
+		var at = Vector2(i*148,0)
+		var tile = icon(candidates,"empty",at,Vector2(107,103),choose_candidate.bind(candidate),candidate)
 		tile.disabled = not editable or (role < 0 and not game.formation.has(candidate))
 		candidate_buttons[candidate] = tile
-		caption(popup,game.ROLES[candidate],at+Vector2(12,111),17)
-		caption(popup,"上阵" if game.formation.has(candidate) else "候补",at+Vector2(24,141),15,MUTED)
+		caption(candidates,game.ROLES[candidate],at+Vector2(12,111),17)
+		caption(candidates,"上阵" if game.formation.has(candidate) else "候补",at+Vector2(24,141),15,MUTED)
 
 func choose_candidate(role: int) -> void:
 	if not editable: return
@@ -257,13 +260,14 @@ func open_bag() -> void:
 	caption(popup,game.RunModel.Content.gear(equipped).description if equipped != "empty" else "选择背包中的装备填入此槽位",Vector2(472,299),18)
 	caption(popup,"背包备选 · 点选即装备" if editable else "战斗中只读",Vector2(334,383),19,MUTED)
 	bag_buttons.clear()
+	var bag = scroll_strip(popup,Vector2(335,421),Vector2(740,153),Vector2((game.run.inventory.size()+1)*178,131))
 	var i = 0
 	for kind in game.run.inventory.keys()+["remove"]:
 		if kind == "badge" and not game.run.badge_owned: continue
-		var tile = icon(popup,kind,Vector2(335+i*178,421),Vector2(92,92),choose_gear.bind(kind))
+		var tile = icon(bag,kind,Vector2(i*178,0),Vector2(92,92),choose_gear.bind(kind))
 		tile.disabled = not editable or (kind == "remove" and equipped == "empty")
 		bag_buttons[kind] = tile
-		caption(popup,gear_name(kind),Vector2(337+i*178,527),17)
+		caption(bag,gear_name(kind),Vector2(2+i*178,106),17)
 		var owner_role = int(game.run.inventory.get(kind,-1))
 		tile.tooltip_text = gear_name(kind)+(" · "+game.ROLES[owner_role]+"携带，点击转移" if owner_role >= 0 else "")
 		i += 1
@@ -285,3 +289,13 @@ func _input(event: InputEvent) -> void:
 		close_popup()
 		return
 	super._input(event)
+
+func scroll_strip(parent: Control, at: Vector2, extent: Vector2, minimum: Vector2) -> Control:
+	var scroll = ScrollContainer.new()
+	scroll.position = at
+	scroll.size = extent
+	parent.add_child(scroll)
+	var inner = Control.new()
+	inner.custom_minimum_size = minimum
+	scroll.add_child(inner)
+	return inner

@@ -9,6 +9,6 @@ display_name = "同学补给站"
 description = "探索途中的一次整备。\n选择装备、训练或新伙伴。"
 kind = "event"
 route_pool = "safe"
-power = 0.1
+power = 1.0
 event = ExtResource("event")
 rewards = ExtResource("pool")
