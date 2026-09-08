@@ -7,6 +7,27 @@ var selected_staff = "archivist"
 var selected_location = 0
 var last_save_ok = true
 var test_runner: RefCounted
+var team_panel: Control
+var panel_was_paused = false
+
+func _open_team_panel() -> void:
+	if is_instance_valid(team_panel) or not screen in ["map","battle"]: return
+	panel_was_paused = paused
+	if screen == "map": _build_units()
+	paused = true
+	team_panel = load("res://scenes/team/team_panel.gd").new()
+	team_panel.game = self
+	team_panel.editable = screen == "map" or phase == "prepare"
+	team_panel.closed.connect(func(): paused = panel_was_paused)
+	add_child(team_panel)
+
+func _input(event: InputEvent) -> void:
+	if is_instance_valid(team_panel): return
+	super._input(event)
+
+func _header(title: String, subtitle: String) -> void:
+	super._header(title,subtitle)
+	if screen == "map": _flow_button(Rect2(765,26,145,48),"队伍面板")
 
 func _ready() -> void:
 	super._ready()
@@ -28,6 +49,9 @@ func _ready() -> void:
 		_capture_meta()
 	elif "--random-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/random_checks.gd").new()
+		test_runner.run_checks(self)
+	elif "--team-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/team/team_checks.gd").new()
 		test_runner.run_checks(self)
 
 func _pack_checkpoint() -> Dictionary:
@@ -132,6 +156,7 @@ func _to_base() -> void:
 	notice = "探索已保存，可继续探索或管理基地。"
 
 func _request_exit(destination: String) -> void:
+	if is_instance_valid(team_panel): team_panel.close_panel()
 	super._request_exit(destination)
 	if destination == "new_run":
 		pause_heading.text = "放弃当前探索？"
@@ -164,6 +189,10 @@ func _draw() -> void:
 		else: _draw_dispatch()
 	else:
 		super._draw()
+	if screen == "battle":
+		draw_rect(Rect2(660,22,260,54),Color("344b42"))
+		_center(Vector2(707,55),"整备" if phase == "prepare" else ("暂停" if paused else "战斗中"),GOLD,18)
+		_flow_button(Rect2(765,26,145,48),"队伍面板")
 	if not last_save_ok or progress.load_blocked:
 		_pixel_panel(Rect2(25,91,885,40),Color("ac6e58"))
 		_text(Vector2(40,118),checkpoint_error if not checkpoint_error.is_empty() else progress.error_message,PAPER,17)
@@ -254,9 +283,14 @@ func _draw_dispatch() -> void:
 	_flow_button(Rect2(993,634,245,52),"返回基地")
 
 func _gui_input(event: InputEvent) -> void:
+	if is_instance_valid(team_panel): return
 	if paused or leaving: return
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed): return
 	var p: Vector2 = (event.position-origin)/scale_factor
+	if screen in ["map","battle"] and Rect2(765,26,145,48).has_point(p):
+		_open_team_panel()
+		accept_event()
+		return
 	if Rect2(1148,28,78,36).has_point(p):
 		_open_pause()
 		accept_event()
