@@ -68,6 +68,7 @@ func _enter_node() -> void:
 		_note(run.node.name + "：点击敌人查看技能，调整阵型后出发。")
 
 func _build_units() -> void:
+	encounter_id = run.node.get("encounter_id", "encounter_final" if run.node.get("kind") == "boss" else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
 	super._build_units()
 	if run == null:
 		return
@@ -84,8 +85,7 @@ func _build_units() -> void:
 			u.max_hp = roundf(u.max_hp * run.node.power)
 			u.hp = u.max_hp
 			u.atk = roundf(u.atk * run.node.power)
-			if run.node.kind == "boss" and u.role == 4:
-				u.name = "粉笔巨像"
+
 
 func _process(delta: float) -> void:
 	if screen == "battle":

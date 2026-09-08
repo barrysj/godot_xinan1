@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusSkill" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/skill_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("e")
+kind = "heal"
+target = "low_ally"
+value = 85.0
+attack_scale = 0.0
+[resource]
+script = ExtResource("s")
+id = "skill_healer"
+display_name = "应援"
+description = "治疗生命比例最低的队友 85 点生命。"
+glyph = "heart"
+effects = Array[ExtResource("e")]([SubResource("effect")])

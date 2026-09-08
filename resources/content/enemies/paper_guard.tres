@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/guard.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(64, 112, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "paper_guard"
+display_name = "纸甲守卫"
+description = "纸甲守卫：自身与相邻友军获得 48 点护盾。"
+portrait = SubResource("portrait")
+health = 330
+attack = 27
+interval = 1.7
+defense = 25
+skill = ExtResource("skill")

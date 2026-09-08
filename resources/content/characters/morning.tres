@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(32, 128, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "morning"
+display_name = "晨读生"
+description = "独立人物示例，与远射手共用穿云技能。"
+portrait = SubResource("portrait")
+health = 190
+attack = 30
+interval = 1.5
+defense = 6
+skill = ExtResource("skill")

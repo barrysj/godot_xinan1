@@ -7,8 +7,10 @@ const MUTED = Color("94a8b7")
 const TEAL = Color("62e4c1")
 const RED = Color("ff8c82")
 const GOLD = Color("f7cc78")
-const ROLES = ["守护者", "远射手", "应援者", "冲刺手", "发明家"]
-const SKILLS = ["并肩：自身与相邻友军获得护盾", "穿云：优先射击后排，造成高伤害", "应援：治疗生命比例最低的队友", "冲刺：追击生命比例最低的敌人", "实验：对目标所在整排造成伤害"]
+const Content = preload("res://game/content/content_db.gd")
+var ROLES = Content.characters().map(func(item): return item.display_name)
+var SKILLS = Content.characters().map(func(item): return item.skill.display_name+"："+item.skill.description)
+var encounter_id = ""
 
 var font: Font
 var formation = [0, -1, 3, 2, 1, -1]
@@ -53,25 +55,15 @@ func _unit(label: String, role: int, side: int, slot: int, hp: float, atk: float
 func _build_units() -> void:
 	units.clear()
 	beams.clear()
-	var stats = [[350.0, 22.0, 1.8, 25.0], [175.0, 35.0, 1.45, 5.0], [195.0, 19.0, 1.8, 8.0], [210.0, 29.0, 1.25, 10.0], [230.0, 24.0, 1.9, 8.0]]
 	for slot in range(6):
 		var role: int = formation[slot]
-		if role < 0:
-			continue
-		var s: Array = stats[role]
-		var u = _unit(ROLES[role], role, 0, slot, s[0], s[1], s[2], s[3])
-		if role == equipment:
-			preload("res://game/content/content_db.gd").gear("shoe").apply(u)
+		if role < 0: continue
+		var u = _from_definition(Content.character(role), role, 0, slot)
+		if role == equipment: Content.gear("shoe").apply(u)
 		units.append(u)
-	if encounter == 0:
-		units.append(_unit("纸甲守卫", 0, 1, 0, 330, 27, 1.7, 25))
-		units.append(_unit("巡游课桌", 3, 1, 2, 240, 29, 1.6, 12))
-		units.append(_unit("回声广播", 2, 1, 4, 185, 18, 1.8, 5))
-		units.append(_unit("飞页投手", 1, 1, 5, 165, 29, 1.65, 5))
-	else:
-		units.append(_unit("错位黑板", 4, 1, 1, 680, 38, 2.0, 20))
-		units.append(_unit("粉笔精灵", 1, 1, 3, 190, 28, 1.6, 5))
-		units.append(_unit("粉笔精灵", 1, 1, 5, 190, 28, 1.6, 5))
+	var group = Content.encounter(encounter_id if not encounter_id.is_empty() else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
+	for i in range(group.units.size()):
+		units.append(_from_definition(group.units[i], -1, 1, group.slots[i]))
 	elapsed = 0
 	accumulator = 0
 	paused = false
@@ -133,37 +125,39 @@ func _tick() -> void:
 		var allies = _living(actor.side)
 		_event(events, actor, _target(actor, foes), "damage", actor.atk)
 		actor.count += 1
-		if actor.count < 3:
-			continue
+		if actor.count < actor.skill.attacks_to_trigger: continue
 		actor.count = 0
-		match actor.role:
-			0:
-				for ally in allies:
-					var distance = absi(ally.slot % 3 - actor.slot % 3) + absi(int(ally.slot / 3) - int(actor.slot / 3))
-					if distance <= 1:
-						_event(events, actor, ally, "shield", 48, true)
-				_note(actor.name + " · 并肩护盾")
-			1:
-				_event(events, actor, _target(actor, foes, "back"), "damage", actor.atk * 2.6, true)
-				_note(actor.name + " · 穿云：瞄准后排")
-			2:
-				_event(events, actor, _target(actor, allies, "low"), "heal", 85, true)
-				_note(actor.name + " · 应援治疗")
-			3:
-				_event(events, actor, _target(actor, foes, "low"), "damage", actor.atk * 2.1, true)
-				_note(actor.name + " · 冲刺追击")
-			4:
-				var first = _target(actor, foes)
-				if not first.is_empty():
-					for foe in foes:
-						if int(foe.slot / 3) == int(first.slot / 3):
-							_event(events, actor, foe, "damage", 72, true)
-				_note(actor.name + " · 整排打击！")
+		for effect in actor.skill.effects:
+			var targets: Array[Dictionary] = []
+			match effect.target:
+				"self": targets = [actor]
+				"all_allies": targets = allies
+				"all_enemies": targets = foes
+				"adjacent":
+					for ally in allies:
+						if absi(ally.slot % 3 - actor.slot % 3) + absi(int(ally.slot / 3) - int(actor.slot / 3)) <= 1: targets.append(ally)
+				"row":
+					var first = _target(actor, foes)
+					if not first.is_empty():
+						for foe in foes:
+							if int(foe.slot / 3) == int(first.slot / 3): targets.append(foe)
+				_:
+					var candidates = allies if effect.target == "low_ally" else foes
+					targets = [_target(actor, candidates, "low" if effect.target.begins_with("low") else effect.target)]
+			for target in targets: _event(events,actor,target,effect.kind,effect.value+actor.atk*effect.attack_scale,true)
+		_note(actor.name+" · "+actor.skill.display_name)
 	# Collect every action before resolving; support precedes simultaneous damage.
 	for e in events:
 		if e.kind == "shield":
 			e.actual = minf(e.value, 144 - e.target.shield)
 			e.target.shield = minf(e.target.shield + e.value, 144)
+		elif e.kind in ["max_hp", "attack", "interval"]:
+			e.actual = e.value
+			if e.kind == "max_hp":
+				e.target.max_hp = minf(100000, e.target.max_hp + e.value)
+				e.target.hp = minf(e.target.max_hp, e.target.hp + e.value)
+			elif e.kind == "attack": e.target.atk = minf(10000, e.target.atk + e.value)
+			else: e.target.interval = clampf(e.value, 0.1, 10)
 		elif e.kind == "heal":
 			var healed = minf(e.value, e.target.max_hp - e.target.hp)
 			e.actual = healed
@@ -377,3 +371,11 @@ func _smoke() -> void:
 	assert(outcomes[0] == outcomes[1])
 	print("DEMO_SPEED 1x/2x identical: ", outcomes[0])
 	get_tree().quit()
+
+func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary:
+	var unit = _unit(definition.display_name, role, side, slot, definition.health, definition.attack, definition.interval, definition.defense)
+	unit.content_id = definition.id
+	unit.skill = definition.skill
+	unit.portrait = definition.portrait
+	unit.badge_color = definition.badge_color
+	return unit

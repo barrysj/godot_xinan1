@@ -6,7 +6,7 @@ func _draw() -> void:
 	var edge = minf(size.x,size.y)*0.66
 	var at = (size-Vector2.ONE*edge)/2
 	if role >= 0:
-		draw_texture_rect_region(preload("res://assets/pixel/kenney/tiny-dungeon.png"),Rect2(at,Vector2.ONE*edge),Rect2(Vector2(CELLS[role])*16,Vector2(16,16)))
+		draw_texture_rect(preload("res://game/content/content_db.gd").character(role).portrait,Rect2(at,Vector2.ONE*edge),false)
 		return
 	var item = preload("res://game/content/content_db.gd").gear(glyph)
 	if item != null and item.icon != null:

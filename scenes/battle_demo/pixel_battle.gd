@@ -98,7 +98,7 @@ func _present_event(e: Dictionary) -> void:
 		"value": int(e.get("actual", e.value)),
 		"color": tint, "life": 0.85, "actor_side": e.actor.side, "actor_slot": e.actor.slot})
 	if e.special:
-		banner = e.actor.name + "  ·  " + ["并肩护盾", "穿云", "应援", "冲刺", "整排擦除"][e.actor.role]
+		banner = e.actor.name + "  ·  " + e.actor.skill.display_name
 		banner_time = 1.3
 
 func _slot_rect(side: int, slot: int) -> Rect2:
@@ -196,15 +196,10 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 			tint = Color(1.6, 1.3, 1.3)
 	var p = (at + offset).round()
 	# Kenney humanoids and monsters; provisional costumes for fictional students.
-	var cell: Vector2i
-	if u.side == 0:
-		cell = [Vector2i(1, 8), Vector2i(3, 7), Vector2i(0, 7), Vector2i(2, 7), Vector2i(3, 8)][u.role]
-	else:
-		cell = [Vector2i(4, 7), Vector2i(0, 9), Vector2i(1, 9), Vector2i(4, 8), Vector2i(4, 9)][u.role]
-	_sprite(dungeon, Rect2(cell.x * 16, cell.y * 16, 16, 16), p - Vector2(8, 14) * factor, factor, tint)
+	draw_texture_rect(u.portrait, Rect2(p - Vector2(8,14)*factor, Vector2(16,16)*factor),false,tint)
 	if u.side == 0 and alive:
 		# Role badges create readable team identity without recoloring the source art.
-		draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), ROLE_COLORS[u.role])
+		draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), u.badge_color)
 		if u.role == equipment:
 			_tile(dungeon, 8, 10, p + Vector2(24, -3), 1.3)
 	if u.shield > 0 and alive:
@@ -317,13 +312,12 @@ func _draw() -> void:
 	if not current.is_empty():
 		_pawn(current, Vector2(1000, 213), 4)
 		_text(Vector2(1053, 177), current.name, DARK, 24)
-		_text(Vector2(1053, 202), ["保护 / 相邻护盾", "远程 / 后排打击", "支援 / 自动治疗", "突击 / 残血追击", "范围 / 整排伤害"][current.role], Color("69745c"), 13)
+		_text(Vector2(1053, 202), current.skill.display_name, Color("69745c"), 13)
 		_text(Vector2(962, 245), "生命  %d / %d" % [maxi(0, int(current.hp)), int(current.max_hp)], DARK, 17)
 		_text(Vector2(962, 274), "攻击 %d    间隔 %.2fs" % [current.atk, current.interval], DARK, 16)
-		_text(Vector2(962, 306), "每 3 次普攻自动释放：", Color("6b705a"), 15)
-		var descriptions = [["为自己与上下左右的队友", "提供 48 点护盾。"], ["优先攻击敌方后排，", "造成 2.6 倍攻击伤害。"], ["治疗生命比例最低的队友，", "恢复 85 点生命。"], ["追击生命比例最低的敌人，", "造成 2.1 倍攻击伤害。"], ["攻击当前目标所在的一整排，", "每个目标受到 72 点基础伤害。"]]
-		_text(Vector2(962, 334), descriptions[current.role][0], DARK, 16)
-		_text(Vector2(962, 358), descriptions[current.role][1], DARK, 16)
+		_text(Vector2(962, 306), "每 %d 次普攻自动释放：" % current.skill.attacks_to_trigger, Color("6b705a"), 15)
+		_text(Vector2(962, 334), current.skill.description.left(16), DARK, 16)
+		_text(Vector2(962, 358), current.skill.description.substr(16,16), DARK, 16)
 	_pixel_button(2, "装备" if inspected_enemy_slot < 0 else "不可装备", false, phase == "prepare" and inspected_enemy_slot < 0)
 	_text(Vector2(963, 468), "现由「" + ROLES[equipment] + "」携带" if equipment >= 0 else "篮球鞋在背包中，可重新装备", DARK, 16)
 	_text(Vector2(963, 493), "效果：攻击间隔缩短 25%", Color("6b705a"), 14)

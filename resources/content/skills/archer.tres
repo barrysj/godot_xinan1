@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusSkill" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/skill_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("e")
+kind = "damage"
+target = "back"
+value = 0.0
+attack_scale = 2.6
+[resource]
+script = ExtResource("s")
+id = "skill_archer"
+display_name = "穿云"
+description = "优先射击后排，造成 2.6 倍攻击伤害。"
+glyph = "arrow"
+effects = Array[ExtResource("e")]([SubResource("effect")])

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/inventor.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(48, 128, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "inventor"
+display_name = "发明家"
+description = "发明家：对目标所在整排造成 72 点伤害。"
+portrait = SubResource("portrait")
+health = 230
+attack = 24
+interval = 1.9
+defense = 8
+skill = ExtResource("skill")

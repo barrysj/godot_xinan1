@@ -97,7 +97,7 @@ func roll_rewards() -> void:
 	reward_ids.clear()
 	for i in range(3): reward_ids.append(pool[i].id)
 
-func to_dict() -> Dictionary:
+func _legacy_dict() -> Dictionary:
 	var saved_training = {}
 	for role in training: saved_training[str(role)] = int(training[role])
 	return {"schema":3, "legacy_schema":2 if route_seed >= 0 else 1, "inventory":inventory.duplicate(), "seed":route_seed, "reward_ids":reward_ids.duplicate(), "id":run_id, "stage":stage, "visited":visited.duplicate(),
@@ -106,20 +106,57 @@ func to_dict() -> Dictionary:
 		"training":saved_training, "points":points, "retries":retries, "reward_taken":reward_taken,
 		"settled":settled, "permanent_hp":permanent_hp}
 
+func to_dict() -> Dictionary:
+	var data = _legacy_dict()
+	data.schema = 4
+	data.roster = roster.map(func(role): return Content.role_id(role))
+	data.formation = formation.map(func(role): return "" if role == -1 else Content.role_id(role))
+	data.training = {}
+	for role in training: data.training[Content.role_id(role)] = training[role]
+	data.inventory = {}
+	for id in inventory: data.inventory[id] = "" if inventory[id] == -1 else Content.role_id(inventory[id])
+	data.erase("shoe_wearer")
+	data.erase("badge_wearer")
+	data.erase("badge_owned")
+	return data
+
 func restore(data: Dictionary) -> bool:
 	var candidate = get_script().new()
 	var source = data.duplicate(true)
 	var items = {}
-	if data.get("schema") == 3:
-		if not data.get("inventory") is Dictionary: return false
-		items = data.inventory.duplicate()
+	if data.get("schema") == 4:
+		for key in ["roster", "formation"]:
+			if not data.get(key) is Array: return false
+			var converted = []
+			for id in data[key]:
+				if not id is String: return false
+				if id.is_empty() and key == "formation": converted.append(-1)
+				elif Content.role_index(id) < 0: return false
+				else: converted.append(Content.role_index(id))
+			source[key] = converted
+		for key in ["training", "inventory"]:
+			if not data.get(key) is Dictionary: return false
+			source[key] = {}
+			for id in data[key]:
+				if not id is String: return false
+				if key == "training":
+					if Content.role_index(id) < 0: return false
+					source.training[str(Content.role_index(id))] = data.training[id]
+				else:
+					var owner = data.inventory[id]
+					if not owner is String or (not owner.is_empty() and Content.role_index(owner) < 0): return false
+					source.inventory[id] = -1 if owner.is_empty() else Content.role_index(owner)
+		source.schema = 3
+	if source.get("schema") == 3:
+		if not source.get("inventory") is Dictionary: return false
+		items = source.inventory.duplicate()
 		source.schema = data.get("legacy_schema", 0)
 		var owners = []
 		for id in items:
 			var owner = items[id]
 			if not id is String or Content.gear(id) == null: return false
 			if not (owner is int or owner is float) or not is_finite(owner) or int(owner) != owner: return false
-			if owner != -1 and (not data.get("roster", []).has(owner) or owners.has(owner)): return false
+			if owner != -1 and (not source.get("roster", []).has(owner) or owners.has(owner)): return false
 			if owner != -1: owners.append(owner)
 		if not items.has("shoe"): return false
 		source.shoe_wearer = items.shoe
@@ -173,7 +210,7 @@ func _restore_legacy(data: Dictionary) -> bool:
 	for value in data.roster:
 		if not (value is int or value is float) or int(value) != value: return false
 		var role = int(value)
-		if role < 0 or role > 4 or restored_roster.has(role): return false
+		if role < 0 or role >= Content.characters().size() or restored_roster.has(role): return false
 		restored_roster.append(role)
 	for role in range(4):
 		if not restored_roster.has(role): return false
@@ -267,6 +304,10 @@ func take_reward(id: String) -> bool:
 		return false
 	if Content.gear(id) != null:
 		if not grant_gear(id): return false
+	if id.begins_with("recruit_"):
+		var role = Content.role_index(id.trim_prefix("recruit_"))
+		if role < 0 or roster.has(role): return false
+		roster.append(role)
 	match id:
 		"badge": badge_owned = true
 		"recruit": roster.append(4)

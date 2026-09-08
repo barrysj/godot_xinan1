@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/striker.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(32, 112, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "striker"
+display_name = "冲刺手"
+description = "冲刺手：追击残血敌人，造成 2.1 倍攻击伤害。"
+portrait = SubResource("portrait")
+health = 210
+attack = 29
+interval = 1.25
+defense = 10
+skill = ExtResource("skill")

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/healer.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 112, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "healer"
+display_name = "应援者"
+description = "应援者：治疗生命比例最低的队友 85 点生命。"
+portrait = SubResource("portrait")
+health = 195
+attack = 19
+interval = 1.8
+defense = 8
+skill = ExtResource("skill")

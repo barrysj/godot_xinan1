@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampusEncounter" load_steps=7 format=3]
+[ext_resource type="Script" path="res://game/content/encounter_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="t"]
+[ext_resource type="Resource" path="res://resources/content/enemies/paper_guard.tres" id="u0"]
+[ext_resource type="Resource" path="res://resources/content/enemies/desk.tres" id="u1"]
+[ext_resource type="Resource" path="res://resources/content/enemies/radio.tres" id="u2"]
+[ext_resource type="Resource" path="res://resources/content/enemies/pages.tres" id="u3"]
+[resource]
+script = ExtResource("s")
+id = "encounter_patrol"
+display_name = "守卫与治疗"
+units = Array[ExtResource("t")]([ExtResource("u0"), ExtResource("u1"), ExtResource("u2"), ExtResource("u3")])
+slots = Array[int]([0, 2, 4, 5])

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CampusEncounter" load_steps=6 format=3]
+[ext_resource type="Script" path="res://game/content/encounter_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="t"]
+[ext_resource type="Resource" path="res://resources/content/enemies/board.tres" id="u0"]
+[ext_resource type="Resource" path="res://resources/content/enemies/chalk.tres" id="u1"]
+[ext_resource type="Resource" path="res://resources/content/enemies/chalk.tres" id="u2"]
+[resource]
+script = ExtResource("s")
+id = "encounter_classroom"
+display_name = "整排攻击"
+units = Array[ExtResource("t")]([ExtResource("u0"), ExtResource("u1"), ExtResource("u2")])
+slots = Array[int]([1, 3, 5])

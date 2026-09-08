@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusSkill" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/skill_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("e")
+kind = "shield"
+target = "adjacent"
+value = 48.0
+attack_scale = 0.0
+[resource]
+script = ExtResource("s")
+id = "skill_guard"
+display_name = "并肩"
+description = "自身与相邻友军获得 48 点护盾。"
+glyph = "shield"
+effects = Array[ExtResource("e")]([SubResource("effect")])

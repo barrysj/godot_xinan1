@@ -11,6 +11,10 @@ const DEFINITIONS = [
 static func find(id: String) -> Dictionary:
 	var gear = preload("res://game/content/content_db.gd").gear(id)
 	if gear != null: return {"id":id,"title":gear.display_name,"description":gear.description,"role":-1}
+	if id.begins_with("recruit_"):
+		var role = preload("res://game/content/content_db.gd").role_index(id.trim_prefix("recruit_"))
+		var unit = preload("res://game/content/content_db.gd").character(role)
+		if unit != null: return {"id":id,"title":"招募 · "+unit.display_name,"description":unit.description,"role":role}
 	for entry in DEFINITIONS:
 		if entry.id == id: return entry.duplicate(true)
 	return {}
@@ -18,6 +22,9 @@ static func eligible(badge_owned: bool, roster: Array, inventory: Dictionary = {
 	var result = []
 	for gear in preload("res://game/content/content_db.gd").MANIFEST.equipment:
 		if gear.id not in ["shoe","badge"] and not inventory.has(gear.id): result.append(find(gear.id))
+	var db = preload("res://game/content/content_db.gd")
+	for role in range(5,db.characters().size()):
+		if not roster.has(role): result.append(find("recruit_"+db.role_id(role)))
 	return result + DEFINITIONS.filter(func(entry):
 		if entry.id == "badge": return not badge_owned
 		if entry.id == "recruit": return not roster.has(4)

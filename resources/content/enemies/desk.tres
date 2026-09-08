@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/striker.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(64, 128, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "desk"
+display_name = "巡游课桌"
+description = "巡游课桌：追击残血敌人，造成 2.1 倍攻击伤害。"
+portrait = SubResource("portrait")
+health = 240
+attack = 29
+interval = 1.6
+defense = 12
+skill = ExtResource("skill")

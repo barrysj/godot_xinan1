@@ -144,11 +144,7 @@ func refresh() -> void:
 		box_button(roster_box,game.ROLES[role]+(" · 上阵" if game.formation.has(role) else " · 候补"),select_role.bind(role))
 		roster_box.get_child(roster_box.get_child_count()-1).modulate = ACCENT if role == selected_role else Color.WHITE
 	title.text = game.ROLES[selected_role]
-	var cells = [Vector2i(1,8),Vector2i(3,7),Vector2i(0,7),Vector2i(2,7),Vector2i(3,8)]
-	var atlas = AtlasTexture.new()
-	atlas.atlas = preload("res://assets/pixel/kenney/tiny-dungeon.png")
-	atlas.region = Rect2(Vector2(cells[selected_role])*16,Vector2(16,16))
-	portrait.texture = atlas
+	portrait.texture = game.Content.character(selected_role).portrait
 	var unit = {}
 	for candidate in game.units:
 		if candidate.side == 0 and candidate.role == selected_role: unit = candidate

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(48, 112, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "archer"
+display_name = "远射手"
+description = "远射手：优先射击后排，造成 2.6 倍攻击伤害。"
+portrait = SubResource("portrait")
+health = 175
+attack = 35
+interval = 1.45
+defense = 5
+skill = ExtResource("skill")

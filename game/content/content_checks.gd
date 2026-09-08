@@ -24,7 +24,7 @@ func run_checks(hub) -> void:
 	broken.inventory.missing_content = -1
 	var before = hub.run.to_dict()
 	assert(not hub.run.restore(broken) and hub.run.to_dict() == before)
-	var legacy = hub.run.to_dict()
+	var legacy = hub.run._legacy_dict()
 	legacy.schema = legacy.legacy_schema
 	legacy.erase("inventory")
 	var old = hub.RunModel.new()
@@ -35,4 +35,38 @@ func run_checks(hub) -> void:
 	await RenderingServer.frame_post_draw
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/content-equipment.png")
 	print("CONTENT_CHECK equipment reward, UI equip, combat stats, checkpoint, legacy migration, rejection rollback and codex passed")
+	panel.close_popup()
+	panel.close_panel()
+	await hub.get_tree().process_frame
+	var role = DB.role_index("morning")
+	hub.run.roster.append(role)
+	hub.formation[2] = role
+	hub.selected = role
+	hub._sync_team()
+	hub._enter_node()
+	hub._start()
+	var freshman = {}
+	var archer = {}
+	for unit in hub.units:
+		if unit.side == 0 and unit.role == role: freshman = unit
+		if unit.side == 0 and unit.role == 1: archer = unit
+	assert(freshman.skill == archer.skill)
+	freshman.hp -= 10
+	freshman.count = 2
+	freshman.timer = 0
+	var archer_count = archer.count
+	hub._tick()
+	assert(archer.count == archer_count and freshman.count == 0 and DB.character(role).health == 190)
+	assert(freshman.damage > 0)
+	hub._checkpoint()
+	var saved = hub.run.to_dict()
+	assert(saved.roster.has("morning") and saved.formation.has("morning"))
+	var clone = hub.RunModel.new()
+	assert(clone.restore(JSON.parse_string(JSON.stringify(saved))))
+	assert(clone.roster.has(role) and clone.formation.has(role))
+	hub.paused = true
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	hub.get_viewport().get_texture().get_image().save_png("res://.godot/content-character.png")
+	print("CONTENT_CHECK resource character, shared skill, isolated state, string identity and combat passed")
 	hub.get_tree().quit()

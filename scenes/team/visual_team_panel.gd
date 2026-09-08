@@ -84,20 +84,20 @@ func draw_skills() -> void:
 	skill_buttons.clear()
 	var names = ["shield","arrow","heart","bolt","flask"]
 	skill_buttons.attack = icon(visual,"attack",Vector2(45,39),Vector2(114,114),open_skill.bind(false))
-	skill_buttons.ability = icon(visual,names[selected_role],Vector2(353,39),Vector2(114,114),open_skill.bind(true))
+	skill_buttons.ability = icon(visual,game.Content.character(selected_role).skill.glyph,Vector2(353,39),Vector2(114,114),open_skill.bind(true))
 	caption(visual,"普通攻击",Vector2(65,168),18)
 	caption(visual,game.SKILLS[selected_role].split("：")[0],Vector2(375,168),18)
-	caption(visual,"× 3   →",Vector2(212,74),26,ACCENT)
+	caption(visual,"× %d   →" % game.Content.character(selected_role).skill.attacks_to_trigger,Vector2(212,74),26,ACCENT)
 	var count = 0
 	for unit in game.units:
-		if unit.side == 0 and unit.role == selected_role: count = int(unit.count)%3
-	for i in range(3):
+		if unit.side == 0 and unit.role == selected_role: count = int(unit.count)
+	for i in range(game.Content.character(selected_role).skill.attacks_to_trigger):
 		var pip = ColorRect.new()
 		pip.position = Vector2(354+i*43,199)
 		pip.size = Vector2(29,9)
 		pip.color = ACCENT if i < count else Color("79737f")
 		visual.add_child(pip)
-	caption(visual,"%d / 3" % count,Vector2(493,190),17,MUTED)
+	caption(visual,"%d / %d" % [count,game.Content.character(selected_role).skill.attacks_to_trigger],Vector2(493,190),17,MUTED)
 	caption(visual,"自动释放",Vector2(631,59),25,ACCENT)
 	caption(visual,"点击图标查看效果",Vector2(631,106),19)
 	caption(visual,"角色专属 · 无需手动施放",Vector2(631,152),16,MUTED)
@@ -112,14 +112,14 @@ func open_skill(ability: bool) -> void:
 	shade.size = Vector2(1280,720)
 	shade.color = Color(0.02,0.04,0.07,0.96)
 	popup.add_child(shade)
-	var glyph = ["shield","arrow","heart","bolt","flask"][selected_role] if ability else "attack"
+	var glyph = game.Content.character(selected_role).skill.glyph if ability else "attack"
 	icon(popup,glyph,Vector2(305,246),Vector2(136,136),func(): pass)
 	icon(popup,"remove",Vector2(1034,179),Vector2(48,48),close_popup)
 	caption(popup,game.SKILLS[selected_role].split("：")[0] if ability else "普通攻击",Vector2(481,239),32,ACCENT)
 	var description = RichTextLabel.new()
 	description.position = Vector2(483,305)
 	description.size = Vector2(577,230)
-	description.text = (game.SKILLS[selected_role]+"\n\n每 3 次普攻自动触发。" if ability else "按角色的攻击间隔自动攻击。\n\n篮球鞋可以缩短攻击间隔，加快普攻和技能触发。")+"\n\n当前技能固定，通过角色、站位和装备配置改变战术。"
+	description.text = (game.SKILLS[selected_role]+"\n\n每 %d 次普攻自动触发。" % game.Content.character(selected_role).skill.attacks_to_trigger if ability else "按角色的攻击间隔自动攻击。\n\n篮球鞋可以缩短攻击间隔，加快普攻和技能触发。")+"\n\n当前技能固定，通过角色、站位和装备配置改变战术。"
 	popup.add_child(description)
 
 func draw_formation() -> void:
