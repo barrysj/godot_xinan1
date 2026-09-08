@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
+[ext_resource type="Resource" path="res://resources/content/encounters/classroom.tres" id="encounter"]
+[resource]
+script = ExtResource("s")
+id = "lab"
+display_name = "实验室"
+description = "黑板释放整排攻击。\n尝试分散站位、提前叠盾。"
+kind = "battle"
+route_pool = "safe"
+power = 0.8
+encounter = ExtResource("encounter")
+rewards = ExtResource("pool")

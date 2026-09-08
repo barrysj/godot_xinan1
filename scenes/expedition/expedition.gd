@@ -264,33 +264,37 @@ func _draw_map() -> void:
 	var node: Dictionary = run.stages[run.stage][chosen_node]
 	_text(Vector2(956, 146), node.name, DARK, 23)
 	# Manual line breaks keep the small notebook readable on landscape screens.
-	var snippets = {
-		"gate": "首场战斗，敌人较弱。\n点击敌人可以查看技能。\n守护者适合放前排。",
-		"library": "不用战斗，获得一次奖励。\n装备、训练、新同学三选一。",
-		"court": "守卫搭配后排治疗。\n用远射技能打击治疗者。\n精英胜利多得 1 修复资源。",
-		"hall": "回声广播不断治疗敌人。\n后排打击可以打破僵局。",
-		"lab": "对方擅长整排攻击。\n分散站位、保护后排。",
-		"supply": "同学准备的构筑补给。\n无需战斗，直接三选一。",
-		"classroom": "整排攻击与后排投手。\n额外获得 1 修复资源。",
-		"boss": "粉笔巨像堵住最终裂隙。\n战胜它，恢复校园铃声。\n失败可以无限重新编队。"}
-	_paragraph(Vector2(956, 199), snippets[node.id], DARK, 17)
+	_paragraph(Vector2(956, 199), node.description, DARK, 17)
 	_paragraph(Vector2(956, 378), "已拥有：篮球鞋\n笔记本：" + ("已获得" if run.badge_owned else "未获得") + "\n队伍人数：%d" % run.roster.size(), Color("6b705a"), 17)
 	_flow_button(Rect2(956, 521, 266, 60), "进入")
 	_pixel_panel(Rect2(24, 625, 1218, 67), Color("202027"))
 	_text(Vector2(44, 665), notice.left(66), PAPER, 17)
 
 func _draw_event() -> void:
-	_header(run.node.name, "校园记忆 / 补给事件")
+	var event = run.current_event()
+	_header(run.node.name, event.get("name","校园记忆"))
 	_campus()
-	_pixel_panel(Rect2(194, 208, 580, 312), PAPER)
-	_center(Vector2(484, 265), "有人把补给留在了这里。", DARK, 28)
-	_paragraph(Vector2(239, 318), "纸条上写着：\n“如果你先到，就带上这些。\n我们在放学铃响起的地方见。”", DARK, 22)
-	_flow_button(Rect2(277, 442, 414, 55), "收下心意 · 选择奖励")
+	_pixel_panel(Rect2(165,166,950,420), PAPER)
+	_paragraph(Vector2(206,211),event.get("description",""),DARK,21)
+	for i in range(event.get("options",[]).size()):
+		var option = event.options[i]
+		_flow_button(Rect2(204,332+i*76,535,54),option.text,run.event_option_available(i))
+		_text(Vector2(760,365+i*76),option.description.left(19),DARK,16)
+
+func _choose_event(index: int) -> void:
+	if screen != "event": return
+	if not run.take_event(index): return
+	if run.current_event().options[index].open_rewards:
+		screen = "reward"
+	else:
+		run.complete_node()
+		screen = "map"
+		chosen_node = 0
 
 func _draw_rewards() -> void:
 	_header("带上新的可能", "从三份奖励中选择一份。本次选择会保留到探索结束。")
 	var offers = run.offers()
-	for i in range(3):
+	for i in range(offers.size()):
 		var x = 58 + i * 409
 		_pixel_panel(Rect2(x, 174, 346, 391), PAPER)
 		if offers[i].id == "badge":
@@ -393,9 +397,10 @@ func _gui_input(event: InputEvent) -> void:
 				if Rect2(_node_pos(run.stage, i) - Vector2(60, 60), Vector2(120, 145)).has_point(p): chosen_node = i
 			if Rect2(956, 521, 266, 60).has_point(p): _enter_node()
 		"event":
-			if Rect2(277, 442, 414, 55).has_point(p): screen = "reward"
+			for i in range(run.current_event().get("options",[]).size()):
+				if Rect2(204,332+i*76,535,54).has_point(p): _choose_event(i)
 		"reward":
-			for i in range(3):
+			for i in range(run.offers().size()):
 				if Rect2(84 + i * 409, 493, 294, 52).has_point(p):
 					_choose_reward(i)
 					break

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
+[ext_resource type="Resource" path="res://resources/content/encounters/final.tres" id="encounter"]
+[resource]
+script = ExtResource("s")
+id = "boss"
+display_name = "终点 · 放学铃"
+description = "粉笔巨像守住校园最后的裂隙。\n用这一局的构筑，让放学铃重新响起。"
+kind = "boss"
+route_pool = "final"
+power = 1.25
+encounter = ExtResource("encounter")
+rewards = ExtResource("pool")

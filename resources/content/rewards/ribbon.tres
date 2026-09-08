@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CampusReward" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/equipment/ribbon.tres" id="target"]
+[resource]
+script = ExtResource("s")
+id = "ribbon"
+display_name = "晨光发带"
+description = "生命 +20，攻击 +8。"
+operation = "gear"
+equipment = ExtResource("target")

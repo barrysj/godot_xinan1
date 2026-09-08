@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampusEvent" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/event_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/event_option.gd" id="o"]
+[sub_resource type="Resource" id="option"]
+script = ExtResource("o")
+id = "accept"
+text = "收下心意"
+[resource]
+script = ExtResource("s")
+id = "library_event"
+display_name = "旧借阅册"
+description = "纸条上写着：\n如果你先到，就带上这些。\n我们在放学铃响起的地方见。"
+options = Array[ExtResource("o")]([SubResource("option")])

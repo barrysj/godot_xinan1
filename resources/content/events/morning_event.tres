@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CampusEvent" load_steps=8 format=3]
+[ext_resource type="Script" path="res://game/content/event_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/event_option.gd" id="o"]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="r"]
+[ext_resource type="Resource" path="res://resources/content/rewards/ribbon.tres" id="gift"]
+[ext_resource type="Resource" path="res://resources/content/rewards/archer_training.tres" id="training"]
+[sub_resource type="Resource" id="buy"]
+script = ExtResource("o")
+id = "exchange"
+text = "用一点修复资源换发带"
+description = "支付 1 点，获得晨光发带。"
+minimum_points = 1
+cost = 1
+results = Array[ExtResource("r")]([ExtResource("gift")])
+open_rewards = false
+[sub_resource type="Resource" id="read"]
+script = ExtResource("o")
+id = "read"
+text = "一起读完这一页"
+description = "远射手训练一级，再选择补给。"
+results = Array[ExtResource("r")]([ExtResource("training")])
+[resource]
+script = ExtResource("s")
+id = "morning_event"
+display_name = "晨光书签"
+description = "窗边的同学递来一枚书签。\n桌上放着发带，也摊着一本旧课本。\n你想用什么方式留下这段记忆？"
+options = Array[ExtResource("o")]([SubResource("buy"), SubResource("read")])

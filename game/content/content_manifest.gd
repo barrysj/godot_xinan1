@@ -7,3 +7,7 @@ extends Resource
 @export var enemies: Array[CampusUnit] = []
 @export var skills: Array[CampusSkill] = []
 @export var encounters: Array[CampusEncounter] = []
+@export var rewards: Array[CampusReward] = []
+@export var reward_pools: Array[CampusRewardPool] = []
+@export var events: Array[CampusEvent] = []
+@export var locations: Array[CampusLocation] = []

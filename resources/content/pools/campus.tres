@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusRewardPool" load_steps=12 format=3]
+[ext_resource type="Script" path="res://game/content/reward_pool.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="t"]
+[ext_resource type="Resource" path="res://resources/content/rewards/badge.tres" id="r0"]
+[ext_resource type="Resource" path="res://resources/content/rewards/ribbon.tres" id="r1"]
+[ext_resource type="Resource" path="res://resources/content/rewards/recruit.tres" id="r2"]
+[ext_resource type="Resource" path="res://resources/content/rewards/recruit_morning.tres" id="r3"]
+[ext_resource type="Resource" path="res://resources/content/rewards/guard_training.tres" id="r4"]
+[ext_resource type="Resource" path="res://resources/content/rewards/archer_training.tres" id="r5"]
+[ext_resource type="Resource" path="res://resources/content/rewards/healer_training.tres" id="r6"]
+[ext_resource type="Resource" path="res://resources/content/rewards/striker_training.tres" id="r7"]
+[ext_resource type="Resource" path="res://resources/content/rewards/inventor_training.tres" id="r8"]
+[resource]
+script = ExtResource("s")
+id = "campus_rewards"
+rewards = Array[ExtResource("t")]([ExtResource("r0"), ExtResource("r1"), ExtResource("r2"), ExtResource("r3"), ExtResource("r4"), ExtResource("r5"), ExtResource("r6"), ExtResource("r7"), ExtResource("r8")])

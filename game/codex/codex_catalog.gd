@@ -21,16 +21,16 @@ static func entries(category: int) -> Array:
 				result.append({"name":item.display_name,"tag":"装备 · 每人一件","body":item.description,"texture":item.icon})
 			result.append({"name":"修复资源","tag":"成长资源","body":"完成地点积累，通关后带回基地。用于成长与派遣。"})
 		3:
-			for stage in Run.STAGES:
-				for place in stage:
-					result.append({"name":place.name,"tag":"局内路线 · "+{"battle":"战斗","elite":"精英","event":"事件","boss":"首领"}[place.kind],"body":place.description+"\n\n每层只选择一个地点。胜利恢复全部状态，失败可以无限重试。"})
+			for place in preload("res://game/content/content_db.gd").MANIFEST.locations:
+				result.append({"name":place.display_name,"tag":"局内路线","body":place.description})
 			for place in Meta.LOCATIONS:
 				result.append({"name":place.name,"tag":"局外派遣地点","body":place.description+"\n\n出发消耗：%d 修复资源\n探索时长：%d 秒（现实时间）\n完成收益：%d 修复资源\n\n在校园成长中解锁后即可派遣；与局内路线进度独立。" % [place.cost,place.duration,place.reward]})
 		4:
-			result = [
-				{"name":"图书角 · 旧借阅册","tag":"补给事件","body":"翻开旧借阅册，发现同学留下的补给。\n\n不需要战斗，点击收下心意后选择一份构筑奖励，继续探索。"},
-				{"name":"同学补给站 · 出发整备","tag":"补给事件","body":"探索途中的整备机会。\n\n不需要战斗，从装备、训练或招募中选择一份奖励，为最终战斗做准备。"},
-				{"name":"三选一构筑奖励","tag":"奖励规则","body":"战斗胜利或补给事件后，从随机抽出的三项不同奖励中选择一项。\n\n装备：未拥有的厚笔记本。\n招募：尚未加入的发明家。\n训练：已加入同学的本局生命 +50、攻击 +5，五种角色各有训练。\n\n训练可叠加，仅本局有效。读档和重试不会刷新当前奖励。"}]
+			for event in preload("res://game/content/content_db.gd").MANIFEST.events:
+				var body = event.description
+				for option in event.options: body += "\n\n"+option.text+"\n"+option.description
+				result.append({"name":event.display_name,"tag":"校园事件","body":body,"texture":event.image})
+			result.append({"name":"三选一构筑奖励","tag":"奖励规则","body":"从地点的奖励池抽取三项不同奖励。已持有装备和已招募同学不会重复出现。训练每级生命 +50、攻击 +5。待领奖励随存档保存。"})
 	return result
 
 static func unit_entry(unit, tag: String) -> Dictionary:

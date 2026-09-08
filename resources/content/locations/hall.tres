@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
+[ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounter"]
+[resource]
+script = ExtResource("s")
+id = "hall"
+display_name = "教学走廊"
+description = "回声广播不断治疗敌人。\n后排打击可以打破僵局。"
+kind = "battle"
+route_pool = "safe"
+power = 0.92
+encounter = ExtResource("encounter")
+rewards = ExtResource("pool")

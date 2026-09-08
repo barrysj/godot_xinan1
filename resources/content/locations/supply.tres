@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
+[ext_resource type="Resource" path="res://resources/content/events/supply_event.tres" id="event"]
+[resource]
+script = ExtResource("s")
+id = "supply"
+display_name = "同学补给站"
+description = "探索途中的一次整备。\n选择装备、训练或新伙伴。"
+kind = "event"
+route_pool = "safe"
+power = 0.1
+event = ExtResource("event")
+rewards = ExtResource("pool")

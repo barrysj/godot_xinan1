@@ -16,7 +16,7 @@ static func decode(snapshot: Dictionary) -> Dictionary:
 	elif model.stage >= 5 or model.settled: return {}
 	if screen == "map" and not model.node.is_empty(): return {}
 	if screen in ["battle","event","reward","report"] and model.node.is_empty(): return {}
-	if screen == "event" and model.node.kind != "event": return {}
+	if screen == "event" and (model.node.kind != "event" or model.event_done): return {}
 	if screen in ["battle","report"] and model.node.kind == "event": return {}
 	if screen == "reward" and model.reward_taken: return {}
 	var report: Array[Dictionary] = []
@@ -29,4 +29,4 @@ static func decode(snapshot: Dictionary) -> Dictionary:
 	if screen == "report" and report.size() != 4: return {}
 	return {"run":model, "screen":screen, "report":report, "won":bool(snapshot.get("won",false)),
 		"elapsed":maxf(0,float(snapshot.get("elapsed",0))), "seconds":maxf(0,float(snapshot.get("seconds",0))),
-		"selected":int(snapshot.get("selected",0)), "speed":2 if snapshot.get("speed",1) == 2 else 1}
+		"selected":Run.Content.role_index(snapshot.selected_id) if snapshot.get("selected_id") is String else int(snapshot.get("selected",0)), "speed":2 if snapshot.get("speed",1) == 2 else 1}

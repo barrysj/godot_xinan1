@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CampusReward" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/characters/inventor.tres" id="target"]
+[resource]
+script = ExtResource("s")
+id = "recruit"
+display_name = "招募 · 发明家"
+description = "新同学加入候补，自动技能攻击一整排。"
+operation = "recruit"
+character = ExtResource("target")

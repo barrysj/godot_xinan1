@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
+[ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounter"]
+[resource]
+script = ExtResource("s")
+id = "gate"
+display_name = "旧校门"
+description = "纸甲守卫挡住了归校的路。\n先观察敌阵，试试保护后排。"
+kind = "battle"
+route_pool = "start"
+power = 0.62
+encounter = ExtResource("encounter")
+rewards = ExtResource("pool")

@@ -1,31 +1,35 @@
 extends RefCounted
-const DEFINITIONS = [
-	{"id":"badge","title":"厚笔记本","description":"装备者生命上限 +80。\n战前可自由分配。","role":-1},
-	{"id":"recruit","title":"招募 · 发明家","description":"新同学加入候补。\n自动技能攻击一整排。","role":-1},
-	{"id":"guard_training","title":"坚守训练","description":"守护者本局生命 +50。\n攻击 +5，可叠加。\n不占装备槽。","role":0},
-	{"id":"archer_training","title":"专注训练","description":"远射手本局生命 +50。\n攻击 +5，可叠加。\n不占装备槽。","role":1},
-	{"id":"healer_training","title":"应援练习","description":"应援者本局生命 +50。\n攻击 +5，可叠加。\n不占装备槽。","role":2},
-	{"id":"striker_training","title":"冲刺特训","description":"冲刺手本局生命 +50。\n攻击 +5，可叠加。\n不占装备槽。","role":3},
-	{"id":"inventor_training","title":"改良实验","description":"发明家本局生命 +50。\n攻击 +5，可叠加。\n候补也能保留强化。","role":4}
-]
+const DB = preload("res://game/content/content_db.gd")
+
 static func find(id: String) -> Dictionary:
-	var gear = preload("res://game/content/content_db.gd").gear(id)
-	if gear != null: return {"id":id,"title":gear.display_name,"description":gear.description,"role":-1}
-	if id.begins_with("recruit_"):
-		var role = preload("res://game/content/content_db.gd").role_index(id.trim_prefix("recruit_"))
-		var unit = preload("res://game/content/content_db.gd").character(role)
-		if unit != null: return {"id":id,"title":"招募 · "+unit.display_name,"description":unit.description,"role":role}
-	for entry in DEFINITIONS:
-		if entry.id == id: return entry.duplicate(true)
+	for item in DB.MANIFEST.rewards:
+		if item.id == id: return item.snapshot()
 	return {}
-static func eligible(badge_owned: bool, roster: Array, inventory: Dictionary = {}) -> Array:
+
+static func allowed(entry: Dictionary, roster: Array, inventory: Dictionary, training: Dictionary = {}) -> bool:
+	match entry.get("operation"):
+		"gear": return DB.gear(entry.target) != null and not inventory.has(entry.target)
+		"recruit": return DB.role_index(entry.target) >= 0 and not roster.has(DB.role_index(entry.target))
+		"train": return roster.has(DB.role_index(entry.target)) and int(training.get(DB.role_index(entry.target),0)) + entry.amount <= 100
+		"points": return true
+	return false
+
+static func eligible(_badge_owned: bool, roster: Array, inventory: Dictionary = {}, pool_id: String = "campus_rewards", training: Dictionary = {}) -> Array:
 	var result = []
-	for gear in preload("res://game/content/content_db.gd").MANIFEST.equipment:
-		if gear.id not in ["shoe","badge"] and not inventory.has(gear.id): result.append(find(gear.id))
-	var db = preload("res://game/content/content_db.gd")
-	for role in range(5,db.characters().size()):
-		if not roster.has(role): result.append(find("recruit_"+db.role_id(role)))
-	return result + DEFINITIONS.filter(func(entry):
-		if entry.id == "badge": return not badge_owned
-		if entry.id == "recruit": return not roster.has(4)
-		return roster.has(entry.role))
+	for pool in DB.MANIFEST.reward_pools:
+		if pool.id != pool_id: continue
+		for reward in pool.rewards:
+			var entry = reward.snapshot()
+			if allowed(entry,roster,inventory,training): result.append(entry)
+	return result
+
+static func valid_snapshot(entry) -> bool:
+	if not entry is Dictionary or not entry.get("id") is String or find(entry.id).is_empty(): return false
+	if not entry.get("title") is String or not entry.get("description") is String or not entry.get("target") is String: return false
+	var amount = entry.get("amount")
+	if not (amount is int or amount is float) or not is_finite(amount) or int(amount) != amount or amount < 1 or amount > 100: return false
+	match entry.get("operation"):
+		"gear": return DB.gear(entry.target) != null
+		"recruit", "train": return DB.role_index(entry.target) >= 0
+		"points": return true
+	return false

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
+[ext_resource type="Resource" path="res://resources/content/encounters/classroom.tres" id="encounter"]
+[resource]
+script = ExtResource("s")
+id = "classroom"
+display_name = "异变教室"
+description = "更强的整排攻击与后排投手。\n胜利额外获得 1 点修复资源。"
+kind = "elite"
+route_pool = "risk"
+power = 1.0
+encounter = ExtResource("encounter")
+rewards = ExtResource("pool")

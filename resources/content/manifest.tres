@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CampusManifest" load_steps=31 format=3]
+[gd_resource type="Resource" script_class="CampusManifest" load_steps=57 format=3]
 [ext_resource type="Script" path="res://game/content/content_manifest.gd" id="1"]
 [ext_resource type="Script" path="res://game/content/equipment_def.gd" id="2"]
 [ext_resource type="Resource" path="res://resources/content/equipment/shoe.tres" id="shoe"]
@@ -29,6 +29,32 @@
 [ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounters_patrol"]
 [ext_resource type="Resource" path="res://resources/content/encounters/classroom.tres" id="encounters_classroom"]
 [ext_resource type="Resource" path="res://resources/content/encounters/final.tres" id="encounters_final"]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="t_rewards"]
+[ext_resource type="Resource" path="res://resources/content/rewards/badge.tres" id="rewards_badge"]
+[ext_resource type="Resource" path="res://resources/content/rewards/ribbon.tres" id="rewards_ribbon"]
+[ext_resource type="Resource" path="res://resources/content/rewards/recruit.tres" id="rewards_recruit"]
+[ext_resource type="Resource" path="res://resources/content/rewards/recruit_morning.tres" id="rewards_recruit_morning"]
+[ext_resource type="Resource" path="res://resources/content/rewards/guard_training.tres" id="rewards_guard_training"]
+[ext_resource type="Resource" path="res://resources/content/rewards/archer_training.tres" id="rewards_archer_training"]
+[ext_resource type="Resource" path="res://resources/content/rewards/healer_training.tres" id="rewards_healer_training"]
+[ext_resource type="Resource" path="res://resources/content/rewards/striker_training.tres" id="rewards_striker_training"]
+[ext_resource type="Resource" path="res://resources/content/rewards/inventor_training.tres" id="rewards_inventor_training"]
+[ext_resource type="Script" path="res://game/content/reward_pool.gd" id="t_reward_pools"]
+[ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="reward_pools_campus"]
+[ext_resource type="Script" path="res://game/content/event_def.gd" id="t_events"]
+[ext_resource type="Resource" path="res://resources/content/events/library_event.tres" id="events_library_event"]
+[ext_resource type="Resource" path="res://resources/content/events/supply_event.tres" id="events_supply_event"]
+[ext_resource type="Resource" path="res://resources/content/events/morning_event.tres" id="events_morning_event"]
+[ext_resource type="Script" path="res://game/content/location_def.gd" id="t_locations"]
+[ext_resource type="Resource" path="res://resources/content/locations/gate.tres" id="locations_gate"]
+[ext_resource type="Resource" path="res://resources/content/locations/library.tres" id="locations_library"]
+[ext_resource type="Resource" path="res://resources/content/locations/court.tres" id="locations_court"]
+[ext_resource type="Resource" path="res://resources/content/locations/hall.tres" id="locations_hall"]
+[ext_resource type="Resource" path="res://resources/content/locations/lab.tres" id="locations_lab"]
+[ext_resource type="Resource" path="res://resources/content/locations/supply.tres" id="locations_supply"]
+[ext_resource type="Resource" path="res://resources/content/locations/classroom.tres" id="locations_classroom"]
+[ext_resource type="Resource" path="res://resources/content/locations/boss.tres" id="locations_boss"]
+[ext_resource type="Resource" path="res://resources/content/locations/reading.tres" id="locations_reading"]
 [resource]
 script = ExtResource("1")
 equipment = Array[ExtResource("2")]([ExtResource("shoe"), ExtResource("badge"), ExtResource("ribbon")])
@@ -36,3 +62,7 @@ characters = Array[ExtResource("t_characters")]([ExtResource("characters_guard")
 enemies = Array[ExtResource("t_enemies")]([ExtResource("enemies_paper_guard"), ExtResource("enemies_desk"), ExtResource("enemies_radio"), ExtResource("enemies_pages"), ExtResource("enemies_board"), ExtResource("enemies_chalk"), ExtResource("enemies_colossus")])
 skills = Array[ExtResource("t_skills")]([ExtResource("skills_guard"), ExtResource("skills_archer"), ExtResource("skills_healer"), ExtResource("skills_striker"), ExtResource("skills_inventor")])
 encounters = Array[ExtResource("t_encounters")]([ExtResource("encounters_patrol"), ExtResource("encounters_classroom"), ExtResource("encounters_final")])
+rewards = Array[ExtResource("t_rewards")]([ExtResource("rewards_badge"), ExtResource("rewards_ribbon"), ExtResource("rewards_recruit"), ExtResource("rewards_recruit_morning"), ExtResource("rewards_guard_training"), ExtResource("rewards_archer_training"), ExtResource("rewards_healer_training"), ExtResource("rewards_striker_training"), ExtResource("rewards_inventor_training")])
+reward_pools = Array[ExtResource("t_reward_pools")]([ExtResource("reward_pools_campus")])
+events = Array[ExtResource("t_events")]([ExtResource("events_library_event"), ExtResource("events_supply_event"), ExtResource("events_morning_event")])
+locations = Array[ExtResource("t_locations")]([ExtResource("locations_gate"), ExtResource("locations_library"), ExtResource("locations_court"), ExtResource("locations_hall"), ExtResource("locations_lab"), ExtResource("locations_supply"), ExtResource("locations_classroom"), ExtResource("locations_boss"), ExtResource("locations_reading")])

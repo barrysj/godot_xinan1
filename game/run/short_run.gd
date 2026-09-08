@@ -60,10 +60,13 @@ const Rewards = preload("res://game/run/reward_catalog.gd")
 var route_seed = -1
 var stages: Array = STAGES.duplicate(true)
 var reward_ids: Array = []
+var reward_snapshots: Array = []
+var event_done = false
+var event_points = 0
 
 func generate(seed_value: int = -1) -> void:
 	route_seed = seed_value if seed_value >= 0 else int(Crypto.new().generate_random_bytes(4).decode_u32(0) & 0x7fffffff)
-	stages = generated_stages(route_seed)
+	stages = content_stages(route_seed)
 
 static func shuffle_with(items: Array, rng: RandomNumberGenerator) -> void:
 	for i in range(items.size()-1,0,-1):
@@ -89,13 +92,36 @@ static func generated_stages(seed_value: int) -> Array:
 	generated.append(STAGES[4].duplicate(true))
 	return generated
 
+static func content_stages(seed_value: int) -> Array:
+	var rng = RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var pools = {"start":[],"safe":[],"risk":[],"final":[]}
+	for place in Content.MANIFEST.locations: pools[place.route_pool].append(place.snapshot())
+	shuffle_with(pools.safe,rng)
+	shuffle_with(pools.risk,rng)
+	var safe = pools.safe.slice(0,3)
+	var risk = pools.risk.slice(0,2)+[pools.safe[3]]
+	shuffle_with(risk,rng)
+	var result: Array = [[pools.start[0]]]
+	for i in range(3):
+		var layer = [safe[i],risk[i]]
+		for place in layer:
+			if place.kind != "event": place.power = float("%.2f" % ((0.78 if place.kind == "elite" else 0.68)+i*0.10))
+		shuffle_with(layer,rng)
+		result.append(layer)
+	result.append([pools.final[0]])
+	return result
+
 func roll_rewards() -> void:
 	var rng = RandomNumberGenerator.new()
 	rng.seed = (str(route_seed)+":"+str(stage)+":"+str(node.get("id",""))).hash()
-	var pool = Rewards.eligible(badge_owned,roster,inventory).duplicate(true)
+	var pool = Rewards.eligible(badge_owned,roster,inventory,node.get("reward_pool","campus_rewards"),training).duplicate(true)
 	shuffle_with(pool,rng)
 	reward_ids.clear()
-	for i in range(3): reward_ids.append(pool[i].id)
+	reward_snapshots.clear()
+	for i in range(mini(3,pool.size())):
+		reward_ids.append(pool[i].id)
+		reward_snapshots.append(pool[i].duplicate(true))
 
 func _legacy_dict() -> Dictionary:
 	var saved_training = {}
@@ -108,7 +134,11 @@ func _legacy_dict() -> Dictionary:
 
 func to_dict() -> Dictionary:
 	var data = _legacy_dict()
-	data.schema = 4
+	data.schema = 5
+	data.stages = stages.duplicate(true)
+	data.reward_snapshots = reward_snapshots.duplicate(true)
+	data.event_done = event_done
+	data.event_points = event_points
 	data.roster = roster.map(func(role): return Content.role_id(role))
 	data.formation = formation.map(func(role): return "" if role == -1 else Content.role_id(role))
 	data.training = {}
@@ -124,7 +154,7 @@ func restore(data: Dictionary) -> bool:
 	var candidate = get_script().new()
 	var source = data.duplicate(true)
 	var items = {}
-	if data.get("schema") == 4:
+	if data.get("schema") == 4 or data.get("schema") == 5:
 		for key in ["roster", "formation"]:
 			if not data.get(key) is Array: return false
 			var converted = []
@@ -162,14 +192,32 @@ func restore(data: Dictionary) -> bool:
 		source.shoe_wearer = items.shoe
 		source.badge_owned = items.has("badge")
 		source.badge_wearer = items.get("badge", -1)
-	if not candidate._restore_legacy(source): return false
+	var frozen: Array = []
+	if data.get("schema") == 5:
+		if not valid_route(data.get("stages")): return false
+		frozen = normalize_snapshot(data.stages)
+		if not data.get("event_done") is bool: return false
+		var delta = data.get("event_points")
+		if not (delta is int or delta is float) or not is_finite(delta) or int(delta) != delta or absi(int(delta)) > 10000: return false
+		if not data.get("reward_snapshots") is Array: return false
+		if data.reward_snapshots.size() != data.get("reward_ids",[]).size(): return false
+		for i in range(data.reward_snapshots.size()):
+			if not Rewards.valid_snapshot(data.reward_snapshots[i]) or data.reward_snapshots[i].id != data.reward_ids[i]: return false
+		candidate.reward_snapshots = normalize_snapshot(data.reward_snapshots)
+		candidate.event_done = data.event_done
+		candidate.event_points = int(delta)
+	if not candidate._restore_legacy(source, frozen): return false
+	if candidate.points + candidate.event_points < 0: return false
+	candidate.points += candidate.event_points
+	if data.get("schema") != 5 and candidate.route_seed >= 0:
+		for id in candidate.reward_ids: candidate.reward_snapshots.append(Rewards.find(id))
 	if not items.is_empty(): candidate.inventory = items
 	for property in candidate.get_property_list():
 		if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
 			set(property.name, candidate.get(property.name))
 	return true
 
-func _restore_legacy(data: Dictionary) -> bool:
+func _restore_legacy(data: Dictionary, frozen: Array = []) -> bool:
 	if data.get("schema",0) != 1 and data.get("schema",0) != 2: return false
 	if not data.get("id",null) is String: return false
 	var restored_seed = -1
@@ -179,6 +227,7 @@ func _restore_legacy(data: Dictionary) -> bool:
 		if not (value is int or value is float) or value < 0 or value > 2147483647 or int(value) != value: return false
 		restored_seed = int(value)
 		restored_stages = generated_stages(restored_seed)
+	if not frozen.is_empty(): restored_stages = frozen
 	if data.id.is_empty(): return false
 	for key in ["stage","shoe_wearer","badge_wearer","retries","permanent_hp"]:
 		var value = data.get(key,0)
@@ -263,7 +312,7 @@ func _restore_legacy(data: Dictionary) -> bool:
 		for id in data.reward_ids:
 			if not id is String or Rewards.find(id).is_empty() or reward_ids.has(id): return false
 			reward_ids.append(id)
-		if not node.is_empty() and reward_ids.size() != 3: return false
+		if not node.is_empty() and (reward_ids.is_empty() or reward_ids.size() > 3): return false
 		if node.is_empty() and not reward_ids.is_empty(): return false
 		if not reward_taken:
 			for id in reward_ids:
@@ -277,10 +326,15 @@ func choose(index: int) -> bool:
 		return false
 	node = stages[stage][index].duplicate(true)
 	reward_taken = false
+	event_done = false
 	if route_seed >= 0: roll_rewards()
 	return true
 
 func offers() -> Array[Dictionary]:
+	if route_seed >= 0 and not reward_snapshots.is_empty():
+		var frozen_offers: Array[Dictionary] = []
+		for offer in reward_snapshots: frozen_offers.append(offer.duplicate(true))
+		return frozen_offers
 	if route_seed >= 0:
 		var choices: Array[Dictionary] = []
 		for id in reward_ids: choices.append(Rewards.find(id))
@@ -302,20 +356,10 @@ func take_reward(id: String) -> bool:
 			valid = true
 	if not valid:
 		return false
-	if Content.gear(id) != null:
-		if not grant_gear(id): return false
-	if id.begins_with("recruit_"):
-		var role = Content.role_index(id.trim_prefix("recruit_"))
-		if role < 0 or roster.has(role): return false
-		roster.append(role)
-	match id:
-		"badge": badge_owned = true
-		"recruit": roster.append(4)
-		"guard_training": _train(0)
-		"archer_training": _train(1)
-		"inventor_training": _train(4)
-		"healer_training": _train(2)
-		"striker_training": _train(3)
+	var entry = Rewards.find(id)
+	for offer in offers():
+		if offer.id == id and offer.has("operation"): entry = offer
+	if not apply_reward(entry): return false
 	reward_taken = true
 	return true
 
@@ -330,4 +374,102 @@ func complete_node() -> bool:
 	stage += 1
 	node = {}
 	reward_ids.clear()
+	reward_snapshots.clear()
+	event_done = false
 	return true
+
+func apply_reward(entry: Dictionary) -> bool:
+	if not Rewards.valid_snapshot(entry) or not Rewards.allowed(entry,roster,inventory,training): return false
+	match entry.operation:
+		"gear": grant_gear(entry.target)
+		"recruit": roster.append(Content.role_index(entry.target))
+		"train":
+			var role = Content.role_index(entry.target)
+			training[role] = int(training.get(role,0))+int(entry.amount)
+		"points":
+			points += int(entry.amount)
+			event_points += int(entry.amount)
+	return true
+
+func current_event() -> Dictionary:
+	if node.has("event"): return node.event.duplicate(true)
+	for event in Content.MANIFEST.events:
+		if event.id == ("library_event" if node.get("id") == "library" else "supply_event"): return event.snapshot()
+	return {}
+
+func event_option_available(index: int) -> bool:
+	var options = current_event().get("options",[])
+	if node.get("kind") != "event" or event_done or index < 0 or index >= options.size(): return false
+	var option = options[index]
+	if points < maxf(option.minimum_points, option.cost): return false
+	if not option.character.is_empty() and not roster.has(Content.role_index(option.character)): return false
+	if not option.equipment.is_empty() and not inventory.has(option.equipment): return false
+	# Simulate the whole grant list to catch duplicates and training overflow before payment.
+	var trial = get_script().new()
+	trial.roster = roster.duplicate()
+	trial.inventory = inventory.duplicate()
+	trial.training = training.duplicate()
+	for reward in option.results:
+		if not trial.apply_reward(reward): return false
+	return true
+
+func take_event(index: int) -> bool:
+	if not event_option_available(index): return false
+	var option = current_event().options[index]
+	points -= int(option.cost)
+	event_points -= int(option.cost)
+	for reward in option.results: apply_reward(reward)
+	event_done = true
+	return true
+
+static func valid_event(event) -> bool:
+	if not event is Dictionary or not event.get("id") is String or not event.get("name") is String or not event.get("description") is String or not event.get("options") is Array: return false
+	if not Content.MANIFEST.events.any(func(item): return item.id == event.id): return false
+	if event.options.is_empty() or event.options.size() > 3: return false
+	var ids = []
+	for option in event.options:
+		if not option is Dictionary: return false
+		for key in ["id","text","description","character","equipment"]:
+			if not option.get(key) is String: return false
+		if option.id.is_empty() or ids.has(option.id): return false
+		ids.append(option.id)
+		for key in ["cost","minimum_points"]:
+			var value = option.get(key)
+			if not (value is int or value is float) or not is_finite(value) or int(value) != value or value < 0 or value > 100: return false
+		if not option.character.is_empty() and Content.role_index(option.character) < 0: return false
+		if not option.equipment.is_empty() and Content.gear(option.equipment) == null: return false
+		if not option.get("open_rewards") is bool or not option.get("results") is Array: return false
+		for reward in option.results:
+			if not Rewards.valid_snapshot(reward): return false
+	return true
+
+static func valid_route(route) -> bool:
+	if not route is Array or route.size() != 5: return false
+	var ids = []
+	for i in range(route.size()):
+		var layer = route[i]
+		if not layer is Array or layer.is_empty() or layer.size() > 2: return false
+		for place in layer:
+			if not place is Dictionary: return false
+			for key in ["id","name","kind","description"]:
+				if not place.get(key) is String: return false
+			if ids.has(place.id) or not Content.MANIFEST.locations.any(func(item): return item.id == place.id): return false
+			ids.append(place.id)
+			if not place.kind in ["battle","elite","event","boss"]: return false
+			var power = place.get("power")
+			if not (power is int or power is float) or not is_finite(power) or power < 0 or power > 3: return false
+			# Legacy frozen routes may lack the newer references.
+			if place.has("encounter_id") and place.kind != "event" and Content.encounter(place.encounter_id) == null: return false
+			if place.has("event") and place.kind == "event" and not valid_event(place.event): return false
+			if place.has("reward_pool") and not Content.MANIFEST.reward_pools.any(func(item): return item.id == place.reward_pool): return false
+	return route[0].size() == 1 and route[4].size() == 1 and route[4][0].kind == "boss"
+
+static func normalize_snapshot(value):
+	if value is Array:
+		return value.map(func(item): return normalize_snapshot(item))
+	if value is Dictionary:
+		var result = {}
+		for key in value:
+			result[key] = int(value[key]) if key in ["encounter","cost","minimum_points","amount"] else normalize_snapshot(value[key])
+		return result
+	return value

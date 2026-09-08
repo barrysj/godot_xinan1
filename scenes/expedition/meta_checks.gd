@@ -112,7 +112,7 @@ func run_checks(hub) -> void:
 	hub.progress = reload_profile(hub.progress)
 	hub._continue_run()
 	verify(hub.screen == "event", "event persists")
-	hub._test_click(Vector2(450,460))
+	hub._test_click(Vector2(450,359))
 	verify(hub.screen == "reward" and hub.progress.active_run.screen == "reward", "event reward click saves")
 	hub._choose_reward(0)
 	while hub.run.stage < 5:

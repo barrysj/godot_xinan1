@@ -30,6 +30,17 @@ func _header(title: String, subtitle: String) -> void:
 	if screen == "map": _flow_button(Rect2(765,26,145,48),"队伍面板")
 
 func _ready() -> void:
+	var content_errors = Content.validate()
+	if not content_errors.is_empty():
+		push_error("内容校验失败：\n"+"\n".join(content_errors))
+		var error_label = Label.new()
+		error_label.text = "内容校验失败，请检查输出：\n"+"\n".join(content_errors)
+		error_label.add_theme_font_override("font",preload("res://assets/fonts/SourceHanSansSC-Medium.otf"))
+		add_child(error_label)
+		set_process(false)
+		set_process_input(false)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return
 	super._ready()
 	storage_ready = true
 	if not progress.active_run.is_empty() and Checkpoint.decode(progress.active_run).is_empty():
@@ -58,7 +69,7 @@ func _ready() -> void:
 		test_runner.run_checks(self)
 
 func _pack_checkpoint() -> Dictionary:
-	return {"schema":1, "run":run.to_dict(), "screen":screen, "selected":selected,
+	return {"schema":1, "run":run.to_dict(), "screen":screen, "selected":selected, "selected_id":Content.role_id(selected),
 		"report":report.duplicate(true), "won":result_won, "elapsed":elapsed,
 		"seconds":expedition_seconds, "speed":speed}
 
@@ -94,6 +105,10 @@ func _start() -> void:
 
 func _enter_node() -> void:
 	super._enter_node()
+	_checkpoint()
+
+func _choose_event(index: int) -> void:
+	super._choose_event(index)
 	_checkpoint()
 
 func _choose_reward(index: int) -> void:

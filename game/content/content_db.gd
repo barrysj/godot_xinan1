@@ -51,6 +51,57 @@ static func validate() -> Array[String]:
 			if unit == null or not MANIFEST.enemies.has(unit): errors.append(group.resource_path+": 敌人未注册")
 	for id in LEGACY_CHARACTERS:
 		if not ids.has(id): errors.append("manifest: 缺少旧档身份 "+id)
+	for group in [MANIFEST.rewards,MANIFEST.reward_pools,MANIFEST.events,MANIFEST.locations]:
+		var local_ids = []
+		for item in group:
+			if item == null:
+				errors.append("manifest: 空内容引用")
+				continue
+			if item.id.is_empty() or local_ids.has(item.id): errors.append(item.resource_path+": 同类空 ID 或重复 ID: "+item.id)
+			local_ids.append(item.id)
+	for reward in MANIFEST.rewards:
+		if reward == null: continue
+		if reward.display_name.is_empty() or reward.amount < 1 or reward.amount > 100: errors.append(reward.resource_path+": 奖励名称或数量无效")
+		if not reward.operation in ["gear","recruit","train","points"]: errors.append(reward.resource_path+": 无效奖励操作")
+		if reward.operation == "gear" and not MANIFEST.equipment.has(reward.equipment): errors.append(reward.resource_path+": 装备未注册")
+		if reward.operation in ["train","recruit"] and not MANIFEST.characters.has(reward.character): errors.append(reward.resource_path+": 人物未注册")
+	for pool in MANIFEST.reward_pools:
+		if pool == null: continue
+		var unique = []
+		var renewable = []
+		for reward in pool.rewards:
+			if reward == null or not MANIFEST.rewards.has(reward) or unique.has(reward): errors.append(pool.resource_path+": 奖励未注册或重复")
+			else:
+				unique.append(reward)
+				if reward.operation == "train" and reward.character != null and reward.character.id in LEGACY_CHARACTERS.slice(0,4): renewable.append(reward)
+		if renewable.size() < 3: errors.append(pool.resource_path+": 至少保留三项初始人物训练，确保奖励可抽取")
+	for event in MANIFEST.events:
+		if event == null: continue
+		if event.options.is_empty() or event.options.size() > 3: errors.append(event.resource_path+": 事件选项须为 1 至 3 项")
+		var options = []
+		for option in event.options:
+			if option == null:
+				errors.append(event.resource_path+": 空选项")
+				continue
+			if option.id.is_empty() or options.has(option.id) or option.text.is_empty(): errors.append(event.resource_path+": 选项身份或文字无效")
+			options.append(option.id)
+			if option.minimum_points < 0 or option.minimum_points > 100 or option.cost < 0 or option.cost > 100: errors.append(event.resource_path+": 条件或支付越界")
+			if option.required_character != null and not MANIFEST.characters.has(option.required_character): errors.append(event.resource_path+": 条件人物未注册")
+			if option.required_equipment != null and not MANIFEST.equipment.has(option.required_equipment): errors.append(event.resource_path+": 条件装备未注册")
+			for reward in option.results:
+				if reward == null or not MANIFEST.rewards.has(reward): errors.append(event.resource_path+": 结果奖励未注册")
+	var pool_counts = {"start":0,"safe":0,"risk":0,"final":0}
+	for place in MANIFEST.locations:
+		if place == null: continue
+		if not pool_counts.has(place.route_pool): errors.append(place.resource_path+": 路线池无效")
+		else: pool_counts[place.route_pool] += 1
+		if not place.kind in ["battle","elite","event","boss"] or not is_finite(place.power) or place.power < 0.1 or place.power > 3: errors.append(place.resource_path+": 地点类型或强度无效")
+		if place.kind == "event":
+			if not MANIFEST.events.has(place.event): errors.append(place.resource_path+": 事件未注册")
+		elif not MANIFEST.encounters.has(place.encounter): errors.append(place.resource_path+": 敌群未注册")
+		if not MANIFEST.reward_pools.has(place.rewards): errors.append(place.resource_path+": 奖励池未注册")
+		if place.route_pool == "final" and place.kind != "boss": errors.append(place.resource_path+": 终点须为首领")
+	if pool_counts.start != 1 or pool_counts.final != 1 or pool_counts.safe < 4 or pool_counts.risk < 2: errors.append("manifest: 路线须有 1 起点、1 终点、至少 4 安全地点和 2 风险地点")
 	return errors
 
 # 仅用于迁移旧整数身份；不得随展示排序修改。

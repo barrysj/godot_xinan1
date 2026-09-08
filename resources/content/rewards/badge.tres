@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CampusReward" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/equipment/badge.tres" id="target"]
+[resource]
+script = ExtResource("s")
+id = "badge"
+display_name = "厚笔记本"
+description = "生命上限 +80。战前可自由分配。"
+operation = "gear"
+equipment = ExtResource("target")
