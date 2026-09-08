@@ -168,16 +168,18 @@ func _request_exit(destination: String) -> void:
 	pause_caption.text = "本次探索尚未结算的进度将丢失。\n已保存的修复资源和解锁会保留。"
 
 func _header(title: String, subtitle: String) -> void:
-	_pixel_panel(Rect2(20, 16, 1220, 70), Color("344b42"))
+	_pixel_panel(Rect2(20, 16, 1220, 70), Color("202027"))
 	_text(Vector2(42, 47), title, PAPER, 27)
-	_text(Vector2(43, 71), subtitle, Color("b8c0a0"), 14)
+	_text(Vector2(43, 71), subtitle, Color("c5c2ca"), 14)
 	_text(Vector2(936, 52), "修复资源  %d" % progress.points, GOLD, 18)
-	_pixel_panel(Rect2(1148, 28, 78, 36), Color("e1d3ae"))
+	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 
 func _flow_button(rect: Rect2, title: String, enabled: bool = true) -> void:
-	_pixel_panel(rect, Color("ddbb77") if enabled else Color("a2a18a"))
-	_center(rect.get_center() + Vector2(0, 7), title, DARK, 20)
+	var comic = preload("res://scenes/ui/comic_ui.gd")
+	var hovered = enabled and rect.has_point((get_local_mouse_position()-origin)/scale_factor)
+	comic.card(self,rect,comic.RED if enabled else Color("494952"),comic.WHITE if hovered else comic.INK)
+	_center(rect.get_center() + Vector2(0, 7), title, comic.WHITE if enabled else Color("b5b3bc"), 20)
 
 func _paragraph(at: Vector2, value: String, color: Color = DARK, font_size: int = 18) -> void:
 	for line in value.split("\n"):
@@ -201,7 +203,7 @@ func _draw() -> void:
 		_flow_button(Rect2(1100, 538, 138, 44), "装备笔记本", phase == "prepare" and run.badge_owned and inspected_enemy_slot < 0)
 		_pixel_panel(Rect2(943, 495, 292, 30), PAPER)
 		_text(Vector2(961, 514), "笔记本：" + (ROLES[run.badge_wearer] if run.badge_wearer >= 0 else ("背包中" if run.badge_owned else "未获得")), DARK, 14)
-		_pixel_panel(Rect2(230, 25, 530, 48), Color("344b42"))
+		_pixel_panel(Rect2(230, 25, 530, 48), Color("202027"))
 		_text(Vector2(244, 54), "%d / 5  ·  %s" % [run.stage + 1, run.node.name], PAPER, 23)
 		return
 	scale_factor = minf(size.x / 1280.0, size.y / 720.0)
@@ -245,7 +247,7 @@ func _draw_map() -> void:
 			var p = _node_pos(stage_index, index)
 			var active: bool = stage_index == run.stage
 			var visited: bool = run.visited.has(node.id)
-			var fill = Color("ddbb77") if active else (Color("acbf8c") if visited else Color("a0a68a"))
+			var fill = Color("ef7184") if active else (Color("acbf8c") if visited else Color("a0a68a"))
 			_pixel_panel(Rect2(p - Vector2(55, 52), Vector2(110, 104)), fill)
 			if active and index == chosen_node:
 				draw_rect(Rect2(p - Vector2(59, 56), Vector2(118, 112)), PAPER, false, 3)
@@ -272,7 +274,7 @@ func _draw_map() -> void:
 	_paragraph(Vector2(956, 199), snippets[node.id], DARK, 17)
 	_paragraph(Vector2(956, 378), "已拥有：篮球鞋\n笔记本：" + ("已获得" if run.badge_owned else "未获得") + "\n队伍人数：%d" % run.roster.size(), Color("6b705a"), 17)
 	_flow_button(Rect2(956, 521, 266, 60), "进入")
-	_pixel_panel(Rect2(24, 625, 1218, 67), Color("344b42"))
+	_pixel_panel(Rect2(24, 625, 1218, 67), Color("202027"))
 	_text(Vector2(44, 665), notice.left(66), PAPER, 17)
 
 func _draw_event() -> void:

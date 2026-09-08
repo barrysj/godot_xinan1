@@ -13,9 +13,9 @@ var actions: HBoxContainer
 var slot_box: HBoxContainer
 var tabs: Array[Button] = []
 var portrait: TextureRect
-const INK = Color("e6eef5")
-const MUTED = Color("9dadbd")
-const ACCENT = Color("69d9bd")
+const INK = Color("fff9ee")
+const MUTED = Color("c2bdc9")
+const ACCENT = Color("ff4562")
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -27,16 +27,16 @@ func _ready() -> void:
 	skin.default_font_size = 19
 	for state in ["normal","hover","pressed","focus","disabled"]:
 		var style = StyleBoxFlat.new()
-		style.bg_color = Color("213747") if state != "pressed" else Color("315e61")
-		style.border_color = ACCENT if state in ["focus","hover"] else Color("355161")
+		style.bg_color = Color("202027") if state != "pressed" else Color("b4213c")
+		style.border_color = ACCENT if state in ["focus","hover"] else Color("79737f")
 		style.set_border_width_all(1)
-		style.set_corner_radius_all(10)
+		style.set_corner_radius_all(0)
+		style.skew = Vector2(-0.06,0)
 		skin.set_stylebox(state,"Button",style)
 	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]: skin.set_color(state,"Button",INK)
 	skin.set_color("font_disabled_color","Button",MUTED)
 	theme = skin
-	var shade = ColorRect.new()
-	shade.color = Color(0.025,0.06,0.085,0.97)
+	var shade = preload("res://scenes/ui/comic_backdrop.gd").new()
 	add_child(shade)
 	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	content = Control.new()
@@ -88,8 +88,10 @@ func _ready() -> void:
 func panel_at(rect: Rect2) -> void:
 	var panel = Panel.new()
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color("142735")
-	style.set_corner_radius_all(14)
+	style.bg_color = Color("19191f")
+	style.set_corner_radius_all(0)
+	style.border_color = Color("77717e")
+	style.set_border_width_all(2)
 	panel.add_theme_stylebox_override("panel",style)
 	panel.position = rect.position
 	panel.size = rect.size

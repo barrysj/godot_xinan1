@@ -95,7 +95,7 @@ func draw_skills() -> void:
 		var pip = ColorRect.new()
 		pip.position = Vector2(354+i*43,199)
 		pip.size = Vector2(29,9)
-		pip.color = ACCENT if i < count else Color("355161")
+		pip.color = ACCENT if i < count else Color("79737f")
 		visual.add_child(pip)
 	caption(visual,"%d / 3" % count,Vector2(493,190),17,MUTED)
 	caption(visual,"自动释放",Vector2(631,59),25,ACCENT)
@@ -127,8 +127,14 @@ func draw_formation() -> void:
 	var background = Panel.new()
 	background.size = Vector2(906,295)
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color("142735")
-	style.set_corner_radius_all(14)
+	style.bg_color = Color("19191f")
+	style.set_corner_radius_all(0)
+	style.border_color = INK
+	style.set_border_width_all(4)
+	style.skew = Vector2(-0.025,0)
+	style.shadow_color = ACCENT
+	style.shadow_size = 7
+	style.shadow_offset = Vector2(8,8)
 	background.add_theme_stylebox_override("panel",style)
 	visual.add_child(background)
 	caption(visual,"前排",Vector2(8,46),16,MUTED)
@@ -230,10 +236,16 @@ func open_bag() -> void:
 	panel.position = Vector2(300,164)
 	panel.size = Vector2(805,420)
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color("142735")
-	style.set_corner_radius_all(16)
-	style.border_color = ACCENT
-	style.set_border_width_all(1)
+	style.bg_color = Color("19191f")
+	style.set_corner_radius_all(0)
+	style.border_color = INK
+	style.set_border_width_all(4)
+	style.skew = Vector2(-0.025,0)
+	style.shadow_color = ACCENT
+	style.shadow_size = 7
+	style.shadow_offset = Vector2(8,8)
+	style.border_color = INK
+	style.set_border_width_all(4)
 	panel.add_theme_stylebox_override("panel",style)
 	popup.add_child(panel)
 	caption(popup,game.ROLES[selected_role]+" / 装备",Vector2(330,189),27)

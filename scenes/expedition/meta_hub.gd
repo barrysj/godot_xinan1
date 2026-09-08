@@ -190,7 +190,7 @@ func _draw() -> void:
 	else:
 		super._draw()
 	if screen == "battle":
-		draw_rect(Rect2(660,22,260,54),Color("344b42"))
+		draw_rect(Rect2(660,22,260,54),Color("202027"))
 		_center(Vector2(707,55),"整备" if phase == "prepare" else ("暂停" if paused else "战斗中"),GOLD,18)
 		_flow_button(Rect2(765,26,145,48),"队伍面板")
 	if not last_save_ok or progress.load_blocked:
@@ -201,29 +201,32 @@ func _home_rect(id: String) -> Rect2:
 	return {"resume":Rect2(36,259,185,55),"new":Rect2(36,329,185,55),"supply":Rect2(36,430,185,50),"growth":Rect2(1059,259,185,55),"dispatch":Rect2(1059,329,185,55),"codex":Rect2(1059,399,185,55)}[id]
 
 func _home_panel(rect: Rect2) -> void:
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.10,0.19,0.18,0.88)
-	style.border_color = Color(0.64,0.78,0.67,0.5)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(14)
-	draw_style_box(style,rect)
+	var comic = preload("res://scenes/ui/comic_ui.gd")
+	comic.card(self,rect,Color(0.06,0.06,0.08,0.90))
+	draw_line(rect.position+Vector2(16,65),rect.position+Vector2(rect.size.x-14,54),comic.RED,5)
 
 func _home_button(id: String, label: String, enabled: bool = true) -> void:
+	var comic = preload("res://scenes/ui/comic_ui.gd")
 	var rect = _home_rect(id)
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.40,0.59,0.49,0.87) if enabled else Color(0.24,0.32,0.28,0.8)
-	style.set_corner_radius_all(9)
-	draw_style_box(style,rect)
-	_center(rect.get_center()+Vector2(0,7),label,PAPER if enabled else Color("8b998c"),21)
+	var hovered = enabled and rect.has_point((get_local_mouse_position()-origin)/scale_factor)
+	var fill = comic.RED if hovered or id == "resume" else comic.WHITE
+	if not enabled: fill = Color("494952")
+	comic.card(self,rect,fill,comic.WHITE if hovered else comic.INK)
+	var ink = comic.WHITE if hovered or id == "resume" else comic.INK
+	if not enabled: ink = Color("b5b3bc")
+	_text(rect.position+Vector2(18,35),{"resume":"01","new":"+","supply":"S","growth":"02","dispatch":"03","codex":"04"}[id],ink,15)
+	_center(rect.get_center()+Vector2(10,8),label,ink,24)
+	if hovered: _text(rect.position+Vector2(rect.size.x-25,35),">",ink,25)
 
 func _draw_base() -> void:
-	draw_rect(Rect2(0,0,1280,720),Color("233d35"))
+	preload("res://scenes/ui/comic_ui.gd").backdrop(self,Vector2(1280,720))
 	# Reserve the center for the campus; controls stay in the side gutters.
 	draw_set_transform(origin+Vector2(250,112)*scale_factor,0,Vector2.ONE*scale_factor*0.84)
 	_campus(false)
 	draw_set_transform(origin,0,Vector2.ONE*scale_factor)
-	_center(Vector2(640,103),"重返校园",PAPER,38)
-	_center(Vector2(640,137),"忆 · 夏 学 园",Color("a8bca4"),17)
+	preload("res://scenes/ui/comic_ui.gd").card(self,Rect2(416,40,448,77),Color("e92746"))
+	_center(Vector2(640,96),"重 返 校 园",Color("fff9ee"),44)
+	_center(Vector2(640,137),"RETURN TO SUMMER / 忆夏学园",Color("fff9ee"),17)
 	_home_panel(Rect2(20,173,217,390))
 	_home_panel(Rect2(1043,173,217,390))
 	_text(Vector2(43,218),"探索",PAPER,28)
@@ -233,17 +236,17 @@ func _draw_base() -> void:
 	_home_button("resume","战报" if finished else ("继续" if saved else "出发"),not progress.load_blocked)
 	if saved: _home_button("new","新探索",not progress.load_blocked)
 	_home_button("supply","补给 ✓" if chosen_supply else "补给",progress.supply_unlocked)
-	_text(Vector2(43,509),"厚笔记本" if chosen_supply else ("未携带" if progress.supply_unlocked else "尚未解锁"),Color("a8bca4"),16)
+	_text(Vector2(43,509),"厚笔记本" if chosen_supply else ("未携带" if progress.supply_unlocked else "尚未解锁"),Color("c5c2ca"),16)
 	_home_button("growth","升级")
 	_home_button("dispatch","派遣")
 	_home_button("codex","图鉴")
 	_text(Vector2(1065,503),"资源  %d" % progress.points,PAPER,18)
-	_text(Vector2(1065,535),"探索队  %d" % progress.dispatches.size(),Color("a8bca4"),16)
+	_text(Vector2(1065,535),"探索队  %d" % progress.dispatches.size(),Color("c5c2ca"),16)
 	if saved and not progress.load_blocked:
-		_center(Vector2(640,646),"上局已完成" if finished else "探索进度已保存",Color("b9c9b0"),17)
-	_pixel_panel(Rect2(1148,28,78,36),Color("344b42"))
+		_center(Vector2(640,646),"上局已完成" if finished else "探索进度已保存",Color("c5c2ca"),17)
+	_pixel_panel(Rect2(1148,28,78,36),Color("202027"))
 	_center(Vector2(1187,53),"菜单",PAPER,17)
-	if not notice.is_empty(): _center(Vector2(640,690),notice.left(55),Color("b9c9b0"),15)
+	if not notice.is_empty(): _center(Vector2(640,690),notice.left(55),Color("c5c2ca"),15)
 
 func _draw_growth() -> void:
 	_header("校园成长","消耗修复资源解锁功能；能力提升从下一次新探索生效。")

@@ -1,8 +1,8 @@
 extends "res://scenes/battle_demo/battle_demo.gd"
 ## Pixel presentation only; simulation stays in battle_demo.gd.
 
-const PAPER = Color("eee4c6")
-const DARK = Color("253a36")
+const PAPER = Color("fff9ee")
+const DARK = Color("181820")
 const GRASS = Color("718951")
 const BRICK = Color("b58360")
 const ROLE_COLORS = [Color("71b8dc"), Color("eab765"), Color("99c983"), Color("d68c8c"), Color("ad98d2")]
@@ -110,10 +110,7 @@ func _action_rect(index: int) -> Rect2:
 	return [Rect2(950, 601, 288, 60), Rect2(752, 624, 136, 44), Rect2(962, 397, 264, 42), Rect2(950, 538, 288, 44), Rect2(950, 674, 288, 30)][index]
 
 func _pixel_panel(rect: Rect2, fill: Color, edge: Color = DARK) -> void:
-	draw_rect(Rect2(rect.position + Vector2(4, 5), rect.size), Color("142728"))
-	draw_rect(rect, edge)
-	draw_rect(rect.grow(-3), fill)
-	draw_rect(Rect2(rect.position + Vector2(5, 5), Vector2(rect.size.x - 10, 2)), fill.lightened(0.15))
+	preload("res://scenes/ui/comic_ui.gd").card(self,rect,fill,edge)
 
 func _sprite(sheet: Texture2D, source: Rect2, at: Vector2, factor: float = 3, tint: Color = Color.WHITE) -> void:
 	draw_texture_rect_region(sheet, Rect2(at.round(), source.size * factor), source, tint)
@@ -263,7 +260,7 @@ func _draw_effects() -> void:
 
 func _pixel_button(index: int, text: String, active: bool = false, enabled: bool = true) -> void:
 	var rect = _action_rect(index)
-	var fill = Color("c5a66c") if active else Color("e1d3ae")
+	var fill = Color("c5a66c") if active else Color("fff9ee")
 	if not enabled:
 		fill = Color("a2a18a")
 	_pixel_panel(rect, fill)
@@ -276,7 +273,7 @@ func _draw() -> void:
 	origin = (size - Vector2(1280, 720) * scale_factor) / 2
 	draw_rect(Rect2(Vector2.ZERO, size), Color("253a36"))
 	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
-	_pixel_panel(Rect2(20, 16, 1220, 62), Color("344b42"), Color("132c2d"))
+	_pixel_panel(Rect2(20, 16, 1220, 62), Color("202027"), Color("132c2d"))
 	_text(Vector2(40, 45), "重返校园", PAPER, 27)
 	_text(Vector2(42, 65), "RETURN TO SUMMER", Color("c0b792"), 11)
 	_text(Vector2(238, 45), "01 / 旧校庭院", PAPER, 20)
@@ -284,7 +281,7 @@ func _draw() -> void:
 	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else "自动战斗中")))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
 	_text(Vector2(972, 53), "%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed], PAPER, 17)
-	_pixel_panel(Rect2(1148, 28, 78, 36), Color("e1d3ae"))
+	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
 	for entry in [["敌后", 252], ["敌前", 344], ["我前", 456], ["我后", 548]]:
@@ -333,7 +330,7 @@ func _draw() -> void:
 	_pixel_button(3, "敌阵 · " + ("守卫与治疗" if encounter == 0 else "整排攻击"), false, phase == "prepare")
 	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true)
 	_pixel_button(4, "返回整备")
-	_pixel_panel(Rect2(24, 620, 712, 83), Color("344b42"))
+	_pixel_panel(Rect2(24, 620, 712, 83), Color("202027"))
 	_text(Vector2(42, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
 	var message: String = logs[0] if not logs.is_empty() else "准备出发。"
 	if message.length() > 37:
@@ -405,8 +402,8 @@ func _menu_button(title: String, callback: Callable) -> Button:
 	button.add_theme_color_override("font_focus_color", DARK)
 	for state in ["normal", "hover", "pressed", "focus"]:
 		var style = StyleBoxFlat.new()
-		style.bg_color = Color("e1d3ae") if state == "normal" else Color("ddbb77")
-		style.border_color = DARK if state != "focus" else Color("b78739")
+		style.bg_color = Color("fff9ee") if state == "normal" else Color("ef7184")
+		style.border_color = DARK if state != "focus" else Color("e92746")
 		style.set_border_width_all(3)
 		if state == "focus":
 			style.bg_color = Color.TRANSPARENT
