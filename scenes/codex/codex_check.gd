@@ -27,7 +27,7 @@ func _ready() -> void:
 	game._process(0.5)
 	game._open_pause()
 	for button in game.pause_actions.get_children():
-		if button.text == "校园图鉴": button.pressed.emit()
+		if button.text == "图鉴": button.pressed.emit()
 	assert(is_instance_valid(game.codex_panel))
 	var snapshot = [game.elapsed,game.units.duplicate(true),game.run.to_dict()]
 	game._process(5.0)

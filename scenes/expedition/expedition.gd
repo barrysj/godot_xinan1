@@ -229,7 +229,7 @@ func _draw_base() -> void:
 	_paragraph(Vector2(959, 335), "解锁后可在每次出发时携带。\n增加一名同学的生命上限。", DARK, 15)
 	_flow_button(Rect2(956, 410, 270, 53), "补给：" + ("携带" if chosen_supply else "不携带") if progress.supply_unlocked else "3 修复资源 · 解锁", progress.supply_unlocked or progress.points >= 3)
 	_paragraph(Vector2(959, 493), "通关后自动保存局外成长。\n当前探索暂不支持中途续玩。", Color("6b705a"), 14)
-	_flow_button(Rect2(936, 610, 306, 64), "开始一次探索")
+	_flow_button(Rect2(936, 610, 306, 64), "出发")
 	_text(Vector2(40, 654), notice.left(54), GOLD, 17)
 
 func _draw_map() -> void:
@@ -271,7 +271,7 @@ func _draw_map() -> void:
 		"boss": "粉笔巨像堵住最终裂隙。\n战胜它，恢复校园铃声。\n失败可以无限重新编队。"}
 	_paragraph(Vector2(956, 199), snippets[node.id], DARK, 17)
 	_paragraph(Vector2(956, 378), "已拥有：篮球鞋\n笔记本：" + ("已获得" if run.badge_owned else "未获得") + "\n队伍人数：%d" % run.roster.size(), Color("6b705a"), 17)
-	_flow_button(Rect2(956, 521, 266, 60), "进入这个地点")
+	_flow_button(Rect2(956, 521, 266, 60), "进入")
 	_pixel_panel(Rect2(24, 625, 1218, 67), Color("344b42"))
 	_text(Vector2(44, 665), notice.left(66), PAPER, 17)
 
@@ -310,7 +310,7 @@ func _draw_rewards() -> void:
 				y += 27
 			_text(Vector2(x + 24, y), line, DARK, 17)
 			y += 27
-		_flow_button(Rect2(x + 26, 493, 294, 52), "选择这份奖励")
+		_flow_button(Rect2(x + 26, 493, 294, 52), "选择")
 	_text(Vector2(60, 635), "装备可在下场战前重新分配；新同学进入候补，通过“轮换候补”上阵。", PAPER, 19)
 
 func _book_icon(p: Vector2, width: float) -> void:
@@ -335,7 +335,7 @@ func _draw_report() -> void:
 		draw_rect(Rect2(332, y - 17, 425 * float(entry.damage) / max_damage, 20), Color("90b37c"))
 		_text(Vector2(772, y), str(entry.damage), DARK, 19)
 		_text(Vector2(899, y), str(entry.healing), DARK, 19)
-	_flow_button(Rect2(405, 587, 470, 66), ("恢复校园 · 结算" if run.node.kind == "boss" else "领取三选一奖励") if result_won else "重新编队 · 无限重试")
+	_flow_button(Rect2(405, 587, 470, 66), ("结算" if run.node.kind == "boss" else "领奖") if result_won else "重试")
 
 func _draw_summary() -> void:
 	_header("放学铃，再次响起", "本次探索已完成。把找回的记忆带回安全教室。")
@@ -348,7 +348,7 @@ func _draw_summary() -> void:
 	_paragraph(Vector2(960, 164), "校园修复\n\n总资源：%d\n完成探索：%d 次" % [progress.points, progress.completions], DARK, 21)
 	_paragraph(Vector2(960, 364), "回基地后可花 3 点资源\n解锁新的出发补给。", DARK, 17)
 	_text(Vector2(958, 478), "已保存" if progress.error_message.is_empty() else "保存失败，可点击下方重试", DARK, 16)
-	_flow_button(Rect2(936, 582, 306, 69), "返回安全教室" if progress.error_message.is_empty() else "重试保存")
+	_flow_button(Rect2(936, 582, 306, 69), "返回基地" if progress.error_message.is_empty() else "重试保存")
 
 func _gui_input(event: InputEvent) -> void:
 	if paused or leaving:

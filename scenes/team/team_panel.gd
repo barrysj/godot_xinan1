@@ -166,8 +166,8 @@ func refresh() -> void:
 				box_button(slot_box,("前" if i < 3 else "后")+str(i%3+1)+" · "+(game.ROLES[occupant] if occupant >= 0 else "空"),assign_slot.bind(i),editable and (game.formation.has(selected_role) or occupant >= 0))
 		1:
 			details.text = "当前装备    "+gear+"\n\n篮球鞋    缩短普通攻击间隔 25%\n厚笔记本    装备者生命上限 +80\n\n每人一件；换装时另一件自动退回背包。"
-			box_button(actions,"装备篮球鞋",equip.bind("shoe"),editable)
-			box_button(actions,"装备厚笔记本" if game.run.badge_owned else "厚笔记本未获得",equip.bind("badge"),editable and game.run.badge_owned)
+			box_button(actions,"篮球鞋",equip.bind("shoe"),editable)
+			box_button(actions,"厚笔记本" if game.run.badge_owned else "未获得",equip.bind("badge"),editable and game.run.badge_owned)
 			box_button(actions,"卸下装备",equip.bind("none"),editable)
 		2:
 			details.text = game.SKILLS[selected_role]+"\n\n触发规则    每 3 次普攻自动释放，无需手动操作。\n"

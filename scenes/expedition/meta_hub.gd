@@ -35,7 +35,7 @@ func _ready() -> void:
 	if not progress.active_run.is_empty() and Checkpoint.decode(progress.active_run).is_empty():
 		checkpoint_error = "探索存档无法恢复，原存档已保留。"
 		progress.load_blocked = true
-	var base_button = _menu_button("返回基地 · 成长与派遣", _to_base)
+	var base_button = _menu_button("返回基地", _to_base)
 	pause_actions.add_child(base_button)
 	pause_actions.move_child(base_button,2)
 	pause_actions.position.y = 270
@@ -197,31 +197,53 @@ func _draw() -> void:
 		_pixel_panel(Rect2(25,91,885,40),Color("ac6e58"))
 		_text(Vector2(40,118),checkpoint_error if not checkpoint_error.is_empty() else progress.error_message,PAPER,17)
 
+func _home_rect(id: String) -> Rect2:
+	return {"resume":Rect2(36,259,185,55),"new":Rect2(36,329,185,55),"supply":Rect2(36,430,185,50),"growth":Rect2(1059,259,185,55),"dispatch":Rect2(1059,329,185,55),"codex":Rect2(1059,399,185,55)}[id]
+
+func _home_panel(rect: Rect2) -> void:
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.10,0.19,0.18,0.88)
+	style.border_color = Color(0.64,0.78,0.67,0.5)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(14)
+	draw_style_box(style,rect)
+
+func _home_button(id: String, label: String, enabled: bool = true) -> void:
+	var rect = _home_rect(id)
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.40,0.59,0.49,0.87) if enabled else Color(0.24,0.32,0.28,0.8)
+	style.set_corner_radius_all(9)
+	draw_style_box(style,rect)
+	_center(rect.get_center()+Vector2(0,7),label,PAPER if enabled else Color("8b998c"),21)
+
 func _draw_base() -> void:
-	_header("重返校园 · 安全教室","继续探索 / 校园成长 / 支援同学派遣")
-	_campus()
-	_pixel_panel(Rect2(136,229,669,334),PAPER)
-	_center(Vector2(470,274),"今天，也一起回学校吧。",DARK,28)
+	draw_rect(Rect2(0,0,1280,720),Color("233d35"))
+	# Reserve the center for the campus; controls stay in the side gutters.
+	draw_set_transform(origin+Vector2(250,112)*scale_factor,0,Vector2.ONE*scale_factor*0.84)
+	_campus(false)
+	draw_set_transform(origin,0,Vector2.ONE*scale_factor)
+	_center(Vector2(640,103),"重返校园",PAPER,38)
+	_center(Vector2(640,137),"忆 · 夏 学 园",Color("a8bca4"),17)
+	_home_panel(Rect2(20,173,217,390))
+	_home_panel(Rect2(1043,173,217,390))
+	_text(Vector2(43,218),"探索",PAPER,28)
+	_text(Vector2(1066,218),"成长",PAPER,28)
 	var saved = not progress.active_run.is_empty()
 	var finished = saved and progress.active_run.get("screen","") == "summary"
-	var caption = "从旧校门出发，沿途构筑队伍。"
-	if saved and progress.active_run.get("run",{}) is Dictionary:
-		caption = "上次探索已完成，可以查看结果。" if finished else ("探索存档需要检查。" if progress.load_blocked else "已保存第 %d / 5 个地点的探索。" % mini(5,int(progress.active_run.run.stage) + 1))
-	_center(Vector2(470,319),caption,DARK,19)
-	_center(Vector2(470,350),"选路、换装、领奖后自动保存。",Color("6b705a"),17)
-	_flow_button(Rect2(221,388,494,61),"查看上局结果" if finished else ("继续探索" if saved else "开始一次探索"),not progress.load_blocked)
-	if saved: _flow_button(Rect2(221,471,494,48),"开始新探索",not progress.load_blocked)
-	_pixel_panel(Rect2(936,105,306,492),PAPER)
-	_text(Vector2(958,147),"校园修复",DARK,24)
-	_paragraph(Vector2(958,190),"完成探索：%d 次\n修复资源：%d\n体能训练：%d / 3" % [progress.completions,progress.points,progress.level("fitness")],DARK,19)
-	_flow_button(Rect2(956,320,267,58),"功能与能力解锁")
-	_flow_button(Rect2(956,395,267,58),"派遣支援同学")
-	var supply_label = "出发补给未解锁"
-	if progress.supply_unlocked: supply_label = "出发装备：" + ("厚笔记本" if chosen_supply else "不携带")
-	_flow_button(Rect2(956,477,267,44),supply_label,progress.supply_unlocked)
-	_text(Vector2(958,560),"派遣队伍：%d / %d" % [progress.dispatches.size(),2 if progress.level("staffing") > 0 else 1],DARK,17)
-	_pixel_panel(Rect2(25,625,1215,65),Color("344b42"))
-	_text(Vector2(42,665),notice.left(64),PAPER,17)
+	_home_button("resume","战报" if finished else ("继续" if saved else "出发"),not progress.load_blocked)
+	if saved: _home_button("new","新探索",not progress.load_blocked)
+	_home_button("supply","补给 ✓" if chosen_supply else "补给",progress.supply_unlocked)
+	_text(Vector2(43,509),"厚笔记本" if chosen_supply else ("未携带" if progress.supply_unlocked else "尚未解锁"),Color("a8bca4"),16)
+	_home_button("growth","升级")
+	_home_button("dispatch","派遣")
+	_home_button("codex","图鉴")
+	_text(Vector2(1065,503),"资源  %d" % progress.points,PAPER,18)
+	_text(Vector2(1065,535),"探索队  %d" % progress.dispatches.size(),Color("a8bca4"),16)
+	if saved and not progress.load_blocked:
+		_center(Vector2(640,646),"上局已完成" if finished else "探索进度已保存",Color("b9c9b0"),17)
+	_pixel_panel(Rect2(1148,28,78,36),Color("344b42"))
+	_center(Vector2(1187,53),"菜单",PAPER,17)
+	if not notice.is_empty(): _center(Vector2(640,690),notice.left(55),Color("b9c9b0"),15)
 
 func _draw_growth() -> void:
 	_header("校园成长","消耗修复资源解锁功能；能力提升从下一次新探索生效。")
@@ -233,9 +255,9 @@ func _draw_growth() -> void:
 		_text(Vector2(x+20,y+35),item.name,DARK,23)
 		_text(Vector2(x+20,y+68),item.description,DARK,16)
 		var count = progress.level(item.id)
-		_text(Vector2(x+20,y+110),"等级 %d / %d" % [count,item.costs.size()],Color("6b705a"),17)
+		_text(Vector2(x+20,y+110),"等级 %d / %d" % [count,item.costs.size()] + (" · %d 资源" % item.costs[count] if count < item.costs.size() else ""),Color("6b705a"),17)
 		var reason = progress.unlock_reason(item.id)
-		var label = "已满级" if count >= item.costs.size() else "解锁 / %d 资源" % item.costs[count]
+		var label = "已满级" if count >= item.costs.size() else "升级"
 		_flow_button(Rect2(x+324,y+87,241,42),label,reason.is_empty())
 	_flow_button(Rect2(993,634,245,52),"返回基地")
 	_text(Vector2(43,667),notice.left(52),PAPER,17)
@@ -273,12 +295,14 @@ func _draw_dispatch() -> void:
 		_flow_button(Rect2(953,313+i*58,274,48),label,not progress.busy(workers[i].id))
 		if selected_staff == workers[i].id: draw_rect(Rect2(950,310+i*58,280,54),Color("5a9d9c"),false,3)
 	var reason = progress.dispatch_reason(selected_staff,place.id)
-	_flow_button(Rect2(953,520,274,53),"出发探索" if reason.is_empty() else reason,reason.is_empty())
+	_text(Vector2(958,500),reason.left(16),Color("8b5c4c"),15)
+	_flow_button(Rect2(953,520,274,53),"派遣",reason.is_empty())
 	for i in range(progress.dispatches.size()):
 		var job: Dictionary = progress.dispatches[i]
 		var remaining = maxi(0,int(job.ready_at)-int(Time.get_unix_time_from_system()))
 		var location = Catalog.find(Catalog.LOCATIONS,job.location)
-		_flow_button(Rect2(28+i*447,626,427,57),location.name + (" · 领取成果" if remaining == 0 else " · %d 秒" % remaining),remaining == 0)
+		_text(Vector2(40+i*447,620),location.name + (" · %d 秒" % remaining if remaining > 0 else ""),PAPER,16)
+		_flow_button(Rect2(28+i*447,626,427,57),"领取" if remaining == 0 else "探索中",remaining == 0)
 	if progress.dispatches.is_empty(): _text(Vector2(35,661),notice.left(48) if not notice.is_empty() else "探索队伍出发后，可在这里领取成果。",PAPER,17)
 	_flow_button(Rect2(993,634,245,52),"返回基地")
 
@@ -296,15 +320,16 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 		return
 	if screen == "base":
-		if Rect2(221,388,494,61).has_point(p):
+		if _home_rect("resume").has_point(p):
 			if progress.active_run.is_empty(): _new_run()
 			else: _continue_run()
-		elif Rect2(221,471,494,48).has_point(p) and not progress.active_run.is_empty():
-			if progress.active_run.get("screen","") == "summary": _new_run()
+		elif _home_rect("new").has_point(p) and not progress.active_run.is_empty():
+			if progress.active_run.is_empty() or progress.active_run.get("screen","") == "summary": _new_run()
 			else: _request_exit("new_run")
-		elif Rect2(956,320,267,58).has_point(p): screen = "growth"; notice = ""
-		elif Rect2(956,395,267,58).has_point(p): screen = "dispatch"; notice = ""
-		elif Rect2(956,477,267,44).has_point(p) and progress.supply_unlocked: chosen_supply = not chosen_supply
+		elif _home_rect("growth").has_point(p): screen = "growth"; notice = ""
+		elif _home_rect("dispatch").has_point(p): screen = "dispatch"; notice = ""
+		elif _home_rect("codex").has_point(p): _open_codex()
+		elif _home_rect("supply").has_point(p) and progress.supply_unlocked: chosen_supply = not chosen_supply
 	elif screen == "growth":
 		for i in range(Catalog.UNLOCKS.size()):
 			if Rect2(359+(i%2)*605,198+int(i/2)*163,241,42).has_point(p):

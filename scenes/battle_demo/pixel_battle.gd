@@ -29,7 +29,8 @@ func _open_codex() -> void:
 	if is_instance_valid(codex_panel): return
 	codex_panel = load("res://scenes/codex/codex_panel.gd").new()
 	add_child(codex_panel)
-	codex_panel.closed.connect(func(): pause_actions.get_child(0).grab_focus())
+	codex_panel.closed.connect(func():
+		if pause_overlay.visible: pause_actions.get_child(0).grab_focus())
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -123,7 +124,7 @@ func _tile(sheet: Texture2D, x: int, y: int, at: Vector2, factor: float = 3, tin
 func _center(at: Vector2, value: String, color: Color = PAPER, font_size: int = 16) -> void:
 	_text(at - Vector2(font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x / 2, 0), value, color, font_size)
 
-func _campus() -> void:
+func _campus(show_battle_marks: bool = true) -> void:
 	# Tiled quadrangle, framed by school architecture and Kenney vegetation.
 	draw_rect(Rect2(24, 92, 894, 516), GRASS)
 	for y in range(100, 603, 16):
@@ -176,6 +177,7 @@ func _campus() -> void:
 	draw_rect(Rect2(833, 374, 28, 19), Color("bc765a"), false, 3)
 	draw_line(Vector2(837, 395), Vector2(859, 395), GOLD, 4)
 	# Battle boundary is integrated into the pavement.
+	if not show_battle_marks: return
 	for x in range(212, 748, 22):
 		draw_rect(Rect2(x, 390, 12, 3), Color("ded5b0"))
 	_center(Vector2(468, 386), "裂 隙 边 界", Color("655f5c"), 12)
@@ -325,11 +327,11 @@ func _draw() -> void:
 		var descriptions = [["为自己与上下左右的队友", "提供 48 点护盾。"], ["优先攻击敌方后排，", "造成 2.6 倍攻击伤害。"], ["治疗生命比例最低的队友，", "恢复 85 点生命。"], ["追击生命比例最低的敌人，", "造成 2.1 倍攻击伤害。"], ["攻击当前目标所在的一整排，", "每个目标受到 72 点基础伤害。"]]
 		_text(Vector2(962, 334), descriptions[current.role][0], DARK, 16)
 		_text(Vector2(962, 358), descriptions[current.role][1], DARK, 16)
-	_pixel_button(2, "篮球鞋 → 装备给这位同学" if inspected_enemy_slot < 0 else "敌方信息 · 无法装备", false, phase == "prepare" and inspected_enemy_slot < 0)
+	_pixel_button(2, "装备" if inspected_enemy_slot < 0 else "不可装备", false, phase == "prepare" and inspected_enemy_slot < 0)
 	_text(Vector2(963, 468), "现由「" + ROLES[equipment] + "」携带" if equipment >= 0 else "篮球鞋在背包中，可重新装备", DARK, 16)
 	_text(Vector2(963, 493), "效果：攻击间隔缩短 25%", Color("6b705a"), 14)
-	_pixel_button(3, "切换敌阵 · " + ("守卫与治疗" if encounter == 0 else "整排攻击"), false, phase == "prepare")
-	_pixel_button(0, "出发 · 开始战斗" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重新编队 · 再来一次", true)
+	_pixel_button(3, "敌阵 · " + ("守卫与治疗" if encounter == 0 else "整排攻击"), false, phase == "prepare")
+	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true)
 	_pixel_button(4, "返回整备")
 	_pixel_panel(Rect2(24, 620, 712, 83), Color("344b42"))
 	_text(Vector2(42, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
@@ -458,7 +460,7 @@ func _create_pause_menu() -> void:
 	pause_actions.add_theme_constant_override("separation", 12)
 	pause_actions.add_child(_menu_button("继续游戏", _resume_battle))
 	pause_actions.add_child(_menu_button("重新编队", _return_to_formation))
-	pause_actions.add_child(_menu_button("校园图鉴", _open_codex))
+	pause_actions.add_child(_menu_button("图鉴", _open_codex))
 	pause_actions.add_child(_menu_button("返回主菜单", func(): _request_exit("menu")))
 	if not OS.has_feature("web"):
 		pause_actions.add_child(_menu_button("退出游戏", func(): _request_exit("quit")))
