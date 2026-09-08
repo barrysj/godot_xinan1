@@ -18,6 +18,7 @@ func _ready() -> void:
 	is_test = "--run-smoke" in OS.get_cmdline_user_args() or "--run-capture" in OS.get_cmdline_user_args() or "--pause-flow-smoke" in OS.get_cmdline_user_args()
 	is_test = is_test or "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args()
 	is_test = is_test or "--codex-check" in OS.get_cmdline_user_args()
+	is_test = is_test or "--random-check" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"
 		if "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args():
@@ -32,6 +33,7 @@ func _ready() -> void:
 
 func _new_run() -> void:
 	run = RunModel.new()
+	if not ("--run-smoke" in OS.get_cmdline_user_args() or "--meta-smoke" in OS.get_cmdline_user_args()): run.generate()
 	if progress.supply_unlocked and chosen_supply:
 		run.badge_owned = true
 		run.badge_wearer = 2
@@ -44,6 +46,7 @@ func _new_run() -> void:
 	chosen_node = 0
 	expedition_seconds = 0
 	notice = "选择亮起的地点，再点击进入。每一层只走一条路线。"
+	if run.route_seed >= 0: notice = "本局路线已随机生成。每层选择一个地点，奖励也会随机出现。"
 	paused = false
 
 func _sync_team() -> void:
@@ -236,12 +239,12 @@ func _draw_map() -> void:
 		var y = 118 + (i * 73) % 476
 		draw_rect(Rect2(x, y, 4, 4), Color("92a565"))
 	for stage_index in range(4):
-		for a in range(RunModel.STAGES[stage_index].size()):
-			for b in range(RunModel.STAGES[stage_index + 1].size()):
+		for a in range(run.stages[stage_index].size()):
+			for b in range(run.stages[stage_index + 1].size()):
 				draw_line(_node_pos(stage_index, a), _node_pos(stage_index + 1, b), Color("b7b088"), 8)
 	for stage_index in range(5):
-		for index in range(RunModel.STAGES[stage_index].size()):
-			var node: Dictionary = RunModel.STAGES[stage_index][index]
+		for index in range(run.stages[stage_index].size()):
+			var node: Dictionary = run.stages[stage_index][index]
 			var p = _node_pos(stage_index, index)
 			var active: bool = stage_index == run.stage
 			var visited: bool = run.visited.has(node.id)
@@ -257,7 +260,7 @@ func _draw_map() -> void:
 			_center(p + Vector2(0, 34), "已完成" if visited else {"battle":"战斗", "elite":"精英", "event":"事件", "boss":"BOSS"}[node.kind], DARK, 15)
 			_center(p + Vector2(0, 79), node.name, DARK, 16)
 	_pixel_panel(Rect2(936, 104, 306, 500), PAPER)
-	var node: Dictionary = RunModel.STAGES[run.stage][chosen_node]
+	var node: Dictionary = run.stages[run.stage][chosen_node]
 	_text(Vector2(956, 146), node.name, DARK, 23)
 	# Manual line breaks keep the small notebook readable on landscape screens.
 	var snippets = {
@@ -266,7 +269,7 @@ func _draw_map() -> void:
 		"court": "守卫搭配后排治疗。\n用远射技能打击治疗者。\n精英胜利多得 1 修复资源。",
 		"hall": "回声广播不断治疗敌人。\n后排打击可以打破僵局。",
 		"lab": "对方擅长整排攻击。\n分散站位、保护后排。",
-		"supply": "Boss 前的最后一次补强。\n无需战斗，直接三选一。",
+		"supply": "同学准备的构筑补给。\n无需战斗，直接三选一。",
 		"classroom": "整排攻击与后排投手。\n额外获得 1 修复资源。",
 		"boss": "粉笔巨像堵住最终裂隙。\n战胜它，恢复校园铃声。\n失败可以无限重新编队。"}
 	_paragraph(Vector2(956, 199), snippets[node.id], DARK, 17)
@@ -385,7 +388,7 @@ func _gui_input(event: InputEvent) -> void:
 				elif progress.unlock_supply(): chosen_supply = true
 				notice = progress.error_message
 		"map":
-			for i in range(RunModel.STAGES[run.stage].size()):
+			for i in range(run.stages[run.stage].size()):
 				if Rect2(_node_pos(run.stage, i) - Vector2(60, 60), Vector2(120, 145)).has_point(p): chosen_node = i
 			if Rect2(956, 521, 266, 60).has_point(p): _enter_node()
 		"event":
@@ -412,7 +415,7 @@ func _run_smoke() -> void:
 		equipment = 1
 		_sync_team()
 		while run.stage < 5:
-			chosen_node = branch % 2 if RunModel.STAGES[run.stage].size() > 1 else 0
+			chosen_node = branch % 2 if run.stages[run.stage].size() > 1 else 0
 			_enter_node()
 			if screen == "battle":
 				if branch == 2 and run.roster.has(4) and formation.has(3):

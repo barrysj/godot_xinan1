@@ -5,6 +5,7 @@ var storage_ready = false
 var checkpoint_error = ""
 var selected_staff = "archivist"
 var last_save_ok = true
+var test_runner: RefCounted
 
 func _ready() -> void:
 	super._ready()
@@ -24,6 +25,9 @@ func _ready() -> void:
 		check.run_checks(self)
 	elif "--meta-capture" in OS.get_cmdline_user_args():
 		_capture_meta()
+	elif "--random-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/random_checks.gd").new()
+		test_runner.run_checks(self)
 
 func _pack_checkpoint() -> Dictionary:
 	return {"schema":1, "run":run.to_dict(), "screen":screen, "selected":selected,
