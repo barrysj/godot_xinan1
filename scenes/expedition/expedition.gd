@@ -184,7 +184,7 @@ func _paragraph(at: Vector2, value: String, color: Color = DARK, font_size: int 
 		at.y += font_size + 12
 
 func _node_pos(stage_index: int, index: int) -> Vector2:
-	return Vector2(130 + stage_index * 156, 342 if stage_index == 0 or stage_index == 4 else (243 if index == 0 else 441))
+	return Vector2(120 + stage_index * 165, 405 if stage_index == 0 else (295 if stage_index == 4 else ([265,230,280][stage_index-1] if index == 0 else [460,420,475][stage_index-1])))
 
 func _draw() -> void:
 	if font == null or town == null:
@@ -233,11 +233,7 @@ func _draw_base() -> void:
 
 func _draw_map() -> void:
 	_header("校园路线", "第 %d / 5 个地点  ·  本局修复资源 %d  ·  候补 %d 人" % [run.stage + 1, run.points, run.roster.size() - 4])
-	draw_rect(Rect2(24, 104, 894, 500), Color("718951"))
-	for i in range(60):
-		var x = 36 + (i * 113) % 870
-		var y = 118 + (i * 73) % 476
-		draw_rect(Rect2(x, y, 4, 4), Color("92a565"))
+	_campus()
 	for stage_index in range(4):
 		for a in range(run.stages[stage_index].size()):
 			for b in range(run.stages[stage_index + 1].size()):

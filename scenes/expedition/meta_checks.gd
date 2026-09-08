@@ -150,6 +150,21 @@ func run_checks(hub) -> void:
 	hub._test_click(Vector2(1100,657))
 	hub._test_click(Vector2(1080,420))
 	verify(hub.screen == "dispatch", "dispatch entry")
+	hub.progress.points = 30
+	hub.progress.purchase("dispatch")
+	hub.progress.purchase("gym")
+	hub._test_click(hub._dispatch_point(1))
+	verify(hub.selected_location == 1, "map building selects gym")
+	hub._test_click(Vector2(1080,395))
+	verify(hub.selected_staff == "liaison", "map staff selection")
+	var cash = hub.progress.points
+	hub._test_click(Vector2(1080,545))
+	verify(hub.progress.dispatches.size() == 1 and hub.progress.dispatches[0].location == "gym" and hub.progress.points == cash - 4, "map dispatch transaction")
+	hub._test_click(Vector2(1080,545))
+	verify(hub.progress.dispatches.size() == 1 and hub.progress.points == cash - 4, "map duplicate dispatch rejected")
+	hub.progress.dispatches[0].ready_at = 0
+	hub._test_click(Vector2(240,650))
+	verify(hub.progress.dispatches.is_empty() and hub.progress.points == cash + 3, "map claim transaction")
 	print("META_SMOKE checks=",checks," failures=",failures)
 	hub.get_tree().quit(0 if failures == 0 else 1)
 

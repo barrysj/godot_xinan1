@@ -4,6 +4,7 @@ const Checkpoint = preload("res://game/run/run_checkpoint.gd")
 var storage_ready = false
 var checkpoint_error = ""
 var selected_staff = "archivist"
+var selected_location = 0
 var last_save_ok = true
 var test_runner: RefCounted
 
@@ -210,41 +211,47 @@ func _draw_growth() -> void:
 	_flow_button(Rect2(993,634,245,52),"返回基地")
 	_text(Vector2(43,667),notice.left(52),PAPER,17)
 
+func _dispatch_point(index: int) -> Vector2:
+	return [Vector2(315,260),Vector2(677,423)][index]
+
 func _draw_dispatch() -> void:
-	_header("支援同学派遣","派遣使用独立后勤人员，不占战斗队伍；按现实时间计时，离线也会完成。")
-	var staff_list = progress.available_staff()
-	for i in range(staff_list.size()):
-		var staff: Dictionary = staff_list[i]
-		var x = 34 + i * 244
-		_pixel_panel(Rect2(x,117,224,122),GOLD if selected_staff == staff.id else PAPER)
-		_tile(dungeon,[0,3,3][i],[7,7,8][i],Vector2(x+16,136),3)
-		_text(Vector2(x+77,160),staff.name,DARK,15)
-		_text(Vector2(x+77,193),"执行任务中" if progress.busy(staff.id) else "可以派遣",DARK,15)
+	_header("校园远征地图","点击地图建筑查看地点，再选择支援同学派遣。离线探索继续计时。")
+	_campus()
+	draw_line(Vector2(462,185),Vector2(462,505),Color("d8c79d"),15)
 	for i in range(Catalog.LOCATIONS.size()):
 		var location: Dictionary = Catalog.LOCATIONS[i]
-		var x = 34 + i * 370
-		_pixel_panel(Rect2(x,268,352,319),PAPER)
-		_text(Vector2(x+21,310),location.name,DARK,24)
-		_paragraph(Vector2(x+21,354),"消耗 %d 修复资源\n耗时 %d 秒（现实时间）\n完成领取 %d 修复资源" % [location.cost,location.duration,location.reward],DARK,19)
-		_text(Vector2(x+21,474),location.description,DARK,15)
-		var reason = progress.dispatch_reason(selected_staff,location.id)
-		_flow_button(Rect2(x+20,515,312,50),"派遣到这里" if reason.is_empty() else reason,reason.is_empty())
-	_pixel_panel(Rect2(789,117,451,470),PAPER)
-	_text(Vector2(809,154),"探索队伍",DARK,24)
-	if progress.dispatches.is_empty():
-		_paragraph(Vector2(809,218),"先选一位空闲的支援同学，\n再选择已解锁的地点。\n\n派遣事务所可在成长页解锁。",DARK,18)
-	var now = int(Time.get_unix_time_from_system())
+		var p = _dispatch_point(i)
+		draw_line(Vector2(462,p.y),p,Color("d8c79d"),12)
+		var unlocked = progress.level(location.requires) > 0
+		_pixel_panel(Rect2(p-Vector2(80,48),Vector2(160,96)),PAPER if unlocked else Color("969d8c"))
+		draw_rect(Rect2(p-Vector2(88,56),Vector2(176,17)),Color("a86c57"))
+		for x in [-48,0,48]: draw_rect(Rect2(p+Vector2(x-12,-19),Vector2(24,30)),Color("709caa"))
+		if selected_location == i: draw_rect(Rect2(p-Vector2(94,62),Vector2(188,126)),GOLD,false,4)
+		_center(p+Vector2(0,84),location.name,DARK,22)
+		var state_text = "可派遣" if unlocked else "尚未解锁"
+		for job in progress.dispatches:
+			if job.location == location.id:
+				state_text = "成果可领取" if int(job.ready_at) <= int(Time.get_unix_time_from_system()) else "探索中"
+		_center(p+Vector2(0,112),state_text,DARK,17)
+	_pixel_panel(Rect2(936,105,306,490),PAPER)
+	var place: Dictionary = Catalog.LOCATIONS[selected_location]
+	_text(Vector2(957,148),place.name,DARK,24)
+	_paragraph(Vector2(957,188),"消耗 %d 修复资源\n探索 %d 秒 / 获得 %d 资源" % [place.cost,place.duration,place.reward],DARK,17)
+	_text(Vector2(957,288),"选择支援同学",DARK,20)
+	var workers = progress.available_staff()
+	for i in range(workers.size()):
+		var label = workers[i].name + (" · 忙碌" if progress.busy(workers[i].id) else "")
+		_flow_button(Rect2(953,313+i*58,274,48),label,not progress.busy(workers[i].id))
+		if selected_staff == workers[i].id: draw_rect(Rect2(950,310+i*58,280,54),Color("5a9d9c"),false,3)
+	var reason = progress.dispatch_reason(selected_staff,place.id)
+	_flow_button(Rect2(953,520,274,53),"出发探索" if reason.is_empty() else reason,reason.is_empty())
 	for i in range(progress.dispatches.size()):
 		var job: Dictionary = progress.dispatches[i]
-		var y = 193 + i * 182
+		var remaining = maxi(0,int(job.ready_at)-int(Time.get_unix_time_from_system()))
 		var location = Catalog.find(Catalog.LOCATIONS,job.location)
-		var staff = Catalog.find(Catalog.STAFF,job.staff)
-		_text(Vector2(809,y),location.name + " / " + staff.name,DARK,18)
-		var remaining = maxi(0,int(job.ready_at) - now)
-		_text(Vector2(809,y+36),"已完成，等待领取" if remaining == 0 else "返回倒计时 %d 秒" % remaining,DARK,18)
-		_flow_button(Rect2(809,y+58,409,47),"领取 %d 资源并归队" % job.reward,remaining == 0)
+		_flow_button(Rect2(28+i*447,626,427,57),location.name + (" · 领取成果" if remaining == 0 else " · %d 秒" % remaining),remaining == 0)
+	if progress.dispatches.is_empty(): _text(Vector2(35,661),notice.left(48) if not notice.is_empty() else "探索队伍出发后，可在这里领取成果。",PAPER,17)
 	_flow_button(Rect2(993,634,245,52),"返回基地")
-	_text(Vector2(43,667),notice.left(52),PAPER,17)
 
 func _gui_input(event: InputEvent) -> void:
 	if paused or leaving: return
@@ -271,16 +278,16 @@ func _gui_input(event: InputEvent) -> void:
 				notice = "已解锁「"+item.name+"」。" if progress.purchase(item.id) else progress.error_message
 		if Rect2(993,634,245,52).has_point(p): screen = "base"
 	elif screen == "dispatch":
-		var staff_list = progress.available_staff()
-		for i in range(staff_list.size()):
-			if Rect2(34+i*244,117,224,122).has_point(p): selected_staff = staff_list[i].id
 		for i in range(Catalog.LOCATIONS.size()):
-			if Rect2(54+i*370,515,312,50).has_point(p):
-				notice = "队伍已出发，进度已保存。" if progress.start_dispatch(selected_staff,Catalog.LOCATIONS[i].id) else progress.error_message
+			if Rect2(_dispatch_point(i)-Vector2(95,65),Vector2(190,180)).has_point(p): selected_location = i
+		var workers = progress.available_staff()
+		for i in range(workers.size()):
+			if Rect2(953,313+i*58,274,48).has_point(p): selected_staff = workers[i].id
+		if Rect2(953,520,274,53).has_point(p):
+			notice = "队伍已出发，进度已保存。" if progress.start_dispatch(selected_staff,Catalog.LOCATIONS[selected_location].id) else progress.error_message
 		for i in range(progress.dispatches.size()):
-			if Rect2(809,251+i*182,409,47).has_point(p):
-				var id: String = progress.dispatches[i].id
-				notice = "成果已领取，同学已归队。" if progress.claim_dispatch(id) else progress.error_message
+			if Rect2(28+i*447,626,427,57).has_point(p):
+				notice = "成果已领取，同学已归队。" if progress.claim_dispatch(progress.dispatches[i].id) else progress.error_message
 				break
 		if Rect2(993,634,245,52).has_point(p): screen = "base"
 	else:
