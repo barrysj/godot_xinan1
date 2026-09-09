@@ -125,6 +125,7 @@ func _tick() -> void:
 		var allies = _living(actor.side)
 		_event(events, actor, _target(actor, foes), "damage", actor.atk)
 		actor.count += 1
+		_present_action(actor, actor.count >= actor.skill.attacks_to_trigger)
 		if actor.count < actor.skill.attacks_to_trigger: continue
 		actor.count = 0
 		for effect in actor.skill.effects:
@@ -189,6 +190,9 @@ func _tick() -> void:
 					u.timer = u.interval
 
 func _present_event(_event_data: Dictionary) -> void:
+	pass
+
+func _present_action(_actor: Dictionary, _casts_skill: bool) -> void:
 	pass
 
 func _action_rect(index: int) -> Rect2:
@@ -377,5 +381,6 @@ func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary
 	unit.content_id = definition.id
 	unit.skill = definition.skill
 	unit.portrait = definition.portrait
+	unit.battle_animation = definition.battle_animation
 	unit.badge_color = definition.badge_color
 	return unit

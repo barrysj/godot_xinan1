@@ -6,6 +6,7 @@ const DARK = Color("181820")
 const GRASS = Color("718951")
 const BRICK = Color("b58360")
 const ROLE_COLORS = [Color("71b8dc"), Color("eab765"), Color("99c983"), Color("d68c8c"), Color("ad98d2")]
+const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 var town: Texture2D
 var dungeon: Texture2D
 var visual_time = 0.0
@@ -71,6 +72,8 @@ func _load_atlas(path: String) -> Texture2D:
 
 func _build_units() -> void:
 	super._build_units()
+	for u in units:
+		u.animation = BattleAnimation.new(u.battle_animation)
 	effects.clear()
 	banner_time = 0
 
@@ -79,14 +82,27 @@ func _process(delta: float) -> void:
 		queue_redraw()
 		return
 	if not paused:
-		visual_time += delta
-		banner_time = maxf(0, banner_time - delta)
+		var presentation_delta: float = delta * speed if phase == "battle" else delta
+		for u in units:
+			u.animation.advance(presentation_delta)
+		visual_time += presentation_delta
+		banner_time = maxf(0, banner_time - presentation_delta)
 		for fx in effects:
-			fx.life -= delta
+			fx.life -= presentation_delta
 		effects = effects.filter(func(fx): return fx.life > 0)
 	super._process(delta)
 
+func _tick() -> void:
+	super._tick()
+	for u in units:
+		u.animation.sync_health(u.hp, u.max_hp)
+
+func _present_action(actor: Dictionary, casts_skill: bool) -> void:
+	actor.animation.play(&"cast" if casts_skill else &"attack")
+
 func _present_event(e: Dictionary) -> void:
+	if e.kind == "damage" and e.get("actual", 0) > 0:
+		e.target.animation.play(&"hurt")
 	var start = _slot_rect(e.actor.side, e.actor.slot).get_center() + Vector2(0, -6)
 	var finish = _slot_rect(e.target.side, e.target.slot).get_center() + Vector2(0, -6)
 	var tint: Color = GOLD if e.special else (TEAL if e.actor.side == 0 else RED)
@@ -185,9 +201,10 @@ func _campus(show_battle_marks: bool = true) -> void:
 
 func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 	var alive: bool = u.hp > 0
+	var animated_texture: Texture2D = u.animation.texture()
 	var tint = Color.WHITE if alive else Color(0.48, 0.49, 0.47, 0.55)
 	var offset = Vector2.ZERO
-	if alive:
+	if alive and animated_texture == null:
 		offset.y = roundf(sin(visual_time * 3 + u.slot) * 2)
 		for fx in effects:
 			if fx.actor_side == u.side and fx.actor_slot == u.slot and fx.life > 0.60:
@@ -196,7 +213,11 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 			tint = Color(1.6, 1.3, 1.3)
 	var p = (at + offset).round()
 	# Kenney humanoids and monsters; provisional costumes for fictional students.
-	draw_texture_rect(u.portrait, Rect2(p - Vector2(8,14)*factor, Vector2(16,16)*factor),false,tint)
+	if animated_texture != null:
+		var animation_size: Vector2 = u.battle_animation.display_size * factor / 4.0
+		draw_texture_rect(animated_texture, Rect2(p - animation_size * u.battle_animation.anchor, animation_size), false)
+	else:
+		draw_texture_rect(u.portrait, Rect2(p - Vector2(8,14)*factor, Vector2(16,16)*factor),false,tint)
 	if u.side == 0 and alive:
 		# Role badges create readable team identity without recoloring the source art.
 		draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), u.badge_color)
