@@ -3,7 +3,6 @@ const Catalog = preload("res://game/meta/meta_catalog.gd")
 const Checkpoint = preload("res://game/run/run_checkpoint.gd")
 var storage_ready = false
 var checkpoint_error = ""
-var selected_staff = "archivist"
 var selected_location = 0
 var last_save_ok = true
 var test_runner: RefCounted
@@ -32,50 +31,10 @@ func _open_location_details(index: int) -> void:
 	selected_location = index
 	campus_map.selected = index
 	campus_map.hovered = -1
-	var place: Dictionary = Catalog.LOCATIONS[index]
-	location_panel = Control.new()
-	location_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	location_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	location_panel = preload("res://scenes/expedition/location_dispatch_panel.gd").new()
+	location_panel.game = self
+	location_panel.place = Catalog.LOCATIONS[index]
 	add_child(location_panel)
-	var shade := ColorRect.new()
-	shade.color = Color(0, 0, 0, 0.7)
-	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	location_panel.add_child(shade)
-	var center := CenterContainer.new()
-	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	location_panel.add_child(center)
-	var panel := PanelContainer.new()
-	panel.theme = preload("res://resources/theme/theme-main.tres")
-	panel.add_theme_stylebox_override("panel", pause_content.get_child(0).get_theme_stylebox("panel"))
-	panel.custom_minimum_size.x = minf(520, size.x - 40)
-	center.add_child(panel)
-	var margin := MarginContainer.new()
-	for edge in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + edge, 24)
-	panel.add_child(margin)
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 18)
-	margin.add_child(column)
-	var heading := Label.new()
-	heading.text = place.name
-	heading.add_theme_font_override("font", font)
-	heading.add_theme_font_size_override("font_size", 28)
-	heading.add_theme_color_override("font_color", DARK)
-	column.add_child(heading)
-	var body := Label.new()
-	body.name = "Details"
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.add_theme_font_override("font", font)
-	body.add_theme_font_size_override("font_size", 20)
-	body.add_theme_color_override("font_color", DARK)
-	var requirement := Catalog.find(Catalog.UNLOCKS, place.requires)
-	var state := "已解锁" if progress.level(place.requires) > 0 else "尚未解锁 · 需要「%s」" % requirement.get("name", place.requires)
-	body.text = "%s\n\n%s\n\n消耗：%d 修复资源\n时长：%d 秒\n收益：%d 修复资源\n\n关闭详情后，可在右侧选择同学并派遣。" % [place.description, state, place.cost, place.duration, place.reward]
-	column.add_child(body)
-	var close := _menu_button("关闭", _close_location_details)
-	column.add_child(close)
-	close.grab_focus()
-
 func _open_team_panel() -> void:
 	if is_instance_valid(team_panel) or not screen in ["map","battle"]: return
 	panel_was_paused = paused
@@ -141,6 +100,9 @@ func _ready() -> void:
 		test_runner.run_checks(self)
 	elif "--map-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/campus_map_checks.gd").new()
+		test_runner.run_checks(self)
+	elif "--dispatch-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/dispatch_checks.gd").new()
 		test_runner.run_checks(self)
 
 func _pack_checkpoint() -> Dictionary:
@@ -375,15 +337,8 @@ func _draw_dispatch() -> void:
 	var place: Dictionary = Catalog.LOCATIONS[selected_location]
 	_text(Vector2(957,148),place.name,DARK,24)
 	_paragraph(Vector2(957,188),"消耗 %d 修复资源\n探索 %d 秒 / 获得 %d 资源" % [place.cost,place.duration,place.reward],DARK,17)
-	_text(Vector2(957,288),"选择支援同学",DARK,20)
-	var workers = progress.available_staff()
-	for i in range(workers.size()):
-		var label = workers[i].name + (" · 忙碌" if progress.busy(workers[i].id) else "")
-		_flow_button(Rect2(953,313+i*58,274,48),label,not progress.busy(workers[i].id))
-		if selected_staff == workers[i].id: draw_rect(Rect2(950,310+i*58,280,54),Color("5a9d9c"),false,3)
-	var reason = progress.dispatch_reason(selected_staff,place.id)
-	_text(Vector2(958,500),reason.left(16),Color("8b5c4c"),15)
-	_flow_button(Rect2(953,520,274,53),"派遣",reason.is_empty())
+	_paragraph(Vector2(957,288),"要求 %d 名同学\n在地点详情中选择队伍。" % place.get("crew_size",1),DARK,18)
+	_flow_button(Rect2(953,520,274,53),"查看详情")
 	for i in range(progress.dispatches.size()):
 		var job: Dictionary = progress.dispatches[i]
 		var remaining = maxi(0,int(job.ready_at)-int(Time.get_unix_time_from_system()))
@@ -427,11 +382,7 @@ func _gui_input(event: InputEvent) -> void:
 	elif screen == "dispatch":
 		if Rect2(765,26,145,48).has_point(p): campus_map.reset_view()
 
-		var workers = progress.available_staff()
-		for i in range(workers.size()):
-			if Rect2(953,313+i*58,274,48).has_point(p): selected_staff = workers[i].id
-		if Rect2(953,520,274,53).has_point(p):
-			notice = "队伍已出发，进度已保存。" if progress.start_dispatch(selected_staff,Catalog.LOCATIONS[selected_location].id) else progress.error_message
+		if Rect2(953,520,274,53).has_point(p): _open_location_details(selected_location)
 		for i in range(progress.dispatches.size()):
 			if Rect2(28+i*447,626,427,57).has_point(p):
 				notice = "成果已领取，同学已归队。" if progress.claim_dispatch(progress.dispatches[i].id) else progress.error_message
@@ -462,7 +413,7 @@ func _capture_meta() -> void:
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://.godot/meta_growth.png")
 	progress.start_dispatch("archivist","library")
-	progress.start_dispatch("liaison","gym",int(Time.get_unix_time_from_system()) - 121)
+	progress.start_dispatch(["liaison","technician"],"gym",int(Time.get_unix_time_from_system()) - 121)
 	screen = "dispatch"
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw

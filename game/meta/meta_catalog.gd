@@ -8,13 +8,19 @@ const UNLOCKS = [
 	{"id":"staffing", "name":"后勤扩编", "costs":[6], "requires":"dispatch", "description":"新增支援同学，并行派遣增至 2 队。"}
 ]
 const STAFF = [
-	{"id":"archivist", "name":"档案员 · 小林", "requires":"", "portrait":2},
-	{"id":"liaison", "name":"联络员 · 小夏", "requires":"", "portrait":1},
-	{"id":"technician", "name":"器材员 · 小禾", "requires":"staffing", "portrait":4}
+	{"id":"archivist", "name":"档案员 · 小林", "requires":"", "portrait":2, "tags":["research"]},
+	{"id":"liaison", "name":"联络员 · 小夏", "requires":"", "portrait":1, "tags":["food", "sport"]},
+	{"id":"technician", "name":"器材员 · 小禾", "requires":"staffing", "portrait":4, "tags":["repair"]}
 ]
+const DISPATCH_TAGS = {
+ "research":{"name":"考据家", "color":Color("71b8dc")},
+ "food":{"name":"美食家", "color":Color("eab765")},
+ "sport":{"name":"运动健将", "color":Color("99c983")},
+ "repair":{"name":"巧手", "color":Color("ad98d2")}
+}
 const LOCATIONS = [
-	{"id":"library", "name":"旧图书馆", "map_position":Vector2(330,260), "requires":"dispatch", "cost":2, "duration":60, "reward":4, "description":"整理遗落档案，找回修复材料。"},
-	{"id":"gym", "name":"体育馆仓库", "map_position":Vector2(860,420), "requires":"gym", "cost":4, "duration":120, "reward":7, "description":"回收器材与工具，支援校园修复。"}
+	{"id":"library", "name":"旧图书馆", "map_position":Vector2(330,260), "requires":"dispatch", "cost":2, "duration":60, "reward":4, "crew_size":1, "required_tags":[], "description":"整理遗落档案，找回修复材料。"},
+	{"id":"gym", "name":"体育馆仓库", "map_position":Vector2(860,420), "requires":"gym", "cost":4, "duration":120, "reward":7, "crew_size":2, "required_tags":[], "description":"回收器材与工具，支援校园修复。"}
 ]
 static func find(items: Array, id: String) -> Dictionary:
 	for item in items:

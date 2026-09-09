@@ -13,7 +13,7 @@ var error_message = ""
 var load_blocked = false
 
 func to_dict() -> Dictionary:
-	return {"version":2, "points":points, "completions":completions, "supply_unlocked":supply_unlocked,
+	return {"version":3, "points":points, "completions":completions, "supply_unlocked":supply_unlocked,
 		"upgrades":upgrades.duplicate(true), "active_run":active_run.duplicate(true),
 		"dispatches":dispatches.duplicate(true), "last_settled_run":last_settled_run}
 
@@ -35,7 +35,7 @@ func read_save() -> bool:
 	if parser.parse(file.get_as_text()) != OK: return _invalid_save()
 	var data = parser.data
 	if not data is Dictionary: return _invalid_save()
-	if data.get("version",0) != 1 and data.get("version",0) != 2: return _invalid_save()
+	if data.get("version",0) != 1 and data.get("version",0) != 2 and data.get("version",0) != 3: return _invalid_save()
 	if not data.get("upgrades",{}) is Dictionary or not data.get("active_run",{}) is Dictionary or not data.get("dispatches",[]) is Array: return _invalid_save()
 	for key in ["points","completions"]:
 		if not (data.get(key,0) is int or data.get(key,0) is float): return _invalid_save()
@@ -48,12 +48,18 @@ func read_save() -> bool:
 	for job in data.get("dispatches",[]):
 		if not job is Dictionary: return _invalid_save()
 		if not job.get("id",null) is String or ids.has(job.id): return _invalid_save()
-		if Catalog.find(Catalog.STAFF,str(job.get("staff",""))).is_empty() or workers.has(job.staff): return _invalid_save()
+		var crew = job.get("staff_ids", [job.get("staff", "")] if data.version < 3 else [])
+		if not crew is Array or crew.is_empty(): return _invalid_save()
+		for member in crew:
+			if not member is String or Catalog.find(Catalog.STAFF,member).is_empty() or workers.has(member): return _invalid_save()
+			workers.append(member)
 		if Catalog.find(Catalog.LOCATIONS,str(job.get("location",""))).is_empty(): return _invalid_save()
 		for key in ["started_at","ready_at","reward"]:
 			if not (job.get(key) is int or job.get(key) is float) or job[key] < 0: return _invalid_save()
 		if job.ready_at < job.started_at: return _invalid_save()
-		workers.append(job.staff)
+		# Preserve old in-flight tasks even if today's location asks for a larger crew.
+		job.staff_ids = crew.duplicate()
+		job.erase("staff")
 		ids.append(job.id)
 	_apply(data)
 	load_blocked = false
@@ -136,21 +142,38 @@ func available_staff() -> Array:
 
 func busy(staff_id: String) -> bool:
 	for job in dispatches:
-		if job.staff == staff_id: return true
+		if job.get("staff_ids", [job.get("staff", "")]).has(staff_id): return true
 	return false
 
-func dispatch_reason(staff_id: String, location_id: String) -> String:
+func staff_reason(staff_id: String) -> String:
+	if Catalog.find(available_staff(),staff_id).is_empty(): return "尚未加入"
+	if busy(staff_id): return "执行任务中"
+	return ""
+
+func dispatch_reason(staff_ids: Variant, location_id: String) -> String:
 	var location = Catalog.find(Catalog.LOCATIONS,location_id)
 	if location.is_empty(): return "地点不存在"
+	if load_blocked: return "存档无法读取，暂不可派遣"
 	if level(location.requires) == 0: return "地点尚未解锁"
-	if Catalog.find(available_staff(),staff_id).is_empty(): return "请选择已加入的支援同学"
-	if busy(staff_id): return "同学执行任务中"
+	var crew: Array = [staff_ids] if staff_ids is String else (staff_ids if staff_ids is Array else [])
+	var required: int = location.get("crew_size", 1)
+	if crew.size() != required: return "请选择 %d 名同学（已选 %d 人）" % [required, crew.size()]
+	var seen: Array = []
+	var tags: Array = []
+	for member in crew:
+		if not member is String or seen.has(member): return "派遣成员不能重复或无效"
+		var reason := staff_reason(member)
+		if not reason.is_empty(): return reason
+		seen.append(member)
+		tags.append_array(Catalog.find(Catalog.STAFF, member).get("tags", []))
+	for tag in location.get("required_tags", []):
+		if not tags.has(tag): return "队伍需要技能：" + Catalog.DISPATCH_TAGS.get(tag, {}).get("name", tag)
 	if dispatches.size() >= (2 if level("staffing") > 0 else 1): return "派遣队伍已满"
 	if points < location.cost: return "修复资源不足"
 	return ""
 
-func start_dispatch(staff_id: String, location_id: String, now: int = -1) -> bool:
-	var reason = dispatch_reason(staff_id,location_id)
+func start_dispatch(staff_ids: Variant, location_id: String, now: int = -1) -> bool:
+	var reason = dispatch_reason(staff_ids,location_id)
 	if not reason.is_empty():
 		error_message = reason
 		return false
@@ -158,7 +181,8 @@ func start_dispatch(staff_id: String, location_id: String, now: int = -1) -> boo
 	var before = to_dict()
 	var location = Catalog.find(Catalog.LOCATIONS,location_id)
 	points -= int(location.cost)
-	dispatches.append({"id":Crypto.new().generate_random_bytes(16).hex_encode(), "staff":staff_id,
+	var crew: Array = [staff_ids] if staff_ids is String else staff_ids.duplicate()
+	dispatches.append({"id":Crypto.new().generate_random_bytes(16).hex_encode(), "staff_ids":crew,
 		"location":location_id, "started_at":now, "ready_at":now + int(location.duration), "reward":int(location.reward)})
 	return _commit(before)
 

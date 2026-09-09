@@ -35,7 +35,7 @@ func run_checks(hub) -> void:
 	verify(p.busy("archivist") and p.claim_dispatch(id,1060) and p.points == 29, "offline completion")
 	verify(not p.claim_dispatch(id,1061) and p.points == 29 and not p.busy("archivist"), "claim once and free staff")
 	verify(p.purchase("gym") and p.purchase("staffing") and p.available_staff().size() == 3, "unlock location and staff")
-	verify(p.start_dispatch("archivist","library",2000) and p.start_dispatch("liaison","gym",2000), "two simultaneous jobs")
+	verify(p.start_dispatch("archivist","library",2000) and p.start_dispatch(["liaison","technician"],"gym",2000), "two simultaneous jobs")
 	var before = p.to_dict()
 	var old_path = p.path
 	p.path = "res://.godot/nonexistent-meta-folder/profile.json"
@@ -173,14 +173,15 @@ func run_checks(hub) -> void:
 		map._gui_input(click)
 	verify(hub.selected_location == 1, "map building selects gym")
 	verify(is_instance_valid(hub.location_panel), "map building opens details")
-	hub._close_location_details()
-	hub._test_click(Vector2(1080,395))
-	verify(hub.selected_staff == "liaison", "map staff selection")
+	hub.location_panel._toggle("archivist")
+	hub.location_panel._toggle("liaison")
+	verify(hub.location_panel.selected.size() == 2, "map crew selection")
 	var cash = hub.progress.points
-	hub._test_click(Vector2(1080,545))
+	hub.location_panel._dispatch()
 	verify(hub.progress.dispatches.size() == 1 and hub.progress.dispatches[0].location == "gym" and hub.progress.points == cash - 4, "map dispatch transaction")
-	hub._test_click(Vector2(1080,545))
+	hub.location_panel._dispatch()
 	verify(hub.progress.dispatches.size() == 1 and hub.progress.points == cash - 4, "map duplicate dispatch rejected")
+	hub._close_location_details()
 	hub.progress.dispatches[0].ready_at = 0
 	hub._test_click(Vector2(240,650))
 	verify(hub.progress.dispatches.is_empty() and hub.progress.points == cash + 3, "map claim transaction")
