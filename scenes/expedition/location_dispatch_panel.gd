@@ -122,7 +122,7 @@ func _refresh() -> void:
 	for row in rows.get_children():
 		rows.remove_child(row)
 		row.queue_free()
-	for staff in Catalog.STAFF: _staff_row(staff, required)
+	for staff in game.progress.available_staff(): _staff_row(staff, required)
 	var reason: String = game.progress.dispatch_reason(selected, place.id)
 	dispatch_button.disabled = not reason.is_empty()
 	feedback.text = result_message if not result_message.is_empty() else ("人数已满足，可以派遣。" if reason.is_empty() else reason)

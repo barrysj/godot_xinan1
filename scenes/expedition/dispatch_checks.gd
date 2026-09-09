@@ -60,13 +60,13 @@ func run_checks(game: Control) -> void:
 		await game.get_tree().process_frame
 		game._open_location_details(1)
 		var panel: Control = game.location_panel
-		verify(panel.rows.get_child_count() == 3, "All staff visible including locked staff")
+		verify(panel.rows.get_child_count() == 2, "Only joined staff visible")
 		verify(panel.counter.text.ends_with("0/2") and panel.dispatch_button.disabled, "Initial count and disabled dispatch")
 		panel.rows.find_child("Select_archivist", true, false).pressed.emit()
 		verify(panel.counter.text.ends_with("1/2") and panel.dispatch_button.disabled, "Partial selection")
 		panel.rows.find_child("Select_liaison", true, false).pressed.emit()
 		verify(panel.counter.text.ends_with("2/2") and not panel.dispatch_button.disabled, "Full selection enables dispatch")
-		verify(panel.rows.find_child("Select_technician", true, false).disabled, "Locked selection disabled")
+		verify(panel.rows.find_child("Select_technician", true, false) == null, "Locked staff hidden")
 		if DisplayServer.get_name() != "headless":
 			await RenderingServer.frame_post_draw
 			game.get_viewport().get_texture().get_image().save_png("res://.godot/dispatch-crew-%dx%d.png" % [resolution.x,resolution.y])
