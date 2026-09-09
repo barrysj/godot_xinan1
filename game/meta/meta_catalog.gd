@@ -13,8 +13,8 @@ const STAFF = [
 	{"id":"technician", "name":"器材员 · 小禾", "requires":"staffing", "portrait":4}
 ]
 const LOCATIONS = [
-	{"id":"library", "name":"旧图书馆", "requires":"dispatch", "cost":2, "duration":60, "reward":4, "description":"整理遗落档案，找回修复材料。"},
-	{"id":"gym", "name":"体育馆仓库", "requires":"gym", "cost":4, "duration":120, "reward":7, "description":"回收器材与工具，支援校园修复。"}
+	{"id":"library", "name":"旧图书馆", "map_position":Vector2(330,260), "requires":"dispatch", "cost":2, "duration":60, "reward":4, "description":"整理遗落档案，找回修复材料。"},
+	{"id":"gym", "name":"体育馆仓库", "map_position":Vector2(860,420), "requires":"gym", "cost":4, "duration":120, "reward":7, "description":"回收器材与工具，支援校园修复。"}
 ]
 static func find(items: Array, id: String) -> Dictionary:
 	for item in items:

@@ -9,6 +9,72 @@ var last_save_ok = true
 var test_runner: RefCounted
 var team_panel: Control
 var panel_was_paused = false
+var campus_map: Control
+var location_panel: Control
+
+func _create_campus_map() -> void:
+	campus_map = preload("res://scenes/expedition/campus_map.gd").new()
+	campus_map.progress = progress
+	campus_map.location_selected.connect(_open_location_details)
+	add_child(campus_map)
+	campus_map.hide()
+
+func _close_location_details() -> void:
+	if is_instance_valid(location_panel):
+		remove_child(location_panel)
+		location_panel.queue_free()
+		location_panel = null
+	if screen == "dispatch": campus_map.grab_focus()
+
+func _open_location_details(index: int) -> void:
+	if screen != "dispatch" or paused: return
+	_close_location_details()
+	selected_location = index
+	campus_map.selected = index
+	campus_map.hovered = -1
+	var place: Dictionary = Catalog.LOCATIONS[index]
+	location_panel = Control.new()
+	location_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	location_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(location_panel)
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.7)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	location_panel.add_child(shade)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	location_panel.add_child(center)
+	var panel := PanelContainer.new()
+	panel.theme = preload("res://resources/theme/theme-main.tres")
+	panel.add_theme_stylebox_override("panel", pause_content.get_child(0).get_theme_stylebox("panel"))
+	panel.custom_minimum_size.x = minf(520, size.x - 40)
+	center.add_child(panel)
+	var margin := MarginContainer.new()
+	for edge in ["left", "right", "top", "bottom"]:
+		margin.add_theme_constant_override("margin_" + edge, 24)
+	panel.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 18)
+	margin.add_child(column)
+	var heading := Label.new()
+	heading.text = place.name
+	heading.add_theme_font_override("font", font)
+	heading.add_theme_font_size_override("font_size", 28)
+	heading.add_theme_color_override("font_color", DARK)
+	column.add_child(heading)
+	var body := Label.new()
+	body.name = "Details"
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_theme_font_override("font", font)
+	body.add_theme_font_size_override("font_size", 20)
+	body.add_theme_color_override("font_color", DARK)
+	var requirement := Catalog.find(Catalog.UNLOCKS, place.requires)
+	var state := "已解锁" if progress.level(place.requires) > 0 else "尚未解锁 · 需要「%s」" % requirement.get("name", place.requires)
+	body.text = "%s\n\n%s\n\n消耗：%d 修复资源\n时长：%d 秒\n收益：%d 修复资源\n\n关闭详情后，可在右侧选择同学并派遣。" % [place.description, state, place.cost, place.duration, place.reward]
+	column.add_child(body)
+	var close := _menu_button("关闭", _close_location_details)
+	column.add_child(close)
+	close.grab_focus()
 
 func _open_team_panel() -> void:
 	if is_instance_valid(team_panel) or not screen in ["map","battle"]: return
@@ -22,6 +88,11 @@ func _open_team_panel() -> void:
 	add_child(team_panel)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(location_panel):
+		if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			_close_location_details()
+			get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(team_panel): return
 	super._input(event)
 
@@ -42,6 +113,7 @@ func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		return
 	super._ready()
+	_create_campus_map()
 	storage_ready = true
 	if not progress.active_run.is_empty() and Checkpoint.decode(progress.active_run).is_empty():
 		checkpoint_error = "探索存档无法恢复，原存档已保留。"
@@ -66,6 +138,9 @@ func _ready() -> void:
 		test_runner.run_checks(self)
 	elif "--team-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/team/team_checks.gd").new()
+		test_runner.run_checks(self)
+	elif "--map-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/campus_map_checks.gd").new()
 		test_runner.run_checks(self)
 
 func _pack_checkpoint() -> Dictionary:
@@ -130,6 +205,16 @@ func _process(delta: float) -> void:
 	var previous_screen = screen
 	super._process(delta)
 	if screen != previous_screen: _checkpoint()
+	if is_instance_valid(campus_map):
+		campus_map.progress = progress
+		var layout_scale: float = minf(size.x / 1280, size.y / 720)
+		var layout_origin: Vector2 = (size - Vector2(1280, 720) * layout_scale) / 2
+		campus_map.position = layout_origin + Vector2(24, 105) * layout_scale
+		campus_map.size = Vector2(894, 490) * layout_scale
+		campus_map.visible = screen == "dispatch" and not paused
+		campus_map.mouse_filter = Control.MOUSE_FILTER_IGNORE if is_instance_valid(location_panel) else Control.MOUSE_FILTER_STOP
+		campus_map.queue_redraw()
+		if screen != "dispatch" and is_instance_valid(location_panel): _close_location_details()
 
 func _settle() -> void:
 	screen = "summary"
@@ -256,7 +341,7 @@ func _draw_base() -> void:
 	_home_button("supply","补给 ✓" if chosen_supply else "补给",progress.supply_unlocked)
 	_text(Vector2(43,509),"厚笔记本" if chosen_supply else ("未携带" if progress.supply_unlocked else "尚未解锁"),Color("c5c2ca"),16)
 	_home_button("growth","升级")
-	_home_button("dispatch","派遣")
+	_home_button("dispatch","大地图")
 	_home_button("codex","图鉴")
 	_text(Vector2(1065,503),"资源  %d" % progress.points,PAPER,18)
 	_text(Vector2(1065,535),"探索队  %d" % progress.dispatches.size(),Color("c5c2ca"),16)
@@ -283,28 +368,9 @@ func _draw_growth() -> void:
 	_flow_button(Rect2(993,634,245,52),"返回基地")
 	_text(Vector2(43,667),notice.left(52),PAPER,17)
 
-func _dispatch_point(index: int) -> Vector2:
-	return [Vector2(315,260),Vector2(677,423)][index]
-
 func _draw_dispatch() -> void:
-	_header("校园远征地图","点击地图建筑查看地点，再选择支援同学派遣。离线探索继续计时。")
-	_campus()
-	draw_line(Vector2(462,185),Vector2(462,505),Color("d8c79d"),15)
-	for i in range(Catalog.LOCATIONS.size()):
-		var location: Dictionary = Catalog.LOCATIONS[i]
-		var p = _dispatch_point(i)
-		draw_line(Vector2(462,p.y),p,Color("d8c79d"),12)
-		var unlocked = progress.level(location.requires) > 0
-		_pixel_panel(Rect2(p-Vector2(80,48),Vector2(160,96)),PAPER if unlocked else Color("969d8c"))
-		draw_rect(Rect2(p-Vector2(88,56),Vector2(176,17)),Color("a86c57"))
-		for x in [-48,0,48]: draw_rect(Rect2(p+Vector2(x-12,-19),Vector2(24,30)),Color("709caa"))
-		if selected_location == i: draw_rect(Rect2(p-Vector2(94,62),Vector2(188,126)),GOLD,false,4)
-		_center(p+Vector2(0,84),location.name,DARK,22)
-		var state_text = "可派遣" if unlocked else "尚未解锁"
-		for job in progress.dispatches:
-			if job.location == location.id:
-				state_text = "成果可领取" if int(job.ready_at) <= int(Time.get_unix_time_from_system()) else "探索中"
-		_center(p+Vector2(0,112),state_text,DARK,17)
+	_header("校园大地图","悬停查看地点名 · 点击查看详情 · 滚轮缩放 · 拖动浏览")
+	_flow_button(Rect2(765,26,145,48),"复位")
 	_pixel_panel(Rect2(936,105,306,490),PAPER)
 	var place: Dictionary = Catalog.LOCATIONS[selected_location]
 	_text(Vector2(957,148),place.name,DARK,24)
@@ -328,6 +394,7 @@ func _draw_dispatch() -> void:
 	_flow_button(Rect2(993,634,245,52),"返回基地")
 
 func _gui_input(event: InputEvent) -> void:
+	if is_instance_valid(location_panel): return
 	if is_instance_valid(team_panel): return
 	if paused or leaving: return
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed): return
@@ -358,8 +425,8 @@ func _gui_input(event: InputEvent) -> void:
 				notice = "已解锁「"+item.name+"」。" if progress.purchase(item.id) else progress.error_message
 		if Rect2(993,634,245,52).has_point(p): screen = "base"
 	elif screen == "dispatch":
-		for i in range(Catalog.LOCATIONS.size()):
-			if Rect2(_dispatch_point(i)-Vector2(95,65),Vector2(190,180)).has_point(p): selected_location = i
+		if Rect2(765,26,145,48).has_point(p): campus_map.reset_view()
+
 		var workers = progress.available_staff()
 		for i in range(workers.size()):
 			if Rect2(953,313+i*58,274,48).has_point(p): selected_staff = workers[i].id

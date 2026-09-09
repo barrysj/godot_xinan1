@@ -162,8 +162,18 @@ func run_checks(hub) -> void:
 	hub.progress.points = 30
 	hub.progress.purchase("dispatch")
 	hub.progress.purchase("gym")
-	hub._test_click(hub._dispatch_point(1))
+	hub._process(0)
+	var map = hub.campus_map
+	var at: Vector2 = map._offset() + map.point(1) * map._fit() * map.zoom
+	for pressed in [true, false]:
+		var click := InputEventMouseButton.new()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.position = at
+		click.pressed = pressed
+		map._gui_input(click)
 	verify(hub.selected_location == 1, "map building selects gym")
+	verify(is_instance_valid(hub.location_panel), "map building opens details")
+	hub._close_location_details()
 	hub._test_click(Vector2(1080,395))
 	verify(hub.selected_staff == "liaison", "map staff selection")
 	var cash = hub.progress.points
