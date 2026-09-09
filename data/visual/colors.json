@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "name": "Cyber Pop Campus Colors",
+    "version": 1
+  },
+  "brand": {
+    "cyan": "#16D9E3",
+    "magenta": "#F72585",
+    "yellow": "#F4E409",
+    "black": "#111318",
+    "white": "#F6F7F9",
+    "deep_gray": "#222730"
+  },
+  "daily": {
+    "background": "#EDF6F7",
+    "surface": "#F8FAFB",
+    "text_primary": "#111318",
+    "text_secondary": "#5C6673",
+    "accent_primary": "#16D9E3",
+    "accent_secondary": "#F72585",
+    "highlight": "#F4E409"
+  },
+  "anomaly": {
+    "background": "#10131A",
+    "surface": "#171B24",
+    "text_primary": "#F6F7F9",
+    "cyan": "#16D9E3",
+    "magenta": "#F72585",
+    "warning": "#F4E409",
+    "glitch_green": "#61FFB0"
+  },
+  "semantic": {
+    "success": "#36D399",
+    "warning": "#F4E409",
+    "danger": "#FF4D6D",
+    "info": "#16D9E3"
+  }
+}

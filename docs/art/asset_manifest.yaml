@@ -1,0 +1,58 @@
+version: 1
+
+conventions:
+  status: [concept, review, approved, deprecated]
+
+assets:
+  characters:
+    protagonist:
+      portrait_default:
+        file: assets/art/characters/protagonist/portrait_default.png
+        type: portrait
+        resolution: [2048, 2048]
+        transparent: true
+        anchor: [0.5, 1.0]
+        usage: [dialogue, relationship_screen]
+        style_layer: daily
+        status: concept
+
+  backgrounds:
+    classroom:
+      day:
+        file: assets/art/backgrounds/classroom/day.png
+        type: background
+        resolution: [2560, 1440]
+        transparent: false
+        crop_mode: cover
+        usage: [classroom_scene]
+        style_layer: daily
+        status: concept
+      anomaly:
+        file: assets/art/backgrounds/classroom/anomaly.png
+        type: background
+        resolution: [2560, 1440]
+        transparent: false
+        crop_mode: cover
+        usage: [classroom_scene]
+        style_layer: anomaly
+        status: concept
+
+  ui:
+    relationship:
+      node_normal:
+        file: assets/art/ui/relationship/node_normal.png
+        type: ui
+        transparent: true
+        nine_patch: false
+        status: concept
+      node_selected:
+        file: assets/art/ui/relationship/node_selected.png
+        type: ui
+        transparent: true
+        nine_patch: false
+        status: concept
+
+notes:
+  - 最终资产加入后，将 status 改为 approved。
+  - Codex 默认只使用 approved 资产。
+  - 如任务允许 concept/review 资产，应在 Task Spec 中明确说明。

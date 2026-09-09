@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "version": 1
+  },
+  "durations_ms": {
+    "micro": 120,
+    "normal": 180,
+    "emphasis": 220,
+    "scene_transition": 320
+  },
+  "motion": {
+    "preferred": [
+      "slide",
+      "wipe",
+      "diagonal_reveal",
+      "tag_pop",
+      "node_connect"
+    ],
+    "avoid": [
+      "continuous_shake",
+      "constant_glitch",
+      "blocking_animation"
+    ]
+  },
+  "rules": [
+    "普通交互优先 120~220ms",
+    "异常 glitch 只用于关键剧情",
+    "动画不应阻塞主要操作"
+  ]
+}
