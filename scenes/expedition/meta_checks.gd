@@ -179,6 +179,7 @@ func run_checks(hub) -> void:
 	var cash = hub.progress.points
 	hub.location_panel._dispatch()
 	verify(hub.progress.dispatches.size() == 1 and hub.progress.dispatches[0].location == "gym" and hub.progress.points == cash - 4, "map dispatch transaction")
+	hub._open_location_details(1)
 	hub.location_panel._dispatch()
 	verify(hub.progress.dispatches.size() == 1 and hub.progress.points == cash - 4, "map duplicate dispatch rejected")
 	hub._close_location_details()

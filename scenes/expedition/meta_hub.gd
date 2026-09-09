@@ -15,8 +15,25 @@ func _create_campus_map() -> void:
 	campus_map = preload("res://scenes/expedition/campus_map.gd").new()
 	campus_map.progress = progress
 	campus_map.location_selected.connect(_open_location_details)
+	campus_map.claim_requested.connect(_claim_map_job)
 	add_child(campus_map)
 	campus_map.hide()
+
+func _dispatch_departed(job: Dictionary) -> void:
+	_close_location_details()
+	campus_map.reset_view()
+	campus_map.play_journey(job)
+
+func _claim_map_job(job_id: String) -> void:
+	if screen != "dispatch" or paused or is_instance_valid(location_panel): return
+	var job: Dictionary = {}
+	for item in progress.dispatches:
+		if item.id == job_id: job = item.duplicate(true); break
+	var return_origin: Vector2 = campus_map.job_rect(job).position + Vector2(88, 24) if not job.is_empty() else Vector2.ZERO
+	if progress.claim_dispatch(job_id):
+		notice = "成果已领取，同学正在返回据点。"
+		campus_map.play_journey(job, true, return_origin)
+	else: notice = progress.error_message
 
 func _close_location_details() -> void:
 	if is_instance_valid(location_panel):
@@ -103,6 +120,9 @@ func _ready() -> void:
 		test_runner.run_checks(self)
 	elif "--dispatch-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/dispatch_checks.gd").new()
+		test_runner.run_checks(self)
+	elif "--journey-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/journey_checks.gd").new()
 		test_runner.run_checks(self)
 
 func _pack_checkpoint() -> Dictionary:
@@ -385,7 +405,7 @@ func _gui_input(event: InputEvent) -> void:
 		if Rect2(953,520,274,53).has_point(p): _open_location_details(selected_location)
 		for i in range(progress.dispatches.size()):
 			if Rect2(28+i*447,626,427,57).has_point(p):
-				notice = "成果已领取，同学已归队。" if progress.claim_dispatch(progress.dispatches[i].id) else progress.error_message
+				_claim_map_job(progress.dispatches[i].id)
 				break
 		if Rect2(993,634,245,52).has_point(p): screen = "base"
 	else:

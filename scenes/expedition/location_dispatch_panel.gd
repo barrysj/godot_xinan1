@@ -105,6 +105,8 @@ func _dispatch() -> void:
 		selected.clear()
 		result_message = "队伍已出发，全部成员将在领取成果后归队。"
 		game.notice = "队伍已出发，进度已保存。"
+		game._dispatch_departed(game.progress.dispatches.back())
+		return
 	else:
 		result_message = game.progress.error_message
 	_refresh()

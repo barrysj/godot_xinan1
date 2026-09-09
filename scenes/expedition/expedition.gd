@@ -23,6 +23,7 @@ func _ready() -> void:
 	is_test = is_test or "--team-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--map-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--dispatch-check" in OS.get_cmdline_user_args()
+	is_test = is_test or "--journey-check" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"
 		if "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args():

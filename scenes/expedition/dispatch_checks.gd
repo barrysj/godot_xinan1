@@ -80,6 +80,8 @@ func run_checks(game: Control) -> void:
 	game.location_panel._toggle("liaison")
 	game.location_panel.dispatch_button.pressed.emit()
 	verify(game.progress.dispatches.size() == 1 and game.progress.points == 26, "UI submits whole crew")
+	verify(not is_instance_valid(game.location_panel), "Dispatch closes panel to show journey")
+	game._open_location_details(1)
 	verify(game.location_panel.counter.text.ends_with("0/2") and game.location_panel.rows.find_child("Select_liaison", true, false).disabled, "Dispatched staff immediately unavailable")
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
