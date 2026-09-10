@@ -10,6 +10,7 @@
 
 ## 美术实现 Pipeline
 
+- 只有当进行美术相关的任务时才执行这个pipeline
 - 视觉方向为 Cyber Pop Campus。ChatGPT 网页版负责设计、美术资产与视觉 QA，人类负责人批准方向；Codex 负责按冻结的 Task Spec 实现、Godot 验证和修复明确问题，不承担开放式美术探索、重新定义 Art Direction、自行美化或未经批准的大范围视觉重构。缺少冻结 Spec 时先补齐需求，不扩大实现范围。
 - 视觉任务使用项目级 Skill：`.agents/skills/art-implementation/SKILL.md`。普通任务最小读取集为 `docs/art/ART_CONTRACT.md`、当前任务直接相关的一个 Task Spec、`docs/art/asset_manifest.yaml`，以及必要的 `data/visual/` Token；不重复读取无关设计文档，不为小修改扫描全项目，一个 Feature 尽量在一个独立任务中完成。
 - 普通任务禁止默认或反复读取完整 `docs/art/STYLE_BIBLE.md`。只有首次接入或建立新视觉系统、引入新场景大类或新角色表现体系、已授权的全局 UI 语言重构、用户明确要求重新设计视觉方向时才读取；读取不代表获得重新设计授权。

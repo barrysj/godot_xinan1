@@ -1,38 +1,53 @@
 {
   "meta": {
     "name": "Cyber Pop Campus Colors",
-    "version": 1
+    "version": "0.2",
+    "direction": "白天克制，夜晚增强，异常爆发"
   },
   "brand": {
-    "cyan": "#16D9E3",
-    "magenta": "#F72585",
-    "yellow": "#F4E409",
-    "black": "#111318",
-    "white": "#F6F7F9",
-    "deep_gray": "#222730"
+    "cyan": "#22B8D6",
+    "cyan_bright": "#22E0F0",
+    "magenta": "#E83E8C",
+    "magenta_neon": "#FF2BA6",
+    "yellow": "#E8D72F",
+    "yellow_neon": "#F7E733",
+    "black": "#11151C",
+    "white": "#F6F8FA",
+    "deep_gray": "#252B33"
   },
   "daily": {
-    "background": "#EDF6F7",
+    "background": "#EEF4F7",
     "surface": "#F8FAFB",
-    "text_primary": "#111318",
-    "text_secondary": "#5C6673",
-    "accent_primary": "#16D9E3",
-    "accent_secondary": "#F72585",
-    "highlight": "#F4E409"
+    "surface_blue": "#E6F0F4",
+    "text_primary": "#17202B",
+    "text_secondary": "#677482",
+    "accent_primary": "#4AAFD0",
+    "accent_secondary": "#D96C9F",
+    "highlight": "#D5C94A"
+  },
+  "night": {
+    "background": "#0D1623",
+    "surface": "#131E2C",
+    "text_primary": "#F4F8FC",
+    "cyan": "#20D8F2",
+    "magenta": "#F33BBA",
+    "violet": "#8B5CF6",
+    "highlight": "#F0DF3B"
   },
   "anomaly": {
-    "background": "#10131A",
-    "surface": "#171B24",
-    "text_primary": "#F6F7F9",
-    "cyan": "#16D9E3",
-    "magenta": "#F72585",
-    "warning": "#F4E409",
-    "glitch_green": "#61FFB0"
+    "background": "#080A12",
+    "surface": "#101321",
+    "text_primary": "#F7FBFF",
+    "cyan": "#00F0FF",
+    "magenta": "#FF2DAA",
+    "violet": "#A855F7",
+    "warning": "#F7EA39",
+    "glitch_green": "#55FFB0",
+    "error": "#FF3B68"
   },
-  "semantic": {
-    "success": "#36D399",
-    "warning": "#F4E409",
-    "danger": "#FF4D6D",
-    "info": "#16D9E3"
+  "usage": {
+    "daily_high_saturation_limit": "低",
+    "night_high_saturation_limit": "中高",
+    "anomaly_high_saturation_limit": "高"
   }
 }
