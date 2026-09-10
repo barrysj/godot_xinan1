@@ -11,6 +11,6 @@ attack_scale = 2.6
 script = ExtResource("s")
 id = "skill_archer"
 display_name = "穿云"
-description = "优先射击后排，造成 2.6 倍攻击伤害。"
+description = "射程内优先射击后排，造成2.6倍伤害。"
 glyph = "arrow"
 effects = Array[ExtResource("e")]([SubResource("effect")])

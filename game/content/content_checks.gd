@@ -61,6 +61,13 @@ func run_checks(hub) -> void:
 	freshman.hp -= 10
 	freshman.count = 2
 	freshman.timer = 0
+	# Skill-state isolation is checked after entering attack range.
+	for enemy in hub.units:
+		if enemy.side == 1:
+			freshman.position = enemy.position + Vector2(0, 1)
+			freshman.cell = Vector2i(freshman.position)
+			freshman.destination = freshman.cell
+			break
 	var archer_count = archer.count
 	hub._tick()
 	assert(archer.count == archer_count and freshman.count == 0 and DB.character(role).health == 190)

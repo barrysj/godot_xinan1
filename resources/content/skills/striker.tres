@@ -11,6 +11,6 @@ attack_scale = 2.1
 script = ExtResource("s")
 id = "skill_striker"
 display_name = "冲刺"
-description = "追击残血敌人，造成 2.1 倍攻击伤害。"
+description = "追击射程内残血敌人，造成2.1倍伤害。"
 glyph = "bolt"
 effects = Array[ExtResource("e")]([SubResource("effect")])

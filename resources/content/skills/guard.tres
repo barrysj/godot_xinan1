@@ -11,6 +11,6 @@ attack_scale = 0.0
 script = ExtResource("s")
 id = "skill_guard"
 display_name = "并肩"
-description = "自身与相邻友军获得 48 点护盾。"
+description = "自身与两格内友军获得48点护盾。"
 glyph = "shield"
 effects = Array[ExtResource("e")]([SubResource("effect")])

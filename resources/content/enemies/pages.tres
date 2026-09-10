@@ -9,10 +9,12 @@ region = Rect2(0, 144, 16, 16)
 script = ExtResource("s")
 id = "pages"
 display_name = "飞页投手"
-description = "飞页投手：优先射击后排，造成 2.6 倍攻击伤害。"
+description = "飞页投手：射程内优先射击后排，造成2.6倍伤害。"
 portrait = SubResource("portrait")
 health = 165
 attack = 29
 interval = 1.65
 defense = 5
 skill = ExtResource("skill")
+
+attack_range = 3.2

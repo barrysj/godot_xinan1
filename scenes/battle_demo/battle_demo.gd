@@ -2,6 +2,7 @@ extends Control
 ## Disposable battle prototype: formation and automatic skill readability.
 
 const STEP = 0.05
+const AutoBattle = preload("res://game/combat/auto_battle.gd")
 const INK = Color("e5edf3")
 const MUTED = Color("94a8b7")
 const TEAL = Color("62e4c1")
@@ -33,7 +34,7 @@ var origin = Vector2.ZERO
 func _ready() -> void:
 	font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	_build_units()
-	_note("点击同学，再点击目标格换位。前排承伤，技能每 3 次普攻自动释放。")
+	_note("点击同学，再点击目标格换位。角色自动寻路索敌，进入射程后攻击。")
 	if "--demo-smoke" in OS.get_cmdline_user_args():
 		_smoke()
 	elif "--demo-capture" in OS.get_cmdline_user_args():
@@ -64,6 +65,9 @@ func _build_units() -> void:
 	var group = Content.encounter(encounter_id if not encounter_id.is_empty() else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
 	for i in range(group.units.size()):
 		units.append(_from_definition(group.units[i], -1, 1, group.slots[i]))
+	for i in range(units.size()):
+		units[i].id = i
+		AutoBattle.initialize(units[i])
 	elapsed = 0
 	accumulator = 0
 	paused = false
@@ -73,7 +77,7 @@ func _start() -> void:
 	_build_units()
 	phase = "battle"
 	logs.clear()
-	_note("开战！阵型已锁定，技能全自动。")
+	_note("开战！自动移动索敌，进入射程后攻击。")
 
 func _process(delta: float) -> void:
 	for u in units:
@@ -99,9 +103,9 @@ func _target(actor: Dictionary, candidates: Array[Dictionary], rule: String = "n
 		if rule == "low":
 			score = u.hp / u.max_hp * 1000.0 + u.slot * 0.001
 		elif rule == "back":
-			score = (0 if u.slot >= 3 else 100) + absi(u.slot % 3 - actor.slot % 3) * 10 + u.slot
+			score = u.position.y if actor.side == 0 else -u.position.y
 		else:
-			score = (0 if u.slot < 3 else 100) + absi(u.slot % 3 - actor.slot % 3) * 10 + u.slot
+			score = AutoBattle.distance(actor, u)
 		if score < best_score:
 			best_score = score
 			best = u
@@ -117,13 +121,13 @@ func _tick() -> void:
 	for actor in units:
 		if actor.hp <= 0:
 			continue
-		actor.timer -= STEP
-		if actor.timer > 0.00001:
+		var target = AutoBattle.advance(actor, units, STEP)
+		if target.is_empty() or actor.timer > 0.00001:
 			continue
-		actor.timer += actor.interval
+		actor.timer = actor.interval
 		var foes = _living(1 - actor.side)
 		var allies = _living(actor.side)
-		_event(events, actor, _target(actor, foes), "damage", actor.atk)
+		_event(events, actor, target, "damage", actor.atk)
 		actor.count += 1
 		_present_action(actor, actor.count >= actor.skill.attacks_to_trigger)
 		if actor.count < actor.skill.attacks_to_trigger: continue
@@ -136,16 +140,16 @@ func _tick() -> void:
 				"all_enemies": targets = foes
 				"adjacent":
 					for ally in allies:
-						if absi(ally.slot % 3 - actor.slot % 3) + absi(int(ally.slot / 3) - int(actor.slot / 3)) <= 1: targets.append(ally)
+						if AutoBattle.distance(actor, ally) <= 2.05: targets.append(ally)
 				"row":
-					var first = _target(actor, foes)
+					var first = target
 					if not first.is_empty():
 						for foe in foes:
-							if int(foe.slot / 3) == int(first.slot / 3): targets.append(foe)
+							if absf(foe.position.y - first.position.y) <= 0.5 and AutoBattle.in_range(actor, foe): targets.append(foe)
 				_:
-					var candidates = allies if effect.target == "low_ally" else foes
+					var candidates = allies if effect.target == "low_ally" else foes.filter(func(foe): return AutoBattle.in_range(actor, foe))
 					targets = [_target(actor, candidates, "low" if effect.target.begins_with("low") else effect.target)]
-			for target in targets: _event(events,actor,target,effect.kind,effect.value+actor.atk*effect.attack_scale,true)
+			for skill_target in targets: _event(events,actor,skill_target,effect.kind,effect.value+actor.atk*effect.attack_scale,true)
 		_note(actor.name+" · "+actor.skill.display_name)
 	# Collect every action before resolving; support precedes simultaneous damage.
 	for e in events:
@@ -174,8 +178,8 @@ func _tick() -> void:
 			e.actor.damage += e.actual
 			e.target.flash = 0.2
 		_present_event(e)
-		beams.append({"from": _slot_rect(e.actor.side, e.actor.slot).get_center(),
-			"to": _slot_rect(e.target.side, e.target.slot).get_center(),
+		beams.append({"from": _unit_center(e.actor),
+			"to": _unit_center(e.target),
 			"color": (GOLD if e.special else (TEAL if e.actor.side == 0 else RED)), "life": 0.18})
 	if _living(0).is_empty() or _living(1).is_empty() or elapsed >= 90:
 		result_won = not _living(0).is_empty() and _living(1).is_empty()
@@ -188,6 +192,9 @@ func _tick() -> void:
 					u.shield = 0
 					u.count = 0
 					u.timer = u.interval
+
+func _unit_center(unit: Dictionary) -> Vector2:
+	return Vector2(236, 241) + unit.position * Vector2(74, 148.0 / 3.0)
 
 func _present_event(_event_data: Dictionary) -> void:
 	pass
@@ -378,6 +385,8 @@ func _smoke() -> void:
 
 func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary:
 	var unit = _unit(definition.display_name, role, side, slot, definition.health, definition.attack, definition.interval, definition.defense)
+	unit.attack_range = definition.attack_range
+	unit.move_speed = definition.move_speed
 	unit.content_id = definition.id
 	unit.skill = definition.skill
 	unit.portrait = definition.portrait

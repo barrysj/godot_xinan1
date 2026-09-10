@@ -9,10 +9,12 @@ region = Rect2(0, 144, 16, 16)
 script = ExtResource("s")
 id = "chalk"
 display_name = "粉笔精灵"
-description = "粉笔精灵：优先射击后排，造成 2.6 倍攻击伤害。"
+description = "粉笔精灵：射程内优先射击后排，造成2.6倍伤害。"
 portrait = SubResource("portrait")
 health = 190
 attack = 28
 interval = 1.6
 defense = 5
 skill = ExtResource("skill")
+
+attack_range = 3.2

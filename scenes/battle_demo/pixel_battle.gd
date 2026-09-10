@@ -47,7 +47,9 @@ func _ready() -> void:
 	previous_auto_quit = get_tree().auto_accept_quit
 	get_tree().auto_accept_quit = false
 	_create_pause_menu()
-	if "--pause-smoke" in OS.get_cmdline_user_args():
+	if "--autobattle-capture" in OS.get_cmdline_user_args():
+		_capture_autobattle()
+	elif "--pause-smoke" in OS.get_cmdline_user_args():
 		_pause_smoke()
 	elif "--pause-flow-smoke" in OS.get_cmdline_user_args() and not get_tree().root.has_node("PauseFlowCheck"):
 		var check = load("res://scenes/battle_demo/pause_flow_check.gd").new()
@@ -63,6 +65,27 @@ func _ready() -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("res://.godot/pixel_exit.png")
 		get_tree().quit()
+
+func _capture_autobattle() -> void:
+	set_process(false)
+	for resolution in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(1920, 1200)]:
+		get_window().mode = Window.MODE_WINDOWED
+		get_window().size = resolution
+		await get_tree().process_frame
+		phase = "prepare"
+		_build_units()
+		queue_redraw()
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/autobattle-prepare-%dx%d.png" % [resolution.x, resolution.y])
+		_start()
+		for step in range(90): _process(STEP)
+		queue_redraw()
+		await RenderingServer.frame_post_draw
+		var screenshot = get_viewport().get_texture().get_image()
+		assert(screenshot.get_size() == resolution)
+		screenshot.save_png("res://.godot/autobattle-combat-%dx%d.png" % [resolution.x, resolution.y])
+		print("AUTO_BATTLE_CAPTURE ", screenshot.get_size())
+	get_tree().quit()
 
 func _load_atlas(path: String) -> Texture2D:
 	# First-run local demos need no import pass; exports use imported textures.
@@ -103,8 +126,8 @@ func _present_action(actor: Dictionary, casts_skill: bool) -> void:
 func _present_event(e: Dictionary) -> void:
 	if e.kind == "damage" and e.get("actual", 0) > 0:
 		e.target.animation.play(&"hurt")
-	var start = _slot_rect(e.actor.side, e.actor.slot).get_center() + Vector2(0, -6)
-	var finish = _slot_rect(e.target.side, e.target.slot).get_center() + Vector2(0, -6)
+	var start = _unit_center(e.actor) + Vector2(0, -6)
+	var finish = _unit_center(e.target) + Vector2(0, -6)
 	var tint: Color = GOLD if e.special else (TEAL if e.actor.side == 0 else RED)
 	if e.kind == "heal":
 		tint = Color("a3ef98")
@@ -228,8 +251,7 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 		draw_polyline(poly, Color("8dd7e7"), 3)
 
 func _draw_unit(u: Dictionary) -> void:
-	var rect = _slot_rect(u.side, u.slot)
-	var p = rect.get_center() + Vector2(0, 13)
+	var p = _unit_center(u) + Vector2(0, 13)
 	var alive: bool = u.hp > 0
 	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected
 	# Small base, not a character card: the actor stands on the map.
@@ -294,14 +316,27 @@ func _draw() -> void:
 	_text(Vector2(42, 65), "RETURN TO SUMMER", Color("c0b792"), 11)
 	_text(Vector2(238, 45), "01 / 旧校庭院", PAPER, 20)
 	_text(Vector2(238, 66), "找回同学，驱散校园里的异常。", Color("b2baa0"), 12)
-	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else "自动战斗中")))
+	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else "自走棋战斗")))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
 	_text(Vector2(972, 53), "%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed], PAPER, 17)
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
-	for entry in [["敌后", 252], ["敌前", 344], ["我前", 456], ["我后", 548]]:
-		_text(Vector2(201, entry[1]), entry[0], DARK, 12)
+	if phase == "prepare":
+		for entry in [["敌后", 252], ["敌前", 344], ["我前", 456], ["我后", 548]]:
+			_text(Vector2(201, entry[1]), entry[0], DARK, 12)
+	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
+	for u in units:
+		if u.hp <= 0: continue
+		if not ((inspected_enemy_slot < 0 and u.side == 0 and u.role == selected) or (u.side == 1 and u.slot == inspected_enemy_slot)): continue
+		var ring = PackedVector2Array()
+		for i in range(65):
+			var offset = Vector2.from_angle(TAU * i / 64.0) * u.attack_range * Vector2(74, 148.0 / 3.0)
+			var point = _unit_center(u) + offset
+			ring.append(point.clamp(Vector2(202, 190), Vector2(748, 582)))
+		draw_polyline(ring, GOLD, 1.5, true)
+		if phase == "battle" and u.target_id >= 0 and units[u.target_id].hp > 0:
+			draw_dashed_line(_unit_center(u), _unit_center(units[u.target_id]), GOLD, 1.5, 5)
 	for side in range(2):
 		for slot in range(6):
 			var rect = _slot_rect(side, slot)
@@ -314,9 +349,11 @@ func _draw() -> void:
 						_center(rect.get_center() + Vector2(0,10), "+", Color("728369"), 24)
 					if selected == 0 and inspected_enemy_slot < 0:
 						var guard_slot = formation.find(0)
-						if guard_slot >= 0 and absi(slot % 3 - guard_slot % 3) + absi(int(slot / 3) - int(guard_slot / 3)) <= 1:
+						if guard_slot >= 0 and Vector2(slot % 3 - guard_slot % 3, int(slot / 3) - int(guard_slot / 3)).length() <= 1.025:
 							draw_rect(rect.grow(-9), Color(0.45, 0.85, 1.0, 0.2))
-	for u in units:
+	var ordered = units.duplicate()
+	ordered.sort_custom(func(a, b): return a.position.y < b.position.y)
+	for u in ordered:
 		_draw_unit(u)
 	_draw_effects()
 	if banner_time > 0 and phase == "battle":
@@ -339,6 +376,7 @@ func _draw() -> void:
 		_text(Vector2(962, 306), "每 %d 次普攻自动释放：" % current.skill.attacks_to_trigger, Color("6b705a"), 15)
 		_text(Vector2(962, 334), current.skill.description.left(16), DARK, 16)
 		_text(Vector2(962, 358), current.skill.description.substr(16,16), DARK, 16)
+		_text(Vector2(962, 383), "射程 %.1f 格 · 移速 %.1f 格/秒" % [current.attack_range, current.move_speed], Color("6b705a"), 14)
 	_pixel_button(2, "装备" if inspected_enemy_slot < 0 else "不可装备", false, phase == "prepare" and inspected_enemy_slot < 0)
 	_text(Vector2(963, 468), "现由「" + ROLES[equipment] + "」携带" if equipment >= 0 else "篮球鞋在背包中，可重新装备", DARK, 16)
 	_text(Vector2(963, 493), "效果：攻击间隔缩短 25%", Color("6b705a"), 14)
@@ -359,10 +397,20 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var point: Vector2 = (event.position - origin) / scale_factor
+		if phase != "prepare":
+			var ordered = units.duplicate()
+			ordered.sort_custom(func(a, b): return a.position.y > b.position.y)
+			for u in ordered:
+				if u.hp > 0 and Rect2(_unit_center(u) - Vector2(36, 48), Vector2(72, 92)).has_point(point):
+					inspected_enemy_slot = u.slot if u.side == 1 else -1
+					if u.side == 0: selected = u.role
+					accept_event()
+					return
 		if inspected_enemy_slot >= 0 and _action_rect(2).has_point(point):
 			accept_event()
 			return
 		for slot in range(6):
+			if phase != "prepare": break
 			if _slot_rect(1, slot).has_point(point):
 				for u in units:
 					if u.side == 1 and u.slot == slot:

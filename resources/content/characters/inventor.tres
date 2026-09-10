@@ -16,3 +16,5 @@ attack = 24
 interval = 1.9
 defense = 8
 skill = ExtResource("skill")
+
+attack_range = 3.2

@@ -11,6 +11,6 @@ attack_scale = 0.0
 script = ExtResource("s")
 id = "skill_inventor"
 display_name = "实验"
-description = "对目标所在整排造成 72 点伤害。"
+description = "对射程内目标同排敌人造成72点伤害。"
 glyph = "flask"
 effects = Array[ExtResource("e")]([SubResource("effect")])
