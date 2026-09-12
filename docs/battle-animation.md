@@ -55,6 +55,8 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 ## 实际角色图集接入（2026-09-13）
 
+远射手同样接入 16 个绘制姿势和七类动画：银蓝短发、校园运动装与电子发射器。瞄准、发射、后坐、充能、受击和倒地均有独立画稿。两名角色的原始提示词与来源分别见 `assets/art/characters/guard/generation.md` 和 `assets/art/characters/archer/generation.md`；其余角色仍可按缺失动画回退规则正常战斗。
+
 用户进一步明确要求至少两名绘制的战斗角色、动作和一个技能特效。本阶段不以旧占位图完成验收；允许当前生成成果进入战斗，Manifest 保留 review 供后续人工视觉 QA，不冒充 approved，不创建冻结 Task Spec。
 
 守护者新增 16 个独立绘制姿势：校园外套、深蓝短发、青蓝智能手表，约 4 头身。组织为 idle、move、attack、cast、hurt、critical、death 七种动画，部署头像也取自同一角色。攻击在出手点播放伸拳姿势，施法播放展掌姿势，死亡依次跪倒、侧倒和伏地。所有动作使用原始图集中的独立画稿，非静态占位图整体位移。

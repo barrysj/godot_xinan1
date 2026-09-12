@@ -1,0 +1,116 @@
+[gd_resource type="Resource" load_steps=20 format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/archer/battle_sheet.png" id="sheet"]
+
+[sub_resource type="AtlasTexture" id="pose_0"]
+atlas = ExtResource("sheet")
+region = Rect2(109, 7, 135, 307)
+margin = Rect2(144.0, 29, 249, 77)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_1"]
+atlas = ExtResource("sheet")
+region = Rect2(401, 17, 171, 297)
+margin = Rect2(122.5, 40, 213, 87)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_2"]
+atlas = ExtResource("sheet")
+region = Rect2(665, 14, 235, 300)
+margin = Rect2(73.5, 38, 149, 84)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_3"]
+atlas = ExtResource("sheet")
+region = Rect2(987, 14, 241, 296)
+margin = Rect2(82.0, 42, 143, 88)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_4"]
+atlas = ExtResource("sheet")
+region = Rect2(83, 314, 178, 313)
+margin = Rect2(118.0, 23, 206, 71)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_5"]
+atlas = ExtResource("sheet")
+region = Rect2(381, 337, 217, 290)
+margin = Rect2(102.5, 46, 167, 94)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_6"]
+atlas = ExtResource("sheet")
+region = Rect2(688, 349, 233, 278)
+margin = Rect2(96.5, 58, 151, 106)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_7"]
+atlas = ExtResource("sheet")
+region = Rect2(1032, 332, 177, 295)
+margin = Rect2(127.0, 41, 207, 89)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_8"]
+atlas = ExtResource("sheet")
+region = Rect2(80, 627, 167, 304)
+margin = Rect2(115.0, 34, 217, 80)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_9"]
+atlas = ExtResource("sheet")
+region = Rect2(372, 627, 232, 308)
+margin = Rect2(93.5, 30, 152, 76)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_10"]
+atlas = ExtResource("sheet")
+region = Rect2(693, 627, 247, 309)
+margin = Rect2(101.5, 29, 137, 75)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_11"]
+atlas = ExtResource("sheet")
+region = Rect2(940, 627, 265, 306)
+margin = Rect2(35.0, 32, 119, 78)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_12"]
+atlas = ExtResource("sheet")
+region = Rect2(91, 947, 153, 275)
+margin = Rect2(126.0, 63, 231, 109)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_13"]
+atlas = ExtResource("sheet")
+region = Rect2(361, 1044, 212, 187)
+margin = Rect2(82.5, 151, 172, 197)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_14"]
+atlas = ExtResource("sheet")
+region = Rect2(650, 1124, 278, 107)
+margin = Rect2(58.5, 231, 106, 277)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="pose_15"]
+atlas = ExtResource("sheet")
+region = Rect2(946, 1132, 299, 92)
+margin = Rect2(41.0, 246, 85, 292)
+filter_clip = true
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{"frames": [{"duration": 1.8, "texture": SubResource("pose_0")}, {"duration": 0.5, "texture": SubResource("pose_1")}, {"duration": 1.8, "texture": SubResource("pose_0")}], "loop": true, "name": &"idle", "speed": 3.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("pose_2")}, {"duration": 0.35, "texture": SubResource("pose_0")}, {"duration": 1.0, "texture": SubResource("pose_3")}, {"duration": 0.35, "texture": SubResource("pose_1")}], "loop": true, "name": &"move", "speed": 6.0},
+{"frames": [{"duration": 0.3, "texture": SubResource("pose_0")}, {"duration": 0.7, "texture": SubResource("pose_4")}, {"duration": 0.35, "texture": SubResource("pose_5")}, {"duration": 0.4, "texture": SubResource("pose_6")}, {"duration": 0.45, "texture": SubResource("pose_7")}, {"duration": 0.3, "texture": SubResource("pose_0")}], "loop": false, "name": &"attack", "speed": 6.0},
+{"frames": [{"duration": 0.3, "texture": SubResource("pose_0")}, {"duration": 0.7, "texture": SubResource("pose_8")}, {"duration": 0.35, "texture": SubResource("pose_9")}, {"duration": 0.4, "texture": SubResource("pose_9")}, {"duration": 0.45, "texture": SubResource("pose_7")}, {"duration": 0.3, "texture": SubResource("pose_0")}], "loop": false, "name": &"cast", "speed": 6.0},
+{"frames": [{"duration": 1, "texture": SubResource("pose_10")}, {"duration": 1, "texture": SubResource("pose_11")}, {"duration": 0.5, "texture": SubResource("pose_0")}], "loop": false, "name": &"hurt", "speed": 10.0},
+{"frames": [{"duration": 1, "texture": SubResource("pose_12")}], "loop": true, "name": &"critical", "speed": 2.0},
+{"frames": [{"duration": 0.8, "texture": SubResource("pose_13")}, {"duration": 1, "texture": SubResource("pose_14")}, {"duration": 1.2, "texture": SubResource("pose_15")}], "loop": false, "name": &"death", "speed": 4.0}]
+
+[resource]
+script = ExtResource("script")
+frames = SubResource("frames")
+display_size = Vector2(128, 128)
+anchor = Vector2(0.5, 0.875)
+impact_ratio = 0.4
+flip_with_facing = true

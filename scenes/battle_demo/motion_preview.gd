@@ -185,7 +185,7 @@ func _draw() -> void:
 	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
 	_pixel_panel(Rect2(24, 18, 1220, 58), PAPER)
 	_text(Vector2(44, 56), "动作预览 · " + MODES[mode], DARK, 24)
-	_text(Vector2(560, 53), "开发测试 / " + ("自定义序列帧" if preview_animation != null else "现有占位素材") + (" / 0.25×" if slow else " / 1×"), DARK, 17)
+	_text(Vector2(560, 53), "开发测试 / " + ("自定义序列帧" if preview_animation != null else "角色动作图集") + (" / 0.25×" if slow else " / 1×"), DARK, 17)
 	_campus(false)
 	var ordered = units.duplicate()
 	ordered.sort_custom(func(a, b): return _unit_center(a).y < _unit_center(b).y)
