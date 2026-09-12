@@ -42,3 +42,13 @@
 - `--path . res://scenes/battle_demo/battle_demo.tscn -- --autobattle-capture`：1920×1080、2560×1440、1920×1200 的运行截图，输出到 `.godot/`。
 
 现有部署、寻路和完整冒险回归入口继续保留。
+
+## 独立动作预览
+
+PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
+
+- `-Check` 自动验证七种模式；`-Capture` 输出三种分辨率下的近战、远程、受击、退场截图；`-Tour` 连续展示七种模式后退出。
+- `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用现有占位图。
+- Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
+
+本轮获授权后通过内置 image_gen 进行了测试素材试产；比例和真实透明度未同时通过，因此未接入正式战斗。未通过样本保存于 `assets/testing/battle-motion/`（带 `.gdignore`），网页端交付提示词见 `docs/prompts/battle-animation-assets.md`。现有占位图验证的是动作框架，不代表完整的肢体动画或冻结美术效果。
