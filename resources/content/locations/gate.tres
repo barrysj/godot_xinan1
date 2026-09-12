@@ -1,9 +1,12 @@
-[gd_resource type="Resource" script_class="CampusLocation" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CampusLocation" load_steps=5 format=3]
 [ext_resource type="Script" path="res://game/content/location_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/pools/campus.tres" id="pool"]
 [ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounter"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/battle_courtyard/day.png" id="bg"]
 [resource]
 script = ExtResource("s")
+battle_background = ExtResource("bg")
+battle_crop = Rect2(0.085, 0.123, 0.83, 0.833)
 id = "gate"
 display_name = "旧校门"
 description = "纸甲守卫挡住了归校的路。\n先观察敌阵，试试保护后排。"

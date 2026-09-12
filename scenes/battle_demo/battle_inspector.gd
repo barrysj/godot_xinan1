@@ -23,6 +23,7 @@ var equip_button: Button
 var bag_role := -1
 var picked_item := "none"
 var rendered_inventory := ""
+var pointer := Vector2(-1000, -1000)
 var theme_surface: Color
 var theme_ink: Color
 var theme_accent: Color
@@ -40,7 +41,7 @@ func _ready() -> void:
 	canvas = Control.new()
 	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(canvas)
-	panel = _panel(Vector2(288, 0))
+	panel = _panel(Vector2(260, 0))
 	canvas.add_child(panel)
 	var column = _column(panel)
 	var top = HBoxContainer.new()
@@ -54,7 +55,7 @@ func _ready() -> void:
 	column.add_child(summary)
 	description = _label("", 16)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description.custom_minimum_size.x = 252
+	description.custom_minimum_size.x = 228
 	column.add_child(description)
 	gear_row = HBoxContainer.new()
 	column.add_child(gear_row)
@@ -130,7 +131,7 @@ func _button(title: String, callback: Callable) -> Button:
 	return result
 
 func active() -> bool:
-	return not game.paused and not game.leaving and game.get("preview_elapsed") == null and (game.get("screen") == null or game.get("screen") == "battle")
+	return not game.paused and not game.leaving and not is_instance_valid(game.get("team_panel")) and not is_instance_valid(game.get("codex_panel")) and game.get("preview_elapsed") == null and (game.get("screen") == null or game.get("screen") == "battle")
 
 func _process(_delta: float) -> void:
 	visible = active()
@@ -141,7 +142,10 @@ func _process(_delta: float) -> void:
 	var factor = minf(size.x / 1280, size.y / 720)
 	canvas.scale = Vector2.ONE * factor
 	canvas.position = (size - Vector2(1280, 720) * factor) / 2
-	if bag.visible and game.phase != "prepare": close_bag()
+	if not pinned and not bag.visible and not (panel.visible and Rect2(panel.position, panel.size).has_point(pointer)):
+		observed = pick(pointer)
+	if is_instance_valid(game.deployment) and game.deployment.dragging:
+		close_info()
 	if pinned:
 		observed = {}
 		for unit in game.units:
@@ -192,7 +196,7 @@ func refresh() -> void:
 	panel.reset_size()
 	var feet: Vector2 = game._unit_center(observed)
 	# Prefer the open central lane; clamp vertically inside the battlefield.
-	var wanted = Vector2(496, feet.y - panel.size.y / 2)
+	var wanted = Vector2((1280 - panel.size.x) / 2, feet.y - panel.size.y / 2)
 	if feet.x > 500 and feet.x < 784:
 		wanted.x = feet.x + 60 if feet.x < 640 else feet.x - panel.size.x - 60
 	panel.position = Vector2(clampf(wanted.x, 30, 1250 - panel.size.x), clampf(wanted.y, 100, 603 - panel.size.y))
@@ -212,6 +216,7 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if not (event is InputEventMouseMotion or event is InputEventMouseButton): return
+	pointer = canvas.get_global_transform().affine_inverse() * event.position
 	if blocks_event(event): return
 	var point: Vector2 = canvas.get_global_transform().affine_inverse() * event.position
 	if event is InputEventMouseMotion and not pinned:

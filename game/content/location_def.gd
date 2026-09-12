@@ -3,6 +3,9 @@ class_name CampusLocation
 extends Resource
 @export var id: String = ""
 @export var display_name: String = ""
+## Presentation-only; resolved by location ID and excluded from save snapshots.
+@export var battle_background: Texture2D
+@export var battle_crop := Rect2(0, 0, 1, 1)
 @export_multiline var description: String = ""
 @export_enum("battle", "elite", "event", "boss") var kind: String = "battle"
 @export_enum("start", "safe", "risk", "final") var route_pool: String = "safe"

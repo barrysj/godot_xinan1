@@ -70,7 +70,10 @@ func run_checks(hub) -> void:
 			freshman.destination = freshman.cell
 			break
 	var archer_count = archer.count
-	hub._tick()
+	# The shared action framework resolves after windup and projectile arrival.
+	for step in 20:
+		hub._tick()
+		if freshman.damage > 0: break
 	assert(archer.count == archer_count and freshman.count == 0 and DB.character(role).health == 190)
 	assert(freshman.damage > 0)
 	hub._checkpoint()

@@ -63,6 +63,8 @@ func run_checks() -> void:
 	check(game.run.worn_gear(1) == "badge" and game.run.worn_gear(0) == "empty", "Transfer has a single owner")
 	game.phase = "battle"
 	ui._refresh_bag()
+	ui._process(0)
+	check(ui.bag.visible, "Combat equipment description remains available as read-only")
 	check(ui.equip_button.disabled and not game._equip_item("shoe",1), "Combat locks equipment mutation")
 	game.phase = "prepare"
 	ui.close_bag()
@@ -73,10 +75,19 @@ func run_checks() -> void:
 		for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
 			get_window().size = resolution
 			await get_tree().process_frame
-			ui.show_unit(game.units.filter(func(u): return u.side == 0 and u.role == 0)[0],true)
-			await get_tree().process_frame
-			await RenderingServer.frame_post_draw
-			get_viewport().get_texture().get_image().save_png("res://.godot/battle-wide-%dx%d.png" % [resolution.x,resolution.y])
+			for location_id in ["gate", "lab", "classroom"]:
+				var place = game.Content.MANIFEST.locations.filter(func(p): return p.id == location_id)[0]
+				game.run.node = place.snapshot()
+				game._build_units()
+				check(game.battle_background == place.battle_background, "Location selects its authored background")
+				ui.show_unit(game.units.filter(func(u): return u.side == 0 and u.role == 0)[0],true)
+				await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				var image = get_viewport().get_texture().get_image()
+				check(image.get_size() == resolution, "Capture has requested resolution")
+				image.save_png("res://.godot/battle-background-%s-%dx%d.png" % [location_id,resolution.x,resolution.y])
+				image.save_png("res://.godot/battle-wide-%dx%d.png" % [resolution.x,resolution.y])
+				print("BACKGROUND_CAPTURE ",location_id," ",resolution)
 			ui.open_bag()
 			await get_tree().process_frame
 			await RenderingServer.frame_post_draw

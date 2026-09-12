@@ -70,6 +70,45 @@ assets:
         integration_authorization: "2026-09-13 用户明确要求生成并接入一个实际技能特效用于动画验证；待最终视觉 QA。"
 
   backgrounds:
+    battle_courtyard:
+      day:
+        file: assets/art/backgrounds/battle_courtyard/day.png
+        type: battle_background
+        resolution: [1931, 814]
+        transparent: false
+        display_rect: [24, 92, 1220, 516]
+        crop_mode: region
+        normalized_crop: [0.085, 0.123, 0.83, 0.833]
+        usage: [battle, deployment]
+        style_layer: daily
+        status: review
+        integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
+    battle_lab:
+      night:
+        file: assets/art/backgrounds/battle_lab/night.png
+        type: battle_background
+        resolution: [1931, 814]
+        transparent: false
+        display_rect: [24, 92, 1220, 516]
+        crop_mode: region
+        normalized_crop: [0.085, 0.123, 0.83, 0.833]
+        usage: [battle, deployment]
+        style_layer: night
+        status: review
+        integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
+    battle_classroom:
+      anomaly:
+        file: assets/art/backgrounds/battle_classroom/anomaly.png
+        type: battle_background
+        resolution: [1931, 814]
+        transparent: false
+        display_rect: [24, 92, 1220, 516]
+        crop_mode: region
+        normalized_crop: [0.085, 0.123, 0.83, 0.833]
+        usage: [battle, deployment]
+        style_layer: anomaly
+        status: review
+        integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
     classroom:
       day:
         file: assets/art/backgrounds/classroom/day.png

@@ -11,6 +11,9 @@ const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd"
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 const Board = preload("res://scenes/battle_demo/battle_board.gd")
 var inspector: Control
+var battle_background: Texture2D
+var background_canvas: CanvasTexture
+var background_crop := Rect2(0.085, 0.123, 0.83, 0.833)
 var town: Texture2D
 var dungeon: Texture2D
 var visual_time = 0.0
@@ -34,6 +37,17 @@ var deployment: Control
 
 func _gear_inventory() -> Dictionary:
 	return {"shoe": equipment}
+
+func _battle_backdrop() -> Texture2D:
+	var current_run = get("run")
+	if current_run != null:
+		for place in Content.MANIFEST.locations:
+			if place.id == current_run.node.get("id", "") and place.battle_background != null:
+				background_crop = place.battle_crop
+				return place.battle_background
+	background_crop = Rect2(0.085, 0.123, 0.83, 0.833)
+	var path = "res://assets/art/backgrounds/battle_courtyard/day.png" if encounter == 0 else "res://assets/art/backgrounds/battle_classroom/anomaly.png"
+	return load(path) if ResourceLoader.exists(path) else null
 
 func _worn_item(role: int) -> String:
 	for id in _gear_inventory():
@@ -135,6 +149,11 @@ func _start() -> void:
 
 func _build_units() -> void:
 	super._build_units()
+	battle_background = _battle_backdrop()
+	background_canvas = CanvasTexture.new()
+	background_canvas.diffuse_texture = battle_background
+	background_canvas.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	queue_redraw()
 	for u in units:
 		u.animation = BattleAnimation.new(u.battle_animation)
 		u.presentation = UnitPresentation.new()
@@ -246,6 +265,10 @@ func _center(at: Vector2, value: String, color: Color = PAPER, font_size: int = 
 
 func _campus(show_battle_marks: bool = true) -> void:
 	var wide = get("screen") == null or get("screen") == "battle"
+	if wide and battle_background != null:
+		var source = Rect2(background_crop.position * battle_background.get_size(), background_crop.size * battle_background.get_size())
+		draw_texture_rect_region(background_canvas, Rect2(24, 92, 1220, 516), source)
+		return
 	if wide: draw_set_transform(origin, 0, Vector2(1.365, 1) * scale_factor)
 	_legacy_campus(false if wide else show_battle_marks)
 	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
@@ -353,6 +376,7 @@ func _draw_unit(u: Dictionary) -> void:
 	draw_rect(hp, Color("566354"))
 	hp.size.x *= clampf(u.hp / u.max_hp, 0, 1)
 	draw_rect(hp, Color("a7d684") if u.side == 0 else Color("df9386"))
+	draw_rect(Rect2(p + Vector2(-40, 27), Vector2(80, 21)), Color(PAPER, 0.92))
 	_center(p + Vector2(0, 41), u.name if alive else "已退场", DARK, 14)
 	for i in range(u.skill.attacks_to_trigger):
 		draw_rect(Rect2(p + Vector2(-10 + i * 8, 46), Vector2(5, 3)), GOLD if i < u.count else Color("747a62"))
@@ -441,8 +465,9 @@ func _draw() -> void:
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
 	if phase == "prepare":
-		for entry in [["我后", 90], ["我前", 450], ["敌前", 810], ["敌后", 1170]]:
-			_center(Vector2(entry[1], 562), entry[0], PAPER, 15)
+		for entry in [["我后", 260], ["我前", 450], ["敌前", 810], ["敌后", 1000]]:
+			draw_rect(Rect2(Vector2(entry[1] - 28, 106), Vector2(56, 26)), Color(DARK, 0.78))
+			_center(Vector2(entry[1], 125), entry[0], PAPER, 15)
 	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
 	for u in units:
 		if u.hp <= 0: continue
@@ -451,8 +476,8 @@ func _draw() -> void:
 		if u.id != inspector.observed.id: continue
 		var ring = PackedVector2Array()
 		for i in range(65):
-			var offset = Vector2.from_angle(TAU * i / 64.0) * u.attack_range * Vector2(180, 50)
-			var point = _unit_center(u) + offset
+			var logical_offset = Vector2.from_angle(TAU * i / 64.0) * u.attack_range
+			var point = _project(u.position + logical_offset)
 			ring.append(point.clamp(Vector2(40, 150), Vector2(1240, 580)))
 		draw_polyline(ring, GOLD, 1.5, true)
 		if phase == "battle" and u.target_id >= 0 and units[u.target_id].hp > 0:
@@ -464,7 +489,7 @@ func _draw() -> void:
 				var tint = Color(0.65, 0.26, 0.36, 0.12) if side == 1 else Color(0.22, 0.44, 0.36, 0.15)
 				draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), tint)
 				if side == 0:
-					draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), Color("899574"), false, 2)
+					draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), inspector.theme_accent, false, 2)
 					if formation[slot] < 0:
 						_center(rect.get_center() + Vector2(0,10), "+", Color("728369"), 24)
 					if selected == 0 and inspected_enemy_slot < 0 and not (is_instance_valid(deployment) and deployment.previews_unit(0)):
