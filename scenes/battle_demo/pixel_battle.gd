@@ -9,6 +9,8 @@ const ROLE_COLORS = [Color("71b8dc"), Color("eab765"), Color("99c983"), Color("d
 signal presentation_cue(event: Dictionary)
 const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd")
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
+const Board = preload("res://scenes/battle_demo/battle_board.gd")
+var inspector: Control
 var town: Texture2D
 var dungeon: Texture2D
 var visual_time = 0.0
@@ -29,6 +31,21 @@ var debug_shortcuts: Node
 var inspected_enemy_slot = -1
 var codex_panel: Control
 var deployment: Control
+
+func _gear_inventory() -> Dictionary:
+	return {"shoe": equipment}
+
+func _worn_item(role: int) -> String:
+	for id in _gear_inventory():
+		if _gear_inventory()[id] == role: return id
+	return "none"
+
+func _equip_item(id: String, role: int) -> bool:
+	if phase != "prepare" or not _deployment_roster().has(role) or id not in ["shoe", "none"]: return false
+	if id == "shoe": equipment = role
+	elif equipment == role: equipment = -1
+	_build_units()
+	return true
 
 func _open_codex() -> void:
 	if is_instance_valid(codex_panel): return
@@ -54,6 +71,9 @@ func _ready() -> void:
 	deployment = preload("res://scenes/battle_demo/deployment_panel.gd").new()
 	deployment.game = self
 	add_child(deployment)
+	inspector = preload("res://scenes/battle_demo/battle_inspector.gd").new()
+	inspector.game = self
+	add_child(inspector)
 	if "--autobattle-capture" in OS.get_cmdline_user_args():
 		_capture_autobattle()
 	elif "--pause-smoke" in OS.get_cmdline_user_args():
@@ -129,6 +149,7 @@ func _process(delta: float) -> void:
 	if not paused:
 		var presentation_delta: float = delta * speed if phase == "battle" else delta
 		for u in units:
+			u.screen_facing = Board.direction(u.facing)
 			u.animation.advance(presentation_delta)
 			u.presentation.advance(presentation_delta, u)
 		visual_time += presentation_delta
@@ -147,6 +168,7 @@ func _process(delta: float) -> void:
 func _tick() -> void:
 	super._tick()
 	for u in units:
+		u.screen_facing = Board.direction(u.facing)
 		u.animation.sync_health(u.hp, u.max_hp)
 		u.presentation.advance(0, u)
 
@@ -163,10 +185,13 @@ func _present_action(actor: Dictionary, casts_skill: bool) -> void:
 	actor.animation.play(&"cast" if casts_skill else &"attack")
 
 func _present_simulation_event(event: Dictionary) -> void:
+	var visual_event = event.duplicate(true)
+	visual_event.from = _project(event.from)
+	visual_event.to = _project(event.to)
 	if event.kind.begins_with("action_"):
-		simulation.unit(event.actor_id).presentation.consume(event)
+		simulation.unit(event.actor_id).presentation.consume(visual_event)
 	if event.kind == "impact":
-		simulation.unit(event.target_id).presentation.consume(event)
+		simulation.unit(event.target_id).presentation.consume(visual_event)
 	presentation_cue.emit(event.duplicate(true))
 	super._present_simulation_event(event)
 	if event.kind == "action_released" and event.casts:
@@ -178,7 +203,7 @@ func _present_simulation_event(event: Dictionary) -> void:
 		banner_time = 1.3
 
 func _project(position: Vector2) -> Vector2:
-	return Vector2(236, 241) + position * Vector2(74, 148.0 / 3.0)
+	return Board.project(position)
 
 func _unit_center(unit: Dictionary) -> Vector2:
 	if phase != "battle" or simulation.finished: return _project(unit.position)
@@ -202,12 +227,10 @@ func _present_event(e: Dictionary) -> void:
 		"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false)})
 
 func _slot_rect(side: int, slot: int) -> Rect2:
-	var row = int(slot / 3)
-	var y = (292 if row == 0 else 200) if side == 1 else (404 if row == 0 else 496)
-	return Rect2(252 + (slot % 3) * 148, y, 116, 82)
+	return Board.slot_rect(side, slot)
 
 func _action_rect(index: int) -> Rect2:
-	return [Rect2(950, 601, 288, 60), Rect2(752, 624, 136, 44), Rect2(962, 397, 264, 42), Rect2(950, 538, 288, 44), Rect2(950, 674, 288, 30)][index]
+	return [Rect2(1050, 622, 180, 46), Rect2(908, 622, 128, 46), Rect2(-500, -500, 1, 1), Rect2(1070, 565, 160, 36), Rect2(1050, 678, 180, 30)][index]
 
 func _pixel_panel(rect: Rect2, fill: Color, edge: Color = DARK) -> void:
 	preload("res://scenes/ui/comic_ui.gd").card(self,rect,fill,edge)
@@ -222,6 +245,12 @@ func _center(at: Vector2, value: String, color: Color = PAPER, font_size: int = 
 	_text(at - Vector2(font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x / 2, 0), value, color, font_size)
 
 func _campus(show_battle_marks: bool = true) -> void:
+	var wide = get("screen") == null or get("screen") == "battle"
+	if wide: draw_set_transform(origin, 0, Vector2(1.365, 1) * scale_factor)
+	_legacy_campus(false if wide else show_battle_marks)
+	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
+
+func _legacy_campus(show_battle_marks: bool = true) -> void:
 	# Tiled quadrangle, framed by school architecture and Kenney vegetation.
 	draw_rect(Rect2(24, 92, 894, 516), GRASS)
 	for y in range(100, 603, 16):
@@ -338,7 +367,7 @@ func _projectile_point(shot: Dictionary, alpha: float) -> Vector2:
 	var launch := Vector2(0, -6)
 	if actor.battle_animation != null:
 		launch = actor.battle_animation.launch_offset
-		if actor.battle_animation.flip_with_facing and target.position.x < shot.origin.x: launch.x *= -1
+		if actor.battle_animation.flip_with_facing and _project(target.position).x < _project(shot.origin).x: launch.x *= -1
 	var distance: float = shot.origin.distance_to(target.position)
 	var progress := clampf(shot.origin.distance_to(position) / maxf(0.001, distance), 0, 1)
 	return _project(position) + launch.lerp(_hit_offset(target), progress)
@@ -404,7 +433,7 @@ func _draw() -> void:
 	_text(Vector2(40, 45), "重返校园", PAPER, 27)
 	_text(Vector2(42, 65), "RETURN TO SUMMER", Color("c0b792"), 11)
 	_text(Vector2(238, 45), "01 / 旧校庭院", PAPER, 20)
-	_text(Vector2(238, 66), "找回同学，驱散校园里的异常。", Color("b2baa0"), 12)
+	_text(Vector2(238, 66), "悬停角色简览，点击详情与装备。", Color("b2baa0"), 12)
 	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else ("战斗收尾" if simulation.closing else "自走棋战斗"))))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
 	_text(Vector2(972, 53), ("部署 %d / 4" % (6 - formation.count(-1))) if phase == "prepare" else ("%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed]), PAPER, 17)
@@ -412,18 +441,19 @@ func _draw() -> void:
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
 	if phase == "prepare":
-		for entry in [["敌后", 252], ["敌前", 344], ["我前", 456], ["我后", 548]]:
-			_text(Vector2(201, entry[1]), entry[0], DARK, 12)
+		for entry in [["我后", 90], ["我前", 450], ["敌前", 810], ["敌后", 1170]]:
+			_center(Vector2(entry[1], 562), entry[0], PAPER, 15)
 	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
 	for u in units:
 		if u.hp <= 0: continue
 		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): continue
-		if not ((inspected_enemy_slot < 0 and u.side == 0 and u.role == selected) or (u.side == 1 and u.slot == inspected_enemy_slot)): continue
+		if not is_instance_valid(inspector) or inspector.observed.is_empty(): continue
+		if u.id != inspector.observed.id: continue
 		var ring = PackedVector2Array()
 		for i in range(65):
-			var offset = Vector2.from_angle(TAU * i / 64.0) * u.attack_range * Vector2(74, 148.0 / 3.0)
+			var offset = Vector2.from_angle(TAU * i / 64.0) * u.attack_range * Vector2(180, 50)
 			var point = _unit_center(u) + offset
-			ring.append(point.clamp(Vector2(202, 190), Vector2(748, 582)))
+			ring.append(point.clamp(Vector2(40, 150), Vector2(1240, 580)))
 		draw_polyline(ring, GOLD, 1.5, true)
 		if phase == "battle" and u.target_id >= 0 and units[u.target_id].hp > 0:
 			draw_dashed_line(_unit_center(u), _unit_center(units[u.target_id]), GOLD, 1.5, 5)
@@ -449,33 +479,7 @@ func _draw() -> void:
 	if banner_time > 0 and phase == "battle":
 		_pixel_panel(Rect2(267, 99, 418, 40), Color("413b4b"))
 		_center(Vector2(476, 126), banner, GOLD, 21)
-	# Right-side field notebook: short, actionable information.
-	_pixel_panel(Rect2(936, 93, 310, 428), PAPER)
-	_text(Vector2(958, 122), "同 学 手 册", DARK, 18)
-	draw_line(Vector2(957, 136), Vector2(1226, 136), Color("b8af8c"), 2)
-	var current: Dictionary = {}
-	for u in units:
-		if (inspected_enemy_slot < 0 and u.side == 0 and u.role == selected) or (u.side == 1 and u.slot == inspected_enemy_slot):
-			current = u
-	if current.is_empty() and phase == "prepare" and inspected_enemy_slot < 0:
-		current = _inspection_unit(selected)
-	if not current.is_empty():
-		var portrait_factor = 4.0
-		if current.battle_animation != null:
-			portrait_factor = minf(4, 4 * 64.0 / (current.battle_animation.display_size.y * current.battle_animation.anchor.y))
-		_pawn(current, Vector2(1000, 213), portrait_factor)
-		_text(Vector2(1053, 177), current.name, DARK, 24)
-		_text(Vector2(1053, 202), current.skill.display_name, Color("69745c"), 13)
-		_text(Vector2(962, 245), "生命  %d / %d" % [maxi(0, int(current.hp)), int(current.max_hp)], DARK, 17)
-		_text(Vector2(962, 274), "攻击 %d    间隔 %.2fs" % [current.atk, current.interval], DARK, 16)
-		_text(Vector2(962, 306), "每 %d 次普攻自动释放：" % current.skill.attacks_to_trigger, Color("6b705a"), 15)
-		_text(Vector2(962, 334), current.skill.description.left(16), DARK, 16)
-		_text(Vector2(962, 358), current.skill.description.substr(16,16), DARK, 16)
-		_text(Vector2(962, 383), "射程 %.1f 格 · 移速 %.1f 格/秒" % [current.attack_range, current.move_speed], Color("6b705a"), 14)
-	_pixel_button(2, "装备" if inspected_enemy_slot < 0 else "不可装备", false, phase == "prepare" and inspected_enemy_slot < 0)
-	_text(Vector2(963, 468), "现由「" + ROLES[equipment] + "」携带" if equipment >= 0 else "篮球鞋在背包中，可重新装备", DARK, 16)
-	_text(Vector2(963, 493), "效果：攻击间隔缩短 25%", Color("6b705a"), 14)
-	_pixel_button(3, "敌阵 · " + ("守卫与治疗" if encounter == 0 else "整排攻击"), false, phase == "prepare")
+	if get("screen") == null: _pixel_button(3, "切换敌阵", false, phase == "prepare")
 	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or formation.count(-1) == 2)
 	_pixel_button(4, "返回整备")
 	if phase != "prepare":

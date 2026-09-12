@@ -13,6 +13,16 @@ var chosen_supply = false
 var expedition_seconds = 0.0
 var is_test = false
 
+func _gear_inventory() -> Dictionary:
+	return run.inventory
+
+func _equip_item(id: String, role: int) -> bool:
+	if phase != "prepare" or screen != "battle" or not run.equip_gear(id, role): return false
+	equipment = run.shoe_wearer
+	_build_units()
+	_sync_team()
+	return true
+
 func _ready() -> void:
 	super._ready()
 	is_test = "--run-smoke" in OS.get_cmdline_user_args() or "--run-capture" in OS.get_cmdline_user_args() or "--pause-flow-smoke" in OS.get_cmdline_user_args()
@@ -214,12 +224,6 @@ func _draw() -> void:
 		return
 	if screen == "battle":
 		super._draw()
-		# Replace sandbox enemy switching with expedition equipment and reserve controls.
-		_pixel_panel(Rect2(950, 536, 290, 50), PAPER)
-		_text(Vector2(960, 566), "点选或拖放" if phase == "prepare" else "自动战斗", DARK, 18)
-		_flow_button(Rect2(1100, 538, 138, 44), "装备笔记本", phase == "prepare" and run.badge_owned and inspected_enemy_slot < 0)
-		_pixel_panel(Rect2(943, 495, 292, 30), PAPER)
-		_text(Vector2(961, 514), "笔记本：" + (ROLES[run.badge_wearer] if run.badge_wearer >= 0 else ("背包中" if run.badge_owned else "未获得")), DARK, 14)
 		_pixel_panel(Rect2(230, 25, 530, 48), Color("202027"))
 		_text(Vector2(244, 54), "%d / 5  ·  %s" % [run.stage + 1, run.node.name], PAPER, 23)
 		return
@@ -396,20 +400,8 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 		return
 	if screen == "battle":
-		if Rect2(950, 538, 140, 44).has_point(p):
-			pass # Deployment now uses cards and confirmation, not instant reserve replacement.
-		elif Rect2(1100, 538, 138, 44).has_point(p):
-			if phase == "prepare" and run.badge_owned and inspected_enemy_slot < 0:
-				run.badge_wearer = selected
-				if equipment == selected:
-					equipment = -1
-				_sync_team()
-				_build_units()
-		else:
-			if _action_rect(2).has_point(p) and phase == "prepare" and run.badge_wearer == selected and inspected_enemy_slot < 0:
-				run.badge_wearer = -1
-			super._gui_input(event)
-			_sync_team()
+		super._gui_input(event)
+		_sync_team()
 		accept_event()
 		return
 	match screen:

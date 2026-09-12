@@ -105,6 +105,7 @@ func _reset_preview() -> void:
 		actor.position = Vector2(1, 3)
 		target.position = Vector2(4 if mode == 3 else 6, 3)
 	for u in units:
+		u.position = Vector2(u.position.y, 6 - u.position.x)
 		u.cell = Vector2i(u.position)
 		u.destination = u.cell
 		u.moving = false
@@ -222,7 +223,7 @@ func _check_preview() -> void:
 		var ok = true
 		if mode in [0, 1]: ok = impacts.is_empty()
 		else: ok = not impacts.is_empty()
-		if mode == 1: ok = ok and units[0].position.x > 1
+		if mode == 1: ok = ok and units[0].position.y < 5
 		if mode == 3:
 			var release = history.filter(func(e): return e.kind == "action_released")
 			ok = ok and impacts[0].time > release[0].time

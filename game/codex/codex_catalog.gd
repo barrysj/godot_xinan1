@@ -18,7 +18,7 @@ static func entries(category: int) -> Array:
 				result.append(unit_entry(unit,"校园异变"))
 		2:
 			for item in preload("res://game/content/content_db.gd").MANIFEST.equipment:
-				result.append({"name":item.display_name,"tag":"装备 · 每人一件","body":item.description,"texture":item.icon})
+				result.append({"name":item.display_name,"tag":"装备 · 每人一件","body":item.description,"texture":item.icon,"gear_id":item.id})
 			result.append({"name":"修复资源","tag":"成长资源","body":"完成地点积累，通关后带回基地。用于成长与派遣。"})
 		3:
 			for place in preload("res://game/content/content_db.gd").MANIFEST.locations:

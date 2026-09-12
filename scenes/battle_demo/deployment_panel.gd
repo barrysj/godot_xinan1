@@ -286,6 +286,7 @@ func withdraw() -> void:
 
 func handle(event: InputEvent) -> bool:
 	if not active(): return false
+	if is_instance_valid(game.inspector) and game.inspector.blocks_event(event): return false
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and selected_role >= 0:
 		cancel()
 		return true

@@ -10,6 +10,7 @@ var selected_entry = 0
 var tabs: Array[Button] = []
 var exit_button: Button
 var portrait: TextureRect
+var gear_icon: Button
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -81,6 +82,11 @@ func _ready() -> void:
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	content.add_child(portrait)
+	gear_icon = preload("res://scenes/team/object_icon.gd").new()
+	gear_icon.position = portrait.position
+	gear_icon.size = portrait.size
+	gear_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(gear_icon)
 	detail = RichTextLabel.new()
 	detail.position = Vector2(442,281)
 	detail.size = Vector2(766,360)
@@ -120,6 +126,10 @@ func select_entry(index: int) -> void:
 	selected_entry = index
 	var entry: Dictionary = Catalog.entries(category)[index]
 	heading.text = entry.name
+	gear_icon.visible = entry.has("gear_id")
+	if gear_icon.visible:
+		gear_icon.glyph = entry.gear_id
+		gear_icon.queue_redraw()
 	portrait.visible = entry.has("icon")
 	if portrait.visible:
 		var cells = [Vector2i(1,8),Vector2i(3,7),Vector2i(0,7),Vector2i(2,7),Vector2i(3,8)]

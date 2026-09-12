@@ -28,7 +28,7 @@ func advance(delta: float, unit: Dictionary) -> void:
 	hurt_age += delta
 	motion_time += delta
 	if not action.is_empty(): action.age = minf(action.age + delta, action.duration)
-	var direction: Vector2 = unit.get("facing", Vector2.ZERO)
+	var direction: Vector2 = unit.get("screen_facing", unit.get("facing", Vector2.ZERO))
 	if absf(direction.x) > 0.15: facing_right = direction.x > 0
 
 func pose(unit: Dictionary, animated: bool) -> Dictionary:
