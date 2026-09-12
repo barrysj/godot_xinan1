@@ -47,8 +47,16 @@ pwsh.exe -File .\run-battle-demo.ps1
 
 ## 卡片部署与存档
 
-部署交互实现于 `scenes/battle_demo/deployment_panel.gd`，范围依据 `tasks/BATTLE_DEPLOYMENT.md`。卡片来源为当前冒险 roster；Demo 使用初始四人。半透明模型使用已有角色图像，确认/取消使用简易矢量勾叉，未新增正式美术。
+本节记录 2026-09-12 用户提出的卡片部署交互及当前实现，适用于战斗 Demo 和正式冒险。它是玩法与实现说明，不是已批准或冻结的美术 Task Spec；下列实现参数也不代表独立的美术审批结果。
+
+部署交互实现于 `scenes/battle_demo/deployment_panel.gd`。卡片来源为当前冒险 roster；Demo 使用初始四人。保留六个可部署格和四人出战规模，底部卡片替代战前日志；已部署卡片仍保留并标注状态，可重新选中换位或撤回。
+
+点击卡片后保持抬起，再点击有效格显示预览；预览模型上方仅显示绿色对勾和红色叉号。确认前可点击其他空格切换位置，取消时保留原有部署。按住卡片移动达到 8 个逻辑像素进入拖动模式，有效格内显示预览，松手直接部署且不显示确认按钮；场外、敌方和其他角色占用的格子均不接受落子。
+
+表现复用现有角色 portrait、`resources/theme/theme-main.tres` 和 `scenes/ui/comic_ui.gd` 卡片形状。半透明预览为 35% 不透明度，确认/取消使用简易矢量勾叉；未新增或替换正式美术，也不使用 Manifest 中的 concept 示例。Anchor 根节点与 HBoxContainer 卡片行沿用 1280×720 逻辑画布缩放，hover 动效读取 `data/visual/animation.json` 的 `micro` 时长。
+
+Esc 优先取消部署手势；暂停和失焦也取消未确认操作，避免恢复时误落子。确认/取消图标按钮提供工具提示与键盘焦点。人数和操作说明放在状态文本中，按钮保持简洁。
 
 确认部署与撤回才修改 formation 并保存；候选格、hover、拖动为临时状态。存档允许 0～4 名部署角色，重复角色、非 roster 角色、超过四人仍拒绝。新遭遇从空棋盘开始；同一场战斗暂停、重试、恢复存档保留已确认位置。四人未部署齐时不允许开战，已有战斗结算人数规则保持不变。
 
-交互验证：Godot `--headless --path . res://scenes/battle_demo/deployment_check.tscn -- --deployment-check`。通过真实 Viewport 输入分发测试点击确认、取消、拖动、非法落点、移动阈值、失焦、Esc、部分部署读档与整场战斗。将参数改为 `--deployment-capture` 并移除 `--headless`，可生成三种分辨率的空棋盘、点击预览、拖动预览和已部署截图。
+交互验证：Godot `--headless --path . res://scenes/battle_demo/deployment_check.tscn -- --deployment-check`。通过真实 Viewport 输入分发测试点击确认、切换候选格、取消不落子、拖动、非法落点、移动阈值、占位与人数上限、失焦、Esc、暂停、部分部署读档与整场战斗。将参数改为 `--deployment-capture` 并移除 `--headless`，可生成 1920×1080、2560×1440、1920×1200 的空棋盘、点击预览、拖动预览和已部署截图。
