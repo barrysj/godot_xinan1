@@ -280,14 +280,14 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 	var pose: Dictionary = u.presentation.pose(u, animated_texture != null)
 	var p: Vector2 = at + pose.offset * factor / 4.0
 	var world = Transform2D(0, Vector2.ONE * scale_factor, 0, origin)
-	var local = Transform2D(pose.rotation, pose.stretch, 0, p)
+	var stretch: Vector2 = pose.stretch
+	if animated_texture != null and u.battle_animation.flip_with_facing and pose.flip:
+		stretch.x *= -1
+	var local = Transform2D(pose.rotation, stretch, 0, p)
 	draw_set_transform_matrix(world * local)
 	if animated_texture != null:
 		var dimensions: Vector2 = u.battle_animation.display_size * factor / 4.0
 		var rect = Rect2(-dimensions * u.battle_animation.anchor, dimensions)
-		if u.battle_animation.flip_with_facing and pose.flip:
-			rect.position.x = -rect.position.x
-			rect.size.x = -rect.size.x
 		draw_texture_rect(animated_texture, rect, false, pose.tint)
 	else:
 		draw_texture_rect(u.portrait, Rect2(-Vector2(8, 14) * factor, Vector2(16, 16) * factor), false, pose.tint)
@@ -429,7 +429,10 @@ func _draw() -> void:
 	if current.is_empty() and phase == "prepare" and inspected_enemy_slot < 0:
 		current = _inspection_unit(selected)
 	if not current.is_empty():
-		_pawn(current, Vector2(1000, 213), 4)
+		var portrait_factor = 4.0
+		if current.battle_animation != null:
+			portrait_factor = minf(4, 4 * 64.0 / (current.battle_animation.display_size.y * current.battle_animation.anchor.y))
+		_pawn(current, Vector2(1000, 213), portrait_factor)
 		_text(Vector2(1053, 177), current.name, DARK, 24)
 		_text(Vector2(1053, 202), current.skill.display_name, Color("69745c"), 13)
 		_text(Vector2(962, 245), "生命  %d / %d" % [maxi(0, int(current.hp)), int(current.max_hp)], DARK, 17)

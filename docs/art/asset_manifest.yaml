@@ -5,6 +5,23 @@ conventions:
 
 assets:
   characters:
+    guard:
+      battle_sheet:
+        file: assets/art/characters/guard/battle_sheet.png
+        type: battle_sprite_sheet
+        resolution: [1254, 1254]
+        transparent: true
+        grid: [4, 4]
+        frame_metadata: assets/art/characters/guard/battle_sheet.frames.json
+        animation_resource: resources/content/animations/guard.tres
+        normalized_canvas: [384, 384]
+        display_size: [128, 128]
+        anchor: [0.5, 0.875]
+        portrait_region: [100, 5, 140, 140]
+        usage: [battle, deployment, motion_preview]
+        style_layer: battle
+        status: review
+        integration_authorization: "2026-09-13 用户要求至少两名实际绘制角色及动作，明确授权本轮生成并接入；review 不代表最终视觉批准。"
     protagonist:
       portrait_default:
         file: assets/art/characters/protagonist/portrait_default.png

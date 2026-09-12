@@ -48,7 +48,17 @@
 PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
 
 - `-Check` 自动验证七种模式；`-Capture` 输出三种分辨率下的近战、远程、受击、退场截图；`-Tour` 连续展示七种模式后退出。
-- `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用现有占位图。
+- `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
 
-本轮获授权后通过内置 image_gen 进行了测试素材试产；比例和真实透明度未同时通过，因此未接入正式战斗。未通过样本保存于 `assets/testing/battle-motion/`（带 `.gdignore`），网页端交付提示词见 `docs/prompts/battle-animation-assets.md`。现有占位图验证的是动作框架，不代表完整的肢体动画或冻结美术效果。
+框架阶段曾通过内置 image_gen 进行首轮测试素材试产；当时比例和真实透明度未同时通过，因此那批素材未接入战斗。未通过样本保存于 `assets/testing/battle-motion/`（带 `.gdignore`），网页端交付提示词见 `docs/prompts/battle-animation-assets.md`。现有占位图验证的是动作框架，不代表完整的肢体动画或冻结美术效果。
+
+## 实际角色图集接入（2026-09-13）
+
+用户进一步明确要求至少两名绘制的战斗角色、动作和一个技能特效。本阶段不以旧占位图完成验收；允许当前生成成果进入战斗，Manifest 保留 review 供后续人工视觉 QA，不冒充 approved，不创建冻结 Task Spec。
+
+守护者新增 16 个独立绘制姿势：校园外套、深蓝短发、青蓝智能手表，约 4 头身。组织为 idle、move、attack、cast、hurt、critical、death 七种动画，部署头像也取自同一角色。攻击在出手点播放伸拳姿势，施法播放展掌姿势，死亡依次跪倒、侧倒和伏地。所有动作使用原始图集中的独立画稿，非静态占位图整体位移。
+
+`tools/art/build_battle_frames.py` 仅读取原始 RGBA 图集并生成 AtlasTexture/SpriteFrames 元数据，不修改原图像素。每格经透明边缘检查、裁切与 margin 补齐到 384×384，脚底统一为 (192,336)，战斗显示 128×128；动作源与每帧参数记录在旁边的 `.frames.json`。攻击/施法出手对应片段第 3 帧，归一化位置 0.4。左右朝向使用脚底局部变换镜像，避免负宽度绘制导致位移；侧栏按有限展示空间缩放。
+
+验证：Godot `--headless --path . res://scenes/battle_demo/authored_assets_check.tscn` 检查插画路径、统一画布、七类动作、不同动作画稿、出手帧和死亡末帧。完成两名角色后追加 `-- --require-two-models` 强制检查人数，避免以单一角色或空资源通过。
