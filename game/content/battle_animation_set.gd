@@ -10,3 +10,6 @@ extends Resource
 @export_range(0.05, 0.95) var impact_ratio: float = 0.45
 ## Opt-in for directional art; old front-facing placeholders remain unchanged.
 @export var flip_with_facing := false
+## Logical screen offsets from the unit projection, independent of occupancy.
+@export var launch_offset := Vector2(0, -6)
+@export var hit_offset := Vector2(0, -6)

@@ -70,7 +70,9 @@ def build(character):
     lines += ['\n[sub_resource type="SpriteFrames" id="frames"]', 'animations = [%s]' % ',\n'.join(animations),
         '\n[resource]', 'script = ExtResource("script")', 'frames = SubResource("frames")',
         'display_size = Vector2(128, 128)', 'anchor = Vector2(0.5, 0.875)',
-        'impact_ratio = 0.4', 'flip_with_facing = true']
+        'impact_ratio = 0.4', 'flip_with_facing = true',
+        'launch_offset = Vector2(42, -63)' if character == 'archer' else 'launch_offset = Vector2(28, -52)',
+        'hit_offset = Vector2(0, -42)']
     output = ROOT / f"resources/content/animations/{character}.tres"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text('\n'.join(lines) + '\n', encoding='utf-8')

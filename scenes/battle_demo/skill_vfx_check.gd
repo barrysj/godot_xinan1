@@ -60,6 +60,21 @@ func _ready() -> void:
 	preview.units[0].hp = 0
 	for i in 6: preview.advance_preview(0.05)
 	check(preview.skill_effects.is_empty(), "Cancelled cast never displays burst")
+	preview.mode = 3
+	preview._reset_preview()
+	for i in 4: preview.advance_preview(0.05)
+	var shot: Dictionary = preview.simulation.projectiles[0]
+	var shooter: Dictionary = preview.units[0]
+	var target: Dictionary = preview.units[1]
+	check(preview._projectile_point(shot, 0).is_equal_approx(preview._project(shot.origin) + shooter.battle_animation.launch_offset), "Projectile starts at illustrated weapon")
+	var arrived = shot.duplicate()
+	arrived.position = target.position
+	arrived.previous_position = target.position
+	check(preview._projectile_point(arrived, 1).is_equal_approx(preview._project(target.position) + preview._hit_offset(target)), "Projectile ends at impact anchor")
+	# Moving the caster after release must not drag the already launched shot.
+	var detached: Vector2 = preview._projectile_point(shot, 0)
+	shooter.position += Vector2(0, 2)
+	check(preview._projectile_point(shot, 0) == detached, "Launched projectile retains its origin")
 	preview.free()
 	print("SKILL_VFX_CHECK failures=", failures)
 	get_tree().quit(failures)

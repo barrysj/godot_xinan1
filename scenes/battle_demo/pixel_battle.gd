@@ -196,7 +196,7 @@ func _present_event(e: Dictionary) -> void:
 	var lane := 0
 	while occupied_lanes.has(lane): lane += 1
 	effects.append({"from": _project(e.get("from", e.actor.position)) + Vector2(0, -6),
-		"to": _project(e.get("to", e.target.position)) + Vector2(0, -6),
+		"to": _project(e.get("to", e.target.position)) + _hit_offset(e.target),
 		"kind": e.kind, "special": e.special, "value": int(e.get("actual", e.value)),
 		"color": tint, "life": 0.65, "target_id": e.target.id, "lane": lane,
 		"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false)})
@@ -328,6 +328,21 @@ func _draw_unit(u: Dictionary) -> void:
 	for i in range(u.skill.attacks_to_trigger):
 		draw_rect(Rect2(p + Vector2(-10 + i * 8, 46), Vector2(5, 3)), GOLD if i < u.count else Color("747a62"))
 
+func _hit_offset(unit: Dictionary) -> Vector2:
+	return unit.battle_animation.hit_offset if unit.battle_animation != null else Vector2(0, -6)
+
+func _projectile_point(shot: Dictionary, alpha: float) -> Vector2:
+	var target = simulation.unit(shot.target_id)
+	var actor = simulation.unit(shot.actor_id)
+	var position: Vector2 = shot.previous_position.lerp(shot.position, clampf(alpha, 0, 1))
+	var launch := Vector2(0, -6)
+	if actor.battle_animation != null:
+		launch = actor.battle_animation.launch_offset
+		if actor.battle_animation.flip_with_facing and target.position.x < shot.origin.x: launch.x *= -1
+	var distance: float = shot.origin.distance_to(target.position)
+	var progress := clampf(shot.origin.distance_to(position) / maxf(0.001, distance), 0, 1)
+	return _project(position) + launch.lerp(_hit_offset(target), progress)
+
 func _draw_effects() -> void:
 	for fx in skill_effects:
 		var texture: Texture2D = fx.resource.texture(fx.age)
@@ -337,9 +352,9 @@ func _draw_effects() -> void:
 		draw_texture_rect(texture, Rect2(center - fx.resource.display_size * fx.resource.anchor,
 			fx.resource.display_size), false)
 	for shot in simulation.projectiles:
-		var p = _project(shot.previous_position.lerp(shot.position, clampf(accumulator / STEP, 0, 1))) + Vector2(0, -6)
+		var p = _projectile_point(shot, accumulator / STEP)
 		var target = simulation.unit(shot.target_id)
-		var direction = (_project(target.position) + Vector2(0, -6) - p).normalized()
+		var direction = (_project(target.position) + _hit_offset(target) - p).normalized()
 		var color = GOLD if shot.special else (TEAL if simulation.unit(shot.actor_id).side == 0 else RED)
 		for tail in range(4):
 			var q: Vector2 = p - direction * tail * 6

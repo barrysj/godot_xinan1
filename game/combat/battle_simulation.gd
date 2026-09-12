@@ -134,6 +134,7 @@ func _release(actor: Dictionary, due: Array[Dictionary]) -> void:
 		if effect.kind == "damage" and actor.action_profile.is_projectile(actor.attack_range):
 			projectiles.append({"action_id": action.id, "actor_id": actor.id,
 				"target_id": effect.target.id, "position": actor.position,
+				"origin": actor.position,
 				"previous_position": actor.position, "speed": maxf(1, actor.action_profile.projectile_speed),
 				"spawn_time": elapsed, "effect": effect, "special": effect.special, "done": false})
 		else:
