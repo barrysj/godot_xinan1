@@ -25,6 +25,7 @@ var previous_auto_quit = true
 var debug_shortcuts: Node
 var inspected_enemy_slot = -1
 var codex_panel: Control
+var deployment: Control
 
 func _open_codex() -> void:
 	if is_instance_valid(codex_panel): return
@@ -47,6 +48,9 @@ func _ready() -> void:
 	previous_auto_quit = get_tree().auto_accept_quit
 	get_tree().auto_accept_quit = false
 	_create_pause_menu()
+	deployment = preload("res://scenes/battle_demo/deployment_panel.gd").new()
+	deployment.game = self
+	add_child(deployment)
 	if "--autobattle-capture" in OS.get_cmdline_user_args():
 		_capture_autobattle()
 	elif "--pause-smoke" in OS.get_cmdline_user_args():
@@ -77,6 +81,7 @@ func _capture_autobattle() -> void:
 		queue_redraw()
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("res://.godot/autobattle-prepare-%dx%d.png" % [resolution.x, resolution.y])
+		formation = [0, -1, 3, 2, 1, -1]
 		_start()
 		for step in range(90): _process(STEP)
 		queue_redraw()
@@ -92,6 +97,17 @@ func _load_atlas(path: String) -> Texture2D:
 	if OS.has_feature("editor"):
 		return ImageTexture.create_from_image(Image.load_from_file(path))
 	return load(path) as Texture2D
+
+func _inspection_unit(role: int) -> Dictionary:
+	for unit in units:
+		if unit.side == 0 and unit.role == role: return unit
+	var unit = _ally_unit(role, 0)
+	unit.animation = BattleAnimation.new(unit.battle_animation)
+	return unit
+
+func _start() -> void:
+	super._start()
+	if phase == "battle" and is_instance_valid(deployment): deployment.cancel()
 
 func _build_units() -> void:
 	super._build_units()
@@ -318,7 +334,7 @@ func _draw() -> void:
 	_text(Vector2(238, 66), "找回同学，驱散校园里的异常。", Color("b2baa0"), 12)
 	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else "自走棋战斗")))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
-	_text(Vector2(972, 53), "%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed], PAPER, 17)
+	_text(Vector2(972, 53), ("部署 %d / 4" % (6 - formation.count(-1))) if phase == "prepare" else ("%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed]), PAPER, 17)
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
@@ -367,6 +383,8 @@ func _draw() -> void:
 	for u in units:
 		if (inspected_enemy_slot < 0 and u.side == 0 and u.role == selected) or (u.side == 1 and u.slot == inspected_enemy_slot):
 			current = u
+	if current.is_empty() and phase == "prepare" and inspected_enemy_slot < 0:
+		current = _inspection_unit(selected)
 	if not current.is_empty():
 		_pawn(current, Vector2(1000, 213), 4)
 		_text(Vector2(1053, 177), current.name, DARK, 24)
@@ -381,16 +399,17 @@ func _draw() -> void:
 	_text(Vector2(963, 468), "现由「" + ROLES[equipment] + "」携带" if equipment >= 0 else "篮球鞋在背包中，可重新装备", DARK, 16)
 	_text(Vector2(963, 493), "效果：攻击间隔缩短 25%", Color("6b705a"), 14)
 	_pixel_button(3, "敌阵 · " + ("守卫与治疗" if encounter == 0 else "整排攻击"), false, phase == "prepare")
-	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true)
+	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or formation.count(-1) == 2)
 	_pixel_button(4, "返回整备")
-	_pixel_panel(Rect2(24, 620, 712, 83), Color("202027"))
-	_text(Vector2(42, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
-	var message: String = logs[0] if not logs.is_empty() else "准备出发。"
-	if message.length() > 37:
-		message = message.left(36) + "…"
-	_text(Vector2(42, 677), message, PAPER, 15)
-	_pixel_button(1, "速度 %d×" % speed)
-	_center(Vector2(822, 697), "PIXEL DEMO / 02", Color("a9b393"), 11)
+	if phase != "prepare":
+		_pixel_panel(Rect2(24, 620, 712, 83), Color("202027"))
+		_text(Vector2(42, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
+		var message: String = logs[0] if not logs.is_empty() else "准备出发。"
+		if message.length() > 37:
+			message = message.left(36) + "…"
+		_text(Vector2(42, 677), message, PAPER, 15)
+		_pixel_button(1, "速度 %d×" % speed)
+		_center(Vector2(822, 697), "PIXEL DEMO / 02", Color("a9b393"), 11)
 
 func _gui_input(event: InputEvent) -> void:
 	if paused or leaving:
@@ -427,9 +446,18 @@ func _gui_input(event: InputEvent) -> void:
 			_open_pause()
 			accept_event()
 			return
+	if phase == "prepare" and event is InputEventMouseButton:
+		var point: Vector2 = (event.position - origin) / scale_factor
+		for slot in range(6):
+			if _slot_rect(0, slot).has_point(point):
+				return
 	super._gui_input(event)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(deployment) and event.is_action_pressed("pause") and deployment.active() and deployment.selected_role >= 0:
+		deployment.cancel()
+		get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(codex_panel): return
 	if leaving or pause_overlay == null:
 		return
@@ -544,6 +572,7 @@ func _layout_pause_menu() -> void:
 	pause_content.position = (size - Vector2(1280, 720) * ratio) / 2
 
 func _open_pause() -> void:
+	if is_instance_valid(deployment): deployment.cancel()
 	paused = true
 	pending_exit = ""
 	pause_heading.text = "稍作休息"
@@ -585,6 +614,7 @@ func _confirm_exit() -> void:
 		GGT.change_scene("res://scenes/menu/menu.tscn", {"show_progress_bar": false})
 
 func _pause_smoke() -> void:
+	formation = [0, -1, 3, 2, 1, -1]
 	_start()
 	_process(1.5)
 	_open_pause()

@@ -24,6 +24,7 @@ func _ready() -> void:
 	is_test = is_test or "--map-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--dispatch-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--journey-check" in OS.get_cmdline_user_args()
+	is_test = is_test or "--deployment-check" in OS.get_cmdline_user_args() or "--deployment-capture" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"
 		if "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args():
@@ -67,8 +68,10 @@ func _enter_node() -> void:
 		encounter = run.node.encounter
 		screen = "battle"
 		phase = "prepare"
+		formation = [-1, -1, -1, -1, -1, -1]
+		if is_instance_valid(deployment): deployment.cancel()
 		_build_units()
-		_note(run.node.name + "：点击敌人查看技能，调整阵型后出发。")
+		_note(run.node.name + "：点击卡片部署同学，四人就绪后出发。")
 
 func _build_units() -> void:
 	encounter_id = run.node.get("encounter_id", "encounter_final" if run.node.get("kind") == "boss" else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
@@ -76,18 +79,30 @@ func _build_units() -> void:
 	if run == null:
 		return
 	for u in units:
-		if u.side == 0:
-			var levels = int(run.training.get(u.role, 0))
-			u.max_hp += levels * 50
-			u.atk += levels * 5
-			for id in run.inventory:
-				if id != "shoe" and run.inventory[id] == u.role:
-					RunModel.Content.gear(id).apply(u)
-			u.hp = u.max_hp
-		elif not run.node.is_empty():
+		if u.side == 1 and not run.node.is_empty():
 			u.max_hp = roundf(u.max_hp * run.node.power)
 			u.hp = u.max_hp
 			u.atk = roundf(u.atk * run.node.power)
+
+func _ally_unit(role: int, slot: int) -> Dictionary:
+	var unit = super._ally_unit(role, slot)
+	if run == null: return unit
+	var levels = int(run.training.get(role, 0))
+	unit.max_hp += levels * 50
+	unit.atk += levels * 5
+	for id in run.inventory:
+		if id != "shoe" and run.inventory[id] == role:
+			RunModel.Content.gear(id).apply(unit)
+	unit.hp = unit.max_hp
+	return unit
+
+func _deployment_roster() -> Array:
+	return run.roster if run != null else super._deployment_roster()
+
+func _deployment_changed() -> void:
+	super._deployment_changed()
+	_sync_team()
+
 
 
 func _process(delta: float) -> void:
@@ -201,10 +216,7 @@ func _draw() -> void:
 		super._draw()
 		# Replace sandbox enemy switching with expedition equipment and reserve controls.
 		_pixel_panel(Rect2(950, 536, 290, 50), PAPER)
-		var reserve_name = "暂无候补"
-		for role in run.roster:
-			if not formation.has(role): reserve_name = "换入" + ROLES[role]
-		_flow_button(Rect2(950, 538, 140, 44), reserve_name, phase == "prepare" and run.roster.size() > 4 and inspected_enemy_slot < 0)
+		_text(Vector2(960, 566), "点选或拖放" if phase == "prepare" else "自动战斗", DARK, 18)
 		_flow_button(Rect2(1100, 538, 138, 44), "装备笔记本", phase == "prepare" and run.badge_owned and inspected_enemy_slot < 0)
 		_pixel_panel(Rect2(943, 495, 292, 30), PAPER)
 		_text(Vector2(961, 514), "笔记本：" + (ROLES[run.badge_wearer] if run.badge_wearer >= 0 else ("背包中" if run.badge_owned else "未获得")), DARK, 14)
@@ -385,7 +397,7 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if screen == "battle":
 		if Rect2(950, 538, 140, 44).has_point(p):
-			if inspected_enemy_slot < 0: _swap_reserve()
+			pass # Deployment now uses cards and confirmation, not instant reserve replacement.
 		elif Rect2(1100, 538, 138, 44).has_point(p):
 			if phase == "prepare" and run.badge_owned and inspected_enemy_slot < 0:
 				run.badge_wearer = selected
@@ -439,6 +451,7 @@ func _run_smoke() -> void:
 			chosen_node = branch % 2 if run.stages[run.stage].size() > 1 else 0
 			_enter_node()
 			if screen == "battle":
+				formation = [-1, 0, 3, 1, 2, -1]
 				if branch == 2 and run.roster.has(4) and formation.has(3):
 					selected = 3
 					_swap_reserve()
@@ -508,8 +521,11 @@ func _run_smoke() -> void:
 	var former_equipment = equipment
 	_test_click(_action_rect(2).get_center())
 	assert(equipment == former_equipment)
-	_test_click(_slot_rect(0, 0).get_center())
-	_test_click(_slot_rect(0, 1).get_center())
+	assert(formation.count(-1) == 6)
+	for item in [[0,1],[3,2],[1,3],[2,4]]:
+		deployment.select(item[0])
+		deployment.candidate_slot = item[1]
+		deployment.commit()
 	assert(formation[1] == 0)
 	_test_click(_action_rect(0).get_center())
 	assert(phase == "battle")
@@ -562,6 +578,7 @@ func _capture_run() -> void:
 		chosen_node = 0
 		_enter_node()
 		if screen == "battle":
+			formation = [-1,0,3,1,2,-1]
 			_start()
 			while screen == "battle": _process(1.0 / 30.0)
 			if not result_won:

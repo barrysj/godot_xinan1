@@ -40,7 +40,9 @@ func run_checks(hub) -> void:
 	panel.close_panel()
 	await hub.get_tree().process_frame
 	assert(not hub.paused)
+	var chosen_formation = hub.formation.duplicate()
 	hub._enter_node()
+	hub.formation = chosen_formation
 	hub._start()
 	hub._process(0.5)
 	hub._open_team_panel()

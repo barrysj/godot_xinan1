@@ -51,6 +51,7 @@ func run_checks(hub) -> void:
 	hub.run.stages = hub.RunModel.STAGES.duplicate(true)
 	hub.chosen_node = 1
 	hub._enter_node()
+	hub.formation = [0,-1,role,2,1,-1]
 	hub._start()
 	var freshman = {}
 	var archer = {}

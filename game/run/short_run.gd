@@ -297,7 +297,7 @@ func _restore_legacy(data: Dictionary, frozen: Array = []) -> bool:
 			if not restored_roster.has(role) or active.has(role): return false
 			active.append(role)
 		restored_formation.append(role)
-	if active.size() != 4: return false
+	if active.size() > 4: return false # Preparation may contain an incomplete deployment.
 	var shoe = int(data.get("shoe_wearer",-1))
 	var badge = int(data.get("badge_wearer",-1))
 	if shoe != -1 and not restored_roster.has(shoe): return false

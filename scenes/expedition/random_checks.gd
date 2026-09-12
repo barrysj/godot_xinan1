@@ -52,6 +52,7 @@ func run_checks(hub) -> void:
 				hub._enter_node()
 				verify(not Checkpoint.decode(hub.progress.active_run).is_empty(),"scene checkpoint valid")
 				if hub.screen == "battle":
+					hub.formation = [-1,0,3,1,2,-1]
 					hub._start()
 					for frame in range(6000):
 						if hub.screen != "battle": break

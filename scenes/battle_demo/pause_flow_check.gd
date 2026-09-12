@@ -4,6 +4,7 @@ extends Node
 func _ready() -> void:
 	await get_tree().process_frame
 	var battle = get_tree().current_scene
+	battle.formation = [0,-1,3,2,1,-1]
 	battle._start()
 	battle._open_pause()
 	# Exercise the window-close event and cancel, without closing the test host.
@@ -23,6 +24,7 @@ func _ready() -> void:
 	assert(not get_tree().auto_accept_quit)
 	battle._new_run()
 	battle._enter_node()
+	battle.formation = [0,-1,3,2,1,-1]
 	battle._start()
 	battle._process(0.5)
 	assert(battle.elapsed > 0)

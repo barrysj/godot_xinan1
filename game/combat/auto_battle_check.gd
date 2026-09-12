@@ -53,6 +53,7 @@ func run_checks() -> void:
 	var battle = load("res://scenes/battle_demo/battle_demo.tscn").instantiate()
 	add_child(battle)
 	battle.set_process(false)
+	battle.formation = [0, -1, 3, 2, 1, -1]
 	battle._start()
 	var start: Vector2 = battle.units[0].position
 	for step in range(12): battle._process(0.05)

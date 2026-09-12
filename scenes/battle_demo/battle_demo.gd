@@ -14,7 +14,7 @@ var SKILLS = Content.characters().map(func(item): return item.skill.display_name
 var encounter_id = ""
 
 var font: Font
-var formation = [0, -1, 3, 2, 1, -1]
+var formation = [-1, -1, -1, -1, -1, -1]
 var selected = 0
 var pending_slot = -1
 var equipment = 0
@@ -34,13 +34,14 @@ var origin = Vector2.ZERO
 func _ready() -> void:
 	font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	_build_units()
-	_note("点击同学，再点击目标格换位。角色自动寻路索敌，进入射程后攻击。")
+	_note("点击卡片后选择空格预览，或直接拖动部署。")
 	if "--demo-smoke" in OS.get_cmdline_user_args():
 		_smoke()
 	elif "--demo-capture" in OS.get_cmdline_user_args():
 		await RenderingServer.frame_post_draw
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("res://.godot/battle_demo.png")
+		formation = [0, -1, 3, 2, 1, -1]
 		_start()
 		await get_tree().create_timer(6.0).timeout
 		await RenderingServer.frame_post_draw
@@ -59,8 +60,7 @@ func _build_units() -> void:
 	for slot in range(6):
 		var role: int = formation[slot]
 		if role < 0: continue
-		var u = _from_definition(Content.character(role), role, 0, slot)
-		if role == equipment: Content.gear("shoe").apply(u)
+		var u = _ally_unit(role, slot)
 		units.append(u)
 	var group = Content.encounter(encounter_id if not encounter_id.is_empty() else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
 	for i in range(group.units.size()):
@@ -72,7 +72,21 @@ func _build_units() -> void:
 	accumulator = 0
 	paused = false
 
+func _ally_unit(role: int, slot: int) -> Dictionary:
+	var unit = _from_definition(Content.character(role), role, 0, slot)
+	if role == equipment: Content.gear("shoe").apply(unit)
+	return unit
+
+func _deployment_roster() -> Array:
+	return [0, 1, 2, 3]
+
+func _deployment_changed() -> void:
+	_build_units()
+
 func _start() -> void:
+	if formation.count(-1) != 2:
+		_note("请先部署四位同学，再开始战斗。")
+		return
 	pending_slot = -1
 	_build_units()
 	phase = "battle"
@@ -332,16 +346,8 @@ func _gui_input(event: InputEvent) -> void:
 	accept_event()
 
 func _smoke() -> void:
-	# Exercise the same click handler used by mouse/touch-emulated mouse input.
-	for point in [_slot_rect(0, 0).get_center(), _slot_rect(0, 1).get_center()]:
-		var click = InputEventMouseButton.new()
-		click.button_index = MOUSE_BUTTON_LEFT
-		click.pressed = true
-		click.position = point
-		_gui_input(click)
-	assert(formation[0] == -1 and formation[1] == 0)
 	formation = [0, -1, 3, 2, 1, -1]
-	print("DEMO_INPUT click-to-move passed")
+	_build_units()
 	selected = 1
 	var equip_click = InputEventMouseButton.new()
 	equip_click.button_index = MOUSE_BUTTON_LEFT

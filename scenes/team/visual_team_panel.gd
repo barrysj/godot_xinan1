@@ -150,7 +150,7 @@ func draw_formation() -> void:
 		if role >= 0: caption(visual,game.ROLES[role],at+Vector2(20,102),15,MUTED)
 	caption(visual,"点选头像格",Vector2(535,37),24,INK)
 	caption(visual,"查看同学 · 选择替换",Vector2(535,78),19,ACCENT)
-	caption(visual,"上阵 4 / 4",Vector2(535,135),22)
+	caption(visual,"上阵 %d / 4" % (6 - game.formation.count(-1)),Vector2(535,135),22)
 	caption(visual,"点击空格可移动上阵同学" if editable else "战斗中阵容锁定",Vector2(535,185),17,MUTED)
 
 func open_formation_slot(index: int) -> void:
@@ -182,7 +182,7 @@ func open_formation_slot(index: int) -> void:
 		var candidate = game.run.roster[i]
 		var at = Vector2(i*148,0)
 		var tile = icon(candidates,"empty",at,Vector2(107,103),choose_candidate.bind(candidate),candidate)
-		tile.disabled = not editable or (role < 0 and not game.formation.has(candidate))
+		tile.disabled = not editable or (role < 0 and not game.formation.has(candidate) and game.formation.count(-1) <= 2)
 		candidate_buttons[candidate] = tile
 		caption(candidates,game.ROLES[candidate],at+Vector2(12,111),17)
 		caption(candidates,"上阵" if game.formation.has(candidate) else "候补",at+Vector2(24,141),15,MUTED)

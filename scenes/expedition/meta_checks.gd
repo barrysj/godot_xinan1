@@ -119,6 +119,7 @@ func run_checks(hub) -> void:
 		hub.chosen_node = 0
 		hub._enter_node()
 		if hub.screen == "battle":
+			hub.formation = [-1,0,3,1,2,-1]
 			hub._start()
 			fight_to_end(hub)
 			verify(hub.result_won, "full route victory")

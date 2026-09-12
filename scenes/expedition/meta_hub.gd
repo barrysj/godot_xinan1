@@ -176,12 +176,11 @@ func _after_report() -> void:
 	super._after_report()
 	_checkpoint()
 
-func _build_units() -> void:
-	super._build_units()
-	for unit in units:
-		if unit.side == 0:
-			unit.max_hp += run.permanent_hp
-			unit.hp = unit.max_hp
+func _ally_unit(role: int, slot: int) -> Dictionary:
+	var unit = super._ally_unit(role, slot)
+	unit.max_hp += run.permanent_hp
+	unit.hp = unit.max_hp
+	return unit
 
 func _process(delta: float) -> void:
 	var previous_screen = screen

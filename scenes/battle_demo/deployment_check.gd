@@ -1,0 +1,174 @@
+extends Node
+var game: Control
+var panel: Control
+var failures = 0
+
+func check(ok: bool, message: String) -> void:
+	if not ok:
+		failures += 1
+		push_error(message)
+
+func _ready() -> void:
+	call_deferred("run_checks")
+
+func mouse(point: Vector2, pressed: bool) -> void:
+	var event = InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = pressed
+	event.position = panel.canvas.get_global_transform() * point
+	get_viewport().push_input(event, true)
+	await get_tree().process_frame
+
+func click(point: Vector2) -> void:
+	await mouse(point, true)
+	await mouse(point, false)
+
+func move(point: Vector2) -> void:
+	var event = InputEventMouseMotion.new()
+	event.position = panel.canvas.get_global_transform() * point
+	event.button_mask = MOUSE_BUTTON_MASK_LEFT if panel.pressed_role >= 0 else 0
+	get_viewport().push_input(event, true)
+	await get_tree().process_frame
+
+func card_point(role: int) -> Vector2:
+	return panel.hand.position + panel.cards[role].position + panel.cards[role].size / 2
+
+func slot_point(slot: int) -> Vector2:
+	return game._slot_rect(0, slot).get_center()
+
+func run_checks() -> void:
+	game = load("res://scenes/expedition/expedition.tscn").instantiate()
+	add_child(game)
+	game._new_run()
+	game.run.generate(1)
+	game._enter_node()
+	panel = game.deployment
+	await get_tree().process_frame
+	await get_tree().process_frame
+	check(game.formation.count(-1) == 6 and game._living(0).is_empty(), "New encounter starts empty")
+	game._start()
+	check(game.phase == "prepare", "Empty formation cannot start")
+	await move(card_point(0))
+	check(panel.hover_role == 0, "Hover identifies card")
+	await click(card_point(0))
+	check(panel.selected_role == 0 and not panel.dragging, "Click selects and raises card")
+	await click(slot_point(0))
+	check(panel.candidate_slot == 0 and panel.ghost.visible and panel.accept_button.visible, "Click shows ghost and confirmation")
+	check(game.formation.count(-1) == 6, "Preview never deploys")
+	await click(slot_point(1))
+	check(panel.candidate_slot == 1, "Click another cell moves preview")
+	await click(panel.cancel_button.position + Vector2(17,17))
+	check(panel.selected_role == -1 and game.formation.count(-1) == 6, "Red cross cancels without mutation")
+	await click(card_point(0))
+	await click(slot_point(1))
+	await click(panel.accept_button.position + Vector2(17,17))
+	check(game.formation[1] == 0 and game._living(0).size() == 1, "Green check deploys through actual GUI")
+	var restored = game.Checkpoint.decode(game.progress.active_run)
+	check(not restored.is_empty() and restored.run.formation == game.formation, "Partial deployment checkpoint restores")
+	game._to_base()
+	game.progress.read_save()
+	game._continue_run()
+	await get_tree().process_frame
+	check(game.phase == "prepare" and game.formation[1] == 0 and game._living(0).size() == 1, "Disk reload keeps confirmed deployment")
+	await click(card_point(2))
+	await click(slot_point(4))
+	var escape = InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.pressed = true
+	get_viewport().push_input(escape, true)
+	await get_tree().process_frame
+	check(panel.selected_role == -1 and not game.paused and game.formation.count(-1) == 5, "Escape cancels preview before opening pause")
+	await mouse(card_point(1), true)
+	await move(slot_point(3))
+	check(panel.dragging and panel.ghost.visible and not panel.accept_button.visible, "Drag shows ghost without buttons")
+	await mouse(slot_point(3), false)
+	check(game.formation[3] == 1 and panel.selected_role == -1, "Valid drop commits immediately")
+	var before: Array = game.formation.duplicate()
+	await mouse(card_point(2), true)
+	await move(slot_point(1))
+	check(not panel.ghost.visible, "Occupied cell rejects preview")
+	await mouse(slot_point(1), false)
+	check(game.formation == before, "Occupied drop does not replace ally")
+	await mouse(card_point(2), true)
+	await move(Vector2(45, 170))
+	await mouse(Vector2(45, 170), false)
+	check(game.formation == before and panel.selected_role == -1, "Outside drop cancels")
+	await mouse(card_point(2), true)
+	await move(slot_point(4))
+	panel._notification(NOTIFICATION_APPLICATION_FOCUS_OUT)
+	await mouse(slot_point(4), false)
+	check(game.formation == before, "Focus loss cancels drag without deployment")
+	await mouse(card_point(2), true)
+	await move(card_point(2) + Vector2(3, 2))
+	await mouse(card_point(2) + Vector2(3, 2), false)
+	check(not panel.dragging and panel.selected_role == 2, "Small hand movement stays click mode")
+	await click(slot_point(4))
+	game._open_pause()
+	check(panel.selected_role == -1 and game.formation == before, "Pause discards unconfirmed preview")
+	game._resume_battle()
+	await click(card_point(0))
+	await click(slot_point(0))
+	check(game.formation[1] == 0, "Moving preview keeps original occupied until confirmed")
+	await click(panel.accept_button.position + Vector2(17,17))
+	check(game.formation[0] == 0 and game.formation[1] == -1, "Reposition clears original exactly once")
+	await click(card_point(0))
+	await click(panel.withdraw_button.position + Vector2(32,15))
+	check(not game.formation.has(0), "Withdraw returns card to undeployed")
+	for item in [[0,1],[2,4],[3,2]]:
+		panel.select(item[0])
+		panel.candidate_slot = item[1]
+		panel.commit()
+	game.run.roster.append(4)
+	panel.refresh()
+	panel.select(4)
+	check(not panel.can_place(0), "Fifth character cannot deploy")
+	panel.cancel()
+	game._start()
+	check(game.phase == "battle" and game._living(0).size() == 4, "Four deployed units enter combat")
+	var count = 0
+	while game.screen == "battle" and count < 1800:
+		game._process(0.05)
+		count += 1
+	check(game.screen == "report" and game.result_won, "Deployed party completes real encounter")
+	check(not game.Checkpoint.decode(game.progress.active_run).is_empty(), "Battle report remains restorable")
+	game._after_report()
+	game._choose_reward(0)
+	for index in range(game.run.stages[game.run.stage].size()):
+		if game.run.stages[game.run.stage][index].kind != "event":
+			game.chosen_node = index
+			break
+	game._enter_node()
+	check(game.formation.count(-1) == 6 and game._living(0).is_empty(), "Next encounter resets deployment")
+	print("DEPLOYMENT_CHECK ", "PASS" if failures == 0 else "FAIL", " failures=", failures)
+	if "--deployment-capture" in OS.get_cmdline_user_args() and failures == 0:
+		await capture()
+	game.queue_free()
+	get_tree().quit(failures)
+
+func capture() -> void:
+	for resolution in [Vector2i(1920,1080), Vector2i(2560,1440), Vector2i(1920,1200)]:
+		get_window().mode = Window.MODE_WINDOWED
+		get_window().size = resolution
+		game.formation = [-1,-1,-1,-1,-1,-1]
+		game._build_units()
+		panel.cancel()
+		await get_tree().process_frame
+		await get_tree().process_frame
+		await screenshot("empty", resolution)
+		await click(card_point(0))
+		await click(slot_point(1))
+		await get_tree().create_timer(0.2).timeout
+		await screenshot("preview", resolution)
+		panel.cancel()
+		await mouse(card_point(1), true)
+		await move(slot_point(4))
+		await screenshot("drag", resolution)
+		await mouse(slot_point(4), false)
+		await screenshot("deployed", resolution)
+
+func screenshot(stage: String, resolution: Vector2i) -> void:
+	await RenderingServer.frame_post_draw
+	var picture = get_viewport().get_texture().get_image()
+	check(picture.get_size() == resolution, "Screenshot resolution")
+	picture.save_png("res://.godot/deployment-%s-%dx%d.png" % [stage, resolution.x, resolution.y])
+	print("DEPLOYMENT_CAPTURE ", stage, " ", resolution)

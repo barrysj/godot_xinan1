@@ -164,7 +164,7 @@ func refresh() -> void:
 			details.text += "点击格子换位；选择候补再点已占用格可替换同学。" if editable else "战斗中阵型锁定。"
 			for i in range(6):
 				var occupant = game.formation[i]
-				box_button(slot_box,("前" if i < 3 else "后")+str(i%3+1)+" · "+(game.ROLES[occupant] if occupant >= 0 else "空"),assign_slot.bind(i),editable and (game.formation.has(selected_role) or occupant >= 0))
+				box_button(slot_box,("前" if i < 3 else "后")+str(i%3+1)+" · "+(game.ROLES[occupant] if occupant >= 0 else "空"),assign_slot.bind(i),editable and (game.formation.has(selected_role) or occupant >= 0 or game.formation.count(-1) > 2))
 		1:
 			details.text = "当前装备    "+gear+"\n\n篮球鞋    缩短普通攻击间隔 25%\n厚笔记本    装备者生命上限 +80\n\n每人一件；换装时另一件自动退回背包。"
 			box_button(actions,"篮球鞋",equip.bind("shoe"),editable)
@@ -178,7 +178,7 @@ func refresh() -> void:
 func assign_slot(index: int) -> void:
 	if not editable: return
 	var old = game.formation.find(selected_role)
-	if old < 0 and game.formation[index] < 0: return
+	if old < 0 and game.formation[index] < 0 and game.formation.count(-1) <= 2: return
 	if old >= 0: game.formation[old] = game.formation[index]
 	game.formation[index] = selected_role
 	apply_changes()
