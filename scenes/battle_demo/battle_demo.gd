@@ -2,6 +2,9 @@ extends Control
 ## Disposable battle prototype: formation and automatic skill readability.
 
 const STEP = 0.05
+const Simulation = preload("res://game/combat/battle_simulation.gd")
+var simulation = Simulation.new()
+var finish_age = 0.0
 const AutoBattle = preload("res://game/combat/auto_battle.gd")
 const INK = Color("e5edf3")
 const MUTED = Color("94a8b7")
@@ -68,6 +71,8 @@ func _build_units() -> void:
 	for i in range(units.size()):
 		units[i].id = i
 		AutoBattle.initialize(units[i])
+	simulation.reset(units)
+	finish_age = 0
 	elapsed = 0
 	accumulator = 0
 	paused = false
@@ -109,103 +114,41 @@ func _process(delta: float) -> void:
 func _living(side: int) -> Array[Dictionary]:
 	return units.filter(func(u): return u.side == side and u.hp > 0)
 
-func _target(actor: Dictionary, candidates: Array[Dictionary], rule: String = "normal") -> Dictionary:
-	var best: Dictionary = {}
-	var best_score = INF
-	for u in candidates:
-		var score: float
-		if rule == "low":
-			score = u.hp / u.max_hp * 1000.0 + u.slot * 0.001
-		elif rule == "back":
-			score = u.position.y if actor.side == 0 else -u.position.y
-		else:
-			score = AutoBattle.distance(actor, u)
-		if score < best_score:
-			best_score = score
-			best = u
-	return best
-
-func _event(events: Array[Dictionary], actor: Dictionary, target: Dictionary, kind: String, value: float, special: bool = false) -> void:
-	if not target.is_empty():
-		events.append({"actor": actor, "target": target, "kind": kind, "value": value, "special": special})
-
 func _tick() -> void:
-	elapsed += STEP
-	var events: Array[Dictionary] = []
-	for actor in units:
-		if actor.hp <= 0:
-			continue
-		var target = AutoBattle.advance(actor, units, STEP)
-		if target.is_empty() or actor.timer > 0.00001:
-			continue
-		actor.timer = actor.interval
-		var foes = _living(1 - actor.side)
-		var allies = _living(actor.side)
-		_event(events, actor, target, "damage", actor.atk)
-		actor.count += 1
-		_present_action(actor, actor.count >= actor.skill.attacks_to_trigger)
-		if actor.count < actor.skill.attacks_to_trigger: continue
-		actor.count = 0
-		for effect in actor.skill.effects:
-			var targets: Array[Dictionary] = []
-			match effect.target:
-				"self": targets = [actor]
-				"all_allies": targets = allies
-				"all_enemies": targets = foes
-				"adjacent":
-					for ally in allies:
-						if AutoBattle.distance(actor, ally) <= 2.05: targets.append(ally)
-				"row":
-					var first = target
-					if not first.is_empty():
-						for foe in foes:
-							if absf(foe.position.y - first.position.y) <= 0.5 and AutoBattle.in_range(actor, foe): targets.append(foe)
-				_:
-					var candidates = allies if effect.target == "low_ally" else foes.filter(func(foe): return AutoBattle.in_range(actor, foe))
-					targets = [_target(actor, candidates, "low" if effect.target.begins_with("low") else effect.target)]
-			for skill_target in targets: _event(events,actor,skill_target,effect.kind,effect.value+actor.atk*effect.attack_scale,true)
-		_note(actor.name+" · "+actor.skill.display_name)
-	# Collect every action before resolving; support precedes simultaneous damage.
-	for e in events:
-		if e.kind == "shield":
-			e.actual = minf(e.value, 144 - e.target.shield)
-			e.target.shield = minf(e.target.shield + e.value, 144)
-		elif e.kind in ["max_hp", "attack", "interval"]:
-			e.actual = e.value
-			if e.kind == "max_hp":
-				e.target.max_hp = minf(100000, e.target.max_hp + e.value)
-				e.target.hp = minf(e.target.max_hp, e.target.hp + e.value)
-			elif e.kind == "attack": e.target.atk = minf(10000, e.target.atk + e.value)
-			else: e.target.interval = clampf(e.value, 0.1, 10)
-		elif e.kind == "heal":
-			var healed = minf(e.value, e.target.max_hp - e.target.hp)
-			e.actual = healed
-			e.target.hp += healed
-			e.actor.healing += healed
-	for e in events:
-		if e.kind == "damage":
-			var damage = maxf(1, roundf(e.value * 100.0 / (100.0 + e.target.def)))
-			var blocked = minf(damage, e.target.shield)
-			e.actual = minf(maxf(0, e.target.hp), damage - blocked)
-			e.target.shield -= blocked
-			e.target.hp -= damage - blocked
-			e.actor.damage += e.actual
-			e.target.flash = 0.2
-		_present_event(e)
-		beams.append({"from": _unit_center(e.actor),
-			"to": _unit_center(e.target),
-			"color": (GOLD if e.special else (TEAL if e.actor.side == 0 else RED)), "life": 0.18})
-	if _living(0).is_empty() or _living(1).is_empty() or elapsed >= 90:
-		result_won = not _living(0).is_empty() and _living(1).is_empty()
-		phase = "result"
-		_note("胜利！全员恢复，点击重新编队继续实验。" if result_won else "挑战失败。可无限重试，试试换位或调整装备。")
-		if result_won:
-			for u in units:
-				if u.side == 0:
-					u.hp = u.max_hp
-					u.shield = 0
-					u.count = 0
-					u.timer = u.interval
+	if simulation.finished:
+		finish_age += STEP
+		if DisplayServer.get_name() == "headless" or finish_age >= 0.65: _finish_battle()
+		return
+	for event in simulation.advance(STEP):
+		_present_simulation_event(event)
+	elapsed = simulation.elapsed
+	if simulation.finished and DisplayServer.get_name() == "headless": _finish_battle()
+
+func _present_simulation_event(event: Dictionary) -> void:
+	var actor = simulation.unit(event.actor_id)
+	var target = simulation.unit(event.target_id)
+	if event.kind == "action_started":
+		_present_action(actor, event.casts)
+	elif event.kind == "action_released" and event.casts:
+		_note(actor.name + " · " + actor.skill.display_name)
+	elif event.kind == "impact":
+		var impact = event.duplicate()
+		impact.actor = actor
+		impact.target = target
+		impact.kind = event.effect
+		_present_event(impact)
+
+func _finish_battle() -> void:
+	result_won = simulation.won
+	phase = "result"
+	_note("胜利！全员恢复，可重新编队继续实验。" if result_won else "挑战失败。试试换位或调整装备。")
+	if result_won:
+		for u in units:
+			if u.side == 0:
+				u.hp = u.max_hp
+				u.shield = 0
+				u.count = 0
+				u.timer = u.interval
 
 func _unit_center(unit: Dictionary) -> Vector2:
 	return Vector2(236, 241) + unit.position * Vector2(74, 148.0 / 3.0)
@@ -397,5 +340,6 @@ func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary
 	unit.skill = definition.skill
 	unit.portrait = definition.portrait
 	unit.battle_animation = definition.battle_animation
+	unit.action_profile = definition.action_profile
 	unit.badge_color = definition.badge_color
 	return unit

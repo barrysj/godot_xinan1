@@ -1,6 +1,7 @@
 @tool
 class_name CampusUnit
 extends Resource
+const ActionProfile = preload("res://game/content/battle_action_profile.gd")
 const BattleAnimationSet = preload("res://game/content/battle_animation_set.gd")
 ## 人物与敌人共用静态定义；战斗实例保存自己的生命、护盾和计数。
 @export_group("身份与展示")
@@ -18,4 +19,5 @@ const BattleAnimationSet = preload("res://game/content/battle_animation_set.gd")
 ## 射程和移速以逻辑格计；画面投影不改变距离。
 @export_range(1, 6, 0.05) var attack_range: float = 1.45
 @export_range(0.5, 8, 0.1) var move_speed: float = 2.4
+@export var action_profile: ActionProfile
 @export var skill: CampusSkill
