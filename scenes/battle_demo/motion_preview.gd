@@ -254,10 +254,10 @@ func _capture_preview() -> void:
 		get_window().mode = Window.MODE_WINDOWED
 		get_window().size = resolution
 		await get_tree().process_frame
-		for index in [2, 3, 5, 6]:
+		for index in [2, 3, 4, 5, 6]:
 			mode = index
 			_reset_preview()
-			for i in (7 if mode == 3 else 5): advance_preview(STEP)
+			for i in (10 if mode == 4 else (7 if mode == 3 else 5)): advance_preview(STEP)
 			queue_redraw()
 			await RenderingServer.frame_post_draw
 			var screenshot = get_viewport().get_texture().get_image()

@@ -1,6 +1,8 @@
 @tool
 class_name CampusSkill
 extends Resource
+const BattleEffectSet = preload("res://game/content/battle_effect_set.gd")
+@export var battle_effect: BattleEffectSet
 @export var id: String = ""
 @export var display_name: String = ""
 @export_multiline var description: String = ""

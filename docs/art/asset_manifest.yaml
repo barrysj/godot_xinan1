@@ -50,6 +50,25 @@ assets:
         style_layer: daily
         status: concept
 
+  effects:
+    guard_shield:
+      burst_sheet:
+        file: assets/art/effects/guard_shield/burst_sheet.png
+        type: effect_sprite_sheet
+        resolution: [1254, 1254]
+        transparent: true
+        grid: [4, 4]
+        frame_metadata: assets/art/effects/guard_shield/burst_sheet.frames.json
+        animation_resource: resources/content/animations/guard_shield.tres
+        display_size: [144, 144]
+        anchor: [0.5, 0.5]
+        offset: [0, -44]
+        fps: 24
+        usage: [battle, motion_preview]
+        style_layer: battle
+        status: review
+        integration_authorization: "2026-09-13 用户明确要求生成并接入一个实际技能特效用于动画验证；待最终视觉 QA。"
+
   backgrounds:
     classroom:
       day:

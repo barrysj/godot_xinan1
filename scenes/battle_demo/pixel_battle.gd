@@ -13,6 +13,7 @@ var town: Texture2D
 var dungeon: Texture2D
 var visual_time = 0.0
 var effects: Array[Dictionary] = []
+var skill_effects: Array[Dictionary] = []
 var banner = ""
 var banner_time = 0.0
 var pause_overlay: Control
@@ -118,6 +119,7 @@ func _build_units() -> void:
 		u.animation = BattleAnimation.new(u.battle_animation)
 		u.presentation = UnitPresentation.new()
 	effects.clear()
+	skill_effects.clear()
 	banner_time = 0
 
 func _process(delta: float) -> void:
@@ -134,6 +136,8 @@ func _process(delta: float) -> void:
 		for fx in effects:
 			fx.life -= presentation_delta
 		effects = effects.filter(func(fx): return fx.life > 0)
+		for fx in skill_effects: fx.age += presentation_delta
+		skill_effects = skill_effects.filter(func(fx): return fx.age < fx.resource.duration())
 	super._process(delta)
 	for u in units:
 		if not u.get("action", {}).is_empty() and not u.presentation.action.is_empty():
@@ -148,6 +152,8 @@ func _tick() -> void:
 
 func _finish_delay() -> float:
 	var remaining := 0.65
+	for fx in skill_effects:
+		remaining = maxf(remaining, fx.resource.duration() - fx.age)
 	for u in units:
 		if u.hp <= 0:
 			remaining = maxf(remaining, u.animation._duration(&"death") - (u.animation.age if u.animation.state == &"death" else 0.0))
@@ -165,6 +171,9 @@ func _present_simulation_event(event: Dictionary) -> void:
 	super._present_simulation_event(event)
 	if event.kind == "action_released" and event.casts:
 		var actor = simulation.unit(event.actor_id)
+		if actor.skill.battle_effect != null and actor.skill.battle_effect.duration() > 0:
+			skill_effects.append({"resource": actor.skill.battle_effect, "actor_id": actor.id,
+				"age": 0.0, "action_id": event.action_id})
 		banner = actor.name + "  ·  " + actor.skill.display_name
 		banner_time = 1.3
 
@@ -320,6 +329,13 @@ func _draw_unit(u: Dictionary) -> void:
 		draw_rect(Rect2(p + Vector2(-10 + i * 8, 46), Vector2(5, 3)), GOLD if i < u.count else Color("747a62"))
 
 func _draw_effects() -> void:
+	for fx in skill_effects:
+		var texture: Texture2D = fx.resource.texture(fx.age)
+		if texture == null: continue
+		var actor = simulation.unit(fx.actor_id)
+		var center: Vector2 = _unit_center(actor) + fx.resource.offset
+		draw_texture_rect(texture, Rect2(center - fx.resource.display_size * fx.resource.anchor,
+			fx.resource.display_size), false)
 	for shot in simulation.projectiles:
 		var p = _project(shot.previous_position.lerp(shot.position, clampf(accumulator / STEP, 0, 1))) + Vector2(0, -6)
 		var target = simulation.unit(shot.target_id)

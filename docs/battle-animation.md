@@ -55,6 +55,10 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 ## 实际角色图集接入（2026-09-13）
 
+“并肩”使用 16 帧原创护盾图集，24 FPS、总长 2/3 秒。可选的 `CampusSkill.battle_effect` 资源承载帧、尺寸、锚点与偏移，缺失时保留原有反馈。实际出手事件创建一次技能动画，群体效果不重复播放；它跟随施法者逻辑脚底，使用表现时钟，支持暂停、倍速、自动回收与重开清空，纳入战报前的收尾等待。无头模拟不等待真实播放时间。原始提示词见 `assets/art/effects/guard_shield/generation.md`。
+
+新增 `res://scenes/battle_demo/skill_vfx_check.tscn` 验证真实特效帧、群体释放一次、前摇取消、暂停/倍速、自动回收、重开和收尾时长。预览“施法”模式可慢速循环查看，`-Capture` 同时导出施法截图。
+
 远射手同样接入 16 个绘制姿势和七类动画：银蓝短发、校园运动装与电子发射器。瞄准、发射、后坐、充能、受击和倒地均有独立画稿。两名角色的原始提示词与来源分别见 `assets/art/characters/guard/generation.md` 和 `assets/art/characters/archer/generation.md`；其余角色仍可按缺失动画回退规则正常战斗。
 
 用户进一步明确要求至少两名绘制的战斗角色、动作和一个技能特效。本阶段不以旧占位图完成验收；允许当前生成成果进入战斗，Manifest 保留 review 供后续人工视觉 QA，不冒充 approved，不创建冻结 Task Spec。
