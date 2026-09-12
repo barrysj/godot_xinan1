@@ -1,7 +1,7 @@
 {
   "meta": {
     "name": "Cyber Pop Campus Colors",
-    "version": "0.2",
+    "version": "0.3",
     "direction": "白天克制，夜晚增强，异常爆发"
   },
   "brand": {
@@ -25,6 +25,13 @@
     "accent_secondary": "#D96C9F",
     "highlight": "#D5C94A"
   },
+  "evening": {
+    "background": "#E9E4E8",
+    "warm": "#F2A36B",
+    "peach": "#EFA3A8",
+    "violet": "#8A7FA8",
+    "blue_gray": "#647C91"
+  },
   "night": {
     "background": "#0D1623",
     "surface": "#131E2C",
@@ -45,9 +52,10 @@
     "glitch_green": "#55FFB0",
     "error": "#FF3B68"
   },
-  "usage": {
-    "daily_high_saturation_limit": "低",
-    "night_high_saturation_limit": "中高",
-    "anomaly_high_saturation_limit": "高"
+  "semantic": {
+    "success": "#36D399",
+    "warning": "#E8D72F",
+    "danger": "#FF4D6D",
+    "info": "#22B8D6"
   }
 }
