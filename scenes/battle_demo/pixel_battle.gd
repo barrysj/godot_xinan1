@@ -267,6 +267,7 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 		draw_polyline(poly, Color("8dd7e7"), 3)
 
 func _draw_unit(u: Dictionary) -> void:
+	if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): return
 	var p = _unit_center(u) + Vector2(0, 13)
 	var alive: bool = u.hp > 0
 	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected
@@ -344,6 +345,7 @@ func _draw() -> void:
 	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
 	for u in units:
 		if u.hp <= 0: continue
+		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): continue
 		if not ((inspected_enemy_slot < 0 and u.side == 0 and u.role == selected) or (u.side == 1 and u.slot == inspected_enemy_slot)): continue
 		var ring = PackedVector2Array()
 		for i in range(65):
@@ -363,7 +365,7 @@ func _draw() -> void:
 					draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), Color("899574"), false, 2)
 					if formation[slot] < 0:
 						_center(rect.get_center() + Vector2(0,10), "+", Color("728369"), 24)
-					if selected == 0 and inspected_enemy_slot < 0:
+					if selected == 0 and inspected_enemy_slot < 0 and not (is_instance_valid(deployment) and deployment.previews_unit(0)):
 						var guard_slot = formation.find(0)
 						if guard_slot >= 0 and Vector2(slot % 3 - guard_slot % 3, int(slot / 3) - int(guard_slot / 3)).length() <= 1.025:
 							draw_rect(rect.grow(-9), Color(0.45, 0.85, 1.0, 0.2))
