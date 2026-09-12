@@ -101,6 +101,10 @@ func advance(delta: float) -> Array[Dictionary]:
 	_resolve(due)
 	if _living(0).is_empty() or _living(1).is_empty() or elapsed >= 90: closing = true
 	if closing and projectiles.is_empty():
+		for actor in units:
+			if not actor.action.is_empty():
+				_emit("action_finished" if actor.action.released else "action_cancelled", actor, actor, actor.action.id)
+			actor.action = {}
 		finished = true
 		won = not _living(0).is_empty() and _living(1).is_empty()
 	var output: Array[Dictionary] = events.duplicate(true)
@@ -200,8 +204,10 @@ func _resolve(events: Array[Dictionary]) -> void:
 			var damage = maxf(1, roundf(e.value * 100.0 / (100.0 + e.target.def)))
 			var blocked = minf(damage, e.target.shield)
 			e.actual = minf(maxf(0, e.target.hp), damage - blocked)
+			e.blocked = blocked
+			e.shield_break = e.target.shield > 0 and blocked >= e.target.shield
 			e.target.shield -= blocked
-			e.target.hp -= damage - blocked
+			e.target.hp = maxf(0, e.target.hp - (damage - blocked))
 			e.actor.damage += e.actual
 			e.target.flash = 0.2
 
@@ -209,4 +215,5 @@ func _resolve(events: Array[Dictionary]) -> void:
 	for e in events:
 		_emit("impact", e.actor, e.target, e.action_id, {"effect": e.kind, "value": e.value,
 			"actual": e.get("actual", 0.0), "special": e.special,
+			"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false),
 			"hp": maxf(0, e.target.hp), "max_hp": e.target.max_hp, "shield": e.target.shield})

@@ -5,6 +5,7 @@ const STEP = 0.05
 const Simulation = preload("res://game/combat/battle_simulation.gd")
 var simulation = Simulation.new()
 var finish_age = 0.0
+var finish_duration = 0.65
 const AutoBattle = preload("res://game/combat/auto_battle.gd")
 const INK = Color("e5edf3")
 const MUTED = Color("94a8b7")
@@ -100,9 +101,9 @@ func _start() -> void:
 
 func _process(delta: float) -> void:
 	for u in units:
-		u.flash = maxf(0, u.flash - delta)
+		u.flash = maxf(0, u.flash - delta * speed)
 	for b in beams:
-		b.life -= delta
+		b.life -= delta * speed
 	beams = beams.filter(func(b): return b.life > 0)
 	if phase == "battle" and not paused:
 		accumulator += delta * speed
@@ -117,12 +118,14 @@ func _living(side: int) -> Array[Dictionary]:
 func _tick() -> void:
 	if simulation.finished:
 		finish_age += STEP
-		if DisplayServer.get_name() == "headless" or finish_age >= 0.65: _finish_battle()
+		if DisplayServer.get_name() == "headless" or finish_age >= finish_duration: _finish_battle()
 		return
 	for event in simulation.advance(STEP):
 		_present_simulation_event(event)
 	elapsed = simulation.elapsed
-	if simulation.finished and DisplayServer.get_name() == "headless": _finish_battle()
+	if simulation.finished:
+		finish_duration = _finish_delay()
+		if DisplayServer.get_name() == "headless": _finish_battle()
 
 func _present_simulation_event(event: Dictionary) -> void:
 	var actor = simulation.unit(event.actor_id)
@@ -137,6 +140,9 @@ func _present_simulation_event(event: Dictionary) -> void:
 		impact.target = target
 		impact.kind = event.effect
 		_present_event(impact)
+
+func _finish_delay() -> float:
+	return 0.65
 
 func _finish_battle() -> void:
 	result_won = simulation.won

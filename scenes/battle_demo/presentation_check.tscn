@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/battle_demo/presentation_check.gd" id="1"]
+[node name="PresentationCheck" type="Node"]
+script = ExtResource("1")

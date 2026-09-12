@@ -1,11 +1,13 @@
 extends "res://scenes/battle_demo/battle_demo.gd"
-## Pixel presentation only; simulation stays in battle_demo.gd.
+## View adapter for the shared combat simulation; existing art remains provisional.
 
 const PAPER = Color("fff9ee")
 const DARK = Color("181820")
 const GRASS = Color("718951")
 const BRICK = Color("b58360")
 const ROLE_COLORS = [Color("71b8dc"), Color("eab765"), Color("99c983"), Color("d68c8c"), Color("ad98d2")]
+signal presentation_cue(event: Dictionary)
+const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd")
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 var town: Texture2D
 var dungeon: Texture2D
@@ -103,6 +105,7 @@ func _inspection_unit(role: int) -> Dictionary:
 		if unit.side == 0 and unit.role == role: return unit
 	var unit = _ally_unit(role, 0)
 	unit.animation = BattleAnimation.new(unit.battle_animation)
+	unit.presentation = UnitPresentation.new()
 	return unit
 
 func _start() -> void:
@@ -113,6 +116,7 @@ func _build_units() -> void:
 	super._build_units()
 	for u in units:
 		u.animation = BattleAnimation.new(u.battle_animation)
+		u.presentation = UnitPresentation.new()
 	effects.clear()
 	banner_time = 0
 
@@ -124,37 +128,65 @@ func _process(delta: float) -> void:
 		var presentation_delta: float = delta * speed if phase == "battle" else delta
 		for u in units:
 			u.animation.advance(presentation_delta)
+			u.presentation.advance(presentation_delta, u)
 		visual_time += presentation_delta
 		banner_time = maxf(0, banner_time - presentation_delta)
 		for fx in effects:
 			fx.life -= presentation_delta
 		effects = effects.filter(func(fx): return fx.life > 0)
 	super._process(delta)
+	for u in units:
+		if not u.get("action", {}).is_empty() and not u.presentation.action.is_empty():
+			u.presentation.action.age = minf(u.action.age + accumulator, u.action.duration)
+		u.animation.sync_motion(u.moving and not simulation.closing, u.presentation.action)
 
 func _tick() -> void:
 	super._tick()
 	for u in units:
 		u.animation.sync_health(u.hp, u.max_hp)
+		u.presentation.advance(0, u)
+
+func _finish_delay() -> float:
+	var remaining := 0.65
+	for u in units:
+		if u.hp <= 0:
+			remaining = maxf(remaining, u.animation._duration(&"death") - (u.animation.age if u.animation.state == &"death" else 0.0))
+	return remaining
 
 func _present_action(actor: Dictionary, casts_skill: bool) -> void:
 	actor.animation.play(&"cast" if casts_skill else &"attack")
 
+func _present_simulation_event(event: Dictionary) -> void:
+	if event.kind.begins_with("action_"):
+		simulation.unit(event.actor_id).presentation.consume(event)
+	if event.kind == "impact":
+		simulation.unit(event.target_id).presentation.consume(event)
+	presentation_cue.emit(event.duplicate(true))
+	super._present_simulation_event(event)
+	if event.kind == "action_released" and event.casts:
+		var actor = simulation.unit(event.actor_id)
+		banner = actor.name + "  ·  " + actor.skill.display_name
+		banner_time = 1.3
+
+func _project(position: Vector2) -> Vector2:
+	return Vector2(236, 241) + position * Vector2(74, 148.0 / 3.0)
+
+func _unit_center(unit: Dictionary) -> Vector2:
+	if phase != "battle" or simulation.finished: return _project(unit.position)
+	return _project(UnitPresentation.position(unit, accumulator / STEP))
+
 func _present_event(e: Dictionary) -> void:
 	if e.kind == "damage" and e.get("actual", 0) > 0:
 		e.target.animation.play(&"hurt")
-	var start = _unit_center(e.actor) + Vector2(0, -6)
-	var finish = _unit_center(e.target) + Vector2(0, -6)
 	var tint: Color = GOLD if e.special else (TEAL if e.actor.side == 0 else RED)
-	if e.kind == "heal":
-		tint = Color("a3ef98")
-	elif e.kind == "shield":
-		tint = Color("8ad8ff")
-	effects.append({"from": start, "to": finish, "kind": e.kind, "special": e.special,
-		"value": int(e.get("actual", e.value)),
-		"color": tint, "life": 0.85, "actor_side": e.actor.side, "actor_slot": e.actor.slot})
-	if e.special:
-		banner = e.actor.name + "  ·  " + e.actor.skill.display_name
-		banner_time = 1.3
+	if e.kind == "heal": tint = Color("a3ef98")
+	elif e.kind == "shield": tint = Color("8ad8ff")
+	var lanes = effects.filter(func(fx): return fx.target_id == e.target.id and fx.life > 0.4).size()
+	effects.append({"from": _project(e.get("from", e.actor.position)) + Vector2(0, -6),
+		"to": _project(e.get("to", e.target.position)) + Vector2(0, -6),
+		"kind": e.kind, "special": e.special, "value": int(e.get("actual", e.value)),
+		"color": tint, "life": 0.65, "target_id": e.target.id, "lane": lanes % 4,
+		"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false)})
 
 func _slot_rect(side: int, slot: int) -> Rect2:
 	var row = int(slot / 3)
@@ -241,27 +273,24 @@ func _campus(show_battle_marks: bool = true) -> void:
 func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 	var alive: bool = u.hp > 0
 	var animated_texture: Texture2D = u.animation.texture()
-	var tint = Color.WHITE if alive else Color(0.48, 0.49, 0.47, 0.55)
-	var offset = Vector2.ZERO
-	if alive and animated_texture == null:
-		offset.y = roundf(sin(visual_time * 3 + u.slot) * 2)
-		for fx in effects:
-			if fx.actor_side == u.side and fx.actor_slot == u.slot and fx.life > 0.60:
-				offset += (fx.to - fx.from).normalized() * sin((0.85 - fx.life) / 0.25 * PI) * 12
-		if u.flash > 0:
-			tint = Color(1.6, 1.3, 1.3)
-	var p = (at + offset).round()
-	# Kenney humanoids and monsters; provisional costumes for fictional students.
+	var pose: Dictionary = u.presentation.pose(u, animated_texture != null)
+	var p: Vector2 = at + pose.offset * factor / 4.0
+	var world = Transform2D(0, Vector2.ONE * scale_factor, 0, origin)
+	var local = Transform2D(pose.rotation, pose.stretch, 0, p)
+	draw_set_transform_matrix(world * local)
 	if animated_texture != null:
-		var animation_size: Vector2 = u.battle_animation.display_size * factor / 4.0
-		draw_texture_rect(animated_texture, Rect2(p - animation_size * u.battle_animation.anchor, animation_size), false)
+		var dimensions: Vector2 = u.battle_animation.display_size * factor / 4.0
+		var rect = Rect2(-dimensions * u.battle_animation.anchor, dimensions)
+		if u.battle_animation.flip_with_facing and pose.flip:
+			rect.position.x = -rect.position.x
+			rect.size.x = -rect.size.x
+		draw_texture_rect(animated_texture, rect, false, pose.tint)
 	else:
-		draw_texture_rect(u.portrait, Rect2(p - Vector2(8,14)*factor, Vector2(16,16)*factor),false,tint)
+		draw_texture_rect(u.portrait, Rect2(-Vector2(8, 14) * factor, Vector2(16, 16) * factor), false, pose.tint)
+	draw_set_transform_matrix(world)
 	if u.side == 0 and alive:
-		# Role badges create readable team identity without recoloring the source art.
 		draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), u.badge_color)
-		if u.role == equipment:
-			_tile(dungeon, 8, 10, p + Vector2(24, -3), 1.3)
+		if u.role == equipment: _tile(dungeon, 8, 10, p + Vector2(24, -3), 1.3)
 	if u.shield > 0 and alive:
 		var poly = PackedVector2Array([p + Vector2(-32,-52), p + Vector2(32,-52), p + Vector2(38,-34), p + Vector2(24,8), p + Vector2(0,18), p + Vector2(-24,8), p + Vector2(-38,-34), p + Vector2(-32,-52)])
 		draw_polyline(poly, Color("8dd7e7"), 3)
@@ -287,31 +316,39 @@ func _draw_unit(u: Dictionary) -> void:
 		draw_rect(Rect2(p + Vector2(-10 + i * 8, 46), Vector2(5, 3)), GOLD if i < u.count else Color("747a62"))
 
 func _draw_effects() -> void:
+	for shot in simulation.projectiles:
+		var p = _project(shot.previous_position.lerp(shot.position, clampf(accumulator / STEP, 0, 1))) + Vector2(0, -6)
+		var target = simulation.unit(shot.target_id)
+		var direction = (_project(target.position) + Vector2(0, -6) - p).normalized()
+		var color = GOLD if shot.special else (TEAL if simulation.unit(shot.actor_id).side == 0 else RED)
+		for tail in range(4):
+			var q: Vector2 = p - direction * tail * 6
+			draw_circle(q, 3.5 - tail * 0.65, Color(color, 1 - tail * 0.2))
 	for fx in effects:
-		var age: float = 0.85 - fx.life
-		var travel = clampf(age / 0.24, 0, 1)
-		var p: Vector2 = fx.from.lerp(fx.to, travel)
+		var age: float = 0.65 - fx.life
+		var opacity = clampf(fx.life / 0.2, 0, 1)
+		var color = Color(fx.color, opacity)
 		if fx.kind == "damage":
-			if travel < 1:
-				for tail in range(4):
-					var q: Vector2 = p - (fx.to - fx.from).normalized() * tail * 7
-					draw_rect(Rect2(q, Vector2(7 - tail, 7 - tail)), fx.color)
-			elif age < 0.48:
-				var r = 8 + (age - 0.24) * 100
-				for i in range(8):
-					var q: Vector2 = fx.to + Vector2.from_angle(i * PI / 4) * r
-					draw_rect(Rect2(q, Vector2(5, 5)), fx.color)
+			if age < 0.22:
+				var r = 5 + age * 80
+				for i in range(6):
+					var direction = Vector2.from_angle(i * TAU / 6)
+					draw_line(fx.to + direction * r, fx.to + direction * (r + 7), color, 2)
+			if fx.shield_break and age < 0.35:
+				for i in range(6):
+					var q: Vector2 = fx.to + Vector2.from_angle(i * TAU / 6) * (18 + age * 60)
+					draw_line(q, q + Vector2(4, 8), Color("8ad8ff"), 2)
 		else:
-			for i in range(5):
-				var q: Vector2 = fx.to + Vector2((i - 2) * 12, -age * 50 + (i % 2) * 12)
-				draw_rect(Rect2(q, Vector2(4, 12)), fx.color)
-				if fx.kind == "heal":
-					draw_rect(Rect2(q + Vector2(-4,4), Vector2(12, 4)), fx.color)
-		if age > 0.18 and fx.value > 0:
+			for i in range(4):
+				var q: Vector2 = fx.to + Vector2((i - 1.5) * 10, -age * 35 + (i % 2) * 9)
+				draw_line(q, q + Vector2(0, 8), color, 2)
+				if fx.kind == "heal": draw_line(q + Vector2(-4, 4), q + Vector2(4, 4), color, 2)
+		if fx.value > 0 or fx.blocked > 0:
 			var label = ("-" if fx.kind == "damage" else "+") + str(fx.value)
-			var at: Vector2 = fx.to + Vector2(22, -38 - age * 30)
-			_center(at + Vector2(2,2), label, DARK, 22 if fx.special else 18)
-			_center(at, label, fx.color, 22 if fx.special else 18)
+			if fx.kind == "damage" and fx.value == 0: label = "格挡"
+			var at: Vector2 = fx.to + Vector2(18 + fx.lane * 8, -35 - age * 28 - fx.lane * 20)
+			_center(at + Vector2(1, 1), label, Color(DARK, opacity), 22 if fx.special else 18)
+			_center(at, label, color, 22 if fx.special else 18)
 
 func _pixel_button(index: int, text: String, active: bool = false, enabled: bool = true) -> void:
 	var rect = _action_rect(index)
@@ -333,7 +370,7 @@ func _draw() -> void:
 	_text(Vector2(42, 65), "RETURN TO SUMMER", Color("c0b792"), 11)
 	_text(Vector2(238, 45), "01 / 旧校庭院", PAPER, 20)
 	_text(Vector2(238, 66), "找回同学，驱散校园里的异常。", Color("b2baa0"), 12)
-	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else "自走棋战斗")))
+	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else ("战斗收尾" if simulation.closing else "自走棋战斗"))))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
 	_text(Vector2(972, 53), ("部署 %d / 4" % (6 - formation.count(-1))) if phase == "prepare" else ("%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed]), PAPER, 17)
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
@@ -370,7 +407,7 @@ func _draw() -> void:
 						if guard_slot >= 0 and Vector2(slot % 3 - guard_slot % 3, int(slot / 3) - int(guard_slot / 3)).length() <= 1.025:
 							draw_rect(rect.grow(-9), Color(0.45, 0.85, 1.0, 0.2))
 	var ordered = units.duplicate()
-	ordered.sort_custom(func(a, b): return a.position.y < b.position.y)
+	ordered.sort_custom(func(a, b): return _unit_center(a).y < _unit_center(b).y)
 	for u in ordered:
 		_draw_unit(u)
 	_draw_effects()
