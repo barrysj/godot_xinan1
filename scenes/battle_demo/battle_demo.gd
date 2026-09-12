@@ -100,6 +100,7 @@ func _start() -> void:
 	_note("开战！自动移动索敌，进入射程后攻击。")
 
 func _process(delta: float) -> void:
+	if paused: return
 	for u in units:
 		u.flash = maxf(0, u.flash - delta * speed)
 	for b in beams:

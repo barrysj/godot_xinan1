@@ -94,5 +94,31 @@ func _ready() -> void:
 	steps(sim, 4)
 	sim.reset(sim.units.duplicate())
 	check(sim.elapsed == 0 and sim.projectiles.is_empty() and sim.events.is_empty() and sim.units[0].action.is_empty(), "Reset clears transient state")
+	for interval in [0.1, 0.075, 0.025, 0.01]:
+		var timing: Vector2 = Profile.new().timing(interval)
+		check(timing.x > 0 and timing.y > 0 and timing.x + timing.y <= interval + 0.00001, "Equipment-speed timing stays positive and within interval")
+	sim = setup()
+	sim.units[0].interval = 0.1
+	sim.units[1].hp = 1000
+	sim.units[1].max_hp = 1000
+	sim.request_action(0, 1)
+	events = steps(sim, 10)
+	var releases = events.filter(func(e): return e.kind == "action_released")
+	check(releases.size() == 5, "Recovery completion adds no empty simulation tick at high speed")
+	sim = setup()
+	var ally = pawn(2, 0, Vector2(4, 3))
+	ally.timer = 100
+	var roster: Array[Dictionary] = [sim.units[0], sim.units[1], ally]
+	sim.reset(roster)
+	var group_shield = Effect.new()
+	group_shield.kind = "shield"
+	group_shield.target = "all_allies"
+	group_shield.value = 40
+	sim.units[0].skill.effects.append(group_shield)
+	sim.units[0].skill.attacks_to_trigger = 1
+	sim.request_action(0, 1)
+	events = steps(sim, 4)
+	check(sim.units[0].shield == 40 and ally.shield == 40, "Group skill applies to every selected ally")
+	check(events.filter(func(e): return e.kind == "action_started" and e.casts).size() == 1, "Group skill starts exactly one cast")
 	print("ACTION_CHECK ", "PASS" if failures == 0 else "FAIL", " failures=", failures)
 	get_tree().quit(failures)

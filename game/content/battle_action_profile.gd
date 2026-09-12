@@ -6,10 +6,10 @@ extends Resource
 @export_enum("auto", "melee", "projectile") var delivery: String = "auto"
 
 func timing(interval: float) -> Vector2:
-	var total = maxf(0.1, windup + recovery)
-	var factor = minf(1.0, interval / total)
-	var lead = clampf(windup * factor, 0.05, maxf(0.05, interval - 0.05))
-	return Vector2(lead, minf(maxf(0.05, recovery * factor), interval - lead))
+	# Gear can reduce intervals below the editor's base-stat minimum.
+	# Keep both phases positive; simulation steps quantize their actual deadlines.
+	var phases = Vector2(maxf(0.001, windup), maxf(0.001, recovery))
+	return phases * minf(1.0, maxf(0.001, interval) / (phases.x + phases.y))
 
 func is_projectile(reach: float) -> bool:
 	return delivery == "projectile" or (delivery == "auto" and reach > 1.5)

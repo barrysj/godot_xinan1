@@ -79,6 +79,9 @@ func advance(delta: float) -> Array[Dictionary]:
 			if actor.action.age + 0.00001 >= actor.action.duration:
 				_emit("action_finished", actor, actor, actor.action.id)
 				actor.action = {}
+				# Cooldown already advanced; allow a ready follow-up without an empty tick.
+				var next_target = AutoBattle.advance(actor, units, 0)
+				if not next_target.is_empty(): request_action(actor.id, next_target.id)
 			continue
 		var target = AutoBattle.advance(actor, units, delta)
 		if actor.position != actor.previous_position:

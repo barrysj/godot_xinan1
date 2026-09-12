@@ -181,11 +181,15 @@ func _present_event(e: Dictionary) -> void:
 	var tint: Color = GOLD if e.special else (TEAL if e.actor.side == 0 else RED)
 	if e.kind == "heal": tint = Color("a3ef98")
 	elif e.kind == "shield": tint = Color("8ad8ff")
-	var lanes = effects.filter(func(fx): return fx.target_id == e.target.id and fx.life > 0.4).size()
+	var occupied_lanes = {}
+	for fx in effects:
+		if fx.target_id == e.target.id and fx.life > 0: occupied_lanes[fx.lane] = true
+	var lane := 0
+	while occupied_lanes.has(lane): lane += 1
 	effects.append({"from": _project(e.get("from", e.actor.position)) + Vector2(0, -6),
 		"to": _project(e.get("to", e.target.position)) + Vector2(0, -6),
 		"kind": e.kind, "special": e.special, "value": int(e.get("actual", e.value)),
-		"color": tint, "life": 0.65, "target_id": e.target.id, "lane": lanes % 4,
+		"color": tint, "life": 0.65, "target_id": e.target.id, "lane": lane,
 		"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false)})
 
 func _slot_rect(side: int, slot: int) -> Rect2:
