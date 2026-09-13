@@ -1,42 +1,22 @@
-# Cyber Pop Campus 美术 → Codex 实现 Pipeline
+# Cyber Pop Campus
 
-这套目录用于 AI 驱动的 Godot 2D 游戏开发：
+Godot 2D 理工校园游戏。Codex 负责开发与美术生产，人类负责人决定玩法取舍并分阶段评审美术。
 
-- **ChatGPT 网页版**：游戏设计、美术总监、概念设计、图像资产生成、视觉 QA。
-- **Codex**：Godot 工程实现、UI/场景搭建、Shader、动画、数据绑定、验证与修复。
-- **人类负责人**：最终审美判断、方向批准、关键取舍。
+## 开发入口
 
-核心原则：
+- [整体游戏设计](docs/game-design.md)
+- [校园演示](docs/campus-demo.md)与[校园地图](docs/campus-map.md)
+- [战斗与部署](docs/battle-demo.md)、[战斗动画与预览](docs/battle-animation.md)
+- [内容编辑](docs/content-authoring.md)、[Web 发布](docs/web-publishing.md)
+- [项目协作与目录职责](AGENTS.md)
 
-> 不让 Codex 重新设计美术，只让它实现已经冻结的设计。
+Windows 使用 PowerShell 7。按对应主题文档运行仓库中的 `run-*.ps1`；Godot 路径通过脚本的 `-EnginePath` 指定。
 
-## 日常工作流
+## 美术入口
 
-```text
-需求
- ↓
-ChatGPT 网页版：设计 + 生成概念/正式资产
- ↓
-批准资产
- ↓
-更新 asset_manifest.yaml + 对应 Task Spec
- ↓
-Codex：只读取 ART_CONTRACT + 对应 Spec + Manifest
- ↓
-Codex 实现 Godot
- ↓
-运行截图
- ↓
-ChatGPT 网页版视觉 QA
- ↓
-Codex 只修明确问题
-```
+- **开始任务、提交评审、使用网页版备选：**[美术工作流](docs/pipeline/WORKFLOW.md)
+- **查当前规范与资料分工：**[美术执行契约](docs/art/ART_CONTRACT.md)
+- **查实际资产：**[资产登记表](docs/art/asset_manifest.yaml)
+- **发起任务：**[简短提示词](docs/prompts/ART_PROMPTS.md)
 
-## Codex 常规任务最小读取集
-
-1. `docs/art/ART_CONTRACT.md`
-2. 当前功能直接相关的一个 Spec
-3. `docs/art/asset_manifest.yaml`
-4. 必要时读取 `data/visual/` 中相关 Token
-
-普通任务不要默认读取完整 `STYLE_BIBLE.md`。
+当前评审通过对话中的图片、运行截图和动作预览完成。Serpent 是候选资产管理工具，尚未接入；不要将标签、生成成功或技术检查通过当作人工批准。

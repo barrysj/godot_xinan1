@@ -39,16 +39,6 @@ assets:
         style_layer: battle
         status: review
         integration_authorization: "2026-09-13 用户要求至少两名实际绘制角色及动作，授权本轮生成并接入；待最终视觉 QA。"
-    protagonist:
-      portrait_default:
-        file: assets/art/characters/protagonist/portrait_default.png
-        type: portrait
-        resolution: [2048, 2048]
-        transparent: true
-        anchor: [0.5, 1.0]
-        usage: [dialogue, relationship_screen]
-        style_layer: daily
-        status: concept
 
   effects:
     guard_shield:
@@ -109,42 +99,8 @@ assets:
         style_layer: anomaly
         status: review
         integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
-    classroom:
-      day:
-        file: assets/art/backgrounds/classroom/day.png
-        type: background
-        resolution: [2560, 1440]
-        transparent: false
-        crop_mode: cover
-        usage: [classroom_scene]
-        style_layer: daily
-        status: concept
-      anomaly:
-        file: assets/art/backgrounds/classroom/anomaly.png
-        type: background
-        resolution: [2560, 1440]
-        transparent: false
-        crop_mode: cover
-        usage: [classroom_scene]
-        style_layer: anomaly
-        status: concept
-
-  ui:
-    relationship:
-      node_normal:
-        file: assets/art/ui/relationship/node_normal.png
-        type: ui
-        transparent: true
-        nine_patch: false
-        status: concept
-      node_selected:
-        file: assets/art/ui/relationship/node_selected.png
-        type: ui
-        transparent: true
-        nine_patch: false
-        status: concept
 
 notes:
-  - 最终资产加入后，将 status 改为 approved。
-  - Codex 默认只使用 approved 资产。
-  - 如任务允许 concept/review 资产，应在 Task Spec 中明确说明。
+  - 状态、必要字段和接入例外统一见 docs/pipeline/WORKFLOW.md。
+  - 本表只登记实际文件；新批准用 review_record 引用对应任务的人工评审记录。
+  - 历史 review 与 integration_authorization 保留，不因文档整理升级为 approved。

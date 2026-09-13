@@ -15,20 +15,17 @@
 - `AGENTS.md`：项目协作规则、目录职责和执行边界；不承载具体功能方案。沿用这个文件名，不另建 `agent.md` 或 `agents.md`。
 - `docs/` 下的主题文档：长期维护的玩法、交互、程序实现和验证说明。优先补充已有对应章节，例如战斗与部署归入 `docs/battle-demo.md`，整体游戏设计归入 `docs/game-design.md`，避免同一规则多处维护。
 - `docs/art/`：正式美术方向、通用 UI / 角色 / 场景规范及资产 Manifest；不是普通功能需求记录目录。
-- `tasks/`：美术实施方案（Visual Task Spec）。承载 ChatGPT 网页版完成设计、由人类负责人批准后交给 Codex 执行的具体布局、资产、动效、响应式和验收要求。草案须明确标注未批准；`tasks/templates/` 仅存模板与示例，不能直接视为已批准方案。
+- `tasks/`：美术实施方案（Visual Task Spec）。承载 Codex 整理的具体美术目标、选定方案、资产版本、人工阶段评审和验收证据。草案须明确标注未批准；`tasks/templates/` 只存模板，不能视为已批准方案。
 - `docs/pipeline/`：跨任务的美术制作、交付、验收和目录流程；`docs/prompts/`：可复用的协作提示词；`docs/research/`：调研资料与结论。
-- `design/references/` 与 `design/concepts/`：参考资料和探索性概念，不作为正式实施规范；`assets/art/` 存放正式美术资产，`data/visual/` 存放视觉 Token，均不代替设计或功能文档。
+- `design/references/`：参考资料；`design/concepts/`：按任务组织的概念、候选版本和评审证据，批准状态由任务记录说明，不以文件夹位置推定；`assets/art/` 存放正式美术资产，`data/visual/` 存放视觉 Token，均不代替设计或功能文档。
 - 普通功能需求、聊天整理、代码实现计划和开发记录不得为了归档而命名为 Task Spec 或放进 `tasks/`。Codex 自行整理的需求及实现参数不代表视觉方案已获批准或冻结。
 - 归档时按内容职责合并到已有正式文档，保留有效规则、参数和验证入口，更新引用并移除重复文件；文档搬迁不改变方案的批准状态。会话交接仍遵循上面的 handoff 规则，仅在聊天中输出。
 
-## 美术实现 Pipeline
+## 美术生产边界
 
-- 只有当进行美术相关的任务时才执行这个pipeline
-- 视觉方向为 Cyber Pop Campus。ChatGPT 网页版负责设计、美术资产与视觉 QA，人类负责人批准方向；Codex 负责按冻结的 Task Spec 实现、Godot 验证和修复明确问题，不承担开放式美术探索、重新定义 Art Direction、自行美化或未经批准的大范围视觉重构。缺少冻结 Spec 时先补齐需求，不扩大实现范围。
-- 视觉任务使用项目级 Skill：`.agents/skills/art-implementation/SKILL.md`。普通任务最小读取集为 `docs/art/ART_CONTRACT.md`、当前任务直接相关的一个 Task Spec、`docs/art/asset_manifest.yaml`，以及必要的 `data/visual/` Token；不重复读取无关设计文档，不为小修改扫描全项目，一个 Feature 尽量在一个独立任务中完成。
-- 普通任务禁止默认或反复读取完整 `docs/art/STYLE_BIBLE.md`。只有首次接入或建立新视觉系统、引入新场景大类或新角色表现体系、已授权的全局 UI 语言重构、用户明确要求重新设计视觉方向时才读取；读取不代表获得重新设计授权。
-- 工作流：ChatGPT 网页版完成设计 → Task Spec 冻结 → 正式资产放入 `assets/art/` → Manifest 标记 `approved` → Codex 按 Spec 实现 → Godot 验证并输出运行截图 → 交回 ChatGPT 做视觉 QA → Codex 只修明确问题。
-- Manifest 是正式资产登记表，默认只使用 `status: approved` 的资产；`concept` / `review` 仅在当前 Task Spec 明确允许时使用。不得擅自重画、替换已批准资产或生成新的正式美术，除非任务明确授权。示例资产缺失不要求补建假资产。
-- 尺寸、透明、Anchor、裁切、NinePatch 等信息优先查 Manifest，已有元数据不重复看图分析；截图仍按项目规则输出，只有实际视觉问题才进一步分析，不反复读取大量图片。
-- 优先复用 `resources/theme/theme-main.tres`、`scenes/ui/` 共享组件与 `data/visual/` Token，不创建平行 Theme、UI 或资产系统。Token 是视觉规范数据源；后续按 Spec 将颜色、字体角色、间距映射到现有 Theme/组件，动效时长映射到动画参数，不在多个 Scene 重复硬编码品牌色。已有 UI 仅在任务范围内逐步适配，不为统一 Token 进行无关重构。
-- 布局优先使用 Container / Anchor；视觉功能至少验证 1920×1080、2560×1440 和 16:10。纯规范或配置接入进行相应的路径、格式和差异检查；未改变运行画面时无需为此启动游戏截图。最终报告简洁说明修改、验证与遗留问题。
+- 仅美术相关任务使用[项目美术技能](.agents/skills/art-implementation/SKILL.md)，生产、评审和备选步骤统一维护于[美术工作流](docs/pipeline/WORKFLOW.md)。
+- Codex 在当前 Cyber Pop Campus 方向与用户授权范围内负责设计、生成、处理和 Godot 接入；负责人分别批准概念、正式资产和接入效果。ChatGPT 网页版仅为可选备选，不是必须的设计或 QA 交接方。
+- 用户要求生成或设计时可以起草方案，不必先索取网页版冻结稿；这不代表批准重定义全局美术方向、替换任务外资产或展开无关视觉重构。
+- 实际资产及状态以 Manifest 为准，人工批准须绑定具体版本；已有明确试接入授权的 review 资产保留授权，不自动升级为 approved。
+- 优先复用现有 Theme、共享组件、Token、Container / Anchor 和验证工具。资料读取范围由技能说明，不默认或反复读取完整视觉圣经。
+- 纯规范、目录或配置整理进行路径、格式、引用与差异检查；未改变运行画面时无需启动游戏截图。视觉功能仍须运行并在对话中展示截图，适配要求见工作流。
