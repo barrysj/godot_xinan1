@@ -13,7 +13,7 @@
 | [ENVIRONMENT_SPEC.md](specs/ENVIRONMENT_SPEC.md) | 校园空间、专业识别点、场景状态与分层交付 | 场景设计、生成或修改 |
 | [UI_SPEC.md](specs/UI_SPEC.md) | 页面与组件视觉、排版、交互呈现与适配 | UI 设计或实现 |
 | [data/visual/](../../data/visual) | colors：具体色值；typography：字体角色与字重；spacing：间距；animation：动效参数 | 只读本次涉及的 Token |
-| [asset_manifest.yaml](asset_manifest.yaml) | 实际资产路径、技术元数据、资产状态与接入授权 | 查找、登记、替换或接入资产 |
+| [asset_manifest.yaml](../../assets/art/asset_manifest.yaml) | 实际资产路径、技术元数据、资产状态与接入授权 | 查找、登记、替换或接入资产 |
 | [美术工作流](pipeline/WORKFLOW.md) | 生产阶段、人工评审、资产检查、网页版备选与归档 | 推进阶段或交付时 |
 | [美术任务模板](tasks/templates/VISUAL_TASK_SPEC_TEMPLATE.md) | 单项任务目标、选定版本、实施要求和评审记录 | 有具体美术任务时填写，不视为已批准 |
 
@@ -35,7 +35,6 @@
 docs/art/
   ART_CONTRACT.md       # 入口、职责与执行约束
   STYLE_BIBLE.md        # 总方向
-  asset_manifest.yaml  # 实际资产登记
   specs/               # 角色、场景、UI 细则
   pipeline/            # 制作、评审、网页版备选
   prompts/             # 美术任务提示词
@@ -45,4 +44,4 @@ docs/art/
 
 [data/visual/](../../data/visual/) 是视觉参数的数据源，不是文档附件。`colors.json` 已由战斗详情界面读取，`animation.json` 已由部署界面读取；`typography.json` 和 `spacing.json` 当前用于规范参数，尚未统一映射到运行时 Theme。四份数据按同一用途留在数据层，不搬入 `docs/`，不为目录整理扩大为 Theme 重构。
 
-正式图片留在 [assets/art/](../../assets/art/)，参考与候选留在 [design/](../../design/)。战斗动画的引擎资源、出手时序和验证入口见[战斗动画接入](../battle-animation.md)，不归入纯美术规范。
+正式图片及资产登记表留在 [assets/art/](../../assets/art/)。登记表内的文件与评审记录路径统一相对项目根目录，不相对登记表自身；它用于协作登记，尚未被游戏运行时直接读取。参考与候选留在 [design/](../../design/)。战斗动画的引擎资源、出手时序和验证入口见[战斗动画接入](../battle-animation.md)，不归入纯美术规范。

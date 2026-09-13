@@ -16,7 +16,7 @@ Windows 使用 PowerShell 7。按对应主题文档运行仓库中的 `run-*.ps1
 
 - **开始任务、提交评审、使用网页版备选：**[美术工作流](docs/art/pipeline/WORKFLOW.md)
 - **查当前规范与资料分工：**[美术执行契约](docs/art/ART_CONTRACT.md)
-- **查实际资产：**[资产登记表](docs/art/asset_manifest.yaml)
+- **查实际资产：**[资产登记表](assets/art/asset_manifest.yaml)
 - **发起任务：**[简短提示词](docs/art/prompts/ART_PROMPTS.md)
 
 当前评审通过对话中的图片、运行截图和动作预览完成。Serpent 是候选资产管理工具，尚未接入；不要将标签、生成成功或技术检查通过当作人工批准。
