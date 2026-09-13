@@ -1,6 +1,6 @@
 # UI 视觉与实现规范
 
-页面细则沿用 v0.3；跨领域风格见 [STYLE_BIBLE.md](STYLE_BIBLE.md)，生产与批准见[美术工作流](../pipeline/WORKFLOW.md)。
+页面细则沿用 v0.3；跨领域风格见 [STYLE_BIBLE.md](../STYLE_BIBLE.md)，生产与批准见[美术工作流](../pipeline/WORKFLOW.md)。
 
 ## 1. 核心定位
 
@@ -169,9 +169,9 @@
 
 ## 10. 动效与排版
 
-交互时长、推荐动作和禁用模式读取 [animation.json](../../data/visual/animation.json)，不在页面中重抄参数。动画不能阻塞核心操作，日常功能页保持稳定。
+交互时长、推荐动作和禁用模式读取 [animation.json](../../../data/visual/animation.json)，不在页面中重抄参数。动画不能阻塞核心操作，日常功能页保持稳定。
 
-字体角色、字重及可读性约束读取 [typography.json](../../data/visual/typography.json)，间距读取 [spacing.json](../../data/visual/spacing.json)。一级标题可有几何与海报感；功能标题和正文稳定清楚；代码使用等宽角色，手写旁注只作氛围。中英文混排保持统一字重与节奏。
+字体角色、字重及可读性约束读取 [typography.json](../../../data/visual/typography.json)，间距读取 [spacing.json](../../../data/visual/spacing.json)。一级标题可有几何与海报感；功能标题和正文稳定清楚；代码使用等宽角色，手写旁注只作氛围。中英文混排保持统一字重与节奏。
 
 ## 11. 组件建设与评审
 

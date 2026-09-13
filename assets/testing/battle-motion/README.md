@@ -6,7 +6,7 @@
 - `student-alpha-rejected.png`：比例修正版，1254×1254，画入棋盘格，角落 Alpha=255，不是真透明，不能接入。
 - 对修正版再次要求去除棋盘格后仍未通过，因此停止扩张美术试产，框架和预览继续复用现有占位素材。第三次未通过输出保留在工具原始生成目录，不作为项目交付物。
 
-战斗素材试产提示词和交付步骤见 `docs/prompts/battle-animation-assets.md`。不修改已批准美术，不把这些图登记为 approved。
+战斗素材试产提示词和交付步骤见 `docs/art/prompts/battle-animation-assets.md`。不修改已批准美术，不把这些图登记为 approved。
 
 ## 本轮内置工具原始提示词
 

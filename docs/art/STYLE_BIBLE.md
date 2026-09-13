@@ -2,9 +2,9 @@
 
 视觉基线沿用 v0.3。本文件保留跨领域的方向、配色用法、光影、VFX 与状态强度；角色、场景、UI 的具体细则分别维护在对应 Spec，不在此重复。
 
-- [角色规范](CHARACTER_SPEC.md)：比例、身份、服装、表情、动画方向与交付。
-- [场景规范](ENVIRONMENT_SPEC.md)：空间要素、状态与分层交付。
-- [UI 规范](UI_SPEC.md)：页面、组件、排版与适配。
+- [角色规范](specs/CHARACTER_SPEC.md)：比例、身份、服装、表情、动画方向与交付。
+- [场景规范](specs/ENVIRONMENT_SPEC.md)：空间要素、状态与分层交付。
+- [UI 规范](specs/UI_SPEC.md)：页面、组件、排版与适配。
 - [执行契约](ART_CONTRACT.md)：资料职责与实现约束；生产及评审见其工作流入口。
 
 本文件的色彩名称与比例描述用法；精确数值读取 [colors.json](../../data/visual/colors.json)，不维护第二套色板。

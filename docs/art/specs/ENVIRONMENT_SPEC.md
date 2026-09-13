@@ -1,6 +1,6 @@
 # 场景视觉规范
 
-空间细则沿用 v0.3。状态强度、配色与光影见 [STYLE_BIBLE.md](STYLE_BIBLE.md)，生产与批准见[美术工作流](../pipeline/WORKFLOW.md)。
+空间细则沿用 v0.3。状态强度、配色与光影见 [STYLE_BIBLE.md](../STYLE_BIBLE.md)，生产与批准见[美术工作流](../pipeline/WORKFLOW.md)。
 
 ## 1. 总原则
 
