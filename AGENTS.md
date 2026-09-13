@@ -14,7 +14,7 @@
 
 - `AGENTS.md`：项目协作规则、目录职责和执行边界；不承载具体功能方案。沿用这个文件名，不另建 `agent.md` 或 `agents.md`。
 - `docs/` 下的主题文档：长期维护的玩法、交互、程序实现和验证说明。优先补充已有对应章节，例如战斗与部署归入 `docs/battle-demo.md`，整体游戏设计归入 `docs/game-design.md`，避免同一规则多处维护。
-- `docs/art/`：美术文档统一入口。根层保留执行契约与视觉方向；`specs/` 放角色／场景／UI 细则，`pipeline/` 放生产与评审流程，`prompts/` 放美术提示词，`tasks/` 放具体美术任务。不存放普通功能需求。
+- `docs/art/`：美术文档统一入口。以 `WORKFLOW.md` 为美术主入口，根层保留执行契约与视觉方向；`specs/` 放角色／场景／UI 细则，`prompts/` 放美术提示词，`tasks/` 放具体美术任务。不存放普通功能需求。
 - `docs/art/tasks/`：美术实施方案（Visual Task Spec）。承载 Codex 整理的具体美术目标、选定方案、资产版本、人工阶段评审和验收证据。草案须明确标注未批准；`docs/art/tasks/templates/` 只存模板，不能视为已批准方案。
 - `docs/research/`：调研资料与结论。战斗动画等程序接入文档仍按功能维护在 `docs/`，从美术入口引用，不复制成另一份规范。
 - `design/references/`：参考资料；`design/concepts/`：按任务组织的概念、候选版本和评审证据，批准状态由任务记录说明，不以文件夹位置推定；`assets/art/` 存放正式美术资产及 `asset_manifest.yaml` 资产登记表，`data/visual/` 存放机器可读的视觉 Token，供规范与运行时代码共用，不搬入文档目录，也不复制第二份参数；这些目录均不代替设计或功能文档。
@@ -23,7 +23,7 @@
 
 ## 美术生产边界
 
-- 仅美术相关任务使用[项目美术技能](.agents/skills/art-implementation/SKILL.md)，生产、评审和备选步骤统一维护于[美术工作流](docs/art/pipeline/WORKFLOW.md)。
+- 仅美术相关任务使用[项目美术技能](.agents/skills/art-implementation/SKILL.md)，生产、评审和备选步骤统一维护于[美术工作流](docs/art/WORKFLOW.md)。
 - Codex 在当前 Cyber Pop Campus 方向与用户授权范围内负责设计、生成、处理和 Godot 接入；负责人分别批准概念、正式资产和接入效果。ChatGPT 网页版仅为可选备选，不是必须的设计或 QA 交接方。
 - 用户要求生成或设计时可以起草方案，不必先索取网页版冻结稿；这不代表批准重定义全局美术方向、替换任务外资产或展开无关视觉重构。
 - 实际资产及状态以 Manifest 为准，人工批准须绑定具体版本；已有明确试接入授权的 review 资产保留授权，不自动升级为 approved。

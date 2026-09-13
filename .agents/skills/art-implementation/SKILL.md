@@ -5,7 +5,7 @@ description: 在 Cyber Pop Campus 项目中设计、生成和处理美术资产�
 
 # 项目美术生产
 
-先读 `docs/art/ART_CONTRACT.md`。生产阶段、批准、登记与网页版备选统一遵循 `docs/art/pipeline/WORKFLOW.md`；不在此维护另一套流程。
+从美术主入口 `docs/art/WORKFLOW.md` 开始，再按任务读取 `docs/art/ART_CONTRACT.md` 及必要规范；不在此维护另一套生产与评审流程。
 
 ## 按任务读取
 

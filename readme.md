@@ -14,7 +14,7 @@ Windows 使用 PowerShell 7。按对应主题文档运行仓库中的 `run-*.ps1
 
 ## 美术入口
 
-- **开始任务、提交评审、使用网页版备选：**[美术工作流](docs/art/pipeline/WORKFLOW.md)
+- **开始任务、提交评审、使用网页版备选：**[美术工作流](docs/art/WORKFLOW.md)
 - **查当前规范与资料分工：**[美术执行契约](docs/art/ART_CONTRACT.md)
 - **查实际资产：**[资产登记表](assets/art/asset_manifest.yaml)
 - **发起任务：**[简短提示词](docs/art/prompts/ART_PROMPTS.md)

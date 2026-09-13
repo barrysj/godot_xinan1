@@ -1,6 +1,6 @@
 # UI 视觉与实现规范
 
-页面细则沿用 v0.3；跨领域风格见 [STYLE_BIBLE.md](../STYLE_BIBLE.md)，生产与批准见[美术工作流](../pipeline/WORKFLOW.md)。
+页面细则沿用 v0.3；跨领域风格见 [STYLE_BIBLE.md](../STYLE_BIBLE.md)，生产与批准见[美术工作流](../WORKFLOW.md)。
 
 ## 1. 核心定位
 
@@ -158,7 +158,7 @@
 
 ## 9. 响应式
 
-目标分辨率与截图要求统一见[工作流](../pipeline/WORKFLOW.md#接入阶段)。
+目标分辨率与截图要求统一见[工作流](../WORKFLOW.md#接入阶段)。
 
 要求：
 - 优先 Container / Anchor

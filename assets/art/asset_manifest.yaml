@@ -101,6 +101,6 @@ assets:
         integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
 
 notes:
-  - 状态、必要字段和接入例外统一见 docs/art/pipeline/WORKFLOW.md。
+  - 状态、必要字段和接入例外统一见 docs/art/WORKFLOW.md。
   - 本表只登记实际文件；新批准用 review_record 引用对应任务的人工评审记录。
   - 历史 review 与 integration_authorization 保留，不因文档整理升级为 approved。

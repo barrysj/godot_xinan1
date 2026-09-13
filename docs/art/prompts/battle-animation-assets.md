@@ -1,6 +1,6 @@
 # 战斗素材试产提示词
 
-这些是素材无关框架的试产要求，不是冻结的视觉 Task Spec，也不代表角色设计获批。正式方向及比例见[美术执行契约](../ART_CONTRACT.md)和[角色规范](../specs/CHARACTER_SPEC.md)。默认由 Codex 制作；网页版仅按[备选步骤](../pipeline/WORKFLOW.md#5-chatgpt-网页版备选)使用。先用一名近战、一名远程验证，再扩大产量。
+这些是素材无关框架的试产要求，不是冻结的视觉 Task Spec，也不代表角色设计获批。正式方向及比例见[美术执行契约](../ART_CONTRACT.md)和[角色规范](../specs/CHARACTER_SPEC.md)。默认由 Codex 制作；网页版仅按[备选步骤](../WORKFLOW.md#5-chatgpt-网页版备选)使用。先用一名近战、一名远程验证，再扩大产量。
 
 ## 第一步：角色基准图（两次独立生成）
 
