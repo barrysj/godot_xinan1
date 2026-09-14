@@ -55,7 +55,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E03 | [deployment_check.tscn](../scenes/battle_demo/deployment_check.tscn)，`--deployment-check` | PASS，failures=0；真实 Viewport 输入、手牌直接换人／换位、部署菜单、撤回、部分部署恢复与下场沿用 | deploy |
 | E04 | 探索，`--run-smoke` | PASS；三条固定兼容路线完成，资源 7/9/7；首战部署、后续沿用、奖励、恢复、续玩、候补、重试、结算 | run |
 | E05 | 探索，`--meta-smoke` | 67 checks，failures=0；成长生效时机、迁移、检查点、离线派遣、回滚 | meta |
-| E06 | 探索，`--map-check` | PASS；地点浏览、缩放拖动、详情、锁定交互 | map |
+| E06 | 探索，`--map-check` | PASS；地点浏览、缩放拖动、详情空白关闭、锁定交互 | map |
 | E07 | 探索，`--dispatch-check` | 36 checks，failures=0；多人校验、交易、旧任务迁移和 UI | dispatch |
 | E08 | 探索，`--journey-check` | 17 checks，failures=0；出发到达、进度、领取、返程与失败回滚 | journey |
 | E09 | [presentation_check.tscn](../scenes/battle_demo/presentation_check.tscn) | PASS，failures=0；插值、动作同步、不同帧率／倍速统计一致 | presentation |
@@ -64,7 +64,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E12 | [battle_ui_check.tscn](../scenes/battle_demo/battle_ui_check.tscn)，`--deployment-check` | failures=0；侧视投影、角色详情、背包装卸转移、存档、战中只读 | ui |
 | E13 | 探索，`--random-check`，图形 | PASS：200 种子生成 197 种地图、146 种奖励序列；40 路径、156 场战斗，四次失败均经战报→重配→重试获胜；待选奖励磁盘恢复通过 | random |
 | E14 | 探索，`--content-check`，图形 | `CONTENT_CHECK_COMPLETE`；装备、共享技能隔离、字符串身份、事件交易、冻结快照、旧档及非法资源拒绝 | content |
-| E15 | 探索，`--team-check`，图形 | PASS；地图／战斗面板、换装卸装、候补、阵容保存、只读和 Esc 恢复 | team |
+| E15 | 探索，`--team-check`，图形 | PASS；地图／战斗面板、换装卸装、详情空白关闭、候补、阵容保存、只读和 Esc 恢复 | team |
 | E16 | 探索，`--pause-flow-smoke`，图形 | PASS；关闭窗口确认取消、主菜单返回、Play 再入及退出动作 | pause-flow |
 | E17 | [menu.tscn](../scenes/menu/menu.tscn)，`--codex-check`，图形 | PASS：35 条图鉴逐项浏览；真实部署四人并开战后，从暂停进入图鉴时状态冻结，Esc 返回暂停，继续后战斗时间恢复推进 | codex |
 | E18 | `build-web.ps1` release 包，Codex 应用内浏览器 | PASS（桌面范围）：完整五层路线、暂停恢复、结算与离开；Boss 前刷新恢复；修复后奖励／开战后立刻刷新分别恢复最新地图／同场战前 4/4 阵容。844×390 可进入和点选但文字与确认控件过小 | web |
@@ -103,7 +103,7 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | SAVE-01 | 存档 | 节点续玩、战报奖励恢复、成长任务共存 | 已验证 | 可安全中断 | [run_checkpoint.gd](../game/run/run_checkpoint.gd)、[meta_hub.gd](../scenes/expedition/meta_hub.gd) | [校园](campus-demo.md)、[录入](content-authoring.md) | E03–E05、E14、E18 | profile v3／checkpoint schema 1／run schema 5；Web 写后显式同步；半场不恢复 HP |
 | SAVE-02 | 存档 | 旧档迁移、拒绝坏档、交易回滚与幂等结算 | 已验证 | 防重复领取和存档损坏 | [campus_progress.gd](../game/meta/campus_progress.gd)、[short_run.gd](../game/run/short_run.gd) | [录入](content-authoring.md) | E05、E07、E14 | 有限夹具；非断电故障注入；普通局内操作失败仅提示，不全量回滚内存 |
 | UI-01 | 界面 | 暂停、倍速、菜单往返、确认退出 | 已验证 | 控制节奏与离开 | [battle_demo.gd](../scenes/battle_demo/battle_demo.gd)、[meta_hub.gd](../scenes/expedition/meta_hub.gd) | [战斗](battle-demo.md) | E02、E09、E16、E18 | Windows 与本地桌面 Web 已测；浏览器关闭标签行为未单列测试 |
-| UI-02 | 界面 | 侧视战场、悬停摘要、点击详情与共享图标 | 已验证 | 减少遮挡与信息查找 | [battle_board.gd](../scenes/battle_demo/battle_board.gd)、[battle_inspector.gd](../scenes/battle_demo/battle_inspector.gd)、[object_icon.gd](../scenes/team/object_icon.gd) | [战斗](battle-demo.md) | E12 | 技术交互通过；本轮无人工多尺寸视觉复核 |
+| UI-02 | 界面 | 侧视战场、悬停摘要、点击详情、空白关闭与共享图标 | 已验证 | 减少遮挡与信息查找 | [battle_board.gd](../scenes/battle_demo/battle_board.gd)、[battle_inspector.gd](../scenes/battle_demo/battle_inspector.gd)、[object_icon.gd](../scenes/team/object_icon.gd) | [战斗](battle-demo.md) | E06、E12、E15 | 覆盖式详情统一关闭规则已记录；本轮无人工多尺寸视觉复核 |
 | UI-03 | 界面 | 五类校园图鉴与菜单／暂停入口 | 已验证 | 规则查询 | [codex_panel.gd](../scenes/codex/codex_panel.gd)、[codex_catalog.gd](../game/codex/codex_catalog.gd) | [校园](campus-demo.md) | E17 | 35 条当前内容；程序检查不替代小屏可读性验收 |
 | UI-04 | 界面 | 模板设置、音量与显示设置 | 已实装 | 基础偏好控制 | [menu.gd](../scenes/menu/menu.gd)、[ggt-core](../addons/ggt-core/) | [设计](game-design.md) | 静态 | 未逐项运行；存在音量设置不代表已接游戏音频 |
 | CONTENT-01 | 内容 | Resource 录入、校验、预览并进入探索 | 已验证 | 低代码扩充内容 | [content_db.gd](../game/content/content_db.gd)、[content_preview.tscn](../scenes/content/content_preview.tscn) | [录入](content-authoring.md) | E14 | 扩展已有机制无需分支，新机制仍需代码；未手动逐模式复验预览 UI |

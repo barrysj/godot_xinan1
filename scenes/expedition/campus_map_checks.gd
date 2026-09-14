@@ -13,6 +13,14 @@ func mouse(map: Control, at: Vector2, pressed: bool) -> void:
 	event.pressed = pressed
 	map._gui_input(event)
 
+func screen_click(game: Control, at: Vector2) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.position = at
+	event.pressed = true
+	Input.parse_input_event(event)
+	await game.get_tree().process_frame
+
 func run_checks(game: Control) -> void:
 	game.progress.path = "res://.godot/campus-map-test.json"
 	game.progress.points = 20
@@ -42,6 +50,9 @@ func run_checks(game: Control) -> void:
 		if DisplayServer.get_name() != "headless":
 			await RenderingServer.frame_post_draw
 			game.get_viewport().get_texture().get_image().save_png("res://.godot/campus-map-details-%dx%d.png" % [resolution.x,resolution.y])
+		await screen_click(game, Vector2(12,12))
+		check(not is_instance_valid(game.location_panel), "Blank backdrop closes location details")
+		game._open_location_details(0)
 		var escape := InputEventKey.new()
 		escape.keycode = KEY_ESCAPE
 		escape.pressed = true

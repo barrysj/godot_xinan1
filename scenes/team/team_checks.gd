@@ -1,4 +1,13 @@
 extends RefCounted
+
+func click_popup_backdrop(hub: Control, panel: Control, point: Vector2) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	event.position = panel.content.get_global_transform() * point
+	panel._input(event)
+	await hub.get_tree().process_frame
+
 func run_checks(hub) -> void:
 	hub._new_run()
 	hub.run.badge_owned = true
@@ -16,6 +25,11 @@ func run_checks(hub) -> void:
 	panel.bag_buttons.remove.pressed.emit()
 	panel.close_popup()
 	assert(hub.equipment == -1)
+	panel.equipment_slot.pressed.emit()
+	await click_popup_backdrop(hub, panel, Vector2(500,300))
+	assert(is_instance_valid(panel.popup))
+	await click_popup_backdrop(hub, panel, Vector2(40,40))
+	assert(not is_instance_valid(panel.popup) and hub.equipment == -1)
 	panel.select_role(4)
 	panel.select_tab(0)
 	panel.formation_buttons[0].pressed.emit()
@@ -56,7 +70,8 @@ func run_checks(hub) -> void:
 	panel.select_tab(2)
 	panel.skill_buttons.ability.pressed.emit()
 	assert(is_instance_valid(panel.popup))
-	panel.close_popup()
+	await click_popup_backdrop(hub, panel, Vector2(40,40))
+	assert(not is_instance_valid(panel.popup))
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/team_skills.png")
@@ -68,5 +83,5 @@ func run_checks(hub) -> void:
 	assert(not is_instance_valid(hub.team_panel) and not hub.paused)
 	hub._process(0.1)
 	assert(hub.elapsed > before[0])
-	print("TEAM_CHECK map/battle entry, gear exclusivity, unequip, reserve swap, formation persistence, battle read-only, freeze and Esc resume passed")
+	print("TEAM_CHECK map/battle entry, gear exclusivity, popup backdrop dismissal, reserve swap, formation persistence, battle read-only, freeze and Esc resume passed")
 	hub.get_tree().quit()
