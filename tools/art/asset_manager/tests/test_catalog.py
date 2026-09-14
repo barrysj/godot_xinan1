@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 
 import json
+import http.client
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -11,7 +13,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from catalog import AssetCatalog, godot_resource_info  # noqa: E402
-from server import PreviewManager  # noqa: E402
+from server import ArtManagerServer, Handler, PreviewManager  # noqa: E402
 
 
 PNG_BYTES = b"\x89PNG\r\n\x1a\n"
@@ -216,6 +218,48 @@ class PreviewTests(unittest.TestCase):
         )
         self.assertFalse(ok)
         self.assertIn("不受信", message)
+
+
+class ServerSecurityTests(unittest.TestCase):
+    def setUp(self):
+        self.fixture = ProjectFixture()
+        self.server = ArtManagerServer(("127.0.0.1", 0), Handler, self.fixture.root)
+        self.thread = threading.Thread(target=self.server.serve_forever)
+        self.thread.daemon = True
+        self.thread.start()
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.server.server_close()
+        self.thread.join(timeout=2)
+        self.fixture.close()
+
+    def test_cross_site_launch_and_unknown_file_id_are_rejected(self):
+        port = self.server.server_address[1]
+        connection = http.client.HTTPConnection("127.0.0.1", port, timeout=3)
+        body = json.dumps({"roots": []}).encode("utf-8")
+        connection.request(
+            "POST",
+            "/api/scan",
+            body=body,
+            headers={
+                "Content-Type": "application/json",
+                "Content-Length": str(len(body)),
+                "X-Art-Token": self.server.token,
+                "Origin": "https://example.invalid",
+            },
+        )
+        response = connection.getresponse()
+        response.read()
+        self.assertEqual(403, response.status)
+        connection.request(
+            "GET",
+            "/api/file?id=..%2F..%2Fsecret&token={}".format(self.server.token),
+        )
+        response = connection.getresponse()
+        response.read()
+        self.assertEqual(404, response.status)
+        connection.close()
 
 
 if __name__ == "__main__":

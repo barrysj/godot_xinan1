@@ -125,7 +125,8 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "CyberPopArtManager/1.0"
 
     def log_message(self, fmt, *args):
-        print("[%s] %s" % (self.log_date_time_string(), fmt % args), flush=True)
+        message = re.sub(r"token=[^ &\"]+", "token=[redacted]", fmt % args)
+        print("[%s] %s" % (self.log_date_time_string(), message), flush=True)
 
     def _security_headers(self, content_type="application/json; charset=utf-8"):
         self.send_header("Content-Type", content_type)
