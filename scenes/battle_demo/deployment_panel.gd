@@ -1,11 +1,10 @@
 extends Control
-## One gesture state for click-to-confirm and drag-to-deploy. Only commit mutates formation.
+## One gesture state for click and drag deployment. Choosing a valid target commits immediately.
 const Comic = preload("res://scenes/ui/comic_ui.gd")
 const DRAG_THRESHOLD = 8.0
 const LIMIT = 4
 enum Mode { NONE, DEPLOY, ACTIONS, SWAP }
 var mode = Mode.NONE
-var locked_preview = false
 var toggle_on_release = false
 var swap_button: Button
 var swap_ghost: TextureRect
@@ -16,8 +15,6 @@ var canvas: Control
 var hand: HBoxContainer
 var cards: Dictionary = {}
 var ghost: TextureRect
-var accept_button: Button
-var cancel_button: Button
 var withdraw_button: Button
 var selected_role = -1
 var candidate_slot = -1
@@ -51,16 +48,6 @@ class Card extends Control:
 		var label = "已部署" if deployed else "待部署"
 		draw_string(font, rect.position + Vector2((rect.size.x - font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x) / 2, 78), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, panel.game.DARK)
 
-class MarkButton extends Button:
-	var confirm = false
-	func _draw() -> void:
-		var ink = Color("2f9b62") if confirm else Color("d74d55")
-		if confirm:
-			draw_polyline(PackedVector2Array([Vector2(9, 17), Vector2(14, 23), Vector2(25, 10)]), ink, 3.0, true)
-		else:
-			draw_line(Vector2(10, 10), Vector2(24, 24), ink, 3.0, true)
-			draw_line(Vector2(24, 10), Vector2(10, 24), ink, 3.0, true)
-
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -90,10 +77,6 @@ func _ready() -> void:
 	swap_ghost.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	swap_ghost.modulate.a = 0.35
 	canvas.add_child(swap_ghost)
-	accept_button = _mark(true)
-	cancel_button = _mark(false)
-	accept_button.pressed.connect(commit)
-	cancel_button.pressed.connect(cancel)
 	withdraw_button = Button.new()
 	withdraw_button.text = "撤回"
 	withdraw_button.add_theme_font_override("font", game.font)
@@ -117,22 +100,6 @@ func _ready() -> void:
 	return_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(return_hint)
 	refresh()
-
-func _mark(confirm: bool) -> Button:
-	var button = MarkButton.new()
-	button.confirm = confirm
-	button.size = Vector2(34, 34)
-	button.tooltip_text = "确认部署" if confirm else "取消部署"
-	var style = StyleBoxFlat.new()
-	style.bg_color = game.PAPER
-	style.set_corner_radius_all(5)
-	style.set_border_width_all(1)
-	style.border_color = game.DARK
-	button.add_theme_stylebox_override("normal", style)
-	button.add_theme_stylebox_override("hover", style)
-	button.add_theme_stylebox_override("pressed", style)
-	canvas.add_child(button)
-	return button
 
 func active() -> bool:
 	return game.phase == "prepare" and not game.paused and not game.leaving and (game.get("screen") == null or game.get("screen") == "battle")
@@ -165,8 +132,6 @@ func refresh() -> void:
 			hand.add_child(card)
 			cards[role] = card
 	ghost.visible = mode in [Mode.DEPLOY, Mode.SWAP] and can_place(candidate_slot)
-	accept_button.visible = ghost.visible and locked_preview and not dragging
-	cancel_button.visible = accept_button.visible
 	withdraw_button.visible = mode == Mode.ACTIONS and not dragging
 	swap_button.visible = withdraw_button.visible
 	return_hint.visible = dragging and game.formation.has(selected_role)
@@ -178,10 +143,7 @@ func refresh() -> void:
 		swap_button.position = feet + Vector2(-68, -94)
 		withdraw_button.position = feet + Vector2(4, -94)
 	if ghost.visible:
-		accept_button.tooltip_text = "确认交换" if mode == Mode.SWAP else "确认部署"
 		_place_ghost(ghost, selected_role, candidate_slot)
-		accept_button.position = Vector2(ghost.position.x + ghost.size.x / 2 - 38, ghost.position.y - 41)
-		cancel_button.position = accept_button.position + Vector2(42, 0)
 		var other: int = game.formation[candidate_slot]
 		if mode == Mode.SWAP and other >= 0 and other != selected_role:
 			_place_ghost(swap_ghost, other, game.formation.find(selected_role))
@@ -232,17 +194,15 @@ func unit_slot_at(point: Vector2) -> int:
 func select(role: int, from_card := false) -> void:
 	selected_role = role
 	mode = Mode.SWAP if from_card and game.formation.has(role) else (Mode.ACTIONS if game.formation.has(role) else Mode.DEPLOY)
-	locked_preview = false
 	candidate_slot = -1
 	game.selected = role
 	game.inspected_enemy_slot = -1
-	game._note("选择交换或撤回。" if mode == Mode.ACTIONS else "点击我方格子预览部署／交换，或拖动卡片直接落位。")
+	game._note("选择交换或撤回。" if mode == Mode.ACTIONS else "点击我方格子直接部署／交换，或拖动卡片落位。")
 	refresh()
 
 func begin_swap() -> void:
 	if not active() or not game.formation.has(selected_role): return
 	mode = Mode.SWAP
-	locked_preview = false
 	candidate_slot = -1
 	refresh()
 
@@ -253,12 +213,9 @@ func cancel() -> void:
 	dragging = false
 	hover_role = -1
 	mode = Mode.NONE
-	locked_preview = false
 	toggle_on_release = false
 	if ghost != null:
 		ghost.hide()
-		accept_button.hide()
-		cancel_button.hide()
 		withdraw_button.hide()
 		swap_button.hide()
 		swap_ghost.hide()
@@ -300,13 +257,12 @@ func handle(event: InputEvent) -> bool:
 				if not dragging and selected_role != pressed_role: select(pressed_role, true)
 				dragging = true
 				toggle_on_release = false
-				locked_preview = false
 				mode = Mode.SWAP if game.formation.has(selected_role) else Mode.DEPLOY
 			if dragging:
 				candidate_slot = slot_at(point)
 				refresh()
 			return true
-		if mode in [Mode.DEPLOY, Mode.SWAP] and not locked_preview:
+		if mode in [Mode.DEPLOY, Mode.SWAP]:
 			candidate_slot = slot_at(point)
 			refresh()
 		return false
@@ -327,8 +283,6 @@ func handle(event: InputEvent) -> bool:
 		toggle_on_release = false
 		refresh()
 		return true
-	if accept_button.visible and Rect2(accept_button.position, accept_button.size).has_point(point): return false
-	if cancel_button.visible and Rect2(cancel_button.position, cancel_button.size).has_point(point): return false
 	if withdraw_button.visible and Rect2(withdraw_button.position, withdraw_button.size).has_point(point): return false
 	if swap_button.visible and Rect2(swap_button.position, swap_button.size).has_point(point): return false
 	var role = card_at(point)
@@ -348,8 +302,8 @@ func handle(event: InputEvent) -> bool:
 			press_at = point
 		elif can_place(slot):
 			candidate_slot = slot
-			locked_preview = true
-			refresh()
+			commit()
+			return true
 		elif selected_role >= 0:
 			game._note("不能落在原格；部署空格时仍需遵守四人上限。")
 		if game.formation[slot] >= 0:
