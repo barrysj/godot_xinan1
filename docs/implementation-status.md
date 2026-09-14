@@ -61,7 +61,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E09 | [presentation_check.tscn](../scenes/battle_demo/presentation_check.tscn) | PASS，failures=0；插值、动作同步、不同帧率／倍速统计一致 | presentation |
 | E10 | [authored_assets_check.tscn](../scenes/battle_demo/authored_assets_check.tscn)，`--require-two-models` | models=2，failures=0；真实图集与七动作元数据，不是美术审批 | assets |
 | E11 | [skill_vfx_check.tscn](../scenes/battle_demo/skill_vfx_check.tscn) | failures=0；护盾出手一次、暂停倍速、回收与收尾 | vfx |
-| E12 | [battle_ui_check.tscn](../scenes/battle_demo/battle_ui_check.tscn)，`--deployment-check` | failures=0；侧视投影、角色详情、背包装卸转移、存档、战中只读 | ui |
+| E12 | [battle_ui_check.tscn](../scenes/battle_demo/battle_ui_check.tscn)，`--deployment-check` | failures=0；侧视投影、角色详情、装备弹窗空白关闭与操作后自动关闭、背包装卸转移、存档、战中只读 | ui |
 | E13 | 探索，`--random-check`，图形 | PASS：200 种子生成 197 种地图、146 种奖励序列；40 路径、156 场战斗，四次失败均经战报→重配→重试获胜；待选奖励磁盘恢复通过 | random |
 | E14 | 探索，`--content-check`，图形 | `CONTENT_CHECK_COMPLETE`；装备、共享技能隔离、字符串身份、事件交易、冻结快照、旧档及非法资源拒绝 | content |
 | E15 | 探索，`--team-check`，图形 | PASS；地图／战斗面板、换装卸装、详情空白关闭、候补、阵容保存、只读和 Esc 恢复 | team |
@@ -95,7 +95,7 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | RUN-03 | 探索 | 多区域、商店与消耗道具 | 仅设计 | 更长程资源取舍 | 无；[设计](game-design.md) | [设计](game-design.md) | 无 | 不把原提案数量当首发承诺 |
 | RUN-04 | 探索 | 限次挑战模式 | 仅设计 | 可选高难度 | 无；[设计](game-design.md) | [设计](game-design.md) | 无 | 目前只实现主线无限重试 |
 | REWARD-01 | 奖励 | 装备／训练／招募随机选择 | 已验证 | 局内成长与取舍 | [reward_catalog.gd](../game/run/reward_catalog.gd)、[short_run.gd](../game/run/short_run.gd) | [录入](content-authoring.md) | E04、E14 | 持有过滤、一次领取；不代表构筑流派已成熟 |
-| REWARD-02 | 奖励 | 背包、穿戴、卸下、转移、属性生效 | 已验证 | 装备归属清楚 | [battle_inspector.gd](../scenes/battle_demo/battle_inspector.gd)、[team_panel.gd](../scenes/team/team_panel.gd) | [战斗](battle-demo.md) | E12、E14、E15 | 一人一件、一种一份；无多槽强化词条 |
+| REWARD-02 | 奖励 | 背包、穿戴、卸下、转移、属性生效 | 已验证 | 装备归属清楚 | [battle_inspector.gd](../scenes/battle_demo/battle_inspector.gd)、[team_panel.gd](../scenes/team/team_panel.gd) | [战斗](battle-demo.md) | E12、E14、E15 | 战场装备弹窗可点空白或操作成功后关闭；一人一件、一种一份；无多槽强化词条 |
 | META-01 | 成长 | 修复资源购买升级与出发装备 | 已验证 | 探索回流下一局 | [campus_progress.gd](../game/meta/campus_progress.gd) | [校园](campus-demo.md) | E05 | 能力快照从新局生效；不是永久人物收集 |
 | META-02 | 成长 | 地图选地点、多人成队、离线派遣与领取 | 已验证 | 基地可操作循环 | [location_dispatch_panel.gd](../scenes/expedition/location_dispatch_panel.gd)、[campus_progress.gd](../game/meta/campus_progress.gd) | [校园地图](campus-map.md) | E05–E08 | 两地点；独立后勤角色；现实时间本地计时 |
 | META-03 | 成长 | 看到出发、驻留进度、返程 | 已验证 | 派遣反馈可见 | [campus_map.gd](../scenes/expedition/campus_map.gd) | [校园地图](campus-map.md) | E08 | 占位头像、折线动画；领取立即释放人员；动画不保存 |

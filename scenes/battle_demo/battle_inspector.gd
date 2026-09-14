@@ -217,6 +217,11 @@ func _input(event: InputEvent) -> void:
 		return
 	if not (event is InputEventMouseMotion or event is InputEventMouseButton): return
 	pointer = canvas.get_global_transform().affine_inverse() * event.position
+	if bag.visible:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and not Rect2(bag.position, bag.size).has_point(pointer):
+			close_bag()
+			get_viewport().set_input_as_handled()
+		return
 	if blocks_event(event): return
 	var point: Vector2 = canvas.get_global_transform().affine_inverse() * event.position
 	if event is InputEventMouseMotion and not pinned:
@@ -269,7 +274,7 @@ func _refresh_bag() -> void:
 
 func exchange() -> void:
 	if game._equip_item(picked_item, bag_role):
-		_refresh_bag()
+		close_bag()
 		_process(0)
 
 func close_bag() -> void:
