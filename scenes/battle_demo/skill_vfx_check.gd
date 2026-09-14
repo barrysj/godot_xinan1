@@ -1,5 +1,6 @@
 extends Node
 const Shield = preload("res://resources/content/animations/guard_shield.tres")
+const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
 var failures := 0
 func check(ok: bool, label: String) -> void:
 	if not ok:
@@ -66,6 +67,15 @@ func _ready() -> void:
 	var shot: Dictionary = preview.simulation.projectiles[0]
 	var shooter: Dictionary = preview.units[0]
 	var target: Dictionary = preview.units[1]
+	var projectile_style = ProjectileStyle.new()
+	check(not projectile_style.usable(), "Projectile style requires a texture")
+	projectile_style.texture = load("res://assets/pixel/kenney/tiny-town.png")
+	check(projectile_style.usable(), "Configured projectile style is usable")
+	shooter.battle_animation = shooter.battle_animation.duplicate(true)
+	shooter.battle_animation.projectile_style = projectile_style
+	check(preview._projectile_style(shot) == projectile_style, "Projectile presentation resolves from the shooter")
+	shooter.battle_animation.projectile_style = null
+	check(preview._projectile_style(shot) == null, "Absent projectile style preserves the fallback")
 	check(preview._projectile_point(shot, 0).is_equal_approx(preview._project(shot.origin) + shooter.battle_animation.launch_offset), "Projectile starts at illustrated weapon")
 	var arrived = shot.duplicate()
 	arrived.position = target.position

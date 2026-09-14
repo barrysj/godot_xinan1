@@ -3,6 +3,7 @@ param(
     [string]$EnginePath = 'F:\Applications\Godot_v4.7.2-stable_mono_win64\Godot_v4.7.2-stable_mono_win64.exe',
     [string]$Unit = '',
     [string]$Animation = '',
+    [string]$Projectile = '',
     [switch]$Check,
     [switch]$Capture,
     [switch]$Tour
@@ -17,5 +18,6 @@ elseif ($Capture) { $previewArgs += '--motion-preview-capture' }
 elseif ($Tour) { $previewArgs += '--motion-preview-tour' }
 if ($Animation) { $previewArgs += "--preview-animation=$Animation" }
 if ($Unit) { $previewArgs += "--preview-unit=$Unit" }
+if ($Projectile) { $previewArgs += "--preview-projectile=$Projectile" }
 & $EnginePath @previewArgs
 exit $LASTEXITCODE

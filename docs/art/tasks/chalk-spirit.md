@@ -1,13 +1,13 @@
 # 美术任务：粉笔精灵
 
-状态：概念 001 已获人工批准；资产候选 002、003、004 经人工评审需修改，正式资产候选 005 待人工评审；尚未进入接入阶段。生产与评审规则见[美术工作流](../WORKFLOW.md)。
+状态：概念 001 已获人工批准；资产候选 002、003、004 经人工评审需修改，角色候选 005 与轻量弹体候选 001 待人工评审；正式角色尚未接入。生产与评审规则见[美术工作流](../WORKFLOW.md)。
 
 ## 目标与范围
 
-- 用途：为高频远程敌人“粉笔精灵”落实已批准概念，并制作 1 个可单独评审的正式资产候选。
+- 用途：为高频远程敌人“粉笔精灵”落实已批准概念，制作可单独评审的角色候选与轻量弹体候选。
 - 优先依据：`chalk` 已注册并在“整排攻击”和 Boss“放学铃”两套敌阵中各出现 2 次，覆盖 3 套敌群中的 2 套、合计 4 个席位；其优先后排的远程技能需要清楚轮廓。当前仍使用 Kenney 图集 `Rect2(0, 144, 16, 16)` 占位，且没有 `battle_animation`。
 - 对应规范与场景：[角色视觉规范](../specs/CHARACTER_SPEC.md)的战斗比例和读性要求、[视觉方向](../STYLE_BIBLE.md)的异常层、[战斗动画](../../battle-animation.md)；主要出现于异变教室与终点 Boss 战。
-- 不在本次范围：其他角色／敌人、Manifest 登记、正式角色资源替换、游戏内接入、替用户批准资产或接入效果、Roadmap 调整。
+- 不在本次范围：其他角色／敌人、Manifest 登记、正式角色资源替换、替用户批准资产或接入效果、Roadmap 调整。
 
 ## 当前版本与方案
 
@@ -17,12 +17,13 @@
 - 已退回资产候选 003：[待机／移动](../../../design/concepts/chalk-spirit/chalk-spirit/003/locomotion_sheet.png)、[远程／施法](../../../design/concepts/chalk-spirit/chalk-spirit/003/combat_sheet.png)、[受击／濒危／退场](../../../design/concepts/chalk-spirit/chalk-spirit/003/reaction_sheet.png)三张 1254×1254 RGBA 图集；动作专属帧解决了 002 的复用抽动，但战斗图集主体比移动图集明显偏小，且旧 GIF 未展示返回待机的真实跳变。
 - 已退回资产候选 004：[待机／移动](../../../design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet.png)、[远程／施法](../../../design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet.png)、[受击／濒危／退场](../../../design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet.png)；高度接近目标，但 ImageGen 重绘改变了横向体量，角色显得变胖。
 - 本轮资产候选 005：[待机／移动](../../../design/concepts/chalk-spirit/chalk-spirit/005/locomotion_sheet.png)、[远程／施法](../../../design/concepts/chalk-spirit/chalk-spirit/005/combat_sheet.png)、[受击／濒危／退场](../../../design/concepts/chalk-spirit/chalk-spirit/005/reaction_sheet.png)；从 003 原始帧做 1.30 倍等比变换，不重新生成角色，处理参数和 QA 见[005 generation.md](../../../design/concepts/chalk-spirit/chalk-spirit/005/generation.md)。
+- 轻量弹体候选 001：[弹体 PNG](../../../design/concepts/chalk-spirit/chalk-projectile/001/projectile.png)与[生成记录](../../../design/concepts/chalk-spirit/chalk-projectile/001/generation.md)；单枚水平朝右粉笔由程序沿轨迹旋转，三颗递减点仍由程序绘制。候选只挂入独立预览，不登记 Manifest。
 - 方案：粉笔块组成的非人浮游体，以黑板擦为核心；长粉笔前臂与环绕弹体表达远程攻击，青／品红裂纹只做局部异常强化。轮廓刻意区别于学生角色和大型 Boss。
 - 需保留：真实课堂物件来源、粉笔白／黑板绿主色、非人阵营读性、低复杂度轮廓、明确远程姿态。
-- 当前唯一待决事项：资产候选 005 的跨动作主体尺度、原始体型保持和动作连续性是否达到资产阶段要求。
+- 当前待决事项：资产候选 005 的跨动作主体尺度、原始体型保持和动作连续性，以及轻量弹体 001 的尺寸、辨识度和尾迹节奏是否达到资产阶段要求。
 - 003 修订结果：44 个动作专属姿势；待机 4 帧、移动 8 帧、远程 8 帧、施法 8 帧、受击 4 帧、濒危 4 帧、退场 8 帧。第 1 格不再跨动作复用，常态动作统一朝右，退场只保留连续倒下所需的旋转。
 - 技术依据：[005 切帧元数据](../../../design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.frames.json)记录 384×384 统一画布、`anchor [0.5, 0.875]`、等比变换、各帧安全边距、跨图集高度比和横纵比漂移；[005 候选动画资源](../../../design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres)使用 140×140 显示、出手比例 0.625、发射点 `[50, -52]` 和受击点 `[0, -42]`。候选头像裁切 `[70, 110, 250, 250]` 取自待机／移动图集。上述参数只随候选评审，不提前写入正式 Manifest。
-- 提前试接入授权：无；概念获批也不等于资产或接入获批。
+- 提前试接入授权：用户于当前对话 2026-09-15 授权“按这种方式制作轻量弹道”，允许弹体候选进入独立动作预览；不等于资产批准或正式角色接入批准。
 
 ## 阶段评审
 
@@ -35,6 +36,7 @@
 | 资产 | 004 三张 RGBA 图集；哈希见 004 生成记录 | 待评审 | 仅修复战斗图集主体尺度，并用待机→动作→待机 GIF 验证跨片段过渡 | 当前对话，2026-09-15 |
 | 资产 | 004 三张 RGBA 图集；哈希见 004 生成记录 | 需修改 | 高度匹配后横向体量变胖；不能只检查高度，也不能让生成模型重绘确定性比例 | 当前对话，2026-09-15 |
 | 资产 | 005 三张 RGBA 图集；哈希见 005 生成记录 | 待评审 | 从 003 原始战斗帧做 1.30×1.30 等比缩放，保持原横纵比 | 当前对话，2026-09-15 |
+| 资产 | `projectile.png`；轻量弹体 001；`007a244cdc3887d93322188f9f03a103f9ae5de934630c5c01c1063fd5a87820` | 待评审 | 单枚弹体贴图加三颗程序尾迹点；仅在独立预览试接入 | 当前对话，2026-09-15 |
 | 接入效果 | 未开始 | 待评审 | | |
 
 ## 验证与结果
@@ -53,7 +55,9 @@
 - 005 技术检查：战斗帧围绕统一脚底锚点执行 `1.30×1.30` 等比变换；移动／战斗轮廓高度中位数为 276／264.5 px，高度比 0.9583；战斗源／输出轮廓横纵比中位数为 0.8478／0.8463，漂移 0.0015；最小格边安全距离 4 px。
 - 005 运行检查：待机、移动、远程、施法、受击、濒危、退场通过，近战按元数据置灰，`failures=0`。三分辨率捕获完成；运行时显示比例与 003 近似相同。
 - 005 评审证据：[待机 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/idle-preview.gif)、[移动 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/move-preview.gif)、[远程过渡 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/attack-preview.gif)、[施法过渡 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/cast-preview.gif)、[受击过渡 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/hurt-preview.gif)、[濒危 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/critical-preview.gif)、[退场 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/death-preview.gif)、[尺寸并排图](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/cross-clip-scale.png)、[远程运行截图](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/motion-preview-3-1920x1080.png)、[施法运行截图](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/motion-preview-4-1920x1080.png)与[检查日志](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/motion-preview-check.log)。
+- 轻量弹体 001 技术检查：生成源为 1254×1254 RGBA，清理低 alpha 噪声并等比缩放到 192×96 透明画布，有效内容 164×64，运行显示 32×16。候选资源加载、按方向旋转、后缘尾迹和无样式回退由 `skill_vfx_check.tscn` 覆盖，`failures=0`；粉笔精灵七个可用动作模式检查通过，近战按元数据置灰。
+- 轻量弹体 001 评审证据：[静态与实际尺寸](../../../design/concepts/chalk-spirit/chalk-projectile/001/review/projectile-preview.png)、[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-projectile/001/review/motion-preview-3-1920x1080.png)、[2560×1440](../../../design/concepts/chalk-spirit/chalk-projectile/001/review/motion-preview-3-2560x1440.png)、[1920×1200](../../../design/concepts/chalk-spirit/chalk-projectile/001/review/motion-preview-3-1920x1200.png)。
 - 实际预览证据：[候选头像裁切](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/portrait-preview.png)、[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-3-1920x1080.png)、[施法 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-4-1920x1080.png)、[退场 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-6-1920x1080.png)、[检查日志](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-check.log)、[捕获日志](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-capture.log)。头像预览为 250×250 RGBA，SHA-256 为 `36214bd7cec38f01c7c71370d3a74c720f412f55a2c1828e08efb3a16c21d35b`；其余 12 张为 `.godot/` 可重建缓存。
 - 已知验证噪声：Godot 报告既有根证书读取错误及 `tiny-town.png`／`tiny-dungeon.png` 编辑器原图加载警告；完成标记、专项断言和候选纹理加载均正常。
-- 未解决问题：等待候选 005 人工资产评审；通过后才登记正式 Manifest 并进入接入阶段。
+- 未解决问题：等待角色候选 005 与轻量弹体 001 的人工资产评审；通过后才登记正式 Manifest 并进入正式接入阶段。
 - 本地提交：概念批准已提交为 `a26fb1c`；资产候选提交号以本文件 Git 历史为准。

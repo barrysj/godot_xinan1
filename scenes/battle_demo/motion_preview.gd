@@ -1,6 +1,7 @@
 extends "res://scenes/battle_demo/pixel_battle.gd"
 ## Developer-only harness: same simulation and renderer, no saves or production art mutation.
 const AnimationSet = preload("res://game/content/battle_animation_set.gd")
+const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
 const UnitDefinition = preload("res://game/content/unit_def.gd")
 const ActionProfile = preload("res://game/content/battle_action_profile.gd")
 enum Mode { IDLE, MOVE, MELEE, RANGED, CAST, HURT, CRITICAL, DEATH }
@@ -8,6 +9,7 @@ const MODES = ["待机", "移动", "近战", "远程", "施法", "受击", "濒�
 const EVENT_NAMES = {"action_started": "前摇", "action_released": "出手", "impact": "命中",
 	"action_finished": "收招", "action_cancelled": "取消", "action_missed": "落空", "projectile_expired": "消散"}
 @export var preview_animation: AnimationSet
+@export var preview_projectile: ProjectileStyle
 var preview_unit: Resource
 var mode := Mode.MELEE
 var slow := false
@@ -39,6 +41,13 @@ func _ready() -> void:
 				if resource is UnitDefinition: preview_unit = resource
 				else: push_warning("Preview unit requires a CampusUnit resource")
 			else: push_warning("Preview unit resource does not exist: " + path)
+		elif arg.begins_with("--preview-projectile="):
+			var path = arg.trim_prefix("--preview-projectile=")
+			if ResourceLoader.exists(path):
+				var resource = load(path)
+				if resource is ProjectileStyle: preview_projectile = resource
+				else: push_warning("Preview projectile requires a BattleProjectileStyle resource")
+			else: push_warning("Preview projectile resource does not exist: " + path)
 	_create_toolbar()
 	_update_mode_availability()
 	_reset_preview()
@@ -157,6 +166,10 @@ func _reset_preview() -> void:
 	if preview_animation != null:
 		actor.battle_animation = preview_animation
 		actor.animation = BattleAnimation.new(preview_animation)
+	if preview_projectile != null:
+		actor.battle_animation = actor.battle_animation.duplicate(true) if actor.battle_animation != null else AnimationSet.new()
+		actor.battle_animation.projectile_style = preview_projectile
+		actor.animation = BattleAnimation.new(actor.battle_animation)
 	actor.attack_range = 3.2 if mode == Mode.RANGED else (1.45 if mode in [Mode.MOVE, Mode.MELEE] else actor.attack_range)
 	if mode == Mode.MELEE: actor.action_profile.delivery = "melee"
 	if mode == Mode.RANGED: actor.action_profile.delivery = "projectile"
@@ -229,7 +242,9 @@ func _draw() -> void:
 	_pixel_panel(Rect2(24, 18, 1220, 58), PAPER)
 	_text(Vector2(44, 56), "动作预览 · " + MODES[mode], DARK, 24)
 	var source_name: String = preview_unit.display_name if preview_unit != null else "预设角色"
-	_text(Vector2(520, 53), "开发测试 / " + source_name + " / " + ("自定义序列帧" if preview_animation != null else "角色动作图集") + (" / 0.25×" if slow else " / 1×"), DARK, 17)
+	var source_detail := "自定义序列帧" if preview_animation != null else "角色动作图集"
+	if preview_projectile != null: source_detail += "＋弹体"
+	_text(Vector2(520, 53), "开发测试 / " + source_name + " / " + source_detail + (" / 0.25×" if slow else " / 1×"), DARK, 17)
 	_campus(false)
 	var ordered = units.duplicate()
 	ordered.sort_custom(func(a, b): return _unit_center(a).y < _unit_center(b).y)

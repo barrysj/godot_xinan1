@@ -384,6 +384,10 @@ func _draw_unit(u: Dictionary) -> void:
 func _hit_offset(unit: Dictionary) -> Vector2:
 	return unit.battle_animation.hit_offset if unit.battle_animation != null else Vector2(0, -6)
 
+func _projectile_style(shot: Dictionary) -> Resource:
+	var actor = simulation.unit(shot.actor_id)
+	return actor.battle_animation.projectile_style if actor != null and actor.battle_animation != null else null
+
 func _projectile_point(shot: Dictionary, alpha: float) -> Vector2:
 	var target = simulation.unit(shot.target_id)
 	var actor = simulation.unit(shot.actor_id)
@@ -408,10 +412,24 @@ func _draw_effects() -> void:
 		var p = _projectile_point(shot, accumulator / STEP)
 		var target = simulation.unit(shot.target_id)
 		var direction = (_project(target.position) + _hit_offset(target) - p).normalized()
+		if direction.is_zero_approx(): direction = Vector2.RIGHT
 		var color = GOLD if shot.special else (TEAL if simulation.unit(shot.actor_id).side == 0 else RED)
-		for tail in range(4):
-			var q: Vector2 = p - direction * tail * 6
-			draw_circle(q, 3.5 - tail * 0.65, Color(color, 1 - tail * 0.2))
+		var projectile_style = _projectile_style(shot)
+		if projectile_style != null and projectile_style.usable():
+			var world := Transform2D(0.0, Vector2.ONE * scale_factor, 0.0, origin)
+			var local := Transform2D(direction.angle() + deg_to_rad(projectile_style.rotation_offset_degrees), Vector2.ONE, 0.0, p)
+			draw_set_transform_matrix(world * local)
+			draw_texture_rect(projectile_style.texture,
+				Rect2(-projectile_style.display_size * projectile_style.anchor, projectile_style.display_size), false)
+			draw_set_transform_matrix(world)
+			var rear: float = projectile_style.display_size.x * projectile_style.anchor.x + projectile_style.trail_gap
+			for tail in range(3):
+				var q: Vector2 = p - direction * (rear + tail * 6.0)
+				draw_circle(q, 2.85 - tail * 0.65, Color(color, 0.8 - tail * 0.2))
+		else:
+			for tail in range(4):
+				var q: Vector2 = p - direction * tail * 6
+				draw_circle(q, 3.5 - tail * 0.65, Color(color, 1 - tail * 0.2))
 	for fx in effects:
 		var age: float = 0.65 - fx.life
 		var opacity = clampf(fx.life / 0.2, 0, 1)
