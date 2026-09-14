@@ -302,6 +302,10 @@ func handle(event: InputEvent) -> bool:
 		return true
 	var slot = unit_slot_at(point)
 	if slot < 0: slot = slot_at(point)
+	if mode == Mode.ACTIONS and (slot < 0 or game.formation[slot] < 0):
+		cancel()
+		game._note("已取消选择。")
+		return slot >= 0
 	if slot >= 0:
 		if mode == Mode.SWAP and game.formation[slot] == selected_role:
 			cancel()

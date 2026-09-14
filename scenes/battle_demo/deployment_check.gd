@@ -45,6 +45,11 @@ func run_checks() -> void:
 	panel = game.deployment
 	await get_tree().process_frame
 	await get_tree().process_frame
+	if "--deployment-dismiss-capture" in OS.get_cmdline_user_args():
+		await capture_action_dismissed()
+		game.queue_free()
+		get_tree().quit(failures)
+		return
 	check(game.formation.count(-1) == 6 and game._living(0).is_empty(), "New encounter starts empty")
 	game._start()
 	check(game.phase == "prepare", "Empty formation cannot start")
@@ -164,9 +169,15 @@ func check_deployed_actions() -> void:
 	var original: Array = game.formation.duplicate()
 	await click(slot_point(1))
 	check(panel.swap_button.visible and panel.withdraw_button.visible and not panel.ghost.visible, "Deployed unit opens action menu only")
+	await click(Vector2(40,170))
+	check(panel.selected_role == -1 and not panel.swap_button.visible and not panel.withdraw_button.visible and game.formation == original,
+		"Clicking empty battlefield dismisses the action menu without changing formation")
+	await click(slot_point(1))
 	await move(slot_point(0))
 	await click(slot_point(0))
-	check(not panel.ghost.visible and game.formation == original, "Action menu does not implicitly enter swap")
+	check(panel.selected_role == -1 and not panel.swap_button.visible and not panel.withdraw_button.visible and game.formation == original,
+		"Clicking an empty friendly cell dismisses the action menu")
+	await click(slot_point(1))
 	await click(panel.swap_button.position + Vector2(32,15))
 	check(panel.is_swap_source(game.formation[1]), "Swap mode exposes the selected source for its highlight")
 	await click(slot_point(1))
@@ -253,6 +264,9 @@ func capture() -> void:
 		await screenshot("deployed", resolution)
 		await click(slot_point(4))
 		await screenshot("actions", resolution)
+		await click(Vector2(40,170))
+		await screenshot("actions-dismissed", resolution)
+		await click(slot_point(4))
 		await click(panel.swap_button.position + Vector2(32,15))
 		await screenshot("swap-selected", resolution)
 		await click(slot_point(4))
@@ -263,6 +277,21 @@ func capture() -> void:
 		await click(slot_point(4))
 		panel.cancel()
 		await screenshot("card-swap-committed", resolution)
+
+func capture_action_dismissed() -> void:
+	for resolution in [Vector2i(1920,1080), Vector2i(2560,1440), Vector2i(1920,1200)]:
+		get_window().mode = Window.MODE_WINDOWED
+		get_window().size = resolution
+		game.formation = [-1,0,-1,-1,1,-1]
+		game._build_units()
+		panel.cancel()
+		game.inspector.close_info()
+		await get_tree().process_frame
+		panel.select(1)
+		await screenshot("actions", resolution)
+		panel.cancel()
+		game.inspector.close_info()
+		await screenshot("actions-dismissed", resolution)
 
 func screenshot(stage: String, resolution: Vector2i) -> void:
 	await RenderingServer.frame_post_draw
