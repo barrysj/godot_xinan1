@@ -420,6 +420,9 @@ class AssetCatalog(object):
         objects = OrderedDict()
         manifest_records = _manifest_records(self.project_root)
         manifest_by_path = {_path_key(item["path"]): item for item in manifest_records}
+        manifest_by_object = {}
+        for record in manifest_records:
+            manifest_by_object.setdefault(record["object_id"], record)
         names = _unit_names(self.project_root)
         discovered = set()
 
@@ -440,15 +443,28 @@ class AssetCatalog(object):
                     category = manifest["category"]
                 else:
                     category, category_index = _infer_category(path)
-                    if category_index >= 0 and category_index + 1 < len(path.parts):
+                    if _inside(path, self.project_root / "design" / "concepts"):
+                        relative = path.relative_to(self.project_root / "design" / "concepts")
+                        object_id = relative.parts[1] if len(relative.parts) > 2 else relative.parts[0]
+                        linked_manifest = manifest_by_object.get(object_id)
+                        if linked_manifest:
+                            category = linked_manifest["category"]
+                            name = names.get(
+                                object_id,
+                                KNOWN_DISPLAY_NAMES.get(object_id, linked_manifest["name"]),
+                            )
+                        else:
+                            name = _clean_name(object_id)
+                    elif category_index >= 0 and category_index + 1 < len(path.parts):
                         object_id = path.parts[category_index + 1]
+                        name = _clean_name(object_id)
                     else:
                         try:
                             relative = path.relative_to(root)
                             object_id = relative.parts[0] if len(relative.parts) > 1 else root.name
                         except ValueError:
                             object_id = path.parent.name
-                    name = _clean_name(object_id)
+                        name = _clean_name(object_id)
                 obj = self._new_object(objects, object_id, name, category)
                 metadata = manifest["metadata"] if manifest else {}
                 version = manifest["version"] if manifest else None

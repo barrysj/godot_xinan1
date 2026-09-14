@@ -106,6 +106,31 @@ assets:
         self.assertEqual({"concept_a", "concept_b"}, {item["version"] for item in animation_items})
         self.assertEqual(["idle"], [clip["id"] for clip in animation_items[0]["clips"]])
 
+    def test_concept_directory_object_id_joins_manifest_object(self):
+        final = self.fixture.image("assets/art/characters/chalk/battle.png")
+        self.fixture.image("design/concepts/chalk-task/chalk/001/concept.png")
+        (self.fixture.root / "assets/art/asset_manifest.yaml").write_text(
+            """version: 1
+assets:
+  characters:
+    chalk:
+      battle:
+        file: assets/art/characters/chalk/battle.png
+        type: battle_sprite_sheet
+        status: review
+""",
+            encoding="utf-8",
+        )
+        result = AssetCatalog(self.fixture.root).scan(
+            [self.fixture.root / "assets/art", self.fixture.root / "design/concepts"]
+        )
+        self.assertEqual(1, len(result["objects"]))
+        obj = result["objects"][0]
+        self.assertEqual("chalk", obj["id"])
+        self.assertEqual("人物", obj["category"])
+        self.assertEqual(1, obj["counts"]["concepts"])
+        self.assertEqual(1, obj["counts"]["atlases"])
+
     def test_chinese_space_path_and_unclassified_asset_are_discoverable(self):
         self.fixture.image("assets/art/characters/粉笔 精灵/portrait.png")
         self.fixture.image("assets/art/misc/stray.png")
