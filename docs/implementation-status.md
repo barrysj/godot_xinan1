@@ -67,6 +67,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E15 | 探索，`--team-check`，图形 | PASS；地图／战斗面板、换装卸装、候补、阵容保存、只读和 Esc 恢复 | team |
 | E16 | 探索，`--pause-flow-smoke`，图形 | PASS；关闭窗口确认取消、主菜单返回、Play 再入及退出动作 | pause-flow |
 | E17 | [menu.tscn](../scenes/menu/menu.tscn)，`--codex-check`，图形 | PASS：35 条图鉴逐项浏览；真实部署四人并开战后，从暂停进入图鉴时状态冻结，Esc 返回暂停，继续后战斗时间恢复推进 | codex |
+| E18 | `build-web.ps1` release 包，Codex 应用内浏览器 | PASS（桌面范围）：完整五层路线、暂停恢复、结算与离开；Boss 前刷新恢复；修复后奖励／开战后立刻刷新分别恢复最新地图／同场战前 4/4 阵容。844×390 可进入和点选但文字与确认控件过小 | web |
 
 E13 原失败均位于 stage=4：seed/path 为 `1/1`、`4/0`、`4/1`、`4/2`。定向枚举证明四条路径无需改变奖励或敌人数值，只需把默认站位中的应援者与冲刺手前后互换即可获胜；根因是旧检查把单一固定站位必胜误当作路线可完成。现检查保留默认站位首战，失败时必须走真实战报、重新部署和重试，再以替代站位获胜；胜利与路线完成断言未删除，且补跑了此前被提前退出遮断的磁盘恢复。该结果不替代真人难度与公平性数据。
 
@@ -99,9 +100,9 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | META-02 | 成长 | 地图选地点、多人成队、离线派遣与领取 | 已验证 | 基地可操作循环 | [location_dispatch_panel.gd](../scenes/expedition/location_dispatch_panel.gd)、[campus_progress.gd](../game/meta/campus_progress.gd) | [校园地图](campus-map.md) | E05–E08 | 两地点；独立后勤角色；现实时间本地计时 |
 | META-03 | 成长 | 看到出发、驻留进度、返程 | 已验证 | 派遣反馈可见 | [campus_map.gd](../scenes/expedition/campus_map.gd) | [校园地图](campus-map.md) | E08 | 占位头像、折线动画；领取立即释放人员；动画不保存 |
 | META-04 | 成长 | 标签影响派遣选择 | 部分实装 | 队伍身份差异 | [meta_catalog.gd](../game/meta/meta_catalog.gd) | [校园地图](campus-map.md) | 静态、E07 | 校验框架存在，但当前 required_tags 均空；无收益加成 |
-| SAVE-01 | 存档 | 节点续玩、战报奖励恢复、成长任务共存 | 已验证 | 可安全中断 | [run_checkpoint.gd](../game/run/run_checkpoint.gd)、[meta_hub.gd](../scenes/expedition/meta_hub.gd) | [校园](campus-demo.md)、[录入](content-authoring.md) | E03–E05、E14 | profile v3／checkpoint schema 1／run schema 5；半场不恢复 HP |
+| SAVE-01 | 存档 | 节点续玩、战报奖励恢复、成长任务共存 | 已验证 | 可安全中断 | [run_checkpoint.gd](../game/run/run_checkpoint.gd)、[meta_hub.gd](../scenes/expedition/meta_hub.gd) | [校园](campus-demo.md)、[录入](content-authoring.md) | E03–E05、E14、E18 | profile v3／checkpoint schema 1／run schema 5；Web 写后显式同步；半场不恢复 HP |
 | SAVE-02 | 存档 | 旧档迁移、拒绝坏档、交易回滚与幂等结算 | 已验证 | 防重复领取和存档损坏 | [campus_progress.gd](../game/meta/campus_progress.gd)、[short_run.gd](../game/run/short_run.gd) | [录入](content-authoring.md) | E05、E07、E14 | 有限夹具；非断电故障注入；普通局内操作失败仅提示，不全量回滚内存 |
-| UI-01 | 界面 | 暂停、倍速、菜单往返、确认退出 | 已验证 | 控制节奏与离开 | [battle_demo.gd](../scenes/battle_demo/battle_demo.gd)、[meta_hub.gd](../scenes/expedition/meta_hub.gd) | [战斗](battle-demo.md) | E02、E09、E16 | 实测 Windows；网页关闭逻辑未实测 |
+| UI-01 | 界面 | 暂停、倍速、菜单往返、确认退出 | 已验证 | 控制节奏与离开 | [battle_demo.gd](../scenes/battle_demo/battle_demo.gd)、[meta_hub.gd](../scenes/expedition/meta_hub.gd) | [战斗](battle-demo.md) | E02、E09、E16、E18 | Windows 与本地桌面 Web 已测；浏览器关闭标签行为未单列测试 |
 | UI-02 | 界面 | 侧视战场、悬停摘要、点击详情与共享图标 | 已验证 | 减少遮挡与信息查找 | [battle_board.gd](../scenes/battle_demo/battle_board.gd)、[battle_inspector.gd](../scenes/battle_demo/battle_inspector.gd)、[object_icon.gd](../scenes/team/object_icon.gd) | [战斗](battle-demo.md) | E12 | 技术交互通过；本轮无人工多尺寸视觉复核 |
 | UI-03 | 界面 | 五类校园图鉴与菜单／暂停入口 | 已验证 | 规则查询 | [codex_panel.gd](../scenes/codex/codex_panel.gd)、[codex_catalog.gd](../game/codex/codex_catalog.gd) | [校园](campus-demo.md) | E17 | 35 条当前内容；程序检查不替代小屏可读性验收 |
 | UI-04 | 界面 | 模板设置、音量与显示设置 | 已实装 | 基础偏好控制 | [menu.gd](../scenes/menu/menu.gd)、[ggt-core](../addons/ggt-core/) | [设计](game-design.md) | 静态 | 未逐项运行；存在音量设置不代表已接游戏音频 |
@@ -113,8 +114,8 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | ART-03 | 美术 | 动作预览与切帧生产工具 | 已实装 | 降低后续动画试错 | [motion_preview.tscn](../scenes/battle_demo/motion_preview.tscn)、[build_battle_frames.py](../tools/art/build_battle_frames.py) | [动画](battle-animation.md) | 历史摘要；本轮静态 | 本轮未重跑七模式工具检查；不当作玩家内容 |
 | ART-04 | 美术 | 分阶段人工评审、版本与登记工作流 | 仅设计 | 资产可追溯 | [工作流](art/WORKFLOW.md)、[资产登记](../assets/art/asset_manifest.yaml) | [工作流](art/WORKFLOW.md) | 静态 | 规范已存在；新版完整三阶段生产流程尚未以新任务走通 |
 | AUDIO-01 | 音频 | 战斗命中、技能与环境声音 | 仅设计 | 战斗反馈与气氛 | [pixel_battle.gd](../scenes/battle_demo/pixel_battle.gd) 仅发事件 | [动画](battle-animation.md)、[设计](game-design.md) | 静态检索 | 未发现游戏音频消费者；模板音量不是声音内容 |
-| RELEASE-01 | 发布 | Web 构建与 Pages 自动发布配置 | 已实装 | 可分发入口 | [build-web.ps1](../build-web.ps1)、[push-export.yml](../.github/workflows/push-export.yml) | [发布](web-publishing.md) | 配置与 9/7 正式记录 | 旧版曾本地导出浏览；当前 HEAD 与线上未复验，未触发部署 |
-| RELEASE-02 | 发布 | 当前版本桌面／浏览器／手机可用性 | 待核验 | 真实设备可玩 | [export_presets.cfg](../export_presets.cfg) | [发布](web-publishing.md) | 当前原生专项＋旧版浏览记录 | 非当前导出包验收；触控、字体、刷新存档、性能未知 |
+| RELEASE-01 | 发布 | Web 构建与 Pages 自动发布配置 | 已验证 | 可分发入口 | [build-web.ps1](../build-web.ps1)、[push-export.yml](../.github/workflows/push-export.yml) | [发布](web-publishing.md) | E18；当前 release 包 | 本地 HTTP 入口通过；线上 Actions／Pages 未触发 |
+| RELEASE-02 | 发布 | 当前版本桌面／浏览器／手机可用性 | 部分实装 | 真实设备可玩 | [export_presets.cfg](../export_presets.cfg) | [发布](web-publishing.md) | 当前原生专项＋E18 | Windows 与本地桌面 Web 通过；844×390 可操作但不可读，真机触控未通过验收 |
 | CORE-04 | 兼容 | 旧固定站桩与固定内容主路径 | 已替代 | 保留旧档兼容价值 | [short_run.gd](../game/run/short_run.gd)、[gameplay.gd](../scenes/gameplay/gameplay.gd) | [录入](content-authoring.md) | 静态、E04、E14 | 旧 STAGES／算法保留兼容；新内容进入 Resource；不要删除迁移依赖 |
 
 ## 5. 已形成的能力组合

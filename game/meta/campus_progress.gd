@@ -88,6 +88,11 @@ func write_save() -> bool:
 	if code != OK:
 		error_message = "自动保存失败：无法替换存档"
 		return false
+	# FileAccess closes the temporary file before the atomic rename. On Web, sync
+	# the renamed file as well so an immediate page refresh cannot restore the
+	# previous IndexedDB checkpoint.
+	if OS.has_feature("web"):
+		JavaScriptBridge.force_fs_sync()
 	error_message = ""
 	return true
 
