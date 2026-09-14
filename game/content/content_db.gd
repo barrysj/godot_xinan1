@@ -1,5 +1,6 @@
 extends RefCounted
 const MANIFEST = preload("res://resources/content/manifest.tres")
+const UnitDefinition = preload("res://game/content/unit_def.gd")
 
 static func gear(id: String):
 	for item in MANIFEST.equipment:
@@ -30,6 +31,7 @@ static func validate() -> Array[String]:
 	for unit in MANIFEST.characters + MANIFEST.enemies:
 		if unit == null: continue
 		if not is_finite(unit.attack_range) or unit.attack_range < 1 or unit.attack_range > 6 or not is_finite(unit.move_speed) or unit.move_speed < 0.5 or unit.move_speed > 8: errors.append(unit.resource_path+": 射程或移速越界")
+		if unit.attack_modes < 0 or unit.attack_modes > UnitDefinition.ATTACK_ALL or unit.resolved_attack_modes() == 0: errors.append(unit.resource_path+": 攻击能力标记无效")
 		if unit.skill == null or not MANIFEST.skills.has(unit.skill): errors.append(unit.resource_path+": 技能未注册")
 		if unit.portrait == null: errors.append(unit.resource_path+": 缺少图像")
 		if unit.health < 1 or unit.health > 10000 or unit.attack < 1 or unit.attack > 1000 or unit.defense < 0 or unit.defense > 1000 or not is_finite(unit.interval) or unit.interval < 0.1 or unit.interval > 10: errors.append(unit.resource_path+": 单位数值越界")

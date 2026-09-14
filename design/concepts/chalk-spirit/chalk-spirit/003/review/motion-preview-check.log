@@ -7,18 +7,19 @@ WARNING: Loaded resource as image file, this will not work on export: 'res://ass
    GDScript backtrace (most recent call first):
        [0] _load_atlas (res://scenes/battle_demo/pixel_battle.gd:135)
        [1] _ready (res://scenes/battle_demo/pixel_battle.gd:73)
-       [2] _ready (res://scenes/battle_demo/motion_preview.gd:22)
+       [2] _ready (res://scenes/battle_demo/motion_preview.gd:26)
 WARNING: Loaded resource as image file, this will not work on export: 'res://assets/pixel/kenney/tiny-dungeon.png'. Instead, import the image file as an Image resource and load it normally as a resource.
    at: load_from_file (core/io/image.cpp:2780)
    GDScript backtrace (most recent call first):
        [0] _load_atlas (res://scenes/battle_demo/pixel_battle.gd:135)
        [1] _ready (res://scenes/battle_demo/pixel_battle.gd:74)
-       [2] _ready (res://scenes/battle_demo/motion_preview.gd:22)
+       [2] _ready (res://scenes/battle_demo/motion_preview.gd:26)
 MOTION_PREVIEW_MODE 待机 PASS
 MOTION_PREVIEW_MODE 移动 PASS
-MOTION_PREVIEW_MODE 近战 PASS
+MOTION_PREVIEW_MODE 近战 SKIP unsupported
 MOTION_PREVIEW_MODE 远程 PASS
 MOTION_PREVIEW_MODE 施法 PASS
 MOTION_PREVIEW_MODE 受击 PASS
+MOTION_PREVIEW_MODE 濒危 PASS
 MOTION_PREVIEW_MODE 退场 PASS
 MOTION_PREVIEW_CHECK failures=0

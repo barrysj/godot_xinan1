@@ -250,7 +250,7 @@ def write_gif_previews(all_records: dict[str, list[dict]]) -> None:
         for records in all_records.values()
         for record in records
     }
-    for clip in ("move", "attack", "cast", "death"):
+    for clip in CLIPS:
         poses, speed, _loop = CLIPS[clip]
         frames = []
         for pose in poses:

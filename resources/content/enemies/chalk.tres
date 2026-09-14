@@ -18,3 +18,4 @@ defense = 5
 skill = ExtResource("skill")
 
 attack_range = 3.2
+attack_modes = 2

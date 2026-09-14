@@ -45,9 +45,10 @@
 
 ## 独立动作预览
 
-PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
+PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、濒危、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
 
-- `-Check` 自动验证七种模式；`-Capture` 输出三种分辨率下的近战、远程、受击、退场截图；`-Tour` 连续展示七种模式后退出。
+- `-Unit 'res://路径/角色资源.tres'` 加载角色元数据；近战、远程入口根据 `attack_modes` 置灰。旧资源未显式配置时，从 `action_profile` 与 `attack_range` 推断；未来双能力角色配置为近战与远程均可用。
+- `-Check` 自动验证八种模式及入口可用性；`-Capture` 输出三种分辨率下当前角色支持的攻击、施法、受击、濒危、退场截图；`-Tour` 连续展示可用模式后退出。
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
 

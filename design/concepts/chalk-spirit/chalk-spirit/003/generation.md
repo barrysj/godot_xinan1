@@ -6,6 +6,7 @@
 - 身份参考：已批准的 `../001/chalk_spirit_concept_001.png`
 - 动作参考：候选 002 仅用于识别上一版问题，不继承其混合朝向与第 1 格通用过渡
 - 可复现处理：`build_candidate.py`
+- 本机复现命令：使用包含 Pillow 与 NumPy 的 Python 3 运行 `build_candidate.py`；本工作区的裸 `python` 指向 Python 2.7，不能用于本脚本。
 
 ## 修订目标
 

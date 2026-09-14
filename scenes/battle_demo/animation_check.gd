@@ -1,6 +1,7 @@
 extends Node
 const Animator = preload("res://scenes/battle_demo/battle_animation.gd")
 const AnimationSet = preload("res://game/content/battle_animation_set.gd")
+const UnitDefinition = preload("res://game/content/unit_def.gd")
 var failures := 0
 
 func check(ok: bool, label: String) -> void:
@@ -12,6 +13,12 @@ func _ready() -> void:
 	call_deferred("run")
 
 func run() -> void:
+	var attack_unit = UnitDefinition.new()
+	check(attack_unit.resolved_attack_modes() == UnitDefinition.ATTACK_MELEE, "Short-range metadata infers melee")
+	attack_unit.attack_range = 3.2
+	check(attack_unit.resolved_attack_modes() == UnitDefinition.ATTACK_RANGED, "Long-range metadata infers ranged")
+	attack_unit.attack_modes = UnitDefinition.ATTACK_ALL
+	check(attack_unit.resolved_attack_modes() == UnitDefinition.ATTACK_ALL, "Explicit metadata supports dual attacks")
 	# In-memory existing texture fixtures only; no production art is created.
 	var config = AnimationSet.new()
 	config.frames = SpriteFrames.new()
