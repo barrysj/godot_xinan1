@@ -10,7 +10,17 @@
 
 当前用 Codex 对话展示候选图和 Godot 实际截图，动作使用[现有预览入口](../battle-animation.md#独立动作预览)。每次展示包含资产名称、版本、评审阶段、图片或录像、本轮改动及当前待决事项；明确标出当前使用版与候选版。修改时并排展示两版，首次制作则展示候选本身；批量展示时提供编号与缩略图，点击可看原图。只提交当前阶段需要决定的事情，不要求负责人处理技术待办。
 
-暂不开发历史图库、独立资产管理软件或 Serpent 二次开发，也不接入 Serpent、数据库或自动写回服务。只有找图、比较或确认当前版本持续阻碍实际制作时，再按具体问题评估工具。后续即便使用工具，也必须绑定具体版本并保存人工决定，不能把评分或标签直接等同批准。
+项目现提供一个定制的本地“美术资源台”，用于扫描、浏览和预览现有资源；它不是审批平台、编辑器或历史图库，也不接入 Serpent、数据库、自动生图或自动写回服务。PowerShell 7 运行 `pwsh.exe -File .\run-art-manager.ps1`，服务仅监听 `127.0.0.1`，后台启动后打开本地页面。首次工作树尚无 Godot 导入缓存时，启动脚本先用配置的引擎导入资源；也可用 `-EnginePath 'Godot.exe 路径'` 覆盖默认值。
+
+### 本地资源台归组约定
+
+- 页面只接受当前项目的 `assets/art/`、`design/concepts/` 或其子目录；可逐行填写多个目录，中文、空格、重复和上下级重叠路径均按规范化绝对路径处理。工具扫描实际图片与 Godot Resource，不以 Manifest 中不存在的条目生成虚假资源。
+- `assets/art/<类别>/<object_id>/` 的普通子目录视为一个对象；`characters` 与 `enemies` 都归“人物”，`backgrounds` 归“场景”，`ui` 归“UI”，`effects` 归“特效”，无法可靠判断的实际文件保留在“未归类”。分类只用于查找，不改变资产状态。
+- Manifest 的对象键与精确 `file` 路径是正式资产的对象标识；人物显示名可由 `resources/content/characters/` 或 `enemies/` 中相同 `id` 的 `.tres` 补充。概念继续使用既有 `design/concepts/<任务名>/<object_id>/<版本>/` 目录，`object_id` 与 Manifest 一致时跨目录归入同一对象，否则先留在“未归类”，由 Codex 补齐确定关联，不用近似文件名模糊合并。
+- `animation_resource` 精确指向的每个 `.tres` 是一份独立动画版本；资源脚本用于区分 `BattleAnimationSet` 与 `BattleEffectSet`。旁边的 `.frames.json` 提供动作名、帧数、FPS 与统一画布摘要。一个动画资源内的 `idle`、`move` 等多个 clip 只在该资源下展开，不计作多份文件；多个概念、图集或动画版本并列展示，不互相覆盖。
+- 资源详情保留 Manifest 中的 `portrait_region`、`anchor`、`normalized_canvas`、`animation_resource`、状态等现有信息。资源台只读，不写 Manifest、不改变 `review`／`approved`，也不保存人工批准决定。
+- “预览”只对当前项目中引用完整且已导入的 `BattleAnimationSet` 启用。服务端从本轮扫描得到的资源 ID 解析确切 `res://` 路径，以参数数组调用现有 `run-motion-preview.ps1`；不接受脚本名或任意执行参数，不会回退默认角色。`BattleEffectSet` 明确显示暂不支持，缺文件、未导入、Godot 路径无效和已有窗口运行都会返回可读状态。
+- 本机桥接使用每次启动生成的会话令牌并校验同源请求；文件读取只通过本轮扫描得到的资源 ID，额外读取仅限 Manifest 明确关联的当前项目 Resource。它不提供跨项目预览或任意目录浏览。
 
 ## 2. 三阶段生产
 

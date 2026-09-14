@@ -8,6 +8,7 @@
 - 本轮实跑 Windows Godot 4.7.2 Mono 的无头检查及需要渲染的集成检查，见第 3 节。没有人工逐屏视觉验收，没有重导出当前版本，没有验证浏览器持久化、线上部署、手机触控、其他操作系统、实际玩家局长与长期平衡。测试截图不是本轮新增画面成果，不替代人工美术批准。
 - `.godot/audit-20260914-*.log` 为本机忽略缓存，不随提交流转；以下记录关键结果与可重跑入口，不把历史截图当作当前画面证据。
 - 开始时已有用户修改 `AGENTS.md` 和未跟踪的 `docs/tmp/` 摘要，均保留；原始摘要不纳入本轮提交。
+- 2026-09-14 在 `codex/art-asset-manager` 从 `62b58b0` 追加项目定制的本地美术资源台；只读扫描当前项目目录，不改变 Manifest 状态、玩家存档或远程仓库。代码提交见 `2ef7ef8`、`66fa9f0`、`c12a6b2`，验证见 E18。
 
 状态统一定义：**已验证**＝实现存在且明确检查通过（仅限所列范围）；**已实装**＝存在实现但完整行为证据不足；**部分实装**＝只能完成部分目标流程；**原型**＝主要验证方向；**仅设计**＝正式方案存在但未落地；**待核验**＝材料不足；**已替代**＝旧路径不应继续扩展。通过程序检查不代表平衡、视觉审批或发布验收通过。
 
@@ -67,6 +68,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E15 | 探索，`--team-check`，图形 | PASS；地图／战斗面板、换装卸装、候补、阵容保存、只读和 Esc 恢复 | team |
 | E16 | 探索，`--pause-flow-smoke`，图形 | PASS；关闭窗口确认取消、主菜单返回、Play 再入及退出动作 | pause-flow |
 | E17 | [menu.tscn](../scenes/menu/menu.tscn)，`--codex-check`，图形 | **未通过**：`codex_check.gd:48` 恢复后时间推进断言失败，没有完成标记 | codex |
+| E18 | `py -3 -m unittest discover -s tools/art/asset_manager/tests -v`；浏览器 `http://127.0.0.1:8765/`；[动作预览](../run-motion-preview.ps1) | 9 tests PASS；实际扫描 6 对象／9 文件，点开守护者、原图和动画动作；页面点击“预览”后进程参数为 `--preview-animation=res://resources/content/animations/guard.tres`，未回退默认角色；另用 `-Capture` 输出五种动作的三分辨率截图 | art-manager、motion-preview |
 
 E13 的失败均位于 stage=4：seed/path 为 `1/1`、`4/0`、`4/1`、`4/2`；每条各出现胜利及路线完成断言失败。生成合法性部分没有报告失败，但后半段待选奖励磁盘恢复验证因提前退出未执行。检查固定阵容、奖励偏好且不尝试重配，因此不能推导“这些种子无解”；也不能以旧 PASS 覆盖当前失败。需区分平衡、战斗回归和测试策略过期。
 
@@ -110,8 +112,9 @@ E17 代码在 `_enter_node()` 清空部署后直接 `_start()`，没有部署四
 | CONTENT-03 | 内容 | 真实同学、回忆、校园恢复与结局内容 | 仅设计 | 纪念主题落地 | 无；[设计](game-design.md) | [设计](game-design.md) | 无 | 尚以虚构内容验证；具体身份素材未确定 |
 | ART-01 | 美术 | 同步动作、受击与退场回退 | 已验证 | 看懂行动结果 | [unit_presentation.gd](../scenes/battle_demo/unit_presentation.gd)、[battle_animation.gd](../scenes/battle_demo/battle_animation.gd) | [动画](battle-animation.md) | E09–E11 | 未配动画仍回退旧图；无骨骼后端 |
 | ART-02 | 美术 | 两名绘制角色、护盾特效、三张战斗背景 | 部分实装 | 主要战斗视觉样本 | [资产登记](../assets/art/asset_manifest.yaml)、[locations](../resources/content/locations/) | [动画](battle-animation.md)、[工作流](art/WORKFLOW.md) | E10–E12 | 六项均 review、获试接入授权；未最终视觉批准，其余角色／敌人仍占位 |
-| ART-03 | 美术 | 动作预览与切帧生产工具 | 已实装 | 降低后续动画试错 | [motion_preview.tscn](../scenes/battle_demo/motion_preview.tscn)、[build_battle_frames.py](../tools/art/build_battle_frames.py) | [动画](battle-animation.md) | 历史摘要；本轮静态 | 本轮未重跑七模式工具检查；不当作玩家内容 |
+| ART-03 | 美术 | 动作预览与切帧生产工具 | 已实装 | 降低后续动画试错 | [motion_preview.tscn](../scenes/battle_demo/motion_preview.tscn)、[build_battle_frames.py](../tools/art/build_battle_frames.py) | [动画](battle-animation.md) | E18（部分） | 已复验守护者准确加载与五种截图模式；本轮未重跑七模式 `-Check`；不当作玩家内容 |
 | ART-04 | 美术 | 分阶段人工评审、版本与登记工作流 | 仅设计 | 资产可追溯 | [工作流](art/WORKFLOW.md)、[资产登记](../assets/art/asset_manifest.yaml) | [工作流](art/WORKFLOW.md) | 静态 | 规范已存在；新版完整三阶段生产流程尚未以新任务走通 |
+| ART-05 | 美术工具 | 按对象浏览概念、图集与动画并启动准确预览 | 已验证 | 降低找图和手填预览参数成本 | [启动脚本](../run-art-manager.ps1)、[本地服务](../tools/art/asset_manager/server.py) | [工作流](art/WORKFLOW.md#本地资源台归组约定) | E18 | 仅当前项目目录；只读；特效不可预览；首次工作树需先导入 Godot 资源；不是审批、编辑或自动生图系统 |
 | AUDIO-01 | 音频 | 战斗命中、技能与环境声音 | 仅设计 | 战斗反馈与气氛 | [pixel_battle.gd](../scenes/battle_demo/pixel_battle.gd) 仅发事件 | [动画](battle-animation.md)、[设计](game-design.md) | 静态检索 | 未发现游戏音频消费者；模板音量不是声音内容 |
 | RELEASE-01 | 发布 | Web 构建与 Pages 自动发布配置 | 已实装 | 可分发入口 | [build-web.ps1](../build-web.ps1)、[push-export.yml](../.github/workflows/push-export.yml) | [发布](web-publishing.md) | 配置与 9/7 正式记录 | 旧版曾本地导出浏览；当前 HEAD 与线上未复验，未触发部署 |
 | RELEASE-02 | 发布 | 当前版本桌面／浏览器／手机可用性 | 待核验 | 真实设备可玩 | [export_presets.cfg](../export_presets.cfg) | [发布](web-publishing.md) | 当前原生专项＋旧版浏览记录 | 非当前导出包验收；触控、字体、刷新存档、性能未知 |
@@ -175,4 +178,4 @@ E17 代码在 `_enter_node()` 清空部署后直接 `_start()`，没有部署四
 - 当前导出资源完整性、中文字体、桌面及浏览器全流程、刷新／重开存档、真机触控；线上 CI／Pages 结果未检查。
 - 陌生玩家能否首次完成部署，重复空场是否繁琐，战斗取舍是否可理解；20～30 分钟仍是体验目标，不是测量结果。
 - 非正常关闭／磁盘失败时普通局内操作的一致性，系统时钟跳变的派遣行为；不以现有夹具保证任意异常安全。
-- 动作预览工具各模式当前完整行为、设置逐项效果、最终视觉审查与资产版本批准；未覆盖项目继续保留边界，不当作下一里程碑已完成基础。
+- 动作预览的当前守护者资源路径、五种截图模式与本地资源台入口已按 E18 复验；七模式 `-Check`、设置逐项效果、最终视觉审查与资产版本批准仍待核验，不把工具通过当作美术批准。
