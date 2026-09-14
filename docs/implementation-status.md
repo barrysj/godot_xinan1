@@ -69,7 +69,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E16 | 探索，`--pause-flow-smoke`，图形 | PASS；关闭窗口确认取消、主菜单返回、Play 再入及退出动作 | pause-flow |
 | E17 | [menu.tscn](../scenes/menu/menu.tscn)，`--codex-check`，图形 | **未通过**：`codex_check.gd:48` 恢复后时间推进断言失败，没有完成标记 | codex |
 | E18 | [粉笔精灵任务](art/tasks/chalk-spirit.md)与[概念 001](../design/concepts/chalk-spirit/chalk-spirit/001/chalk_spirit_concept_001.png) | PASS：原始输出已入库；PNG 1254×1254、8-bit RGB、不透明，SHA-256 已记录；概念已获人工批准，资产制作与接入尚未完成 | 静态概念检查＋当前对话批准 |
-| E19 | [粉笔精灵资产候选 002](../design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.png)、[切帧元数据](../design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.frames.json)与[动作检查日志](../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-check.log) | PASS：1254×1254、8-bit RGBA，75.70% 全透明；16 格非空、384×384 统一画布 margin 非负；七动作、暂停／单步／慢速通过，三分辨率共 15 张捕获完成；资产待人工评审，未接入 | asset candidate |
+| E19 | [粉笔精灵资产候选 002](../design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.png)、[切帧元数据](../design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.frames.json)与[动作检查日志](../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-check.log) | TECH PASS／VISUAL NEEDS REVISION：1254×1254、8-bit RGBA，75.70% 全透明；16 格非空、七动作专项检查通过；人工评审发现朝向不统一、过渡帧不足及第 1 格复用造成明显抽动，资产未通过、未接入 | asset candidate＋人工评审 |
 
 E13 的失败均位于 stage=4：seed/path 为 `1/1`、`4/0`、`4/1`、`4/2`；每条各出现胜利及路线完成断言失败。生成合法性部分没有报告失败，但后半段待选奖励磁盘恢复验证因提前退出未执行。检查固定阵容、奖励偏好且不尝试重配，因此不能推导“这些种子无解”；也不能以旧 PASS 覆盖当前失败。需区分平衡、战斗回归和测试策略过期。
 
@@ -112,9 +112,9 @@ E17 代码在 `_enter_node()` 清空部署后直接 `_start()`，没有部署四
 | CONTENT-02 | 内容 | 当前虚构角色、敌人、地点和事件样本 | 原型 | 足够验证短局 | [manifest.tres](../resources/content/manifest.tres) | [录入](content-authoring.md) | 静态、E14 | 注册 6 人物、7 敌人、5 技能、3 敌群、3 装备、9 奖励、1 池、3 事件、9 地点；注册数非每局出现数 |
 | CONTENT-03 | 内容 | 真实同学、回忆、校园恢复与结局内容 | 仅设计 | 纪念主题落地 | 无；[设计](game-design.md) | [设计](game-design.md) | 无 | 尚以虚构内容验证；具体身份素材未确定 |
 | ART-01 | 美术 | 同步动作、受击与退场回退 | 已验证 | 看懂行动结果 | [unit_presentation.gd](../scenes/battle_demo/unit_presentation.gd)、[battle_animation.gd](../scenes/battle_demo/battle_animation.gd) | [动画](battle-animation.md) | E09–E11 | 未配动画仍回退旧图；无骨骼后端 |
-| ART-02 | 美术 | 两名绘制角色、护盾特效、三张战斗背景 | 部分实装 | 主要战斗视觉样本 | [资产登记](../assets/art/asset_manifest.yaml)、[locations](../resources/content/locations/) | [动画](battle-animation.md)、[工作流](art/WORKFLOW.md) | E10–E12、E18、E19 | 六项已接入资产均为 review、获试接入授权且未最终视觉批准；粉笔精灵概念已通过、资产候选 002 待评且未接入；其他角色／敌人仍占位 |
+| ART-02 | 美术 | 两名绘制角色、护盾特效、三张战斗背景 | 部分实装 | 主要战斗视觉样本 | [资产登记](../assets/art/asset_manifest.yaml)、[locations](../resources/content/locations/) | [动画](battle-animation.md)、[工作流](art/WORKFLOW.md) | E10–E12、E18、E19 | 六项已接入资产均为 review、获试接入授权且未最终视觉批准；粉笔精灵概念已通过、资产候选 002 因朝向与动画抽动需修改且未接入；其他角色／敌人仍占位 |
 | ART-03 | 美术 | 动作预览与切帧生产工具 | 已实装 | 降低后续动画试错 | [motion_preview.tscn](../scenes/battle_demo/motion_preview.tscn)、[build_battle_frames.py](../tools/art/build_battle_frames.py) | [动画](battle-animation.md) | 历史摘要；本轮静态 | 本轮未重跑七模式工具检查；不当作玩家内容 |
-| ART-04 | 美术 | 分阶段人工评审、版本与登记工作流 | 部分实装 | 资产可追溯 | [工作流](art/WORKFLOW.md)、[粉笔精灵任务](art/tasks/chalk-spirit.md)、[资产登记](../assets/art/asset_manifest.yaml) | [工作流](art/WORKFLOW.md) | E18、E19 | 概念 001 已批准并生成资产候选 002；资产仍待人工评审、接入未开始，完整三阶段流程未走通 |
+| ART-04 | 美术 | 分阶段人工评审、版本与登记工作流 | 部分实装 | 资产可追溯 | [工作流](art/WORKFLOW.md)、[粉笔精灵任务](art/tasks/chalk-spirit.md)、[资产登记](../assets/art/asset_manifest.yaml) | [工作流](art/WORKFLOW.md) | E18、E19 | 概念 001 已批准；资产候选 002 的人工结论为需修改，候选 003 与接入尚未开始，完整三阶段流程未走通 |
 | AUDIO-01 | 音频 | 战斗命中、技能与环境声音 | 仅设计 | 战斗反馈与气氛 | [pixel_battle.gd](../scenes/battle_demo/pixel_battle.gd) 仅发事件 | [动画](battle-animation.md)、[设计](game-design.md) | 静态检索 | 未发现游戏音频消费者；模板音量不是声音内容 |
 | RELEASE-01 | 发布 | Web 构建与 Pages 自动发布配置 | 已实装 | 可分发入口 | [build-web.ps1](../build-web.ps1)、[push-export.yml](../.github/workflows/push-export.yml) | [发布](web-publishing.md) | 配置与 9/7 正式记录 | 旧版曾本地导出浏览；当前 HEAD 与线上未复验，未触发部署 |
 | RELEASE-02 | 发布 | 当前版本桌面／浏览器／手机可用性 | 待核验 | 真实设备可玩 | [export_presets.cfg](../export_presets.cfg) | [发布](web-publishing.md) | 当前原生专项＋旧版浏览记录 | 非当前导出包验收；触控、字体、刷新存档、性能未知 |
@@ -141,7 +141,7 @@ E17 代码在 `_enter_node()` 清空部署后直接 `_start()`，没有部署四
 - 缺陌生玩家教学、可核对的失败解释和实际局长数据。现有贡献统计不能证明玩家理解目标选择；无限重试也不能替代合理难度。
 - 随机地点、奖励已有，但敌群和装备组合有限；重复刷相同内容可能只改变数值。没有商店不构成当前短局硬缺陷。
 - 派遣有完整操作反馈，但标签未产生实质要求，收益未映射为校园恢复展示；不宜仅按脚本可配置性宣称玩法深度。
-- 六项已接入美术为待评版本；角色完成度混合。粉笔精灵概念 001 已通过、资产候选 002 待评且未接入。背景只显式覆盖部分地点，不能把三张图说成全校园完成。
+- 六项已接入美术为待评版本；角色完成度混合。粉笔精灵概念 001 已通过、资产候选 002 因朝向与动画抽动需修改且未接入。背景只显式覆盖部分地点，不能把三张图说成全校园完成。
 
 ### 技术债与重复边界
 
