@@ -149,7 +149,8 @@ func run_checks() -> void:
 			game.chosen_node = index
 			break
 	game._enter_node()
-	check(game.formation.count(-1) == 6 and game._living(0).is_empty(), "Next encounter resets deployment")
+	check(game.formation.count(-1) == 2 and game._living(0).size() == 4 and game.run.formation == game.formation,
+		"Next encounter reuses confirmed deployment")
 	print("DEPLOYMENT_CHECK ", "PASS" if failures == 0 else "FAIL", " failures=", failures)
 	if "--deployment-capture" in OS.get_cmdline_user_args() and failures == 0:
 		await capture()
