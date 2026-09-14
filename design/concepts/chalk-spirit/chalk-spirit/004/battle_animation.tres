@@ -1,0 +1,288 @@
+[gd_resource type="Resource" load_steps=50 format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet.png" id="locomotion"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet.png" id="combat"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet.png" id="reaction"]
+
+[sub_resource type="AtlasTexture" id="locomotion_0"]
+atlas = ExtResource("locomotion")
+region = Rect2(98, 122, 199, 285)
+margin = Rect2(104.5, 25, 153, 67)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_1"]
+atlas = ExtResource("locomotion")
+region = Rect2(392, 121, 205, 281)
+margin = Rect2(76.5, 29, 147, 71)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_2"]
+atlas = ExtResource("locomotion")
+region = Rect2(691, 122, 217, 279)
+margin = Rect2(66.0, 31, 135, 73)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_3"]
+atlas = ExtResource("locomotion")
+region = Rect2(1018, 130, 201, 281)
+margin = Rect2(88.0, 29, 151, 71)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_4"]
+atlas = ExtResource("locomotion")
+region = Rect2(70, 506, 244, 280)
+margin = Rect2(73.0, 30, 108, 72)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_5"]
+atlas = ExtResource("locomotion")
+region = Rect2(379, 508, 264, 277)
+margin = Rect2(48.5, 33, 88, 75)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_6"]
+atlas = ExtResource("locomotion")
+region = Rect2(691, 508, 261, 276)
+margin = Rect2(45.0, 34, 91, 76)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_7"]
+atlas = ExtResource("locomotion")
+region = Rect2(1002, 507, 231, 277)
+margin = Rect2(62.5, 33, 121, 75)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_8"]
+atlas = ExtResource("locomotion")
+region = Rect2(65, 870, 244, 280)
+margin = Rect2(68.5, 30, 108, 72)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_9"]
+atlas = ExtResource("locomotion")
+region = Rect2(383, 871, 259, 280)
+margin = Rect2(52.5, 30, 93, 72)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_10"]
+atlas = ExtResource("locomotion")
+region = Rect2(695, 872, 241, 278)
+margin = Rect2(51.0, 32, 111, 74)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="locomotion_11"]
+atlas = ExtResource("locomotion")
+region = Rect2(1024, 871, 207, 283)
+margin = Rect2(87.0, 27, 145, 69)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_0"]
+atlas = ExtResource("combat")
+region = Rect2(51, 35, 239, 289)
+margin = Rect2(66.0, 21, 113, 63)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_1"]
+atlas = ExtResource("combat")
+region = Rect2(353, 35, 234, 288)
+margin = Rect2(52.0, 22, 118, 64)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_2"]
+atlas = ExtResource("combat")
+region = Rect2(676, 34, 240, 291)
+margin = Rect2(58.0, 19, 112, 61)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_3"]
+atlas = ExtResource("combat")
+region = Rect2(995, 35, 188, 290)
+margin = Rect2(66.0, 20, 164, 62)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_4"]
+atlas = ExtResource("combat")
+region = Rect2(43, 339, 254, 292)
+margin = Rect2(58.0, 18, 98, 60)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_5"]
+atlas = ExtResource("combat")
+region = Rect2(346, 339, 316, 290)
+margin = Rect2(28.0, 20, 36, 62)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_6"]
+atlas = ExtResource("combat")
+region = Rect2(669, 339, 289, 290)
+margin = Rect2(23.0, 20, 63, 62)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_7"]
+atlas = ExtResource("combat")
+region = Rect2(997, 338, 237, 293)
+margin = Rect2(57.0, 17, 115, 59)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_8"]
+atlas = ExtResource("combat")
+region = Rect2(51, 641, 238, 294)
+margin = Rect2(65.5, 16, 114, 58)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_9"]
+atlas = ExtResource("combat")
+region = Rect2(357, 640, 235, 296)
+margin = Rect2(52.5, 14, 117, 56)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_10"]
+atlas = ExtResource("combat")
+region = Rect2(684, 639, 236, 297)
+margin = Rect2(59.5, 13, 116, 55)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_11"]
+atlas = ExtResource("combat")
+region = Rect2(1006, 639, 214, 300)
+margin = Rect2(73.5, 10, 138, 52)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_12"]
+atlas = ExtResource("combat")
+region = Rect2(41, 951, 272, 282)
+margin = Rect2(50.0, 28, 80, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_13"]
+atlas = ExtResource("combat")
+region = Rect2(354, 950, 314, 284)
+margin = Rect2(27.5, 26, 38, 68)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_14"]
+atlas = ExtResource("combat")
+region = Rect2(674, 949, 305, 285)
+margin = Rect2(21.5, 25, 47, 67)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="combat_15"]
+atlas = ExtResource("combat")
+region = Rect2(993, 951, 235, 287)
+margin = Rect2(49.0, 23, 117, 65)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_0"]
+atlas = ExtResource("reaction")
+region = Rect2(75, 76, 193, 225)
+margin = Rect2(89.0, 85, 159, 127)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_1"]
+atlas = ExtResource("reaction")
+region = Rect2(385, 76, 199, 224)
+margin = Rect2(82.0, 86, 153, 128)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_2"]
+atlas = ExtResource("reaction")
+region = Rect2(684, 76, 209, 226)
+margin = Rect2(68.0, 84, 143, 126)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_3"]
+atlas = ExtResource("reaction")
+region = Rect2(1007, 87, 187, 216)
+margin = Rect2(81.0, 94, 165, 136)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_4"]
+atlas = ExtResource("reaction")
+region = Rect2(75, 389, 196, 204)
+margin = Rect2(88.0, 106, 156, 148)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_5"]
+atlas = ExtResource("reaction")
+region = Rect2(395, 392, 194, 199)
+margin = Rect2(87.0, 111, 158, 153)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_6"]
+atlas = ExtResource("reaction")
+region = Rect2(702, 391, 196, 201)
+margin = Rect2(81.0, 109, 156, 151)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_7"]
+atlas = ExtResource("reaction")
+region = Rect2(1014, 389, 196, 202)
+margin = Rect2(87.0, 108, 156, 150)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_8"]
+atlas = ExtResource("reaction")
+region = Rect2(81, 682, 196, 218)
+margin = Rect2(92.5, 92, 156, 134)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_9"]
+atlas = ExtResource("reaction")
+region = Rect2(399, 690, 187, 209)
+margin = Rect2(90.5, 101, 165, 143)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_10"]
+atlas = ExtResource("reaction")
+region = Rect2(698, 696, 196, 205)
+margin = Rect2(79.0, 105, 156, 147)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_11"]
+atlas = ExtResource("reaction")
+region = Rect2(1010, 709, 195, 188)
+margin = Rect2(84.0, 122, 157, 164)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_12"]
+atlas = ExtResource("reaction")
+region = Rect2(77, 987, 193, 199)
+margin = Rect2(95.0, 111, 159, 153)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_13"]
+atlas = ExtResource("reaction")
+region = Rect2(361, 1022, 231, 157)
+margin = Rect2(63.0, 153, 121, 195)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_14"]
+atlas = ExtResource("reaction")
+region = Rect2(673, 1053, 238, 123)
+margin = Rect2(62.0, 187, 114, 229)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="reaction_15"]
+atlas = ExtResource("reaction")
+region = Rect2(973, 1067, 237, 114)
+margin = Rect2(51.0, 196, 115, 238)
+filter_clip = true
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{"frames": [{"duration": 1.0, "texture": SubResource("locomotion_0")}, {"duration": 1.0, "texture": SubResource("locomotion_1")}, {"duration": 1.0, "texture": SubResource("locomotion_2")}, {"duration": 1.0, "texture": SubResource("locomotion_3")}], "loop": true, "name": &"idle", "speed": 6.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("locomotion_4")}, {"duration": 1.0, "texture": SubResource("locomotion_5")}, {"duration": 1.0, "texture": SubResource("locomotion_6")}, {"duration": 1.0, "texture": SubResource("locomotion_7")}, {"duration": 1.0, "texture": SubResource("locomotion_8")}, {"duration": 1.0, "texture": SubResource("locomotion_9")}, {"duration": 1.0, "texture": SubResource("locomotion_10")}, {"duration": 1.0, "texture": SubResource("locomotion_11")}], "loop": true, "name": &"move", "speed": 10.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("combat_0")}, {"duration": 1.0, "texture": SubResource("combat_1")}, {"duration": 1.0, "texture": SubResource("combat_2")}, {"duration": 1.0, "texture": SubResource("combat_3")}, {"duration": 1.0, "texture": SubResource("combat_4")}, {"duration": 1.0, "texture": SubResource("combat_5")}, {"duration": 1.0, "texture": SubResource("combat_6")}, {"duration": 1.0, "texture": SubResource("combat_7")}], "loop": false, "name": &"attack", "speed": 12.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("combat_8")}, {"duration": 1.0, "texture": SubResource("combat_9")}, {"duration": 1.0, "texture": SubResource("combat_10")}, {"duration": 1.0, "texture": SubResource("combat_11")}, {"duration": 1.0, "texture": SubResource("combat_12")}, {"duration": 1.0, "texture": SubResource("combat_13")}, {"duration": 1.0, "texture": SubResource("combat_14")}, {"duration": 1.0, "texture": SubResource("combat_15")}], "loop": false, "name": &"cast", "speed": 12.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("reaction_0")}, {"duration": 1.0, "texture": SubResource("reaction_1")}, {"duration": 1.0, "texture": SubResource("reaction_2")}, {"duration": 1.0, "texture": SubResource("reaction_3")}], "loop": false, "name": &"hurt", "speed": 12.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("reaction_4")}, {"duration": 1.0, "texture": SubResource("reaction_5")}, {"duration": 1.0, "texture": SubResource("reaction_6")}, {"duration": 1.0, "texture": SubResource("reaction_7")}], "loop": true, "name": &"critical", "speed": 6.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("reaction_8")}, {"duration": 1.0, "texture": SubResource("reaction_9")}, {"duration": 1.0, "texture": SubResource("reaction_10")}, {"duration": 1.0, "texture": SubResource("reaction_11")}, {"duration": 1.0, "texture": SubResource("reaction_12")}, {"duration": 1.0, "texture": SubResource("reaction_13")}, {"duration": 1.0, "texture": SubResource("reaction_14")}, {"duration": 1.0, "texture": SubResource("reaction_15")}], "loop": false, "name": &"death", "speed": 8.0}]
+
+[resource]
+script = ExtResource("script")
+frames = SubResource("frames")
+display_size = Vector2(128, 128)
+anchor = Vector2(0.5, 0.875)
+impact_ratio = 0.625
+flip_with_facing = true
+launch_offset = Vector2(50, -52)
+hit_offset = Vector2(0, -42)

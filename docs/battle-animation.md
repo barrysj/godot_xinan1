@@ -52,6 +52,10 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
 
+跨片段验收不能只检查统一画布与锚点：同一画布仍可能装入不同大小的主体。候选生成器应比较待机／移动与攻击／施法的主体轮廓尺度，设置宽松的自动拦截区间，并用头盔、躯干核心等稳定部位做人工复核；尾迹、弹体和碎块只能作为动作效果，不能作为主体尺寸依据。
+
+攻击、施法和受击的主评审 GIF 必须包含静止状态进入动作、动作播放、返回静止状态的完整边界，并尽量复现模拟前摇、出手点与后摇的时间映射。纯动作逐帧 GIF 可作为补充，但不能代替跨状态预览；不得用延长动作末帧掩盖返回待机时的体型或锚点跳变。死亡片段按设计停在末帧，不返回待机。
+
 框架阶段曾通过内置 image_gen 进行首轮测试素材试产；当时比例和真实透明度未同时通过，因此那批素材未接入战斗。未通过样本保存于 `assets/testing/battle-motion/`（带 `.gdignore`），战斗素材试产提示词见 `docs/art/prompts/battle-animation-assets.md`。现有占位图验证的是动作框架，不代表完整的肢体动画或冻结美术效果。
 
 ## 实际角色图集接入（2026-09-13）
