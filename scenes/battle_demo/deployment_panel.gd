@@ -199,7 +199,7 @@ func _place_ghost(image: TextureRect, role: int, slot: int) -> void:
 	image.position = game._unit_center(preview_unit) + Vector2(0, 13) - image.size * anchor
 
 func previews_unit(role: int) -> bool:
-	return active() and mode == Mode.SWAP and ghost.visible and can_place(candidate_slot) and (role == selected_role or role == game.formation[candidate_slot])
+	return active() and ghost.visible and can_place(candidate_slot) and (role == selected_role or role == game.formation[candidate_slot])
 
 func can_place(slot: int) -> bool:
 	if selected_role < 0 or slot < 0 or slot >= 6: return false
@@ -207,7 +207,7 @@ func can_place(slot: int) -> bool:
 	if mode == Mode.ACTIONS: return false
 	if mode == Mode.SWAP:
 		return game.formation.has(selected_role) and game.formation[slot] != selected_role
-	if game.formation[slot] >= 0: return false
+	if game.formation[slot] >= 0: return not game.formation.has(selected_role)
 	return game.formation.has(selected_role) or 6 - game.formation.count(-1) < LIMIT
 
 func slot_at(point: Vector2) -> int:
@@ -229,14 +229,14 @@ func unit_slot_at(point: Vector2) -> int:
 			return unit.slot
 	return -1
 
-func select(role: int) -> void:
+func select(role: int, from_card := false) -> void:
 	selected_role = role
-	mode = Mode.ACTIONS if game.formation.has(role) else Mode.DEPLOY
+	mode = Mode.SWAP if from_card and game.formation.has(role) else (Mode.ACTIONS if game.formation.has(role) else Mode.DEPLOY)
 	locked_preview = false
 	candidate_slot = -1
 	game.selected = role
 	game.inspected_enemy_slot = -1
-	game._note("点击空格预览部署，或拖动卡片到空格。")
+	game._note("选择交换或撤回。" if mode == Mode.ACTIONS else "点击我方格子预览部署／交换，或拖动卡片直接落位。")
 	refresh()
 
 func begin_swap() -> void:
@@ -297,7 +297,7 @@ func handle(event: InputEvent) -> bool:
 		hover_role = card_at(point)
 		if pressed_role >= 0:
 			if point.distance_to(press_at) >= DRAG_THRESHOLD:
-				if not dragging and selected_role != pressed_role: select(pressed_role)
+				if not dragging and selected_role != pressed_role: select(pressed_role, true)
 				dragging = true
 				toggle_on_release = false
 				locked_preview = false
@@ -319,7 +319,7 @@ func handle(event: InputEvent) -> bool:
 			elif can_place(candidate_slot): commit()
 			else:
 				cancel()
-				game._note("未部署：请拖到空闲的我方格子。")
+				game._note("未部署：请拖到有效的我方格子。")
 		elif toggle_on_release:
 			cancel()
 		pressed_role = -1
@@ -334,7 +334,7 @@ func handle(event: InputEvent) -> bool:
 	var role = card_at(point)
 	if role >= 0:
 		var toggle = selected_role == role
-		select(role)
+		select(role, true)
 		toggle_on_release = toggle
 		pressed_role = role
 		press_at = point
@@ -351,7 +351,7 @@ func handle(event: InputEvent) -> bool:
 			locked_preview = true
 			refresh()
 		elif selected_role >= 0:
-			game._note("格子已占用或已达到四人上限；可先撤回同学。")
+			game._note("不能落在原格；部署空格时仍需遵守四人上限。")
 		if game.formation[slot] >= 0:
 			pressed_role = game.formation[slot]
 			press_at = point

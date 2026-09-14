@@ -52,7 +52,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | --- | --- | --- | --- |
 | E01 | [action_check.tscn](../game/combat/action_check.tscn) | PASS，failures=0；前后摇、死亡取消、弹道、同时结算、高攻速 | action |
 | E02 | [auto_battle_check.tscn](../game/combat/auto_battle_check.tscn) | PASS，failures=0；寻路占位、射程、换目标、暂停倍速 | auto |
-| E03 | [deployment_check.tscn](../scenes/battle_demo/deployment_check.tscn)，`--deployment-check` | PASS，failures=0；真实 Viewport 输入、点选／拖拽／交换／撤回、部分部署恢复与下场沿用 | deploy |
+| E03 | [deployment_check.tscn](../scenes/battle_demo/deployment_check.tscn)，`--deployment-check` | PASS，failures=0；真实 Viewport 输入、手牌直接换人／换位、部署菜单、撤回、部分部署恢复与下场沿用 | deploy |
 | E04 | 探索，`--run-smoke` | PASS；三条固定兼容路线完成，资源 7/9/7；首战部署、后续沿用、奖励、恢复、续玩、候补、重试、结算 | run |
 | E05 | 探索，`--meta-smoke` | 67 checks，failures=0；成长生效时机、迁移、检查点、离线派遣、回滚 | meta |
 | E06 | 探索，`--map-check` | PASS；地点浏览、缩放拖动、详情、锁定交互 | map |
@@ -88,7 +88,7 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | COMBAT-02 | 战斗 | 普攻、自动技能、弹道结算 | 已验证 | 可重复的战斗规则 | [battle_simulation.gd](../game/combat/battle_simulation.gd) | [战斗](battle-demo.md) | E01、E09、E14 | 统一请求仅 attack；无手动技能／道具 |
 | COMBAT-03 | 战斗 | 胜利全恢复、失败保留构筑重试、战报 | 已验证 | 降低失败成本、比较贡献 | [expedition.gd](../scenes/expedition/expedition.gd) | [校园](campus-demo.md) | E04、E05 | 无限制次数挑战；统计不等于失败原因分析 |
 | COMBAT-04 | 战斗 | 主线无需刷成长、路线与阵容有策略差异 | 已验证 | 可理解且公平的难度 | [random_checks.gd](../scenes/expedition/random_checks.gd) | [设计](game-design.md) | E04、E13 | 40 条随机样本无永久成长可通关，四条需重配；无真人平衡数据 |
-| DEPLOY-01 | 部署 | 卡片点选、预览确认、拖拽、交换撤回 | 已验证 | 快速调整阵容 | [deployment_panel.gd](../scenes/battle_demo/deployment_panel.gd) | [战斗](battle-demo.md) | E03、E04、E12 | 首战空场、后续沿用；未确认手势不保存；触控待验 |
+| DEPLOY-01 | 部署 | 手牌点选／拖拽直接部署、换人、换位及撤回 | 已验证 | 快速调整阵容 | [deployment_panel.gd](../scenes/battle_demo/deployment_panel.gd) | [战斗](battle-demo.md) | E03、E04、E12 | 点击落点需确认，拖拽直接生效；首战空场、后续沿用；触控待验 |
 | DEPLOY-02 | 部署 | 地图／战前队伍面板和候补轮换 | 已验证 | 角色与装备构筑 | [visual_team_panel.gd](../scenes/team/visual_team_panel.gd) | [校园](campus-demo.md) | E15、E04 | 战中只读；已确认地图／战前阵位进入后续战斗沿用 |
 | RUN-01 | 探索 | 随机地点组合与固定奖励快照 | 已验证 | 重玩变化与公平续玩 | [short_run.gd](../game/run/short_run.gd) | [录入](content-authoring.md) | E13 生成部分、E14 | 层数连线固定；路线通关归 COMBAT-04；非所有战斗数值冻结 |
 | RUN-02 | 探索 | 条件事件、支付与一次性结果 | 已验证 | 战外选择 | [short_run.gd](../game/run/short_run.gd)、[event_def.gd](../game/content/event_def.gd) | [录入](content-authoring.md) | E14 | 内容数量少，非记忆收集系统 |
