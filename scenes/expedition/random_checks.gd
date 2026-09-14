@@ -1,8 +1,11 @@
 extends RefCounted
 const Model = preload("res://game/run/short_run.gd")
 const Checkpoint = preload("res://game/run/run_checkpoint.gd")
+const DEFAULT_FORMATION = [-1, 0, 3, 1, 2, -1]
+const RETRY_FORMATION = [-1, 0, 2, 1, 3, -1]
 var failures = 0
 var battles = 0
+
 func verify(value: bool, message: String) -> void:
 	if not value:
 		failures += 1
@@ -40,11 +43,13 @@ func run_checks(hub) -> void:
 			verify(not (offer.id == "inventor_training" and not run.roster.has(4)),"training for available role only")
 	verify(maps.size() > 20 and rewards.size() > 10,"random diversity")
 	# Exercise all eight paths across several seeds, with no permanent upgrades.
+	# A loss must remain recoverable through the real report -> redeploy -> retry flow.
+	var reconfigurations = 0
 	for seed_value in range(5):
 		for path_index in range(8):
 			hub._new_run()
 			hub.run.generate(seed_value)
-			hub.formation = [-1,0,3,1,2,-1]
+			hub.formation = DEFAULT_FORMATION.duplicate()
 			hub.equipment = 1
 			hub._sync_team()
 			while hub.run.stage < 5:
@@ -52,14 +57,28 @@ func run_checks(hub) -> void:
 				hub._enter_node()
 				verify(not Checkpoint.decode(hub.progress.active_run).is_empty(),"scene checkpoint valid")
 				if hub.screen == "battle":
-					hub.formation = [-1,0,3,1,2,-1]
+					hub.formation = DEFAULT_FORMATION.duplicate()
+					hub._sync_team()
 					hub._start()
 					for frame in range(6000):
 						if hub.screen != "battle": break
 						hub._process(1.0/30.0)
 					battles += 1
-					verify(hub.screen == "report" and hub.result_won,"route win seed=%d path=%d stage=%d" % [seed_value,path_index,hub.run.stage])
-					if not hub.result_won: break
+					if hub.screen == "report" and not hub.result_won:
+						var previous_retries = hub.run.retries
+						hub._after_report()
+						verify(hub.screen == "battle" and hub.phase == "prepare" and hub.run.retries == previous_retries + 1,
+							"loss enters redeploy seed=%d path=%d stage=%d" % [seed_value,path_index,hub.run.stage])
+						hub.formation = RETRY_FORMATION.duplicate()
+						hub._sync_team()
+						hub._start()
+						for frame in range(6000):
+							if hub.screen != "battle": break
+							hub._process(1.0/30.0)
+						battles += 1
+						reconfigurations += 1
+					verify(hub.screen == "report" and hub.result_won,"route win after redeploy seed=%d path=%d stage=%d" % [seed_value,path_index,hub.run.stage])
+					if not (hub.screen == "report" and hub.result_won): break
 					hub._after_report()
 				else: hub.screen = "reward"
 				if hub.screen == "reward":
@@ -70,7 +89,8 @@ func run_checks(hub) -> void:
 					hub._choose_reward(choice)
 					if hub.run.badge_owned: hub.run.badge_wearer = 0
 			verify(hub.screen == "summary","route completed")
-	print("RANDOM_CHECK seeds=200 maps=",maps.size()," reward_sets=",rewards.size()," paths=40 battles=",battles," failures=",failures)
+	print("RANDOM_CHECK seeds=200 maps=",maps.size()," reward_sets=",rewards.size()," paths=40 battles=",battles,
+		" reconfigurations=",reconfigurations," failures=",failures)
 	if failures > 0:
 		hub.get_tree().quit(1)
 		return
