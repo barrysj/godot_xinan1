@@ -61,7 +61,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E08 | 探索，`--journey-check` | 17 checks，failures=0；出发到达、进度、领取、返程与失败回滚 | journey |
 | E09 | [presentation_check.tscn](../scenes/battle_demo/presentation_check.tscn) | PASS，failures=0；插值、动作同步、不同帧率／倍速统计一致 | presentation |
 | E10 | [authored_assets_check.tscn](../scenes/battle_demo/authored_assets_check.tscn)，`--require-two-models` | models=2，failures=0；真实图集与七动作元数据，不是美术审批 | assets |
-| E11 | [skill_vfx_check.tscn](../scenes/battle_demo/skill_vfx_check.tscn) | failures=0；护盾出手一次、暂停倍速、回收与收尾；可选弹体样式与旧弹道回退 | vfx |
+| E11 | [skill_vfx_check.tscn](../scenes/battle_demo/skill_vfx_check.tscn) | failures=0；护盾生命周期；粉笔精灵正式头像、44 帧七动作、轻量弹体与旧弹道回退 | vfx |
 | E12 | [battle_ui_check.tscn](../scenes/battle_demo/battle_ui_check.tscn)，`--deployment-check` | failures=0；侧视投影、角色详情、背包装卸转移、存档、战中只读 | ui |
 | E13 | 探索，`--random-check`，图形 | **失败**：200 种子生成 197 种地图、146 种奖励序列；40 路径、152 场战斗，8 条失败断言，详见下文 | random |
 | E14 | 探索，`--content-check`，图形 | `CONTENT_CHECK_COMPLETE`；装备、共享技能隔离、字符串身份、事件交易、冻结快照、旧档及非法资源拒绝 | content |

@@ -70,6 +70,8 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 新增 `res://scenes/battle_demo/skill_vfx_check.tscn` 验证真实特效帧、群体释放一次、前摇取消、暂停/倍速、自动回收、重开和收尾时长。预览“施法”模式可慢速循环查看，`-Capture` 同时导出施法截图。
 
+粉笔精灵采用角色动画 005 与轻量弹体 001：正式动画位于 `resources/content/animations/chalk.tres`，弹体样式位于 `resources/content/animations/chalk_projectile.tres`。角色定义直接引用两者，正常预览不需要 `-Animation` 或 `-Projectile` 覆盖；`skill_vfx_check.tscn` 校验正式图集、头像、七动作帧数、弹体路径与旧弹道回退。
+
 远射手同样接入 16 个绘制姿势和七类动画：银蓝短发、校园运动装与电子发射器。瞄准、发射、后坐、充能、受击和倒地均有独立画稿。两名角色的原始提示词与来源分别见 `assets/art/characters/guard/generation.md` 和 `assets/art/characters/archer/generation.md`；其余角色仍可按缺失动画回退规则正常战斗。
 
 用户进一步明确要求至少两名绘制的战斗角色、动作和一个技能特效。本阶段不以旧占位图完成验收；允许当前生成成果进入战斗，Manifest 保留 review 供后续人工视觉 QA，不冒充 approved，不创建冻结 Task Spec。

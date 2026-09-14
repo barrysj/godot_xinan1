@@ -243,7 +243,8 @@ func _draw() -> void:
 	_text(Vector2(44, 56), "动作预览 · " + MODES[mode], DARK, 24)
 	var source_name: String = preview_unit.display_name if preview_unit != null else "预设角色"
 	var source_detail := "自定义序列帧" if preview_animation != null else "角色动作图集"
-	if preview_projectile != null: source_detail += "＋弹体"
+	var active_projectile = units[0].battle_animation.projectile_style if not units.is_empty() and units[0].battle_animation != null else null
+	if preview_projectile != null or active_projectile != null: source_detail += "＋弹体"
 	_text(Vector2(520, 53), "开发测试 / " + source_name + " / " + source_detail + (" / 0.25×" if slow else " / 1×"), DARK, 17)
 	_campus(false)
 	var ordered = units.duplicate()
