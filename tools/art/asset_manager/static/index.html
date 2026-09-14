@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>美术资源台</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <script id="boot-data" type="application/json">__ART_MANAGER_BOOT__</script>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">CYBER POP CAMPUS · LOCAL ART DESK</p>
+        <h1>美术资源台</h1>
+        <p class="subtitle">从文件夹找到对象，再看它的概念、图集与动画版本。</p>
+      </div>
+      <div class="hero-mark" aria-hidden="true"><span>ART</span><b>／01</b></div>
+    </header>
+
+    <section class="scan-panel" aria-labelledby="scan-title">
+      <div class="section-heading">
+        <div><span class="step">01</span><h2 id="scan-title">扫描目录</h2></div>
+        <p>当前项目内每行一个目录；支持中文与空格，重叠目录自动去重。</p>
+      </div>
+      <div class="scan-grid">
+        <label class="field roots-field">
+          <span>本地目录</span>
+          <textarea id="roots" rows="3" spellcheck="false"></textarea>
+        </label>
+        <label class="field engine-field">
+          <span>Godot 路径</span>
+          <input id="engine" type="text" spellcheck="false" placeholder="预览时使用">
+        </label>
+        <div class="scan-actions">
+          <button id="scan" class="primary">扫描</button>
+          <button id="defaults" class="secondary">默认</button>
+        </div>
+      </div>
+      <div id="notice" class="notice" role="status">准备扫描本项目资源。</div>
+    </section>
+
+    <section class="library" aria-labelledby="library-title">
+      <div class="section-heading library-heading">
+        <div><span class="step">02</span><h2 id="library-title">对象浏览</h2></div>
+        <div id="summary" class="summary">0 个对象 · 0 个文件</div>
+      </div>
+      <nav id="filters" class="filters" aria-label="资源分类"></nav>
+      <div id="empty" class="empty">
+        <div class="empty-orbit"><span>＋</span></div>
+        <h3>等待扫描</h3>
+        <p>加入一个目录，资源们就会按对象排好队。</p>
+      </div>
+      <div id="grid" class="object-grid"></div>
+    </section>
+  </main>
+
+  <aside id="detail" class="detail" aria-hidden="true">
+    <div class="detail-backdrop" data-close></div>
+    <section class="detail-sheet" aria-labelledby="detail-title">
+      <button class="close" data-close aria-label="关闭详情">关闭</button>
+      <div id="detail-content"></div>
+    </section>
+  </aside>
+
+  <dialog id="lightbox" class="lightbox">
+    <button id="lightbox-close" class="close">关闭</button>
+    <img id="lightbox-image" alt="资源原图">
+    <p id="lightbox-caption"></p>
+  </dialog>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
