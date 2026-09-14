@@ -365,8 +365,14 @@ func _draw_unit(u: Dictionary) -> void:
 	var p = _unit_center(u) + Vector2(0, 13)
 	var alive: bool = u.hp > 0
 	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected
+	var swap_source: bool = phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.is_swap_source(u.role)
 	# Small base, not a character card: the actor stands on the map.
 	draw_rect(Rect2(p + Vector2(-29, -3), Vector2(58, 12)), Color(0.15, 0.23, 0.20, 0.3))
+	if swap_source:
+		draw_rect(Rect2(p + Vector2(-45, -11), Vector2(90, 28)), Color(GOLD, 0.18))
+		draw_rect(Rect2(p + Vector2(-43, -9), Vector2(86, 24)), Color("fff0a8"), false, 4)
+		draw_line(p + Vector2(-53, 3), p + Vector2(-43, 3), Color("fff0a8"), 4)
+		draw_line(p + Vector2(43, 3), p + Vector2(53, 3), Color("fff0a8"), 4)
 	if chosen:
 		draw_rect(Rect2(p + Vector2(-37,-7), Vector2(74, 20)), GOLD, false, 3)
 		_center(p + Vector2(0,-72), "▼", GOLD, 16)

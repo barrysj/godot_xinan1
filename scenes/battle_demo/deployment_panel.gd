@@ -163,6 +163,9 @@ func _place_ghost(image: TextureRect, role: int, slot: int) -> void:
 func previews_unit(role: int) -> bool:
 	return active() and ghost.visible and can_place(candidate_slot) and (role == selected_role or role == game.formation[candidate_slot])
 
+func is_swap_source(role: int) -> bool:
+	return active() and mode == Mode.SWAP and selected_role == role and game.formation.has(role)
+
 func can_place(slot: int) -> bool:
 	if selected_role < 0 or slot < 0 or slot >= 6: return false
 	if not game._deployment_roster().has(selected_role): return false
@@ -247,6 +250,10 @@ func handle(event: InputEvent) -> bool:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and selected_role >= 0:
 		cancel()
 		return true
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and mode == Mode.SWAP:
+		cancel()
+		game._note("已取消交换。")
+		return true
 	if not (event is InputEventMouseButton or event is InputEventMouseMotion): return false
 	var point: Vector2 = canvas.get_global_transform().affine_inverse() * event.position
 	pointer_at = point
@@ -296,7 +303,11 @@ func handle(event: InputEvent) -> bool:
 	var slot = unit_slot_at(point)
 	if slot < 0: slot = slot_at(point)
 	if slot >= 0:
-		if mode in [Mode.NONE, Mode.ACTIONS] and game.formation[slot] >= 0:
+		if mode == Mode.SWAP and game.formation[slot] == selected_role:
+			cancel()
+			game._note("已取消交换。")
+			return true
+		elif mode in [Mode.NONE, Mode.ACTIONS] and game.formation[slot] >= 0:
 			select(game.formation[slot])
 			pressed_role = selected_role
 			press_at = point

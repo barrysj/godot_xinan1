@@ -11,9 +11,9 @@ func check(ok: bool, message: String) -> void:
 func _ready() -> void:
 	call_deferred("run_checks")
 
-func mouse(point: Vector2, pressed: bool) -> void:
+func mouse(point: Vector2, pressed: bool, button := MOUSE_BUTTON_LEFT) -> void:
 	var event = InputEventMouseButton.new()
-	event.button_index = MOUSE_BUTTON_LEFT
+	event.button_index = button
 	event.pressed = pressed
 	event.position = panel.canvas.get_global_transform() * point
 	get_viewport().push_input(event, true)
@@ -168,6 +168,16 @@ func check_deployed_actions() -> void:
 	await click(slot_point(0))
 	check(not panel.ghost.visible and game.formation == original, "Action menu does not implicitly enter swap")
 	await click(panel.swap_button.position + Vector2(32,15))
+	check(panel.is_swap_source(game.formation[1]), "Swap mode exposes the selected source for its highlight")
+	await click(slot_point(1))
+	check(game.formation == original and panel.selected_role == -1, "Choosing the source cell cancels swap")
+	await click(slot_point(1))
+	await click(panel.swap_button.position + Vector2(32,15))
+	await mouse(slot_point(1), true, MOUSE_BUTTON_RIGHT)
+	await mouse(slot_point(1), false, MOUSE_BUTTON_RIGHT)
+	check(game.formation == original and panel.selected_role == -1, "Right click cancels swap")
+	await click(slot_point(1))
+	await click(panel.swap_button.position + Vector2(32,15))
 	await move(slot_point(3))
 	check(panel.ghost.visible and panel.swap_ghost.visible, "Swap hover previews both destinations")
 	var escape := InputEventKey.new()
@@ -243,7 +253,9 @@ func capture() -> void:
 		await screenshot("deployed", resolution)
 		await click(slot_point(4))
 		await screenshot("actions", resolution)
-		panel.cancel()
+		await click(panel.swap_button.position + Vector2(32,15))
+		await screenshot("swap-selected", resolution)
+		await click(slot_point(4))
 		panel.select(0)
 		panel.candidate_slot = 1
 		panel.commit()
