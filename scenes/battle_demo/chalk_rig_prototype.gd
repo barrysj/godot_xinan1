@@ -1,5 +1,5 @@
 extends Node2D
-## PROTOTYPE — compare approved sequence frames with a cutout Bone2D rig.
+## PROTOTYPE — compare approved sequence frames with a hybrid cutout Bone2D rig.
 
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 const CHALK_MODEL = preload("res://resources/content/animations/chalk.tres")
@@ -16,16 +16,27 @@ const BACKGROUND := Color("203a35")
 const TEAL := Color("45d7bd")
 const MAGENTA := Color("f04bc6")
 const GOLD := Color("f0c95a")
-const CYCLE_DURATION := 3.0
-const ACTION_START := 1.0
-const ACTION_PREVIEW_DURATION := 0.9
-const SIMULATION_DURATION := 0.45
-const WINDUP := 0.20
+const MODES: Array[StringName] = [&"idle", &"move", &"attack", &"cast", &"hurt", &"critical", &"death"]
+const MODE_NAMES := {
+	&"idle": "待机", &"move": "移动", &"attack": "远程", &"cast": "施法",
+	&"hurt": "受击", &"critical": "濒危", &"death": "退场",
+}
+const MODE_DURATIONS := {
+	&"idle": 1.5, &"move": 1.8, &"attack": 2.0, &"cast": 2.0,
+	&"hurt": 1.4, &"critical": 1.8, &"death": 2.2,
+}
+const CLIP_DURATIONS := {
+	&"attack": 8.0 / 12.0, &"cast": 8.0 / 12.0,
+	&"hurt": 4.0 / 12.0, &"death": 8.0 / 8.0,
+}
+const TOUR_DURATION := 12.7
 
 var elapsed := 0.0
 var fixed_time := -1.0
+var fixed_mode: StringName = &""
 var sequence_animation = BattleAnimation.new(CHALK_MODEL)
 var sequence_sprite: Sprite2D
+var hybrid_sequence_sprite: Sprite2D
 var rig: Node2D
 var skeleton: Skeleton2D
 var root_bone: Bone2D
@@ -33,12 +44,15 @@ var launcher_bone: Bone2D
 var orbiter_back_bone: Bone2D
 var orbiter_top_bone: Bone2D
 var projectile: Sprite2D
+var muzzle_flash: Polygon2D
+var cast_orb: Polygon2D
 var dust_layer: Node2D
 var dust_sprites: Array[Sprite2D] = []
 var preview_scale := 1.0
 var left_anchor := Vector2.ZERO
 var right_anchor := Vector2.ZERO
-var phase_label := "待机"
+var mode_label := "待机"
+var phase_label := "骨骼循环"
 
 
 func _ready() -> void:
@@ -46,7 +60,7 @@ func _ready() -> void:
 	_build_rig()
 	get_viewport().size_changed.connect(_layout)
 	_layout()
-	_apply_pose(0.0)
+	_apply_mode(&"idle", 0.0)
 	var args := OS.get_cmdline_user_args()
 	if "--chalk-rig-check" in args:
 		call_deferred("_run_check")
@@ -58,6 +72,9 @@ func _build_sequence() -> void:
 	sequence_sprite = Sprite2D.new()
 	sequence_sprite.name = "ApprovedSequenceFrames"
 	add_child(sequence_sprite)
+	hybrid_sequence_sprite = Sprite2D.new()
+	hybrid_sequence_sprite.name = "PreservedDeathSequence"
+	add_child(hybrid_sequence_sprite)
 
 
 func _part(parent: Node, title: String, texture: Texture2D, position: Vector2) -> Sprite2D:
@@ -78,9 +95,17 @@ func _bone(parent: Node, title: String, position: Vector2) -> Bone2D:
 	return bone
 
 
+func _regular_polygon(points: int, radius: float) -> PackedVector2Array:
+	var polygon := PackedVector2Array()
+	for index in points:
+		var angle := TAU * index / points
+		polygon.append(Vector2(cos(angle), sin(angle)) * radius)
+	return polygon
+
+
 func _build_rig() -> void:
 	rig = Node2D.new()
-	rig.name = "CutoutRig"
+	rig.name = "HybridCutoutRig"
 	add_child(rig)
 	skeleton = Skeleton2D.new()
 	skeleton.name = "Skeleton2D"
@@ -108,8 +133,27 @@ func _build_rig() -> void:
 	projectile = Sprite2D.new()
 	projectile.name = "IndependentProjectile"
 	projectile.texture = PROJECTILE_STYLE.texture
-	projectile.scale = PROJECTILE_STYLE.display_size / Vector2(PROJECTILE_STYLE.texture.get_size())
+	projectile.scale = PROJECTILE_STYLE.display_size / Vector2(PROJECTILE_STYLE.texture.get_size()) * 1.25
 	rig.add_child(projectile)
+
+	muzzle_flash = Polygon2D.new()
+	muzzle_flash.name = "MuzzleFlash"
+	muzzle_flash.polygon = PackedVector2Array([
+		Vector2(-4, 0), Vector2(-18, -6), Vector2(-9, 0), Vector2(-24, 8),
+		Vector2(-6, 5), Vector2(-10, 18), Vector2(0, 8), Vector2(12, 15),
+		Vector2(8, 3), Vector2(22, 0), Vector2(8, -3), Vector2(12, -15),
+		Vector2(0, -8), Vector2(-10, -18),
+	])
+	muzzle_flash.color = GOLD
+	muzzle_flash.position = Vector2(126, -132)
+	rig.add_child(muzzle_flash)
+
+	cast_orb = Polygon2D.new()
+	cast_orb.name = "IndependentCastEnergy"
+	cast_orb.polygon = _regular_polygon(16, 24.0)
+	cast_orb.color = MAGENTA
+	cast_orb.position = Vector2(0, -270)
+	rig.add_child(cast_orb)
 
 
 func _layout() -> void:
@@ -119,79 +163,235 @@ func _layout() -> void:
 	right_anchor = Vector2(size.x * 0.72, size.y * 0.67)
 	sequence_sprite.scale = Vector2.ONE * preview_scale
 	sequence_sprite.position = left_anchor + Vector2(0, -144 * preview_scale)
+	hybrid_sequence_sprite.scale = Vector2.ONE * preview_scale
+	hybrid_sequence_sprite.position = right_anchor + Vector2(0, -144 * preview_scale)
 	rig.position = right_anchor
 	rig.scale = Vector2.ONE * preview_scale
 	queue_redraw()
 
 
-func _action_age(time: float) -> float:
-	if time < ACTION_START or time >= ACTION_START + ACTION_PREVIEW_DURATION:
-		return -1.0
-	return (time - ACTION_START) / ACTION_PREVIEW_DURATION * SIMULATION_DURATION
+func _tour_state(time: float) -> Array:
+	var cursor := fmod(time, TOUR_DURATION)
+	for mode in MODES:
+		var duration: float = MODE_DURATIONS[mode]
+		if cursor < duration:
+			return [mode, cursor]
+		cursor -= duration
+	return [&"idle", 0.0]
 
 
-func _apply_pose(time: float) -> void:
-	var cycle := fmod(time, CYCLE_DURATION)
-	var action_age := _action_age(cycle)
-	var bob := sin(cycle * TAU / CYCLE_DURATION * 2.0) * 4.0
-	root_bone.position = Vector2(0, bob)
-	root_bone.rotation = sin(cycle * TAU / CYCLE_DURATION) * 0.018
-	launcher_bone.position = Vector2(54, -145)
-	launcher_bone.rotation = sin(cycle * 2.2) * 0.025
-	orbiter_back_bone.position = Vector2(-48.5, -182.5) + Vector2(cos(cycle * 2.4), sin(cycle * 2.4)) * 5.0
-	orbiter_top_bone.position = Vector2(-28.5, -211.5) + Vector2(cos(cycle * 2.0 + 1.2), sin(cycle * 2.0 + 1.2)) * 4.0
-	projectile.visible = false
-
-	if action_age < 0:
-		phase_label = "待机"
-		sequence_animation.sync_motion(false, {})
-		sequence_animation.state = &"idle"
-		sequence_animation.age = cycle
-	else:
-		var action := {"age": action_age, "windup": WINDUP, "duration": SIMULATION_DURATION, "casts": false}
-		sequence_animation.sync_motion(false, action)
-		if action_age < WINDUP:
-			phase_label = "前摇"
-			var anticipation := action_age / WINDUP
-			root_bone.position += Vector2(-8 * anticipation, 2 * anticipation)
-			root_bone.rotation -= 0.045 * anticipation
-			launcher_bone.position += Vector2(-3 * anticipation, 1 * anticipation)
-			launcher_bone.rotation -= 0.08 * anticipation
-			orbiter_back_bone.position.x -= 8 * anticipation
-			orbiter_top_bone.position.x -= 5 * anticipation
+func _set_sequence(mode: StringName, time: float) -> void:
+	var clip := mode
+	var clip_age := time
+	if mode in [&"attack", &"cast"]:
+		if time < 0.25 or time >= 1.70:
+			clip = &"idle"
+			clip_age = time
 		else:
-			var recovery := clampf((action_age - WINDUP) / (SIMULATION_DURATION - WINDUP), 0.0, 1.0)
-			phase_label = "出手" if recovery < 0.28 else "收招"
-			var strength := pow(1.0 - recovery, 2.0)
-			root_bone.position += Vector2(7 * strength, 0)
-			root_bone.rotation += 0.035 * strength
-			launcher_bone.position += Vector2(8 * strength, -2 * strength)
-			launcher_bone.rotation += 0.05 * strength
-			projectile.visible = recovery < 0.72
-			projectile.position = root_bone.position + Vector2(92 + recovery * 180, -150)
+			clip_age = clampf((time - 0.25) / 1.30, 0.0, 1.0) * CLIP_DURATIONS[mode]
+	elif mode == &"hurt":
+		if time < 0.15 or time >= 0.85:
+			clip = &"idle"
+			clip_age = time
+		else:
+			clip_age = clampf((time - 0.15) / 0.60, 0.0, 1.0) * CLIP_DURATIONS[mode]
+	elif mode == &"death":
+		if time < 0.12:
+			clip = &"idle"
+			clip_age = time
+		else:
+			clip_age = clampf((time - 0.12) / 1.55, 0.0, 1.0) * CLIP_DURATIONS[mode]
+	sequence_animation.state = clip
+	sequence_animation.age = clip_age
 	sequence_sprite.texture = sequence_animation.texture()
-	_update_dust(cycle, action_age)
+	hybrid_sequence_sprite.texture = sequence_sprite.texture
+
+
+func _reset_rig(time: float) -> void:
+	rig.visible = true
+	hybrid_sequence_sprite.visible = false
+	rig.modulate = Color.WHITE
+	root_bone.position = Vector2(0, sin(time * 3.2) * 2.0)
+	root_bone.rotation = 0.0
+	launcher_bone.position = Vector2(54, -145)
+	launcher_bone.rotation = 0.0
+	orbiter_back_bone.position = Vector2(-48.5, -182.5)
+	orbiter_back_bone.rotation = 0.0
+	orbiter_top_bone.position = Vector2(-28.5, -211.5)
+	orbiter_top_bone.rotation = 0.0
+	projectile.visible = false
+	muzzle_flash.visible = false
+	cast_orb.visible = false
+
+
+func _apply_idle(time: float) -> void:
+	phase_label = "骨骼循环"
+	root_bone.position.y += sin(time * TAU / 1.5) * 4.0
+	root_bone.rotation = sin(time * TAU / 3.0) * 0.018
+	launcher_bone.rotation = sin(time * 2.2) * 0.025
+	orbiter_back_bone.position += Vector2(cos(time * 2.4), sin(time * 2.4)) * 5.0
+	orbiter_top_bone.position += Vector2(cos(time * 2.0 + 1.2), sin(time * 2.0 + 1.2)) * 4.0
+	_update_dust(time, 1.0)
+
+
+func _apply_move(time: float) -> void:
+	phase_label = "骨骼循环"
+	var stride := sin(time * TAU / 0.48)
+	root_bone.position += Vector2(stride * 5.0, -absf(stride) * 10.0)
+	root_bone.rotation = stride * 0.055
+	launcher_bone.rotation = -stride * 0.075
+	orbiter_back_bone.position += Vector2(-stride * 13.0, cos(time * TAU / 0.48) * 8.0)
+	orbiter_top_bone.position += Vector2(-stride * 9.0, -cos(time * TAU / 0.48) * 6.0)
+	_update_dust(time * 1.35, 1.35)
+
+
+func _apply_attack(time: float) -> void:
+	if time < 0.25:
+		phase_label = "准备"
+		_apply_idle(time)
+	elif time < 0.72:
+		phase_label = "前摇蓄力"
+		var weight := smoothstep(0.0, 1.0, (time - 0.25) / 0.47)
+		root_bone.position += Vector2(-20.0, 6.0) * weight
+		root_bone.rotation = -0.10 * weight
+		launcher_bone.position += Vector2(-13.0, 4.0) * weight
+		launcher_bone.rotation = -0.19 * weight
+		orbiter_back_bone.position += Vector2(-18.0, 4.0) * weight
+		orbiter_top_bone.position += Vector2(-12.0, -5.0) * weight
+		_update_dust(time, 0.75)
+	elif time < 1.0:
+		phase_label = "出手闪光"
+		var snap := smoothstep(0.0, 1.0, minf((time - 0.72) / 0.12, 1.0))
+		root_bone.position += Vector2(lerpf(-20.0, 14.0, snap), lerpf(6.0, -2.0, snap))
+		root_bone.rotation = lerpf(-0.10, 0.085, snap)
+		launcher_bone.position += Vector2(lerpf(-13.0, 16.0, snap), lerpf(4.0, -3.0, snap))
+		launcher_bone.rotation = lerpf(-0.19, 0.085, snap)
+		var fire_progress := clampf((time - 0.78) / 0.22, 0.0, 1.0)
+		projectile.visible = time >= 0.78
+		projectile.position = Vector2(126.0 + fire_progress * 230.0, -132.0)
+		muzzle_flash.visible = time >= 0.76 and time < 0.91
+		muzzle_flash.scale = Vector2.ONE * (0.75 + sin(fire_progress * PI) * 0.85)
+		_update_dust(time, 1.8)
+	elif time < 1.65:
+		phase_label = "后坐收招"
+		var recovery := clampf((time - 1.0) / 0.65, 0.0, 1.0)
+		var strength := pow(1.0 - recovery, 2.0)
+		root_bone.position += Vector2(12.0, -2.0) * strength
+		root_bone.rotation = 0.07 * strength
+		launcher_bone.position += Vector2(12.0, -2.0) * strength
+		launcher_bone.rotation = 0.07 * strength
+		projectile.visible = recovery < 0.52
+		projectile.position = Vector2(356.0 + recovery * 100.0, -132.0)
+		_update_dust(time, 1.0 + strength * 0.6)
+	else:
+		phase_label = "返回待机"
+		_apply_idle(time)
+
+
+func _apply_cast(time: float) -> void:
+	if time < 0.25:
+		phase_label = "准备"
+		_apply_idle(time)
+	elif time < 1.05:
+		phase_label = "聚能展开"
+		var charge := smoothstep(0.0, 1.0, (time - 0.25) / 0.80)
+		root_bone.position.y -= 12.0 * charge
+		launcher_bone.rotation = 0.14 * charge
+		orbiter_back_bone.position += Vector2(-34.0, -16.0) * charge
+		orbiter_back_bone.rotation = -0.45 * charge
+		orbiter_top_bone.position += Vector2(25.0, -28.0) * charge
+		orbiter_top_bone.rotation = 0.55 * charge
+		cast_orb.visible = true
+		cast_orb.scale = Vector2.ONE * (0.25 + charge * 0.9 + sin(time * 18.0) * 0.06)
+		cast_orb.modulate = Color(1.0, 1.0, 1.0, 0.45 + charge * 0.55)
+		_update_dust(time, 0.8 + charge * 0.8)
+	elif time < 1.55:
+		phase_label = "能量释放"
+		var release := (time - 1.05) / 0.50
+		root_bone.position.y -= 12.0 * (1.0 - release)
+		orbiter_back_bone.position += Vector2(-34.0, -16.0) * (1.0 - release)
+		orbiter_top_bone.position += Vector2(25.0, -28.0) * (1.0 - release)
+		cast_orb.visible = true
+		cast_orb.scale = Vector2.ONE * lerpf(1.15, 2.8, release)
+		cast_orb.modulate = Color(1.0, 1.0, 1.0, 1.0 - release)
+		_update_dust(time, 1.6)
+	else:
+		phase_label = "返回待机"
+		_apply_idle(time)
+
+
+func _apply_hurt(time: float) -> void:
+	if time < 0.15 or time >= 0.90:
+		phase_label = "返回待机"
+		_apply_idle(time)
+		return
+	phase_label = "受击震荡"
+	var progress := (time - 0.15) / 0.75
+	var strength := pow(1.0 - progress, 2.0)
+	root_bone.position += Vector2(-26.0, 5.0) * strength
+	root_bone.rotation = -0.18 * strength
+	launcher_bone.rotation = 0.22 * strength
+	orbiter_back_bone.position += Vector2(-34.0, 18.0) * strength
+	orbiter_top_bone.position += Vector2(22.0, -24.0) * strength
+	rig.modulate = Color(1.0, 0.45 + progress * 0.55, 0.72 + progress * 0.28)
+	_update_dust(time, 1.7 - progress * 0.7)
+
+
+func _apply_critical(time: float) -> void:
+	phase_label = "骨骼循环"
+	var tremble := sin(time * 17.0)
+	root_bone.position += Vector2(tremble * 2.0, 14.0 + absf(sin(time * 4.0)) * 3.0)
+	root_bone.rotation = -0.055 + tremble * 0.012
+	launcher_bone.position.y += 5.0
+	launcher_bone.rotation = 0.11
+	orbiter_back_bone.position += Vector2(8.0, 14.0)
+	orbiter_top_bone.position += Vector2(5.0, 10.0)
+	_update_dust(time * 0.7, 0.45)
+
+
+func _apply_death(_time: float) -> void:
+	phase_label = "保留正式 005 序列帧"
+	rig.visible = false
+	hybrid_sequence_sprite.visible = true
+
+
+func _apply_mode(mode: StringName, time: float) -> void:
+	mode_label = MODE_NAMES[mode]
+	_set_sequence(mode, time)
+	_reset_rig(time)
+	match mode:
+		&"idle": _apply_idle(time)
+		&"move": _apply_move(time)
+		&"attack": _apply_attack(time)
+		&"cast": _apply_cast(time)
+		&"hurt": _apply_hurt(time)
+		&"critical": _apply_critical(time)
+		&"death": _apply_death(time)
 	queue_redraw()
 
 
-func _update_dust(time: float, action_age: float) -> void:
-	var burst := 1.0
-	if action_age >= WINDUP:
-		burst = 1.6 - clampf((action_age - WINDUP) / (SIMULATION_DURATION - WINDUP), 0.0, 1.0) * 0.6
+func _apply_tour(time: float) -> void:
+	var state := _tour_state(time)
+	_apply_mode(state[0], state[1])
+
+
+func _update_dust(time: float, intensity: float) -> void:
 	for index in dust_sprites.size():
 		var mote := dust_sprites[index]
 		var progress := fmod(time * (0.42 + index % 4 * 0.06) + index * 0.137, 1.0)
 		mote.position = Vector2(
-			sin(progress * TAU + index) * (9 + index % 3 * 3) * burst,
-			-62 + progress * 78
+			sin(progress * TAU + index) * (9.0 + index % 3 * 3.0) * intensity,
+			-62.0 + progress * 78.0,
 		)
-		mote.modulate = Color(0.88, 0.91, 0.91, (1.0 - progress) * 0.68)
+		mote.modulate = Color(0.88, 0.91, 0.91, (1.0 - progress) * 0.68 * minf(intensity, 1.4))
 
 
 func _process(delta: float) -> void:
-	if fixed_time < 0:
+	if fixed_time >= 0:
+		_apply_mode(fixed_mode, fixed_time)
+	else:
 		elapsed += delta
-	_apply_pose(fixed_time if fixed_time >= 0 else elapsed)
+		_apply_tour(elapsed)
 
 
 func _text(position: Vector2, value: String, size: int, color := PAPER) -> void:
@@ -202,19 +402,20 @@ func _draw() -> void:
 	var size := get_viewport_rect().size
 	draw_rect(Rect2(Vector2.ZERO, size), BACKGROUND)
 	draw_rect(Rect2(36, 28, size.x - 72, 78), PAPER)
-	_text(Vector2(62, 78), "粉笔精灵动画生产原型", 30, INK)
-	_text(Vector2(size.x - 470, 76), "序列帧 vs 分层骨骼 · 0.5×", 20, INK)
+	_text(Vector2(62, 78), "粉笔精灵混合动画原型 002", 30, INK)
+	_text(Vector2(size.x - 500, 76), "正式 005 vs 混合方案 · 0.5×", 20, INK)
 	draw_line(Vector2(size.x * 0.5, 142), Vector2(size.x * 0.5, size.y - 118), Color(PAPER, 0.28), 2)
 	_text(Vector2(size.x * 0.17, 178), "正式 005 · 序列帧", 24)
-	_text(Vector2(size.x * 0.61, 178), "原型 001 · 分层骨骼", 24)
-	_text(Vector2(size.x * 0.17, 214), "每个动作重新绘制完整角色", 17, Color(PAPER, 0.7))
-	_text(Vector2(size.x * 0.61, 214), "同一组部件连续插值", 17, Color(PAPER, 0.7))
+	_text(Vector2(size.x * 0.61, 178), "候选 002 · 混合动画", 24)
+	_text(Vector2(size.x * 0.17, 214), "当前正式动作", 17, Color(PAPER, 0.7))
+	_text(Vector2(size.x * 0.61, 214), "固定部件补间；死亡保留原帧", 17, Color(PAPER, 0.7))
 	for anchor in [left_anchor, right_anchor]:
 		draw_line(anchor - Vector2(12, 0), anchor + Vector2(12, 0), GOLD, 2)
 		draw_line(anchor - Vector2(0, 12), anchor + Vector2(0, 12), GOLD, 2)
-	_text(Vector2(size.x * 0.5 - 36, 270), phase_label, 28, MAGENTA if phase_label == "出手" else TEAL)
+	var state_text := "%s · %s" % [mode_label, phase_label]
+	_text(Vector2(size.x * 0.5 - state_text.length() * 9, 270), state_text, 28, MAGENTA if mode_label in ["远程", "施法"] else TEAL)
 	draw_rect(Rect2(36, size.y - 94, size.x - 72, 54), Color(PAPER, 0.96))
-	_text(Vector2(58, size.y - 58), "骨骼：主体 / 发射臂 / 浮游块 ×2    独立层：粉尘 / 弹体    当前验证：待机 → 前摇 → 出手 → 收招", 18, INK)
+	_text(Vector2(58, size.y - 58), "骨骼：待机 / 移动 / 远程 / 施法 / 受击 / 濒危    序列帧：退场    独立层：粉尘 / 弹体 / 枪口光 / 聚能球", 18, INK)
 
 
 func _run_check() -> void:
@@ -224,23 +425,30 @@ func _run_check() -> void:
 		failures += 1
 	if dust_sprites.size() != 10 or projectile.texture == null:
 		failures += 1
-	_apply_pose(0.4)
-	var idle_launcher := launcher_bone.transform
-	_apply_pose(1.38)
-	if launcher_bone.transform.is_equal_approx(idle_launcher):
+	for mode in MODES:
+		_apply_mode(mode, MODE_DURATIONS[mode] * 0.5)
+		if sequence_sprite.texture == null:
+			failures += 1
+	_apply_mode(&"attack", 0.86)
+	if not projectile.visible or not muzzle_flash.visible:
 		failures += 1
-	if sequence_sprite.texture == null:
+	_apply_mode(&"cast", 0.95)
+	if not cast_orb.visible:
 		failures += 1
-	print("CHALK_RIG_CHECK bones=4 dust=10 sequence=approved-005 failures=", failures)
+	_apply_mode(&"death", 1.40)
+	if rig.visible or not hybrid_sequence_sprite.visible:
+		failures += 1
+	print("CHALK_RIG_CHECK actions=7 rig=6 death=approved-005 failures=", failures)
 	get_tree().quit(failures)
 
 
-func _capture_frame(path: String, resolution: Vector2i, time: float) -> void:
+func _capture_frame(path: String, resolution: Vector2i, time: float, mode: StringName) -> void:
 	get_window().mode = Window.MODE_WINDOWED
 	get_window().size = resolution
+	fixed_mode = mode
 	fixed_time = time
 	_layout()
-	_apply_pose(time)
+	_apply_mode(mode, time)
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var screenshot := get_viewport().get_texture().get_image()
@@ -250,24 +458,52 @@ func _capture_frame(path: String, resolution: Vector2i, time: float) -> void:
 
 func _capture() -> void:
 	set_process(false)
-	var review := "res://design/concepts/chalk-spirit/chalk-rig/001/review/"
+	var review := "res://design/concepts/chalk-spirit/chalk-rig/002/review/"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(review))
 	for state in [
-		["idle", 0.35], ["windup", 1.30], ["release", 1.43], ["recovery", 1.72],
+		["idle", 0.10], ["windup", 0.62], ["release", 0.86], ["recovery", 1.28],
 	]:
-		await _capture_frame(review + "rig-%s-1920x1080.png" % state[0], Vector2i(1920, 1080), state[1])
+		await _capture_frame(review + "rig-%s-1920x1080.png" % state[0], Vector2i(1920, 1080), state[1], &"attack")
+	var representatives := {
+		&"idle": 0.65, &"move": 0.70, &"attack": 0.86, &"cast": 0.95,
+		&"hurt": 0.30, &"critical": 0.85, &"death": 1.55,
+	}
+	for mode in MODES:
+		await _capture_frame(
+			review + "rig-%s-1920x1080.png" % mode,
+			Vector2i(1920, 1080),
+			representatives[mode],
+			mode,
+		)
 	for resolution in [Vector2i(2560, 1440), Vector2i(1920, 1200)]:
 		await _capture_frame(
 			review + "rig-release-%dx%d.png" % [resolution.x, resolution.y],
 			resolution,
-			1.43,
+			0.86,
+			&"attack",
 		)
-	var frame_directory := "res://.godot/chalk-rig-frames"
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(frame_directory))
+
+	var attack_frames := "res://.godot/chalk-rig-frames"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(attack_frames))
 	for index in 40:
 		await _capture_frame(
-			frame_directory + "/frame-%03d.png" % index,
+			attack_frames + "/frame-%03d.png" % index,
 			Vector2i(1280, 720),
-			3.0 * index / 39.0,
+			2.0 * index / 39.0,
+			&"attack",
 		)
-	print("CHALK_RIG_CAPTURE states=4 resolutions=3 frames=40")
+
+	var tour_frames := "res://.godot/chalk-rig-tour-frames"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(tour_frames))
+	var frame_index := 0
+	for mode in MODES:
+		for local_index in 16:
+			await _capture_frame(
+				tour_frames + "/frame-%03d.png" % frame_index,
+				Vector2i(960, 540),
+				MODE_DURATIONS[mode] * local_index / 15.0,
+				mode,
+			)
+			frame_index += 1
+	print("CHALK_RIG_CAPTURE actions=7 attack_frames=40 tour_frames=112 resolutions=3")
 	get_tree().quit()

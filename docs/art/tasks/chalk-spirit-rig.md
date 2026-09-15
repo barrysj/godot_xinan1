@@ -1,6 +1,6 @@
 # 美术任务：粉笔精灵分层骨骼试验
 
-状态：技术原型待评审。此任务验证生产方法，不改变[粉笔精灵正式任务](chalk-spirit.md)中角色动画 005 与轻量弹体 001 的已批准状态。
+状态：候选 002 待人工评审。此任务验证生产方法，不改变[粉笔精灵正式任务](chalk-spirit.md)中角色动画 005 与轻量弹体 001 的已批准状态。
 
 ## 目标与范围
 
@@ -11,15 +11,18 @@
 ## 候选与评审
 
 - 候选 001：[生成与验证记录](../../../design/concepts/chalk-spirit/chalk-rig/001/generation.md)。角色部件来自已批准 005 的待机帧，程序生成 `Skeleton2D` / `Bone2D` 层级。
-- 当前结论：程序自检和实际截图已通过；主体比例稳定、动作连续可调。肩部遮罩经过一次接缝修正，证明首次拆层仍需人工判断。
+- 候选 001 评审：需修改。负责人于 2026-09-15 指出“预览的攻击动画，出手动作不是很明显”，并要求查看其他动作；同时认为原序列帧死亡动画很好。
+- 候选 002：[生成与验证记录](../../../design/concepts/chalk-spirit/chalk-rig/002/generation.md)。远程强化前摇、快速出手、枪口光和后坐；新增移动、施法、受击与濒危骨骼动作，死亡明确保留正式 005 序列帧。
+- 当前结论：技术验证通过，待人工视觉评审；不视为正式接入批准。
 - 批准边界：当前仅可作为生产方式参考和评审原型；负责人批准前不得绑定角色定义、替换 `resources/content/animations/chalk.tres` 或更新 Manifest 为正式资产。
 
 ## 验证证据
 
-- 自检：4 个骨骼层、10 个独立粉尘实例、正式 005 序列帧对照和独立弹体均存在，`failures=0`。
-- 动画：Godot 实际渲染 40 帧形成[连续 GIF](../../../design/concepts/chalk-spirit/chalk-rig/001/review/rig-preview.gif)。
-- 关键阶段：[四阶段总览](../../../design/concepts/chalk-spirit/chalk-rig/001/review/rig-state-contact-sheet.png)。
-- 适配：出手阶段已捕获 1920×1080、2560×1440、1920×1200；布局未裁切，脚底十字与两侧角色保持对齐。
+- 候选 001 自检：4 个骨骼层、10 个独立粉尘实例、正式 005 序列帧对照和独立弹体均存在，`failures=0`。
+- 候选 002 自检：待机、移动、远程、施法、受击、濒危、退场七动作可用；六类骨骼动作、正式 005 死亡序列、独立粉尘／弹体／枪口光／聚能球检查通过，`failures=0`。
+- 动画：[强化远程 GIF](../../../design/concepts/chalk-spirit/chalk-rig/002/review/rig-preview.gif)由 Godot 实际渲染 40 帧；[七动作巡演 GIF](../../../design/concepts/chalk-spirit/chalk-rig/002/review/rig-all-actions.gif)输入 112 帧，重复画面合并后保存 105 帧。
+- 关键画面：[攻击四阶段](../../../design/concepts/chalk-spirit/chalk-rig/002/review/rig-attack-contact-sheet.png)与[七动作总览](../../../design/concepts/chalk-spirit/chalk-rig/002/review/rig-all-actions-contact-sheet.png)。
+- 适配：出手阶段完成 1920×1080、2560×1440、1920×1200 捕获；正式资源回归 `SKILL_VFX_CHECK failures=0`。
 
 ## 制作建议
 
