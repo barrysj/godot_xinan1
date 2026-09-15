@@ -175,7 +175,7 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(["idle"], [clip["id"] for clip in asset["animation"]["clips"]])
         self.assertEqual(1, asset["summary"]["images"])
         self.assertEqual(1, asset["summary"]["animations"])
-        self.assertEqual("matched", asset["summary"]["audit_status"])
+        self.assertEqual("matched", asset["summary"]["validation_status"])
         self.assertTrue(asset["summary"]["thumbnail_id"])
         self.assertEqual({"gif", "godot"}, {item["type"] for item in asset["previews"]})
         resource = next(item for item in asset["files"] if item["name"].endswith(".tres"))
@@ -218,11 +218,11 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual("review", variant["approval"])
         self.assertEqual("not_integrated", obj["integration"]["verified_status"])
 
-    def test_variant_audit_is_missing_when_a_registered_file_is_missing(self):
+    def test_variant_validation_is_missing_when_a_registered_file_is_missing(self):
         paths = self.fixture.character_manifest(); self.fixture.install_index(["chalk"]); paths["sheet"].unlink()
         obj = self.scan()["objects"][0]; variant = next(item for item in obj["variants"] if item["id"] == "asset_002")
-        self.assertEqual("missing", variant["summary"]["audit_status"])
-        self.assertEqual("审计缺失", variant["summary"]["audit_label"])
+        self.assertEqual("missing", variant["summary"]["validation_status"])
+        self.assertEqual("文件缺失", variant["summary"]["validation_label"])
 
     def test_project_schema_v3_preserves_all_objects_and_has_no_stored_hashes(self):
         project_root = Path(__file__).resolve().parents[4]

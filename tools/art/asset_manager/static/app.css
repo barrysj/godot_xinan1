@@ -108,7 +108,7 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none; }
 .integrity-unset, .integrity-unknown, .integrity-not_integrated, .integrity-unselected { color: #ffd479 !important; }
 .card-body h3 { margin: 9px 0 12px; font-size: 18px; }
 .counts { display: flex; flex-wrap: wrap; gap: 6px; }
-.counts span, .clip {
+.counts span {
   padding: 5px 8px; border-radius: 7px; color: var(--muted); background: rgba(255,255,255,.05); font-size: 11px;
 }
 .empty { min-height: 270px; display: grid; place-content: center; justify-items: center; text-align: center; color: var(--muted); }
@@ -179,31 +179,35 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none; }
 .variant-summary-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .variant-summary-top h3 { margin: 0; font-size: 16px; }
 .variant-summary-top strong { color: var(--cyan); font-size: 12px; }
+.summary-badges { display: flex; flex-wrap: wrap; gap: 5px; }
 .variant-root { display: block; margin-top: 7px; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .variant-facts { display: flex; flex-wrap: wrap; gap: 5px 12px; margin-top: 9px; color: var(--muted); font-size: 11px; }
 .variant-chevron { color: var(--muted); font-size: 11px; }
-.audit-badge { padding: 5px 8px; border: 1px solid currentColor; border-radius: 999px; font-size: 10px; }
-.audit-matched { color: var(--lime); background: rgba(201,246,109,.08); }
-.audit-missing, .audit-mismatch { color: var(--rose); background: rgba(255,143,172,.08); }
-.audit-unknown { color: #ffd479; background: rgba(255,212,121,.08); }
+.state-badge, .validation-badge { padding: 5px 8px; border: 1px solid currentColor; border-radius: 999px; font-size: 10px; }
+.state-badge { color: var(--cyan); background: rgba(121,229,239,.08); }
+.state-selected, .state-approved, .validation-matched { color: var(--lime); background: rgba(201,246,109,.08); }
+.state-rejected, .validation-missing, .validation-mismatch { color: var(--rose); background: rgba(255,143,172,.08); }
+.state-review, .state-pending, .state-unknown, .state-unselected, .state-deprecated, .validation-unknown { color: #ffd479; background: rgba(255,212,121,.08); }
 .variant-details { padding: 16px; border-top: 1px solid var(--line); }
-.variant-states { display: flex; gap: 6px; }
-.variant-states span { padding: 5px 8px; border-radius: 7px; color: var(--cyan); background: rgba(121,229,239,.08); font-size: 10px; }
-.variant-states .state-approved, .variant-states .state-selected { color: var(--lime); background: rgba(201,246,109,.08); }
-.variant-states .state-rejected { color: var(--rose); background: rgba(255,143,172,.08); }
-.variant-states .state-review, .variant-states .state-pending, .variant-states .state-unknown { color: #ffd479; background: rgba(255,212,121,.08); }
 .evidence { color: var(--muted); font-size: 11px; line-height: 1.6; word-break: break-word; }
-.variant-tabs { display: flex; gap: 7px; margin-top: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.variant-tabs { display: flex; gap: 7px; margin-top: 14px; padding: 10px 10px 0; border: 1px solid rgba(137,218,236,.13); border-bottom: 0; border-radius: 13px 13px 0 0; background: rgba(2,12,17,.34); }
 .variant-tab { padding: 7px 13px; color: var(--muted); background: rgba(255,255,255,.035); border: 1px solid transparent; font-size: 12px; }
 .variant-tab.active { color: #062027; background: var(--cyan); border-color: var(--cyan); }
-.variant-panel { padding-top: 13px; }
+.variant-panel { min-height: 120px; padding: 14px; border: 1px solid rgba(137,218,236,.13); border-top: 0; border-radius: 0 0 13px 13px; background: rgba(2,12,17,.34); }
 .subpage-empty { margin: 12px 0; color: var(--muted); font-size: 12px; }
 .subhead { margin: 18px 0 0; color: var(--muted); font-size: 12px; }
-.preview-panel { margin-top: 16px; display: grid; gap: 10px; }
-.gif-preview { border: 1px solid var(--line); border-radius: 13px; overflow: hidden; background: #071117; }
-.gif-preview strong { display: block; padding: 9px 12px; color: var(--cyan); font-size: 11px; }
-.gif-preview img { width: 100%; max-height: 320px; display: block; object-fit: contain; }
-.godot-preview { display: flex; align-items: center; gap: 12px; }
+.animation-browser { display: grid; grid-template-columns: minmax(190px, 260px) minmax(0, 1fr); gap: 12px; margin-top: 10px; }
+.animation-action-list { display: grid; align-content: start; gap: 7px; }
+.animation-action { display: grid; gap: 4px; width: 100%; padding: 10px 12px; color: var(--ink); text-align: left; background: rgba(255,255,255,.035); border: 1px solid var(--line); }
+.animation-action:hover { transform: none; border-color: rgba(121,229,239,.42); background: rgba(121,229,239,.06); }
+.animation-action.active { border-color: var(--cyan-deep); background: rgba(121,229,239,.11); box-shadow: inset 3px 0 0 var(--cyan); }
+.animation-action strong { color: var(--ink); font-size: 13px; }
+.animation-action span { color: var(--muted); font-size: 10px; font-weight: 600; }
+.animation-preview-stage { min-height: 300px; display: grid; grid-template-rows: auto minmax(0, 1fr); place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #071117; }
+.animation-preview-name { justify-self: stretch; padding: 10px 13px; color: var(--cyan); background: rgba(255,255,255,.025); font-size: 12px; }
+.animation-preview-stage img { width: 100%; max-height: 460px; display: block; object-fit: contain; }
+.animation-preview-empty { align-self: center; margin: 0; color: var(--muted); font-size: 12px; }
+.godot-preview { display: flex; align-items: center; gap: 12px; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line); }
 .godot-preview .reason { margin: 0; word-break: break-all; }
 .compact-list { margin-top: 12px; }
 .binding-list { display: grid; gap: 7px; margin-top: 13px; }
@@ -237,5 +241,7 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none; }
   .variant-summary { grid-template-columns: 84px minmax(0,1fr); }
   .variant-thumb { width: 84px; height: 72px; }
   .variant-chevron { display: none; }
-  .audit-badge { order: 3; }
+  .summary-badges { flex-basis: 100%; }
+  .animation-browser { grid-template-columns: 1fr; }
+  .animation-preview-stage { min-height: 240px; }
 }

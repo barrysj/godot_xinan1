@@ -365,14 +365,14 @@ class AssetCatalog(object):
                     previews.append({"id": "godot", "asset_id": preview_asset_id, "type": "godot", "supported": supported, "reason": reason, "unit": godot.get("unit"), "animation": godot.get("animation"), "projectile": godot.get("projectile")})
                 visual_candidates = [item for item in files if item["is_image"] and item["role"] != "preview_gif"]
                 visual_candidates.sort(key=lambda item: (item["role"] == "source", item["role"] not in ("concept", "atlas", "image")))
-                audit_statuses = [item["integrity"]["status"] for item in files]
+                validation_statuses = [item["integrity"]["status"] for item in files]
                 has_missing_reference = any(item.get("missing_references") for item in files)
-                if "missing" in audit_statuses or has_missing_reference:
-                    audit_status, audit_label = "missing", "审计缺失"
+                if "missing" in validation_statuses or has_missing_reference:
+                    validation_status, validation_label = "missing", "文件缺失"
                 elif files:
-                    audit_status, audit_label = "matched", "审计通过"
+                    validation_status, validation_label = "matched", "校验通过"
                 else:
-                    audit_status, audit_label = "unknown", "待审计"
+                    validation_status, validation_label = "unknown", "待校验"
                 evidence = raw_variant.get("approval_evidence") or {}
                 variant = {
                     "id": variant_id, "version": str(raw_variant.get("version") or variant_id),
@@ -385,7 +385,7 @@ class AssetCatalog(object):
                         "date": str(evidence.get("date") or "日期未记录"),
                         "thumbnail_id": visual_candidates[0]["id"] if visual_candidates else None,
                         "images": len(visual_candidates), "animations": len(clips),
-                        "audit_status": audit_status, "audit_label": audit_label,
+                        "validation_status": validation_status, "validation_label": validation_label,
                     },
                 }
                 variants.append(variant); variant_lookups[variant_id] = file_lookup

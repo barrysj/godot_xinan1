@@ -46,7 +46,7 @@ const integrationLabels = {
 const stageLabels = { concept: "概念", asset: "资产", animation: "动画" };
 const selectionLabels = { selected: "当前选用", unselected: "未选用", unknown: "选用未记录" };
 const approvalLabels = { approved: "已批准", rejected: "已否决", review: "待评审", pending: "待评审", deprecated: "已停用", unknown: "批准未记录" };
-const auditLabels = { matched: "审计通过", missing: "审计缺失", mismatch: "审计异常", unknown: "待审计" };
+const validationLabels = { matched: "校验通过", missing: "文件缺失", mismatch: "校验异常", unknown: "待校验" };
 
 function countLabel(object) {
   const bits = [];
@@ -136,41 +136,55 @@ function assetCard(asset, compact = false) {
   card.append(info); return card;
 }
 
-function clipList(animation) {
-  const box = document.createElement("div"); box.className = "clips";
-  (animation?.clips || []).forEach(clip => {
-    const tag = document.createElement("span"); tag.className = "clip";
-    const parts = [clip.name];
-    if (clip.frames !== undefined && clip.frames !== null) parts.push(`${clip.frames}帧`);
-    if (clip.fps !== undefined && clip.fps !== null) parts.push(`${clip.fps} FPS`);
-    if (clip.loop === true) parts.push("循环");
-    tag.textContent = parts.join(" · "); box.append(tag);
-  });
-  return box;
+function godotPreviewPanel(variant) {
+  const previews = variant.previews || [];
+  const godot = previews.find(item => item.type === "godot");
+  if (!godot) return null;
+  const row = document.createElement("div"); row.className = "godot-preview";
+  const button = document.createElement("button"); button.className = "preview"; button.textContent = "预览"; button.disabled = !godot.supported; button.title = godot.reason;
+  button.addEventListener("click", () => startPreview(godot, button));
+  const target = document.createElement("p"); target.className = `reason${godot.supported ? "" : " bad"}`;
+  target.textContent = [godot.unit, godot.animation, godot.projectile].filter(Boolean).join(" · ") || godot.reason;
+  row.append(button, target); return row;
 }
 
-function previewPanel(variant) {
-  const previews = variant.previews || [];
-  if (!previews.length) return null;
-  const panel = document.createElement("div"); panel.className = "preview-panel";
-  previews.filter(item => item.type === "gif").forEach(preview => {
-    const asset = variant.files.find(item => item.id === preview.file_id);
-    if (!asset) return;
-    const wrap = document.createElement("div"); wrap.className = "gif-preview";
-    const label = document.createElement("strong"); label.textContent = variant.animation?.clips.find(item => item.id === preview.id)?.name || preview.id;
-    const image = document.createElement("img"); image.src = fileUrl(asset); image.alt = `${label.textContent} GIF`; image.loading = "lazy";
-    wrap.append(label, image); panel.append(wrap);
+function animationBrowser(variant) {
+  const clips = variant.animation?.clips || [];
+  if (!clips.length) return null;
+  const gifPreviews = new Map((variant.previews || []).filter(item => item.type === "gif").map(item => [item.id, item]));
+  const browser = document.createElement("div"); browser.className = "animation-browser";
+  const list = document.createElement("div"); list.className = "animation-action-list";
+  const stage = document.createElement("div"); stage.className = "animation-preview-stage";
+  const buttons = [];
+  const showClip = clip => {
+    buttons.forEach(button => {
+      const active = button.dataset.clipId === clip.id;
+      button.classList.toggle("active", active); button.setAttribute("aria-pressed", String(active));
+    });
+    stage.replaceChildren();
+    const preview = gifPreviews.get(clip.id);
+    const asset = preview && variant.files.find(item => item.id === preview.file_id);
+    const heading = document.createElement("strong"); heading.className = "animation-preview-name"; heading.textContent = clip.name || clip.id;
+    stage.append(heading);
+    if (asset && preview.supported) {
+      const image = document.createElement("img"); image.src = fileUrl(asset); image.alt = `${clip.name || clip.id} GIF`; image.loading = "lazy"; stage.append(image);
+    } else {
+      const empty = document.createElement("p"); empty.className = "animation-preview-empty"; empty.textContent = "该动作暂无 GIF 预览。"; stage.append(empty);
+    }
+  };
+  clips.forEach(clip => {
+    const button = document.createElement("button"); button.type = "button"; button.className = "animation-action"; button.dataset.clipId = clip.id;
+    const name = document.createElement("strong"); name.textContent = clip.name || clip.id;
+    const facts = [];
+    if (clip.frames !== undefined && clip.frames !== null) facts.push(`${clip.frames}帧`);
+    if (clip.fps !== undefined && clip.fps !== null) facts.push(`${clip.fps} FPS`);
+    if (clip.loop === true) facts.push("循环");
+    const meta = document.createElement("span"); meta.textContent = facts.join(" · ") || "帧信息未记录";
+    button.append(name, meta); button.addEventListener("click", () => showClip(clip)); buttons.push(button); list.append(button);
   });
-  const godot = previews.find(item => item.type === "godot");
-  if (godot) {
-    const row = document.createElement("div"); row.className = "godot-preview";
-    const button = document.createElement("button"); button.className = "preview"; button.textContent = "预览"; button.disabled = !godot.supported; button.title = godot.reason;
-    button.addEventListener("click", () => startPreview(godot, button));
-    const target = document.createElement("p"); target.className = `reason${godot.supported ? "" : " bad"}`;
-    target.textContent = [godot.unit, godot.animation, godot.projectile].filter(Boolean).join(" · ") || godot.reason;
-    row.append(button, target); panel.append(row);
-  }
-  return panel;
+  browser.append(list, stage);
+  showClip(clips.find(clip => gifPreviews.get(clip.id)?.supported) || clips[0]);
+  return browser;
 }
 
 function appendAssetList(panel, assets) {
@@ -181,15 +195,9 @@ function appendAssetList(panel, assets) {
 
 function variantDetails(variant) {
   const details = document.createElement("div"); details.className = "variant-details";
-  const states = document.createElement("div"); states.className = "variant-states";
-  const selected = document.createElement("span"); selected.className = `state-${variant.selection}`; selected.textContent = selectionLabels[variant.selection] || variant.selection;
-  selected.title = "选用状态：当前制作或接入流程选择的是哪一个版本。";
-  const approved = document.createElement("span"); approved.className = `state-${variant.approval}`; approved.textContent = approvalLabels[variant.approval] || variant.approval;
-  approved.title = "批准状态：负责人是否认可这个具体版本。选用不等于批准。";
-  states.append(selected, approved); details.append(states);
   if (variant.approval_evidence?.source) {
     const evidence = document.createElement("p"); evidence.className = "evidence";
-    evidence.textContent = `决定：${variant.approval_evidence.decision || "未记录"} · ${variant.approval_evidence.date || "日期未知"} · ${variant.approval_evidence.source}`;
+    evidence.textContent = `评审依据：${variant.approval_evidence.source}`;
     details.append(evidence);
   }
 
@@ -213,9 +221,11 @@ function variantDetails(variant) {
       populated = appendAssetList(panel, pages.animation);
       if (variant.animation) {
         const heading = document.createElement("h4"); heading.className = "subhead"; heading.textContent = variant.animation.label || "动作";
-        panel.append(heading, clipList(variant.animation)); populated = true;
+        panel.append(heading);
+        const actionBrowser = animationBrowser(variant); if (actionBrowser) panel.append(actionBrowser);
+        populated = true;
       }
-      const previews = previewPanel(variant); if (previews) { panel.append(previews); populated = true; }
+      const preview = godotPreviewPanel(variant); if (preview) { panel.append(preview); populated = true; }
     }
     if (page === "other") {
       populated = appendAssetList(panel, pages.other);
@@ -246,8 +256,15 @@ function variantCard(object, variant, expanded = false) {
   const top = document.createElement("div"); top.className = "variant-summary-top";
   const title = document.createElement("h3"); title.textContent = object.name;
   const version = document.createElement("strong"); version.textContent = `版本 ${variant.version}`;
-  const audit = document.createElement("span"); audit.className = `audit-badge audit-${variant.summary.audit_status}`; audit.textContent = variant.summary.audit_label || auditLabels[variant.summary.audit_status] || variant.summary.audit_status;
-  top.append(title, version, audit);
+  const badges = document.createElement("div"); badges.className = "summary-badges";
+  const selected = document.createElement("span"); selected.className = `state-badge state-${variant.selection}`; selected.textContent = selectionLabels[variant.selection] || variant.selection;
+  selected.title = "选用状态：当前制作或接入流程选择的是哪一个版本。";
+  const approved = document.createElement("span"); approved.className = `state-badge state-${variant.approval}`; approved.textContent = approvalLabels[variant.approval] || variant.approval;
+  approved.title = "批准状态：负责人是否认可这个具体版本。选用不等于批准。";
+  const validationStatus = variant.summary.validation_status;
+  const validation = document.createElement("span"); validation.className = `validation-badge validation-${validationStatus}`; validation.textContent = variant.summary.validation_label || validationLabels[validationStatus] || validationStatus;
+  validation.title = "校验状态：管理器根据登记文件与 Godot 引用实时计算，不是 Manifest 字段。";
+  badges.append(selected, approved, validation); top.append(title, version, badges);
   const root = document.createElement("code"); root.className = "variant-root"; root.textContent = variant.root;
   const facts = document.createElement("div"); facts.className = "variant-facts";
   [`日期 ${variant.summary.date}`, `${variant.summary.images} 张图片`, `${variant.summary.animations} 个动画`].forEach(text => { const span = document.createElement("span"); span.textContent = text; facts.append(span); });
@@ -364,9 +381,9 @@ function openDetail(object, options = {}) {
   state.selected = object.id; detailContent.replaceChildren(); detailBack.hidden = state.history.length === 0;
   const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = `${object.category} · ${object.type}${object.subtype ? ` / ${object.subtype}` : ""}`;
   const title = document.createElement("h2"); title.id = "detail-title"; title.textContent = object.name;
-  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本默认折叠，审计、选用与批准状态分别显示。`;
+  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本默认折叠，校验、选用与批准状态分别显示。`;
   const legend = document.createElement("div"); legend.className = "state-legend";
-  legend.innerHTML = "<span><strong>审计</strong>：文件与 Godot 引用是否完整</span><span><strong>选用</strong>：当前流程选择的版本</span><span><strong>批准</strong>：负责人认可的版本</span>";
+  legend.innerHTML = "<span><strong>校验</strong>：文件与 Godot 引用的实时结果（非 Manifest 字段）</span><span><strong>选用</strong>：当前流程选择的版本</span><span><strong>批准</strong>：负责人认可的版本</span>";
   detailContent.append(kicker, title, lead, legend);
   object.warnings.forEach(message => { const warning = document.createElement("div"); warning.className = "warning"; warning.textContent = message; detailContent.append(warning); });
   detailContent.append(stageBrowser(object, options));
