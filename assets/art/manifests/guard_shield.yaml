@@ -1,0 +1,44 @@
+schema_version: 3
+object:
+  id: guard_shield
+  display_name: "守护护盾"
+  type: effect
+  subtype: skill
+variants:
+  burst_current:
+    stage: asset
+    version: legacy-current
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    root: assets/art/effects/guard_shield
+    files:
+      burst_sheet: burst_sheet.png
+      frame_metadata: burst_sheet.frames.json
+    resource: resources/content/animations/guard_shield.tres
+    animation:
+      frames: frame_metadata
+    metadata:
+      asset_type: effect_sprite_sheet
+      resolution: [1254, 1254]
+      transparent: true
+      grid: [4, 4]
+      display_size: [144, 144]
+      anchor: [0.5, 0.5]
+      offset: [0, -44]
+      fps: 24
+      usage: [battle, motion_preview]
+      style_layer: battle
+integration:
+  status: authorized_active
+  active_variant: burst_current
+  owner: resources/content/skills/guard.tres
+  root: assets/art/effects/guard_shield
+  files:
+    burst_sheet: burst_sheet.png
+    frame_metadata: burst_sheet.frames.json
+  resource: resources/content/animations/guard_shield.tres
+  evidence: "2026-09-13 用户明确要求生成并接入一个实际技能特效用于动画验证；待最终视觉 QA。"

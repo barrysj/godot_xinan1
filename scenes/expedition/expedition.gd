@@ -78,10 +78,10 @@ func _enter_node() -> void:
 		encounter = run.node.encounter
 		screen = "battle"
 		phase = "prepare"
-		formation = [-1, -1, -1, -1, -1, -1]
+		formation = [-1, -1, -1, -1, -1, -1] if run.stage == 0 else run.formation.duplicate()
 		if is_instance_valid(deployment): deployment.cancel()
 		_build_units()
-		_note(run.node.name + "：点击卡片部署同学，四人就绪后出发。")
+		_note(run.node.name + ("：部署四人后出发。" if run.stage == 0 else "：已沿用上场阵位，可调整后出发。"))
 
 func _build_units() -> void:
 	encounter_id = run.node.get("encounter_id", "encounter_final" if run.node.get("kind") == "boss" else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
@@ -226,6 +226,13 @@ func _draw() -> void:
 		super._draw()
 		_pixel_panel(Rect2(230, 25, 530, 48), Color("202027"))
 		_text(Vector2(244, 54), "%d / 5  ·  %s" % [run.stage + 1, run.node.name], PAPER, 23)
+		if phase == "prepare":
+			_pixel_panel(Rect2(24, 574, 1218, 38), Color("202027"))
+			var guide = "拖动卡片到我方空格，或依次点卡片与空格。"
+			var deployed = 6 - formation.count(-1)
+			if deployed > 0 and deployed < 4: guide = "已部署 %d / 4：继续选择卡片和我方空格。" % deployed
+			elif deployed == 4: guide = "已沿用上场阵位：可拖动调整，或点击「开战」。" if run.stage > 0 else "四人已就绪：可调整站位，或点击「开战」。"
+			_center(Vector2(633, 600), guide, PAPER, 16)
 		return
 	scale_factor = minf(size.x / 1280.0, size.y / 720.0)
 	origin = (size - Vector2(1280, 720) * scale_factor) / 2
@@ -350,7 +357,7 @@ func _draw_rewards() -> void:
 			_text(Vector2(x + 24, y), line, DARK, 17)
 			y += 27
 		_flow_button(Rect2(x + 26, 493, 294, 52), "选择")
-	_text(Vector2(60, 635), "装备可在下场战前重新分配；新同学进入候补，通过“轮换候补”上阵。", PAPER, 19)
+	_text(Vector2(60, 635), "每次只选一份：训练立即生效；装备下场分配；新同学进入候补。", PAPER, 19)
 
 func _book_icon(p: Vector2, width: float) -> void:
 	draw_rect(Rect2(p, Vector2(width, width)), DARK)
@@ -401,7 +408,6 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if screen == "battle":
 		super._gui_input(event)
-		_sync_team()
 		accept_event()
 		return
 	match screen:
@@ -443,6 +449,7 @@ func _run_smoke() -> void:
 			chosen_node = branch % 2 if run.stages[run.stage].size() > 1 else 0
 			_enter_node()
 			if screen == "battle":
+				assert(formation.count(-1) == (6 if run.stage == 0 else 2))
 				formation = [-1, 0, 3, 1, 2, -1]
 				if branch == 2 and run.roster.has(4) and formation.has(3):
 					selected = 3
@@ -518,7 +525,7 @@ func _run_smoke() -> void:
 		deployment.select(item[0])
 		deployment.candidate_slot = item[1]
 		deployment.commit()
-	assert(formation[1] == 0)
+	assert(formation[1] == 0 and run.formation == formation)
 	_test_click(_action_rect(0).get_center())
 	assert(phase == "battle")
 	_test_click(Vector2(1187, 46))
@@ -533,7 +540,7 @@ func _run_smoke() -> void:
 	assert(screen == "map" and run.stage == 1)
 	_test_click(_node_pos(1, 1))
 	assert(chosen_node == 1)
-	print("RUN_INPUT base, route, enemy inspection, equipment guard, formation, battle, pause, report, reward passed")
+	print("RUN_INPUT base, route, enemy inspection, equipment guard, first deployment, battle, pause, report, reward passed")
 	print("RUN_SMOKE full routes, rewards, restore, persistence, unlock, reserve, retry, pause passed")
 	get_tree().quit()
 
@@ -550,8 +557,17 @@ func _capture_run() -> void:
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://.godot/expedition_map.png")
 	_enter_node()
-	formation = [-1, 0, 3, 1, 2, -1]
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png("res://.godot/expedition_deployment.png")
+	for item in [[0,1],[3,2],[1,3],[2,4]]:
+		deployment.select(item[0])
+		deployment.candidate_slot = item[1]
+		deployment.commit()
 	equipment = 1
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png("res://.godot/expedition_deployment_ready.png")
 	_start()
 	while screen == "battle": _process(1.0 / 30.0)
 	await RenderingServer.frame_post_draw
@@ -566,11 +582,16 @@ func _capture_run() -> void:
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://.godot/expedition_map.png")
+	var reused_captured = false
 	while run.stage < 5:
 		chosen_node = 0
 		_enter_node()
 		if screen == "battle":
-			formation = [-1,0,3,1,2,-1]
+			if not reused_captured:
+				await RenderingServer.frame_post_draw
+				await RenderingServer.frame_post_draw
+				get_viewport().get_texture().get_image().save_png("res://.godot/expedition_reused_formation.png")
+				reused_captured = true
 			_start()
 			while screen == "battle": _process(1.0 / 30.0)
 			if not result_won:

@@ -1,0 +1,36 @@
+schema_version: 3
+object:
+  id: battle_classroom
+  display_name: "异变教室"
+  type: background
+  subtype: battle
+variants:
+  anomaly:
+    stage: asset
+    version: anomaly
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    root: assets/art/backgrounds/battle_classroom
+    files:
+      background: anomaly.png
+    metadata:
+      asset_type: battle_background
+      resolution: [1931, 814]
+      transparent: false
+      display_rect: [24, 92, 1220, 516]
+      crop_mode: region
+      normalized_crop: [0.085, 0.123, 0.83, 0.833]
+      usage: [battle, deployment]
+      style_layer: anomaly
+integration:
+  status: authorized_active
+  active_variant: anomaly
+  owners: [resources/content/locations/classroom.tres, resources/content/locations/boss.tres]
+  root: assets/art/backgrounds/battle_classroom
+  files:
+    background: anomaly.png
+  evidence: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"

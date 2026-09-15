@@ -1,0 +1,48 @@
+schema_version: 3
+object:
+  id: archer
+  display_name: "远射手"
+  type: character
+  subtype: ally
+variants:
+  battle_current:
+    stage: asset
+    version: legacy-current
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    root: assets/art/characters/archer
+    files:
+      battle_sheet: battle_sheet.png
+      frame_metadata: battle_sheet.frames.json
+    resource: resources/content/animations/archer.tres
+    animation:
+      frames: frame_metadata
+    previews:
+      godot:
+        unit: res://resources/content/characters/archer.tres
+        animation: res://resources/content/animations/archer.tres
+    metadata:
+      asset_type: battle_sprite_sheet
+      resolution: [1254, 1254]
+      transparent: true
+      grid: [4, 4]
+      normalized_canvas: [384, 384]
+      display_size: [128, 128]
+      anchor: [0.5, 0.875]
+      portrait_region: [100, 0, 140, 140]
+      usage: [battle, deployment, motion_preview]
+      style_layer: battle
+integration:
+  status: authorized_active
+  active_variant: battle_current
+  owner: resources/content/characters/archer.tres
+  root: assets/art/characters/archer
+  files:
+    battle_sheet: battle_sheet.png
+    frame_metadata: battle_sheet.frames.json
+  resource: resources/content/animations/archer.tres
+  evidence: "2026-09-13 用户要求至少两名实际绘制角色及动作，授权本轮生成并接入；待最终视觉 QA。"

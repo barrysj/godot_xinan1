@@ -9,6 +9,7 @@ var counter: Label
 var feedback: Label
 var dispatch_button: Button
 var details: Label
+var content_panel: PanelContainer
 var snapshot := ""
 var result_message := ""
 var refresh_timer := 0.0
@@ -31,14 +32,15 @@ func _ready() -> void:
 	var center := CenterContainer.new()
 	add_child(center)
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(1020, 580)
-	panel.theme = preload("res://resources/theme/theme-main.tres")
-	panel.add_theme_stylebox_override("panel", game.pause_content.get_child(0).get_theme_stylebox("panel"))
-	center.add_child(panel)
+	content_panel = PanelContainer.new()
+	content_panel.name = "ContentPanel"
+	content_panel.custom_minimum_size = Vector2(1020, 580)
+	content_panel.theme = preload("res://resources/theme/theme-main.tres")
+	content_panel.add_theme_stylebox_override("panel", game.pause_content.get_child(0).get_theme_stylebox("panel"))
+	center.add_child(content_panel)
 	var margin := MarginContainer.new()
 	for edge in ["left", "right", "top", "bottom"]: margin.add_theme_constant_override("margin_" + edge, 24)
-	panel.add_child(margin)
+	content_panel.add_child(margin)
 	var columns := HBoxContainer.new()
 	columns.add_theme_constant_override("separation", 28)
 	margin.add_child(columns)
@@ -54,6 +56,7 @@ func _ready() -> void:
 	var space := Control.new()
 	space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left.add_child(space)
+	left.add_child(_label("点击空白处可关闭", 15))
 	left.add_child(game._menu_button("关闭", game._close_location_details))
 	columns.add_child(VSeparator.new())
 	var right := VBoxContainer.new()
@@ -79,6 +82,12 @@ func _ready() -> void:
 	right.add_child(dispatch_button)
 	_refresh()
 	left.get_child(left.get_child_count() - 1).grab_focus()
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and is_instance_valid(content_panel):
+		if content_panel.get_global_rect().has_point(event.position): return
+		get_viewport().set_input_as_handled()
+		game._close_location_details()
 
 func _process(delta: float) -> void:
 	# Refresh on profile changes, not each frame; retain selection and scroll state.

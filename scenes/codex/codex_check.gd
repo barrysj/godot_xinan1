@@ -23,8 +23,15 @@ func _ready() -> void:
 	var game = get_tree().current_scene
 	game._new_run()
 	game._enter_node()
+	for placement in [[0, 1], [3, 2], [1, 3], [2, 4]]:
+		game.deployment.select(placement[0])
+		game.deployment.candidate_slot = placement[1]
+		game.deployment.commit()
+	assert(game.formation.count(-1) == 2 and game.run.formation == game.formation)
 	game._start()
+	assert(game.screen == "battle" and game.phase == "battle")
 	game._process(0.5)
+	assert(game.elapsed > 0)
 	game._open_pause()
 	for button in game.pause_actions.get_children():
 		if button.text == "图鉴": button.pressed.emit()

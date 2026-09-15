@@ -1,0 +1,36 @@
+schema_version: 3
+object:
+  id: battle_courtyard
+  display_name: "校园庭院"
+  type: background
+  subtype: battle
+variants:
+  day:
+    stage: asset
+    version: day
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    root: assets/art/backgrounds/battle_courtyard
+    files:
+      background: day.png
+    metadata:
+      asset_type: battle_background
+      resolution: [1931, 814]
+      transparent: false
+      display_rect: [24, 92, 1220, 516]
+      crop_mode: region
+      normalized_crop: [0.085, 0.123, 0.83, 0.833]
+      usage: [battle, deployment]
+      style_layer: daily
+integration:
+  status: authorized_active
+  active_variant: day
+  owners: [resources/content/locations/gate.tres, resources/content/locations/court.tres, resources/content/locations/hall.tres]
+  root: assets/art/backgrounds/battle_courtyard
+  files:
+    background: day.png
+  evidence: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"

@@ -364,9 +364,15 @@ func _draw_unit(u: Dictionary) -> void:
 	if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): return
 	var p = _unit_center(u) + Vector2(0, 13)
 	var alive: bool = u.hp > 0
-	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected
+	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected and (not is_instance_valid(deployment) or deployment.selected_role == u.role)
+	var swap_source: bool = phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.is_swap_source(u.role)
 	# Small base, not a character card: the actor stands on the map.
 	draw_rect(Rect2(p + Vector2(-29, -3), Vector2(58, 12)), Color(0.15, 0.23, 0.20, 0.3))
+	if swap_source:
+		draw_rect(Rect2(p + Vector2(-45, -11), Vector2(90, 28)), Color(GOLD, 0.18))
+		draw_rect(Rect2(p + Vector2(-43, -9), Vector2(86, 24)), Color("fff0a8"), false, 4)
+		draw_line(p + Vector2(-53, 3), p + Vector2(-43, 3), Color("fff0a8"), 4)
+		draw_line(p + Vector2(43, 3), p + Vector2(53, 3), Color("fff0a8"), 4)
 	if chosen:
 		draw_rect(Rect2(p + Vector2(-37,-7), Vector2(74, 20)), GOLD, false, 3)
 		_center(p + Vector2(0,-72), "▼", GOLD, 16)
@@ -510,7 +516,7 @@ func _draw() -> void:
 					draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), inspector.theme_accent, false, 2)
 					if formation[slot] < 0:
 						_center(rect.get_center() + Vector2(0,10), "+", Color("728369"), 24)
-					if selected == 0 and inspected_enemy_slot < 0 and not (is_instance_valid(deployment) and deployment.previews_unit(0)):
+					if selected == 0 and inspected_enemy_slot < 0 and (not is_instance_valid(deployment) or deployment.selected_role == 0) and not (is_instance_valid(deployment) and deployment.previews_unit(0)):
 						var guard_slot = formation.find(0)
 						if guard_slot >= 0 and Vector2(slot % 3 - guard_slot % 3, int(slot / 3) - int(guard_slot / 3)).length() <= 1.025:
 							draw_rect(rect.grow(-9), Color(0.45, 0.85, 1.0, 0.2))

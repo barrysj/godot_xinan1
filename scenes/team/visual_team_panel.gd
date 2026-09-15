@@ -2,6 +2,7 @@ extends "res://scenes/team/team_panel.gd"
 const Icon = preload("res://scenes/team/object_icon.gd")
 var visual: Control
 var popup: Control
+var popup_content_rect := Rect2()
 var equipment_slot: Button
 var bag_buttons: Dictionary = {}
 var roster_visual: Control
@@ -104,15 +105,7 @@ func draw_skills() -> void:
 	caption(visual,"资源配置 · 无需手动施放",Vector2(631,152),16,MUTED)
 
 func open_skill(ability: bool) -> void:
-	close_popup()
-	popup = Control.new()
-	popup.size = Vector2(1280,720)
-	popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	content.add_child(popup)
-	var shade = ColorRect.new()
-	shade.size = Vector2(1280,720)
-	shade.color = Color(0.02,0.04,0.07,0.96)
-	popup.add_child(shade)
+	create_popup(Rect2(280,150,840,500), 0.96)
 	var glyph = game.Content.character(selected_role).skill.glyph if ability else "attack"
 	var skill_icon = icon(popup,glyph,Vector2(305,246),Vector2(136,136),func(): pass)
 	if ability: skill_icon.image_texture = game.Content.character(selected_role).skill.icon
@@ -157,15 +150,7 @@ func open_formation_slot(index: int) -> void:
 	formation_target = index
 	var role = game.formation[index]
 	if role >= 0: select_role(role)
-	close_popup()
-	popup = Control.new()
-	popup.size = Vector2(1280,720)
-	popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	content.add_child(popup)
-	var shade = ColorRect.new()
-	shade.color = Color(0.02,0.04,0.07,0.96)
-	shade.size = Vector2(1280,720)
-	popup.add_child(shade)
+	create_popup(Rect2(280,150,840,500), 0.96)
 	caption(popup,("前排" if index < 3 else "后排")+str(index%3+1)+" / "+(game.ROLES[role] if role >= 0 else "空格"),Vector2(320,178),29)
 	icon(popup,"remove",Vector2(1034,179),Vector2(48,48),close_popup)
 	icon(popup,"empty",Vector2(320,244),Vector2(106,106),func(): pass,role)
@@ -227,15 +212,7 @@ func caption(parent: Control, text_value: String, at: Vector2, font_size: int = 
 	return label
 
 func open_bag() -> void:
-	close_popup()
-	popup = Control.new()
-	popup.size = Vector2(1280,720)
-	popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	content.add_child(popup)
-	var shade = ColorRect.new()
-	shade.color = Color(0.02,0.04,0.07,0.9)
-	shade.size = Vector2(1280,720)
-	popup.add_child(shade)
+	create_popup(Rect2(280,150,840,500), 0.9)
 	var panel = Panel.new()
 	panel.position = Vector2(300,164)
 	panel.size = Vector2(805,420)
@@ -276,6 +253,20 @@ func choose_gear(kind: String) -> void:
 	equip("none" if kind == "remove" else kind)
 	open_bag()
 
+func create_popup(content_rect: Rect2, opacity: float) -> void:
+	close_popup()
+	popup = Control.new()
+	popup.size = Vector2(1280,720)
+	popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	content.add_child(popup)
+	var shade = ColorRect.new()
+	shade.name = "Backdrop"
+	shade.size = Vector2(1280,720)
+	shade.color = Color(0.02,0.04,0.07,opacity)
+	popup.add_child(shade)
+	popup_content_rect = content_rect
+	caption(popup,"点击空白处关闭",Vector2(566,662),15,MUTED)
+
 func close_popup() -> void:
 	if is_instance_valid(popup):
 		content.remove_child(popup)
@@ -283,6 +274,12 @@ func close_popup() -> void:
 	popup = null
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(popup) and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var point: Vector2 = content.make_input_local(event).position
+		if not popup_content_rect.has_point(point):
+			get_viewport().set_input_as_handled()
+			close_popup()
+			return
 	if is_instance_valid(popup) and (event.is_action_pressed("pause") or event.is_action_pressed("ggt_debug_pause_game")):
 		if event is InputEventKey and event.echo: return
 		get_viewport().set_input_as_handled()

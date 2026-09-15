@@ -1,0 +1,44 @@
+schema_version: 3
+object:
+  id: chalk_projectile
+  display_name: "粉笔弹体"
+  type: effect
+  subtype: projectile
+variants:
+  asset_001:
+    stage: asset
+    version: 001
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/chalk-spirit.md
+      date: 2026-09-15
+      decision: approved
+      quote: "还不错。采用"
+      commit: 6206374
+    root: design/concepts/chalk-spirit/chalk-projectile/001
+    files:
+      source_image: projectile_source_rgba.png
+      projectile_sprite: projectile.png
+      build_metadata: projectile.metadata.json
+    resource: design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres
+    previews:
+      godot:
+        unit: res://resources/content/enemies/chalk.tres
+        animation: res://design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres
+        projectile: res://design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres
+    metadata:
+      canvas: [192, 96]
+      content_size: [164, 64]
+      display_size: [32, 16]
+      anchor: [0.5, 0.5]
+      trail_gap: 2.0
+integration:
+  status: active
+  active_variant: asset_001
+  root: assets/art/effects/chalk_projectile
+  files:
+    projectile_sprite: projectile.png
+    build_metadata: projectile.metadata.json
+  resource: resources/content/animations/chalk_projectile.tres
+  evidence: "docs/art/tasks/chalk-spirit.md；2026-09-15 用户批准正式接入预览"
