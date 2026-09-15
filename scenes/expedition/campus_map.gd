@@ -217,7 +217,7 @@ func _draw() -> void:
 	for i in range(Catalog.LOCATIONS.size()):
 		var location: Dictionary = Catalog.LOCATIONS[i]
 		var p := point(i)
-		var unlocked: bool = progress != null and progress.level(location.requires) > 0
+		var unlocked: bool = progress != null and progress.dispatch_unlocked(location.id)
 		draw_line(Vector2(600, p.y), p, Color("d8c79d"), 16)
 		Comic.card(self, Rect2(p - Vector2(80, 48), Vector2(160, 96)), Comic.WHITE if unlocked else Color("969d8c"), Comic.INK)
 		draw_rect(Rect2(p - Vector2(88, 56), Vector2(176, 17)), Color("a86c57"))

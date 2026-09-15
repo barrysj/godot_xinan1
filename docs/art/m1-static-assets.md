@@ -53,3 +53,7 @@
 ## 固定区域与地点访问模块（2026-09-16）
 
 已生成0；复用 `resources/theme/theme-main.tres` 和既有思源字体，新增原生控件 `scenes/expedition/campaign_panel.gd`，无图片资产与新增批准。七地点均为逻辑占位，图书馆尚未精制。运行截图 `.godot/m1-route.png`、`.godot/m1-location.png`。待生成和待用户提供项保持上表；图书馆照片不得用系统文本占位冒充。
+
+## 序章与区域主循环接入（2026-09-16）
+
+已生成0；新流程使用 `scenes/expedition/campaign_panel.gd` 原生界面和 `campaign_hub.gd::_pawn` 静态矩形人物/守卫占位。战斗沿用既有静态背景 `assets/art/backgrounds/battle_courtyard/day.png` 与 `battle_classroom/anomaly.png`（基线7f92ba8的review试接入，不升级批准）。截图 `.godot/m1-library-flow.png`、`.godot/m1-campaign-home.png`。未生成或修改动画资产。其余待生成、真实地图/原照/名单等待用户提供项保持上表。

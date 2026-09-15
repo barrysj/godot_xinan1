@@ -5,6 +5,9 @@ var column: VBoxContainer
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var background = StyleBoxFlat.new()
+	background.bg_color = Color("181820")
+	add_theme_stylebox_override("panel",background)
 	add_theme_font_override("font",preload("res://assets/fonts/SourceHanSansSC-Medium.otf"))
 	var margin = MarginContainer.new()
 	for side in ["left","top","right","bottom"]: margin.add_theme_constant_override("margin_"+side,36)

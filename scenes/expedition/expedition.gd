@@ -34,6 +34,7 @@ func _ready() -> void:
 	is_test = is_test or "--map-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--dispatch-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--journey-check" in OS.get_cmdline_user_args()
+	is_test = is_test or "--campaign-flow-check" in OS.get_cmdline_user_args()
 	is_test = is_test or "--deployment-check" in OS.get_cmdline_user_args() or "--deployment-capture" in OS.get_cmdline_user_args()
 	if is_test:
 		progress.path = "res://.godot/expedition-test-progress.json"

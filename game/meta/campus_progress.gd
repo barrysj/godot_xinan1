@@ -208,7 +208,7 @@ func dispatch_reason(staff_ids: Variant, location_id: String) -> String:
 	var location = Catalog.find(Catalog.LOCATIONS,location_id)
 	if location.is_empty(): return "地点不存在"
 	if load_blocked: return "存档无法读取，暂不可派遣"
-	if level(location.requires) == 0: return "地点尚未解锁"
+	if not dispatch_unlocked(location_id): return "地点尚未解锁"
 	var crew: Array = [staff_ids] if staff_ids is String else (staff_ids if staff_ids is Array else [])
 	var required: int = location.get("crew_size", 1)
 	if crew.size() != required: return "请选择 %d 名同学（已选 %d 人）" % [required, crew.size()]
@@ -225,6 +225,13 @@ func dispatch_reason(staff_ids: Variant, location_id: String) -> String:
 	if dispatches.size() >= (2 if level("staffing") > 0 else 1): return "派遣队伍已满"
 	if points < location.cost: return "修复资源不足"
 	return ""
+
+func dispatch_unlocked(location_id: String) -> bool:
+	var location = Catalog.find(Catalog.LOCATIONS,location_id)
+	if location.is_empty(): return false
+	if campaign.routes_acquired:
+		return campaign.terminals.size() >= (1 if location_id == "library" else 2)
+	return level(location.requires) > 0
 
 func start_dispatch(staff_ids: Variant, location_id: String, now: int = -1) -> bool:
 	var reason = dispatch_reason(staff_ids,location_id)

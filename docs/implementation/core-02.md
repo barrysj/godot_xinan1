@@ -38,3 +38,9 @@
 2026-09-16；实现基线为 `7f92ba8` 后的本功能提交。当前为部分实装：`game/meta/campaign_state.gd` 定义永久事实与合法性；`campus_progress.gd` profile v4 原子保存序章、路线资料、终端、回忆、人物及终局阶段，基地显示当前目标。流程入口尚待后续模块接入。
 
 验证：Godot `--headless --path . --log-file .godot/campaign-check.log res://game/meta/campaign_check.tscn`，101 checks、0 failures；既有 `expedition.tscn -- --meta-smoke`，67 checks、0 failures。覆盖六种区域顺序、重复结算、阶段磁盘恢复和保存失败回滚。图形 `--meta-capture` 截图 `.godot/meta_continue.png` 已在聊天展示。无真机、Web 或真人新证据；引擎既有证书和原图加载警告保留。
+
+## M1 序章、区域主循环与教学接入（待统筹）
+
+2026-09-16；基线 `8918005` 后本功能提交。`campaign_hub.gd` 接入序章守卫与奖励、立即教学派遣、固定区域访问、区域Boss结算、临时人物兑现、系统回忆记录与重看。`campaign_checkpoint.gd` 独立编码M1访问与既有构筑模型，旧随机局继续原恢复路径。普通派遣在M1按1/2台终端开放，原计时不变。M1战场用静态矩形占位，不创建骨骼实例或绘制动画特效；原模拟层仍负责战斗。
+
+验证：图形 `expedition.tscn -- --campaign-flow-check`，71 checks、0 failures，实跑序章与三区域共13场模拟战斗，覆盖访问恢复及人物临时到永久。既有 `--meta-smoke` 67/0、`--dispatch-check` 36/0。截图 `.godot/m1-library-flow.png`、`.godot/m1-campaign-home.png`。已知边界：尚无终局入口；原照未提供；出发编队候选已载入但默认选择完善后续检查；真实设备、Web和陌生玩家未验。

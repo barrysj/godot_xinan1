@@ -2,6 +2,7 @@ extends RefCounted
 const Run = preload("res://game/run/short_run.gd")
 
 static func decode(snapshot: Dictionary) -> Dictionary:
+	if snapshot.get("kind") == "campaign": return preload("res://game/run/campaign_checkpoint.gd").decode(snapshot)
 	if snapshot.get("schema",0) != 1 or not snapshot.get("run",null) is Dictionary: return {}
 	for key in ["elapsed","seconds","selected","speed"]:
 		var value = snapshot.get(key,0)

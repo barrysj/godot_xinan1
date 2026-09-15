@@ -126,7 +126,7 @@ func _refresh() -> void:
 	var required: int = place.get("crew_size", 1)
 	counter.text = "派遣同学  %d/%d" % [selected.size(), required]
 	var requirement := Catalog.find(Catalog.UNLOCKS, place.requires)
-	var state := "已解锁" if game.progress.level(place.requires) > 0 else "尚未解锁 · 需要「%s」" % requirement.get("name", place.requires)
+	var state := "已解锁" if game.progress.dispatch_unlocked(place.id) else ("需要更多记忆终端" if game.progress.campaign.routes_acquired else "尚未解锁 · 需要「%s」" % requirement.get("name", place.requires))
 	var tag_names: Array = []
 	for tag in place.get("required_tags", []): tag_names.append(Catalog.DISPATCH_TAGS.get(tag, {}).get("name", tag))
 	details.text = "%s\n\n%s\n\n要求人数：%d 人\n技能要求：%s\n\n消耗：%d 修复资源／队\n时长：%d 秒\n收益：%d 修复资源／队" % [place.description, state, required, "不限" if tag_names.is_empty() else "、".join(tag_names), place.cost, place.duration, place.reward]
