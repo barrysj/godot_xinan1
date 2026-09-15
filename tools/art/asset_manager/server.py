@@ -20,8 +20,51 @@ from urllib.parse import parse_qs, urlparse
 from catalog import AssetCatalog
 
 
-APP_ID = "cyber-pop-art-manager-v3"
+APP_ID = "cyber-pop-art-manager-v4"
 STATIC_ROOT = Path(__file__).resolve().parent / "static"
+
+
+def pick_manifest_path(project_root, initial_path=""):
+    """Open the native file dialog while keeping selection inside this project."""
+    try:
+        from tkinter import Tk, filedialog
+    except ImportError:
+        raise RuntimeError("当前 Python 缺少文件选择器支持")
+    project_root = Path(project_root).resolve()
+    initial = Path(initial_path).resolve() if initial_path else project_root / "assets" / "art" / "asset_manifest.yaml"
+    try:
+        initial.relative_to(project_root)
+    except ValueError:
+        initial = project_root / "assets" / "art" / "asset_manifest.yaml"
+    try:
+        window = Tk()
+        window.withdraw()
+        window.attributes("-topmost", True)
+    except Exception as exc:
+        raise RuntimeError("无法打开系统文件选择器：%s" % exc)
+    try:
+        try:
+            selected = filedialog.askopenfilename(
+                parent=window,
+                title="选择主 Manifest",
+                initialdir=str(initial.parent if initial.suffix else initial),
+                initialfile=initial.name if initial.is_file() else "",
+                filetypes=(("YAML Manifest", "*.yaml *.yml"), ("所有文件", "*.*")),
+            )
+        except Exception as exc:
+            raise RuntimeError("无法打开系统文件选择器：%s" % exc)
+    finally:
+        window.destroy()
+    if not selected:
+        return None
+    path = Path(selected).resolve()
+    try:
+        path.relative_to(project_root)
+    except ValueError:
+        raise RuntimeError("只能选择当前项目内的 Manifest")
+    if path.suffix.lower() not in (".yaml", ".yml") or not path.is_file():
+        raise RuntimeError("请选择当前项目内存在的 YAML Manifest")
+    return str(path)
 
 
 class PreviewManager(object):
@@ -251,6 +294,18 @@ class Handler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
             return
         parsed = urlparse(self.path)
+        if parsed.path == "/api/pick-manifest":
+            initial = payload.get("initial", self.server.default_manifest)
+            if not isinstance(initial, str) or len(initial) > 4096:
+                self._json(HTTPStatus.BAD_REQUEST, {"error": "Manifest 路径无效"})
+                return
+            try:
+                selected = pick_manifest_path(self.server.project_root, initial)
+            except RuntimeError as exc:
+                self._json(HTTPStatus.CONFLICT, {"error": str(exc)})
+                return
+            self._json(HTTPStatus.OK, {"selected": bool(selected), "path": selected})
+            return
         if parsed.path == "/api/scan":
             manifest = payload.get("manifest", self.server.default_manifest)
             if not isinstance(manifest, str) or len(manifest) > 4096:

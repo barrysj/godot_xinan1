@@ -1,8 +1,9 @@
 "use strict";
 
 const boot = JSON.parse(document.getElementById("boot-data").textContent);
-const state = { objects: [], filter: "全部", selected: null };
+const state = { objects: [], filter: "全部", selected: null, detailView: null, history: [] };
 const manifest = document.getElementById("manifest");
+const manifestPicker = document.getElementById("pick-manifest");
 const engine = document.getElementById("engine");
 const scanButton = document.getElementById("scan");
 const notice = document.getElementById("notice");
@@ -12,6 +13,7 @@ const filters = document.getElementById("filters");
 const summary = document.getElementById("summary");
 const detail = document.getElementById("detail");
 const detailContent = document.getElementById("detail-content");
+const detailBack = document.getElementById("detail-back");
 const lightbox = document.getElementById("lightbox");
 const lightboxImage = document.getElementById("lightbox-image");
 const lightboxCaption = document.getElementById("lightbox-caption");
@@ -44,6 +46,7 @@ const integrationLabels = {
 const stageLabels = { concept: "概念", asset: "资产", animation: "动画" };
 const selectionLabels = { selected: "当前选用", unselected: "未选用", unknown: "选用未记录" };
 const approvalLabels = { approved: "已批准", rejected: "已否决", review: "待评审", pending: "待评审", deprecated: "已停用", unknown: "批准未记录" };
+const auditLabels = { matched: "审计通过", missing: "审计缺失", mismatch: "审计异常", unknown: "待审计" };
 
 function countLabel(object) {
   const bits = [];
@@ -170,33 +173,91 @@ function previewPanel(variant) {
   return panel;
 }
 
-function variantCard(variant) {
-  const section = document.createElement("section"); section.className = "variant-card";
-  const head = document.createElement("div"); head.className = "variant-head";
-  const title = document.createElement("h3"); title.textContent = `版本 ${variant.version}`;
+function appendAssetList(panel, assets) {
+  if (!assets.length) return false;
+  const list = document.createElement("div"); list.className = "asset-list";
+  assets.forEach(asset => list.append(assetCard(asset))); panel.append(list); return true;
+}
+
+function variantDetails(variant) {
+  const details = document.createElement("div"); details.className = "variant-details";
   const states = document.createElement("div"); states.className = "variant-states";
-  const selected = document.createElement("span"); selected.textContent = selectionLabels[variant.selection] || variant.selection;
+  const selected = document.createElement("span"); selected.className = `state-${variant.selection}`; selected.textContent = selectionLabels[variant.selection] || variant.selection;
   selected.title = "选用状态：当前制作或接入流程选择的是哪一个版本。";
-  const approved = document.createElement("span"); approved.textContent = approvalLabels[variant.approval] || variant.approval;
+  const approved = document.createElement("span"); approved.className = `state-${variant.approval}`; approved.textContent = approvalLabels[variant.approval] || variant.approval;
   approved.title = "批准状态：负责人是否认可这个具体版本。选用不等于批准。";
-  states.append(selected, approved);
-  head.append(title, states); section.append(head);
+  states.append(selected, approved); details.append(states);
   if (variant.approval_evidence?.source) {
     const evidence = document.createElement("p"); evidence.className = "evidence";
     evidence.textContent = `决定：${variant.approval_evidence.decision || "未记录"} · ${variant.approval_evidence.date || "日期未知"} · ${variant.approval_evidence.source}`;
-    section.append(evidence);
+    details.append(evidence);
   }
+
   const visibleFiles = variant.files.filter(item => item.role !== "preview_gif");
-  if (visibleFiles.length) {
-    const list = document.createElement("div"); list.className = "asset-list"; visibleFiles.forEach(asset => list.append(assetCard(asset))); section.append(list);
-  }
-  if (variant.animation) {
-    const animationTitle = document.createElement("h4"); animationTitle.className = "subhead"; animationTitle.textContent = variant.animation.label || "动作";
-    section.append(animationTitle, clipList(variant.animation));
-  }
-  const previews = previewPanel(variant); if (previews) section.append(previews);
-  if (Object.keys(variant.metadata || {}).length) section.append(metadataList(variant.metadata));
-  return section;
+  const animationRoles = new Set(["animation_resource", "effect_resource", "projectile_resource"]);
+  const pages = {
+    atlas: visibleFiles.filter(item => item.role === "atlas"),
+    animation: visibleFiles.filter(item => animationRoles.has(item.role)),
+    other: visibleFiles.filter(item => item.role !== "atlas" && !animationRoles.has(item.role)),
+  };
+  const tabs = document.createElement("div"); tabs.className = "variant-tabs"; tabs.setAttribute("role", "tablist");
+  const panel = document.createElement("div"); panel.className = "variant-panel";
+  const showPage = page => {
+    tabs.querySelectorAll("button").forEach(button => {
+      const active = button.dataset.page === page;
+      button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active));
+    });
+    panel.replaceChildren(); let populated = false;
+    if (page === "atlas") populated = appendAssetList(panel, pages.atlas);
+    if (page === "animation") {
+      populated = appendAssetList(panel, pages.animation);
+      if (variant.animation) {
+        const heading = document.createElement("h4"); heading.className = "subhead"; heading.textContent = variant.animation.label || "动作";
+        panel.append(heading, clipList(variant.animation)); populated = true;
+      }
+      const previews = previewPanel(variant); if (previews) { panel.append(previews); populated = true; }
+    }
+    if (page === "other") {
+      populated = appendAssetList(panel, pages.other);
+      if (Object.keys(variant.metadata || {}).length) { panel.append(metadataList(variant.metadata)); populated = true; }
+    }
+    if (!populated) {
+      const empty = document.createElement("p"); empty.className = "subpage-empty"; empty.textContent = `这个版本暂无${page === "atlas" ? "图集" : page === "animation" ? "动画" : "其他文件"}。`; panel.append(empty);
+    }
+  };
+  [["atlas", "图集"], ["animation", "动画"], ["other", "其他"]].forEach(([page, label]) => {
+    const button = document.createElement("button"); button.className = "variant-tab"; button.dataset.page = page; button.setAttribute("role", "tab"); button.textContent = label;
+    button.addEventListener("click", () => showPage(page)); tabs.append(button);
+  });
+  details.append(tabs, panel);
+  const preferred = pages.atlas.length ? "atlas" : (variant.animation || pages.animation.length || variant.previews.length ? "animation" : "other");
+  showPage(preferred); return details;
+}
+
+function variantCard(object, variant, expanded = false) {
+  const section = document.createElement("article"); section.className = "variant-card"; section.dataset.variantId = variant.id;
+  const toggle = document.createElement("button"); toggle.className = "variant-summary"; toggle.type = "button"; toggle.setAttribute("aria-expanded", String(expanded));
+  const thumb = document.createElement("div"); thumb.className = "variant-thumb";
+  const thumbAsset = variant.files.find(item => item.id === variant.summary.thumbnail_id);
+  if (thumbAsset) {
+    const image = document.createElement("img"); image.src = fileUrl(thumbAsset); image.alt = `${object.name} ${variant.version} 缩略图`; image.loading = "lazy"; thumb.append(image);
+  } else { const placeholder = document.createElement("span"); placeholder.textContent = "◇"; thumb.append(placeholder); }
+  const copy = document.createElement("div"); copy.className = "variant-copy";
+  const top = document.createElement("div"); top.className = "variant-summary-top";
+  const title = document.createElement("h3"); title.textContent = object.name;
+  const version = document.createElement("strong"); version.textContent = `版本 ${variant.version}`;
+  const audit = document.createElement("span"); audit.className = `audit-badge audit-${variant.summary.audit_status}`; audit.textContent = variant.summary.audit_label || auditLabels[variant.summary.audit_status] || variant.summary.audit_status;
+  top.append(title, version, audit);
+  const root = document.createElement("code"); root.className = "variant-root"; root.textContent = variant.root;
+  const facts = document.createElement("div"); facts.className = "variant-facts";
+  [`日期 ${variant.summary.date}`, `${variant.summary.images} 张图片`, `${variant.summary.animations} 个动画`].forEach(text => { const span = document.createElement("span"); span.textContent = text; facts.append(span); });
+  copy.append(top, root, facts);
+  const chevron = document.createElement("span"); chevron.className = "variant-chevron"; chevron.textContent = "展开";
+  toggle.append(thumb, copy, chevron);
+  const body = variantDetails(variant); body.hidden = !expanded;
+  const setExpanded = value => { body.hidden = !value; section.classList.toggle("expanded", value); toggle.setAttribute("aria-expanded", String(value)); chevron.textContent = value ? "收起" : "展开"; if (value && state.detailView) state.detailView.variantId = variant.id; };
+  toggle.addEventListener("click", () => setExpanded(toggle.getAttribute("aria-expanded") !== "true"));
+  section.append(toggle, body); setExpanded(expanded); return section;
 }
 
 function integrationSection(object) {
@@ -204,7 +265,12 @@ function integrationSection(object) {
   const section = document.createElement("section"); section.className = "asset-section integration-section";
   const heading = document.createElement("h3"); heading.textContent = `实际生效 · ${integrationLabels[integration.verified_status] || integration.verified_status}`; section.append(heading);
   const lead = document.createElement("p"); lead.className = "evidence";
-  lead.textContent = `声明：${integration.declared_status} · 生效版本：${integration.active_variant || "未登记"} · 所有者：${integration.owner_resource || "未登记"}`; section.append(lead);
+  lead.textContent = `声明：${integration.declared_status} · 所有者：${integration.owner_resource || "未登记"}`; section.append(lead);
+  const active = object.variants.find(variant => variant.id === integration.active_variant);
+  if (active) {
+    const jump = document.createElement("button"); jump.className = "integration-jump"; jump.textContent = `${object.name} · 版本 ${active.version}`;
+    jump.title = "前往资产版本"; jump.addEventListener("click", () => navigateDetail(object, { stage: "asset", variantId: active.id })); section.append(jump);
+  }
   if (integration.effective_files.length) {
     const list = document.createElement("div"); list.className = "asset-list compact-list";
     integration.effective_files.forEach(asset => list.append(assetCard(asset, true))); section.append(list);
@@ -232,74 +298,115 @@ function relationshipSection(object) {
     const asset = target?.assets.find(item => item.id === relation.thumbnail_id);
     if (asset) {
       const image = document.createElement("img"); image.src = fileUrl(asset); image.alt = `${relation.target_name}缩略图`; image.loading = "lazy"; thumb.append(image);
-    } else {
-      const placeholder = document.createElement("span"); placeholder.textContent = "◇"; thumb.append(placeholder);
-    }
+    } else { const placeholder = document.createElement("span"); placeholder.textContent = "◇"; thumb.append(placeholder); }
     const copy = document.createElement("div");
     const kind = document.createElement("span"); kind.className = "relationship-kind"; kind.textContent = relation.kind === "projectile" ? "弹体" : relation.kind;
     const name = document.createElement("strong"); name.textContent = relation.target_name || relation.object_id;
     const status = document.createElement("small"); status.textContent = target ? "打开详情 →" : relation.status_label;
     copy.append(kind, name, status); card.append(thumb, copy);
-    if (target) card.addEventListener("click", () => openDetail(target));
+    if (target) card.addEventListener("click", () => navigateDetail(target, { stage: target.variants.some(item => item.stage === "asset") ? "asset" : target.variants[0]?.stage }));
     list.append(card);
   });
   section.append(list); return section;
 }
 
-function stageBrowser(object) {
+function filterControl(label, options, value, changed) {
+  const field = document.createElement("label"); field.className = "variant-filter";
+  const text = document.createElement("span"); text.textContent = label;
+  const select = document.createElement("select"); select.setAttribute("aria-label", label);
+  options.forEach(([key, name]) => { const option = document.createElement("option"); option.value = key; option.textContent = name; option.selected = key === value; select.append(option); });
+  select.addEventListener("change", () => changed(select.value)); field.append(text, select); return field;
+}
+
+function stageBrowser(object, options = {}) {
   const stages = [...new Set(object.variants.map(variant => variant.stage))];
   if (object.integration.declared_status !== "not_integrated") stages.push("integration");
   const browser = document.createElement("section"); browser.className = "stage-browser";
   const tabs = document.createElement("div"); tabs.className = "stage-tabs"; tabs.setAttribute("role", "tablist");
   const panel = document.createElement("div"); panel.className = "stage-panel";
-  const preferred = stages.includes("asset") ? "asset" : stages[0];
-  const show = stage => {
-    tabs.querySelectorAll("button").forEach(button => {
-      const active = button.dataset.stage === stage;
-      button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active));
-    });
-    panel.replaceChildren();
-    if (stage === "integration") panel.append(integrationSection(object));
-    else {
-      const grid = document.createElement("div"); grid.className = "variant-grid";
-      object.variants.filter(variant => variant.stage === stage).forEach(variant => grid.append(variantCard(variant)));
-      panel.append(grid);
+  const filtersByStage = { concept: { selection: "all", approval: "all" }, asset: { selection: "all", approval: "all" } };
+  const renderVariants = (stage, focusVariantId = null) => {
+    panel.replaceChildren(); const selectedFilters = filtersByStage[stage];
+    let variants = object.variants.filter(variant => variant.stage === stage);
+    if (selectedFilters) {
+      const controls = document.createElement("div"); controls.className = "variant-filters";
+      controls.append(
+        filterControl("是否选用", [["all", "全部"], ["selected", "当前选用"], ["unselected", "未选用"], ["unknown", "未记录"]], selectedFilters.selection, value => { selectedFilters.selection = value; renderVariants(stage); }),
+        filterControl("是否批准", [["all", "全部"], ["approved", "已批准"], ["review", "待评审"], ["rejected", "已否决"], ["unknown", "未记录"]], selectedFilters.approval, value => { selectedFilters.approval = value; renderVariants(stage); })
+      ); panel.append(controls);
+      variants = variants.filter(variant => selectedFilters.selection === "all" || variant.selection === selectedFilters.selection);
+      variants = variants.filter(variant => selectedFilters.approval === "all" || (selectedFilters.approval === "review" ? ["review", "pending"].includes(variant.approval) : variant.approval === selectedFilters.approval));
     }
+    const list = document.createElement("div"); list.className = "variant-list";
+    variants.forEach(variant => list.append(variantCard(object, variant, variant.id === focusVariantId))); panel.append(list);
+    if (!variants.length) { const empty = document.createElement("p"); empty.className = "subpage-empty"; empty.textContent = "没有符合条件的版本。"; panel.append(empty); }
+    state.detailView = { objectId: object.id, stage, variantId: focusVariantId };
+    if (focusVariantId) requestAnimationFrame(() => panel.querySelector(`[data-variant-id="${CSS.escape(focusVariantId)}"]`)?.scrollIntoView({ block: "start" }));
+  };
+  const show = (stage, focusVariantId = null) => {
+    tabs.querySelectorAll("button").forEach(button => { const active = button.dataset.stage === stage; button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active)); });
+    panel.replaceChildren();
+    if (stage === "integration") { state.detailView = { objectId: object.id, stage, variantId: null }; panel.append(integrationSection(object)); }
+    else renderVariants(stage, focusVariantId);
   };
   stages.forEach(stage => {
     const button = document.createElement("button"); button.className = "stage-tab"; button.dataset.stage = stage; button.setAttribute("role", "tab");
     button.textContent = stage === "integration" ? "生效" : (stageLabels[stage] || stage);
     button.addEventListener("click", () => show(stage)); tabs.append(button);
   });
-  browser.append(tabs, panel); show(preferred); return browser;
+  browser.append(tabs, panel);
+  const preferred = stages.includes(options.stage) ? options.stage : (stages.includes("asset") ? "asset" : stages[0]);
+  show(preferred, options.variantId || null); return browser;
 }
 
-function openDetail(object) {
-  state.selected = object.id; detailContent.replaceChildren();
+function openDetail(object, options = {}) {
+  if (!options.preserveHistory) state.history = [];
+  state.selected = object.id; detailContent.replaceChildren(); detailBack.hidden = state.history.length === 0;
   const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = `${object.category} · ${object.type}${object.subtype ? ` / ${object.subtype}` : ""}`;
   const title = document.createElement("h2"); title.id = "detail-title"; title.textContent = object.name;
-  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。按阶段查看版本；文件类型由路径、.frames.json 与 Godot 资源自动识别。`;
+  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本默认折叠，审计、选用与批准状态分别显示。`;
   const legend = document.createElement("div"); legend.className = "state-legend";
-  legend.innerHTML = "<span><strong>当前选用</strong>：当前流程选择的版本</span><span><strong>已批准</strong>：负责人认可的版本；选用不等于批准</span>";
+  legend.innerHTML = "<span><strong>审计</strong>：文件与 Godot 引用是否完整</span><span><strong>选用</strong>：当前流程选择的版本</span><span><strong>批准</strong>：负责人认可的版本</span>";
   detailContent.append(kicker, title, lead, legend);
   object.warnings.forEach(message => { const warning = document.createElement("div"); warning.className = "warning"; warning.textContent = message; detailContent.append(warning); });
-  detailContent.append(stageBrowser(object));
+  detailContent.append(stageBrowser(object, options));
   const relations = relationshipSection(object); if (relations) detailContent.append(relations);
   detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
-  detail.querySelector(".detail-sheet").scrollTop = 0;
+  if (!options.variantId) detail.querySelector(".detail-sheet").scrollTop = 0;
 }
 
-function closeDetail() { detail.classList.remove("open"); detail.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; state.selected = null; }
+function navigateDetail(object, options = {}) {
+  if (state.detailView) state.history.push(Object.assign({}, state.detailView));
+  openDetail(object, Object.assign({}, options, { preserveHistory: true }));
+}
+
+function returnDetail() {
+  const previous = state.history.pop(); if (!previous) return;
+  const object = state.objects.find(item => item.id === previous.objectId); if (!object) return;
+  openDetail(object, { stage: previous.stage, variantId: previous.variantId, preserveHistory: true });
+}
+
+function closeDetail() { detail.classList.remove("open"); detail.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; state.selected = null; state.detailView = null; state.history = []; }
 function showOriginal(asset) { lightboxImage.src = fileUrl(asset); lightboxCaption.textContent = asset.manifest_path || asset.path; lightbox.showModal(); }
 
 async function startPreview(preview, button) {
-  button.disabled = true; setNotice("正在启动预览…");
+  button.disabled = true; setNotice("正在导入资源并准备预览…");
   try {
     const payload = await api("/api/preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ asset_id: preview.asset_id, engine_path: engine.value.trim() }) });
     const target = payload.status.unit || payload.status.animation || "已登记目标";
     setNotice(`${payload.message} · ${target}`, "success");
   } catch (error) { setNotice(error.message, "error"); }
   finally { button.disabled = !preview.supported; }
+}
+
+async function chooseManifest() {
+  manifestPicker.disabled = true; setNotice("正在打开文件选择器…");
+  try {
+    const payload = await api("/api/pick-manifest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ initial: manifest.value.trim() }) });
+    if (payload.selected && payload.path) { manifest.value = payload.path; await scan(); }
+    else setNotice("未更改 Manifest。", "");
+  } catch (error) { setNotice(error.message, "error"); }
+  finally { manifestPicker.disabled = false; }
 }
 
 async function scan() {
@@ -319,7 +426,9 @@ async function scan() {
 }
 
 document.getElementById("defaults").addEventListener("click", () => { manifest.value = boot.defaultManifest; });
+manifestPicker.addEventListener("click", chooseManifest);
 scanButton.addEventListener("click", scan);
+detailBack.addEventListener("click", returnDetail);
 detail.querySelectorAll("[data-close]").forEach(node => node.addEventListener("click", closeDetail));
 document.getElementById("lightbox-close").addEventListener("click", () => lightbox.close());
 document.addEventListener("keydown", event => { if (event.key === "Escape" && detail.classList.contains("open") && !lightbox.open) closeDetail(); });

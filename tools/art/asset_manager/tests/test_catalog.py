@@ -173,6 +173,10 @@ class CatalogTests(unittest.TestCase):
         asset = next(item for item in obj["variants"] if item["id"] == "asset_002")
         self.assertEqual("序列帧动画", asset["animation"]["label"])
         self.assertEqual(["idle"], [clip["id"] for clip in asset["animation"]["clips"]])
+        self.assertEqual(1, asset["summary"]["images"])
+        self.assertEqual(1, asset["summary"]["animations"])
+        self.assertEqual("matched", asset["summary"]["audit_status"])
+        self.assertTrue(asset["summary"]["thumbnail_id"])
         self.assertEqual({"gif", "godot"}, {item["type"] for item in asset["previews"]})
         resource = next(item for item in asset["files"] if item["name"].endswith(".tres"))
         self.assertEqual("动画资源", resource["kind_label"])
@@ -213,6 +217,12 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual("unselected", variant["selection"])
         self.assertEqual("review", variant["approval"])
         self.assertEqual("not_integrated", obj["integration"]["verified_status"])
+
+    def test_variant_audit_is_missing_when_a_registered_file_is_missing(self):
+        paths = self.fixture.character_manifest(); self.fixture.install_index(["chalk"]); paths["sheet"].unlink()
+        obj = self.scan()["objects"][0]; variant = next(item for item in obj["variants"] if item["id"] == "asset_002")
+        self.assertEqual("missing", variant["summary"]["audit_status"])
+        self.assertEqual("审计缺失", variant["summary"]["audit_label"])
 
     def test_project_schema_v3_preserves_all_objects_and_has_no_stored_hashes(self):
         project_root = Path(__file__).resolve().parents[4]
@@ -296,6 +306,15 @@ class ServerSecurityTests(unittest.TestCase):
         connection.request("GET", "/api/file?id={}&token={}".format(gif["id"], self.server.token))
         response = connection.getresponse(); content = response.read()
         self.assertEqual(200, response.status); self.assertEqual("image/gif", response.getheader("Content-Type")); self.assertTrue(content.startswith(b"GIF89a")); connection.close()
+
+    @mock.patch("server.pick_manifest_path")
+    def test_manifest_picker_returns_project_file(self, picker):
+        manifest = self.fixture.install_index([]); picker.return_value = str(manifest)
+        port = self.server.server_address[1]; connection = http.client.HTTPConnection("127.0.0.1", port, timeout=3)
+        body = json.dumps({"initial": str(manifest)}).encode("utf-8")
+        connection.request("POST", "/api/pick-manifest", body=body, headers={"Content-Type": "application/json", "Content-Length": str(len(body)), "X-Art-Token": self.server.token})
+        response = connection.getresponse(); payload = json.loads(response.read().decode("utf-8"))
+        self.assertEqual(200, response.status); self.assertTrue(payload["selected"]); self.assertEqual(str(manifest), payload["path"]); connection.close()
 
 
 if __name__ == "__main__":
