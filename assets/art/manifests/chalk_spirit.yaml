@@ -203,8 +203,7 @@ variants:
       frames: frame_metadata
     previews:
       gifs:
-        ranged: gif_ranged
-        all_actions: gif_all_actions
+        attack: gif_ranged
       godot:
         unit: res://resources/content/enemies/chalk.tres
         animation: res://resources/content/animations/chalk.tres
