@@ -14,13 +14,13 @@
 
 ### 本地资源台登记约定
 
-- [主索引](../../assets/art/asset_manifest.yaml)只维护 `object_id → assets/art/manifests/<object_id>.yaml`。对象身份、分类、版本、文件、关系、选择、批准、生效与预览均来自这些对象清单；目录名、最高版本号和近似文件名都不产生管理语义。未登记文件不进入资源台，目录输入仅校验路径仍位于本项目 `assets/art/` 或 `design/concepts/`。
-- 对象清单以 `object` 登记稳定 ID、显示名、类型和子类型；`variants` 按阶段登记版本。`selection`、`approval` 与 `integration.status` 是三条独立状态，不能互相推导。`approval_evidence` 至少记录任务文档、日期和人工决定；没有历史依据时写 `unknown`，不补造批准。
-- 每个 `files` 项登记项目相对路径、角色和保存时 SHA-256。动画通过 `animation.representation` 表明实际表示，`resource_file` 指向本版本文件键，`clips_from` 指向帧元数据文件键；资源台从 `.frames.json` 读取 clip，不在 Manifest 复制第二份动作定义。非图集动画可使用新的 representation 与相应文件角色，不得硬套 SpriteFrames。
-- GIF 先作为 `role: preview_gif` 的文件登记，再由 `previews.gifs.<clip_id>.file` 精确引用，可直接播放。Godot 预览在 `previews.godot` 显式登记 `unit`、`animation`、可选 `projectile`；角色候选必须保留 Unit 以加载能力元数据。缺省参数不猜，不回退默认角色；正式动画自身携带正式弹体时不额外覆盖 Projectile。
-- `integration.effective_files` 保存实际生效文件及各自接入时基线；`bindings` 用 `sha256_equal` 验证确定性复制，用 `baseline_hash` 验证允许内容正规化的正式文件，用 `resource_reference` 验证 Godot 所有者仍精确引用目标。校验每次重读真实文件，不更新基线；分别报告一致、不一致、缺失、未设基线、未选择和未接入。
-- 跨对象依赖用 `relationships` 的 `object_id` 与限定 `resource_ref` 登记，例如角色指向独立弹体对象；依赖对象的文件与哈希只在其自身清单维护。保留 `portrait_region`、`anchor`、`normalized_canvas`、显示尺寸等有效摘要，但运行参数仍以实际 Godot Resource 和配套元数据为准。
-- 资源台只读 Manifest。它不改变状态、不写批准、不接入候选；本机桥接使用每次启动生成的会话令牌并校验同源请求，只通过登记后的文件与预览 ID 读取或启动当前项目资源，不提供跨项目预览或任意目录浏览。
+- 页面只接受一个[主 Manifest](../../assets/art/asset_manifest.yaml)路径。主 Manifest 维护 `object_id → 对象清单`；对象身份、分类、版本、文件、关系、选择、批准、生效与预览均来自对象清单。未登记文件不进入资源台，不再填写或扫描资产目录。
+- 对象清单以 `object` 登记稳定 ID、显示名、类型和子类型；`variants` 以 `stage` 分入概念、资产等选项卡。`selection` 表示当前流程选择哪一版，`approval` 表示负责人是否认可该版，`integration.status` 表示真实接入；三者不能互相推导。没有历史依据时写 `unknown`，不补造批准。
+- 每个版本只维护一个项目相对 `root`，`files` 的值均相对该 root；单个 Godot 资源用 `resource` 登记。文件角色、动画表示方式和 Godot 引用由文件名、`.frames.json` 与 `.tres` 自动识别，不在 Manifest 重复填写 `role`、`representation` 或引用比较策略。
+- GIF 作为普通相对文件登记，再由 `previews.gifs.<clip_id>` 引用文件键。Godot 预览仍显式登记 `unit`、`animation`、可选 `projectile`，因为这是启动开发预览所需的准确上下文；缺省参数不猜，不回退默认角色。
+- `integration` 用 `root + files` 指明正式文件，用 `resource` 指明正式 Godot 资源，用 `owner` 或 `owners` 指明引用入口。资源台实时计算选用文件与正式文件的 SHA-256，并直接解析 `.tres` 检查引用及缺失依赖；Manifest 不保存 SHA-256、`compare`、binding 或历史文件基线。
+- 跨对象依赖只用 `relationships.<关系名>: <object_id>` 登记，例如角色指向弹体对象；目标缩略图、状态与跳转由资源台从目标对象清单解析，不登记目标内部文件路径。
+- 资源台只读 Manifest，不改变状态、不写批准、不接入候选。本机桥接使用每次启动生成的会话令牌并校验同源请求，只读取或启动当前项目资源，不提供跨项目预览或任意目录浏览。
 
 ## 2. 三阶段生产
 
@@ -55,15 +55,15 @@
 
 ## 3. 资产检查与登记
 
-资产统一由 [assets/art/asset_manifest.yaml](../../assets/art/asset_manifest.yaml) 索引到各对象清单，表内路径相对项目根目录。它由 Codex 维护生产版本、文件基线、资源关联与状态，不是负责人的操作界面。Godot 当前不直接读取此表；Manifest 通过生效文件与引用绑定核对现有 Godot 内容系统，不把游戏改成运行时读取 YAML。
+资产统一由 [assets/art/asset_manifest.yaml](../../assets/art/asset_manifest.yaml) 索引到各对象清单。它由 Codex 维护生产版本、root、相对文件、对象关系与状态，不是负责人的操作界面。Godot 当前不直接读取此表；资源台根据登记路径实时核对文件内容并解析 `.tres`，不把游戏改成运行时读取 YAML。
 
 ### 生产阶段回写
 
-1. 概念输出成功后立即登记对象、概念版本、实际文件和 SHA-256，写 `selection: unselected`、`approval: pending`；生成成功不代表被选中或批准。
+1. 概念输出成功后立即登记对象、概念版本、root 与实际相对文件，写 `selection: unselected`、`approval: pending`；生成成功不代表被选中或批准。
 2. 人工选择或评审后，只更新相应版本的 `selection`、`approval` 和结构化 `approval_evidence`。被选中但要求修改的候选可以是 `selected + review`，不能自动升级为 approved。
-3. 图集、处理输出、动画资源、帧元数据及已保存预览生成后，作为同一资产版本的不同 file role 登记；多文件动画必须覆盖实际图像、帧数据、Godot 资源及必要依赖。动作由 `clips_from` 读取，不复制参数。
-4. 最终选取后冻结每个被选文件的 SHA-256。只有获得接入授权，才写 `integration.status`、`active_variant`、正式 `effective_files`、逐文件 binding 和 Godot 引用 binding；未接入版本保持 `not_integrated`。
-5. 接入后运行资源台校验：确定性复制用 `sha256_equal`，正规化后的 `.frames.json`／`.tres` 用双方各自基线与 `baseline_hash`，所有者引用用 `resource_reference`。任何检查都不得自动覆盖基线。
+3. 图集、处理输出、帧元数据及已保存预览写入同一版本的 `files`；Godot `.tres` 写入 `resource`。动画只指定对应帧元数据文件键，动作由 `.frames.json` 读取，不复制动作参数或动画表示类型。
+4. 只有获得接入授权，才写 `integration.status`、`active_variant`、正式 `root + files`、`resource` 与 `owner/owners`；未接入版本保持 `not_integrated`。跨对象关系只登记目标对象 ID。
+5. 接入后运行资源台校验：选用与正式图片根据两条登记路径实时计算 SHA-256；Godot 所有者、资源类型及依赖直接解析 `.tres`。检查不生成或写回哈希，也不要求在 Manifest 维护比较策略。
 6. 接入效果人工评审仍记录在任务文档；通过时更新 integration evidence，未通过则保留真实生效情况和待修改结论，不能用撤销登记伪装没有发生过接入。
 
 ### 参数依据与同步
@@ -75,7 +75,7 @@
 | 实际文件属性 | 检查文件获得尺寸、透明度等信息，不以目标参数或旧登记代替。 |
 | 资产批准与试接入授权 | 以人工决定记录为依据；Manifest 保存状态及引用，不从运行配置或目录位置推断批准。 |
 
-每次修改或替换资产，由 Codex 同步核对受影响的资源、切帧数据和 Manifest 摘要；不要求负责人在多个文件中重复填写参数。发现不一致时查明实际使用值与批准要求，修正过期记录或任务范围内的实现，不直接用摘要覆盖运行资源。若修正会改变已批准视觉结果，按受影响阶段重新评审。当前不建设通用同步系统或新数据库，重复劳动明显后再补小工具。
+每次修改或替换资产，由 Codex 同步核对受影响的资源、切帧数据和 Manifest 路径；不要求负责人在多个文件中重复填写参数。发现不一致时查明实际使用值与批准要求，修正过期登记或任务范围内的实现，不直接用摘要覆盖运行资源。若修正会改变已批准视觉结果，按受影响阶段重新评审。当前不建设通用同步系统或新数据库，重复劳动明显后再补小工具。
 
 ### 交付检查
 
@@ -84,7 +84,7 @@
 - 路径、文件名、格式、分辨率和用途一致；正式图不含概念标注框、说明文字或无关装饰。
 - 需要透明时检查真实 Alpha、边缘及裁切，拒收烘焙棋盘格；角色比例、身份连续性仍需看图。
 - 核对锚点、裁切、安全区域；NinePatch 记录边距。动作图集核对区域、统一画布、脚底与播放顺序，具体接入规则见[战斗动画](../battle-animation.md)。
-- Manifest 只登记实际存在的资产，不用不存在的示例预占位置。对象至少登记身份、类型与版本；版本文件至少登记 `path`、`role`、`sha256`，按用途补尺寸、透明度、裁切、锚点、图集、动画、预览和关系。
+- Manifest 只登记实际存在的资产，不用不存在的示例预占位置。对象至少登记身份、类型与版本；版本使用一个 `root` 和相对文件路径，按用途补裁切、锚点、预览和关系，不保存可实时计算的文件哈希。
 - 新批准记录用结构化 `approval_evidence` 引用任务文件；任务内保留详细评审意见与证据。生成来源与提示词随资产保存在 `generation.md`，不复制通用规范。旧记录保留，不凭整理动作补造批准。
 
 Manifest 的 `stage` 描述概念或资产阶段；`approval` 描述人工决定；`selection` 描述当前选取；`integration` 描述真实接入。接入效果的详细评审仍见任务记录，Manifest 仅保存可核对的来源与当前摘要。
@@ -93,7 +93,7 @@ Manifest 的 `stage` 描述概念或资产阶段；`approval` 描述人工决定
 
 ## 4. 评审记录与版本
 
-负责人可以回复“选第二版，颜色再淡一点”“人物可以，攻击动作太软”或“资产通过，游戏里显示得太小”，不要求专业术语或固定审批口令。Codex 根据当前展示对象记录阶段、文件版本及哈希、决定、意见、来源与日期；带修改意见的选择不等于批准修改后的新版本。只有意见而无明确批准时继续保留待评审，只澄清影响下一步的决定。
+负责人可以回复“选第二版，颜色再淡一点”“人物可以，攻击动作太软”或“资产通过，游戏里显示得太小”，不要求专业术语或固定审批口令。Codex 根据当前展示对象记录阶段、文件版本、决定、意见、来源、日期与必要 Git 提交；带修改意见的选择不等于批准修改后的新版本。只有意见而无明确批准时继续保留待评审，只澄清影响下一步的决定。
 
 记录集中在对应任务的评审表，Manifest 只引用它。接入评审还记录被评审的代码提交、相关资产版本和截图/录像路径；未保存的临时截图不作为长期唯一证据。需留存的证据放 `design/concepts/<任务名>/review/`，可重建缓存留在 `.godot/`，不纳入正式资产表。
 

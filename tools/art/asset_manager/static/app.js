@@ -2,7 +2,7 @@
 
 const boot = JSON.parse(document.getElementById("boot-data").textContent);
 const state = { objects: [], filter: "全部", selected: null };
-const roots = document.getElementById("roots");
+const manifest = document.getElementById("manifest");
 const engine = document.getElementById("engine");
 const scanButton = document.getElementById("scan");
 const notice = document.getElementById("notice");
@@ -16,7 +16,7 @@ const lightbox = document.getElementById("lightbox");
 const lightboxImage = document.getElementById("lightbox-image");
 const lightboxCaption = document.getElementById("lightbox-caption");
 
-roots.value = boot.defaultRoots.join("\n");
+manifest.value = boot.defaultManifest;
 engine.value = boot.defaultEngine || "";
 
 function api(path, options = {}) {
@@ -42,6 +42,8 @@ const integrationLabels = {
   unknown: "待核验", not_integrated: "未接入"
 };
 const stageLabels = { concept: "概念", asset: "资产", animation: "动画" };
+const selectionLabels = { selected: "当前选用", unselected: "未选用", unknown: "选用未记录" };
+const approvalLabels = { approved: "已批准", rejected: "已否决", review: "待评审", pending: "待评审", deprecated: "已停用", unknown: "批准未记录" };
 
 function countLabel(object) {
   const bits = [];
@@ -120,7 +122,7 @@ function assetCard(asset, compact = false) {
   heading.append(title, kind);
   const path = document.createElement("p"); path.className = "asset-path"; path.textContent = asset.manifest_path || asset.path;
   const integrity = document.createElement("p"); integrity.className = `integrity integrity-${asset.integrity.status}`;
-  integrity.textContent = `${asset.integrity.label} · SHA-256 ${asset.integrity.actual ? asset.integrity.actual.slice(0, 12) : "—"}`;
+  integrity.textContent = `${asset.integrity.label} · 实时 SHA-256 ${asset.integrity.actual ? asset.integrity.actual.slice(0, 12) : "—"}`;
   info.append(heading, path, integrity);
   const actions = document.createElement("div"); actions.className = "asset-actions";
   if (asset.is_image) {
@@ -171,9 +173,13 @@ function previewPanel(variant) {
 function variantCard(variant) {
   const section = document.createElement("section"); section.className = "variant-card";
   const head = document.createElement("div"); head.className = "variant-head";
-  const title = document.createElement("h3"); title.textContent = `${stageLabels[variant.stage] || variant.stage} · ${variant.version}`;
+  const title = document.createElement("h3"); title.textContent = `版本 ${variant.version}`;
   const states = document.createElement("div"); states.className = "variant-states";
-  [variant.selection, variant.approval].forEach(value => { const tag = document.createElement("span"); tag.textContent = value; states.append(tag); });
+  const selected = document.createElement("span"); selected.textContent = selectionLabels[variant.selection] || variant.selection;
+  selected.title = "选用状态：当前制作或接入流程选择的是哪一个版本。";
+  const approved = document.createElement("span"); approved.textContent = approvalLabels[variant.approval] || variant.approval;
+  approved.title = "批准状态：负责人是否认可这个具体版本。选用不等于批准。";
+  states.append(selected, approved);
   head.append(title, states); section.append(head);
   if (variant.approval_evidence?.source) {
     const evidence = document.createElement("p"); evidence.className = "evidence";
@@ -185,7 +191,7 @@ function variantCard(variant) {
     const list = document.createElement("div"); list.className = "asset-list"; visibleFiles.forEach(asset => list.append(assetCard(asset))); section.append(list);
   }
   if (variant.animation) {
-    const animationTitle = document.createElement("h4"); animationTitle.className = "subhead"; animationTitle.textContent = `动作 · ${variant.animation.representation || "未登记类型"}`;
+    const animationTitle = document.createElement("h4"); animationTitle.className = "subhead"; animationTitle.textContent = variant.animation.label || "动作";
     section.append(animationTitle, clipList(variant.animation));
   }
   const previews = previewPanel(variant); if (previews) section.append(previews);
@@ -207,29 +213,80 @@ function integrationSection(object) {
     const bindings = document.createElement("div"); bindings.className = "binding-list";
     integration.bindings.forEach(binding => {
       const item = document.createElement("div"); item.className = `binding integrity-${binding.status}`;
-      item.textContent = `${binding.id} · ${binding.compare} · ${binding.label}`; bindings.append(item);
+      item.textContent = `${binding.kind || "运行校验"} · ${binding.label}`; bindings.append(item);
     });
     section.append(bindings);
   }
   return section;
 }
 
+function relationshipSection(object) {
+  if (!object.relationships.length) return null;
+  const section = document.createElement("section"); section.className = "relationship-section";
+  const heading = document.createElement("h3"); heading.textContent = "关联素材"; section.append(heading);
+  const list = document.createElement("div"); list.className = "relationship-grid";
+  object.relationships.forEach(relation => {
+    const target = state.objects.find(item => item.id === relation.object_id);
+    const card = document.createElement("button"); card.className = `relationship-card integrity-${relation.status}`; card.disabled = !target;
+    const thumb = document.createElement("div"); thumb.className = "relationship-thumb";
+    const asset = target?.assets.find(item => item.id === relation.thumbnail_id);
+    if (asset) {
+      const image = document.createElement("img"); image.src = fileUrl(asset); image.alt = `${relation.target_name}缩略图`; image.loading = "lazy"; thumb.append(image);
+    } else {
+      const placeholder = document.createElement("span"); placeholder.textContent = "◇"; thumb.append(placeholder);
+    }
+    const copy = document.createElement("div");
+    const kind = document.createElement("span"); kind.className = "relationship-kind"; kind.textContent = relation.kind === "projectile" ? "弹体" : relation.kind;
+    const name = document.createElement("strong"); name.textContent = relation.target_name || relation.object_id;
+    const status = document.createElement("small"); status.textContent = target ? "打开详情 →" : relation.status_label;
+    copy.append(kind, name, status); card.append(thumb, copy);
+    if (target) card.addEventListener("click", () => openDetail(target));
+    list.append(card);
+  });
+  section.append(list); return section;
+}
+
+function stageBrowser(object) {
+  const stages = [...new Set(object.variants.map(variant => variant.stage))];
+  if (object.integration.declared_status !== "not_integrated") stages.push("integration");
+  const browser = document.createElement("section"); browser.className = "stage-browser";
+  const tabs = document.createElement("div"); tabs.className = "stage-tabs"; tabs.setAttribute("role", "tablist");
+  const panel = document.createElement("div"); panel.className = "stage-panel";
+  const preferred = stages.includes("asset") ? "asset" : stages[0];
+  const show = stage => {
+    tabs.querySelectorAll("button").forEach(button => {
+      const active = button.dataset.stage === stage;
+      button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active));
+    });
+    panel.replaceChildren();
+    if (stage === "integration") panel.append(integrationSection(object));
+    else {
+      const grid = document.createElement("div"); grid.className = "variant-grid";
+      object.variants.filter(variant => variant.stage === stage).forEach(variant => grid.append(variantCard(variant)));
+      panel.append(grid);
+    }
+  };
+  stages.forEach(stage => {
+    const button = document.createElement("button"); button.className = "stage-tab"; button.dataset.stage = stage; button.setAttribute("role", "tab");
+    button.textContent = stage === "integration" ? "生效" : (stageLabels[stage] || stage);
+    button.addEventListener("click", () => show(stage)); tabs.append(button);
+  });
+  browser.append(tabs, panel); show(preferred); return browser;
+}
+
 function openDetail(object) {
   state.selected = object.id; detailContent.replaceChildren();
   const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = `${object.category} · ${object.type}${object.subtype ? ` / ${object.subtype}` : ""}`;
   const title = document.createElement("h2"); title.id = "detail-title"; title.textContent = object.name;
-  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本、选择、批准与生效状态均来自 Manifest。`;
-  detailContent.append(kicker, title, lead);
+  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。按阶段查看版本；文件类型由路径、.frames.json 与 Godot 资源自动识别。`;
+  const legend = document.createElement("div"); legend.className = "state-legend";
+  legend.innerHTML = "<span><strong>当前选用</strong>：当前流程选择的版本</span><span><strong>已批准</strong>：负责人认可的版本；选用不等于批准</span>";
+  detailContent.append(kicker, title, lead, legend);
   object.warnings.forEach(message => { const warning = document.createElement("div"); warning.className = "warning"; warning.textContent = message; detailContent.append(warning); });
-  object.variants.forEach(variant => detailContent.append(variantCard(variant)));
-  detailContent.append(integrationSection(object));
-  if (object.relationships.length) {
-    const section = document.createElement("section"); section.className = "asset-section";
-    const heading = document.createElement("h3"); heading.textContent = "对象关联"; section.append(heading);
-    object.relationships.forEach(relation => { const row = document.createElement("div"); row.className = `binding integrity-${relation.status}`; row.textContent = `${relation.kind || relation.id} → ${relation.object_id || "未登记"}${relation.resource_ref ? ` · ${relation.resource_ref}` : ""} · ${relation.status_label}`; section.append(row); });
-    detailContent.append(section);
-  }
+  detailContent.append(stageBrowser(object));
+  const relations = relationshipSection(object); if (relations) detailContent.append(relations);
   detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+  detail.querySelector(".detail-sheet").scrollTop = 0;
 }
 
 function closeDetail() { detail.classList.remove("open"); detail.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; state.selected = null; }
@@ -246,9 +303,9 @@ async function startPreview(preview, button) {
 }
 
 async function scan() {
-  scanButton.disabled = true; setNotice("正在读取 Manifest 并重算文件哈希…");
+  scanButton.disabled = true; setNotice("正在读取 Manifest，并实时核对文件与 Godot 引用…");
   try {
-    const payload = await api("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ roots: roots.value.split(/\r?\n/).map(item => item.trim()).filter(Boolean) }) });
+    const payload = await api("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ manifest: manifest.value.trim() }) });
     state.objects = payload.objects; state.filter = "全部";
     summary.textContent = `${payload.summary.objects} 个对象 · ${payload.summary.files} 个登记文件 · ${payload.summary.mismatches} 处不一致`;
     renderFilters(); renderGrid();
@@ -256,12 +313,12 @@ async function scan() {
       const issues = [`${payload.summary.mismatches} 处不一致`, `${payload.summary.missing} 个缺失`];
       if (payload.errors.length) issues.push(payload.errors.map(item => `${item.path}：${item.message}`).join("；"));
       setNotice(`校验完成；${issues.join("；")}`, "error");
-    } else setNotice(`校验完成：${payload.summary.objects} 个 Manifest 对象，登记文件均符合基线。`, "success");
+    } else setNotice(`校验完成：${payload.summary.objects} 个对象，文件与引用均有效。`, "success");
   } catch (error) { state.objects = []; renderFilters(); renderGrid(); setNotice(error.message, "error"); }
   finally { scanButton.disabled = false; }
 }
 
-document.getElementById("defaults").addEventListener("click", () => { roots.value = boot.defaultRoots.join("\n"); });
+document.getElementById("defaults").addEventListener("click", () => { manifest.value = boot.defaultManifest; });
 scanButton.addEventListener("click", scan);
 detail.querySelectorAll("[data-close]").forEach(node => node.addEventListener("click", closeDetail));
 document.getElementById("lightbox-close").addEventListener("click", () => lightbox.close());

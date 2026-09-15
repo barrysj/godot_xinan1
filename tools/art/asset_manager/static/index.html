@@ -23,12 +23,12 @@
     <section class="scan-panel" aria-labelledby="scan-title">
       <div class="section-heading">
         <div><span class="step">01</span><h2 id="scan-title">校验登记</h2></div>
-        <p>对象只来自 Manifest；目录仅限定当前项目的文件校验范围。</p>
+        <p>指定一个主 Manifest；对象、类型和文件都从中解析。</p>
       </div>
       <div class="scan-grid">
-        <label class="field roots-field">
-          <span>校验范围</span>
-          <textarea id="roots" rows="3" spellcheck="false"></textarea>
+        <label class="field manifest-field">
+          <span>Manifest 路径</span>
+          <input id="manifest" type="text" spellcheck="false">
         </label>
         <label class="field engine-field">
           <span>Godot 路径</span>

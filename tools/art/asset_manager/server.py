@@ -20,7 +20,7 @@ from urllib.parse import parse_qs, urlparse
 from catalog import AssetCatalog
 
 
-APP_ID = "cyber-pop-art-manager-v2"
+APP_ID = "cyber-pop-art-manager-v3"
 STATIC_ROOT = Path(__file__).resolve().parent / "static"
 
 
@@ -116,10 +116,7 @@ class ArtManagerServer(ThreadingHTTPServer):
         self.catalog = AssetCatalog(self.project_root)
         self.preview = PreviewManager(self.project_root)
         self.token = secrets.token_urlsafe(32)
-        self.default_roots = [
-            str(self.project_root / "assets" / "art"),
-            str(self.project_root / "design" / "concepts"),
-        ]
+        self.default_manifest = str(self.project_root / "assets" / "art" / "asset_manifest.yaml")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -213,7 +210,7 @@ class Handler(BaseHTTPRequestHandler):
             template = (STATIC_ROOT / "index.html").read_text(encoding="utf-8")
             boot = {
                 "token": self.server.token,
-                "defaultRoots": self.server.default_roots,
+                "defaultManifest": self.server.default_manifest,
                 "defaultEngine": self.server.preview.default_engine(),
             }
             body = template.replace("__ART_MANAGER_BOOT__", json.dumps(boot, ensure_ascii=False)).encode("utf-8")
@@ -254,11 +251,11 @@ class Handler(BaseHTTPRequestHandler):
             return
         parsed = urlparse(self.path)
         if parsed.path == "/api/scan":
-            roots = payload.get("roots", [])
-            if not isinstance(roots, list) or len(roots) > 32:
-                self._json(HTTPStatus.BAD_REQUEST, {"error": "目录列表无效"})
+            manifest = payload.get("manifest", self.server.default_manifest)
+            if not isinstance(manifest, str) or len(manifest) > 4096:
+                self._json(HTTPStatus.BAD_REQUEST, {"error": "Manifest 路径无效"})
                 return
-            result = self.server.catalog.scan(roots)
+            result = self.server.catalog.scan(manifest)
             self._json(HTTPStatus.OK, result)
             return
         if parsed.path == "/api/preview":

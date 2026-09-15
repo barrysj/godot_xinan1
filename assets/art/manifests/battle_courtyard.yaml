@@ -1,7 +1,7 @@
-schema_version: 2
+schema_version: 3
 object:
   id: battle_courtyard
-  display_name: 校园庭院
+  display_name: "校园庭院"
   type: background
   subtype: battle
 variants:
@@ -14,11 +14,9 @@ variants:
       source: legacy_manifest_v1
       date: 2026-09-13
       decision: review_no_final_approval_recorded
+    root: assets/art/backgrounds/battle_courtyard
     files:
-      background:
-        path: assets/art/backgrounds/battle_courtyard/day.png
-        role: image
-        sha256: 4544b4b97990b1d6b8e6b4a06c62402394b24db51799b878ff3bc36f594ff20d
+      background: day.png
     metadata:
       asset_type: battle_background
       resolution: [1931, 814]
@@ -31,30 +29,8 @@ variants:
 integration:
   status: authorized_active
   active_variant: day
-  owner_resource: resources/content/locations/gate.tres
-  evidence: 2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。
-  effective_files:
-    background:
-      path: assets/art/backgrounds/battle_courtyard/day.png
-      role: image
-      sha256: 4544b4b97990b1d6b8e6b4a06c62402394b24db51799b878ff3bc36f594ff20d
-  bindings:
-    background_baseline:
-      compare: baseline_hash
-      selected_file: background
-      effective_file: background
-    gate_background:
-      compare: resource_reference
-      source: resources/content/locations/gate.tres
-      source_sha256: ce048908ab7fdb178b5f622260bd4bd94937ba107b345cbfbe9c84a92485702f
-      target: res://assets/art/backgrounds/battle_courtyard/day.png
-    court_background:
-      compare: resource_reference
-      source: resources/content/locations/court.tres
-      source_sha256: 9c8d2607c35fa2594fbf36065575da94194f5ab38dc865f5685f4245e88438f2
-      target: res://assets/art/backgrounds/battle_courtyard/day.png
-    hall_background:
-      compare: resource_reference
-      source: resources/content/locations/hall.tres
-      source_sha256: d0b39b66797004e39f79866d12d23a41ba3abdfee474b8c70db9509f4c49e678
-      target: res://assets/art/backgrounds/battle_courtyard/day.png
+  owners: [resources/content/locations/gate.tres, resources/content/locations/court.tres, resources/content/locations/hall.tres]
+  root: assets/art/backgrounds/battle_courtyard
+  files:
+    background: day.png
+  evidence: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
