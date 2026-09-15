@@ -88,15 +88,16 @@ integration:
 推荐使用桌面控制器：
 
 ```powershell
+pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1
 pwsh.exe -NoProfile -File .\run-art-manager-control.ps1
 ```
 
-首次启动会用 Windows 自带的 .NET Framework C# 编译器生成 `.godot/art-manager-control/ArtManagerControl.exe`，后续仅在源码更新时重建。窗口只提供“启动服务”“打开页面”“停止服务”三个按钮，并实时显示服务状态、进程 ID 与当前项目目录。停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
+构建脚本用 Windows 自带的 .NET Framework C# 编译器生成 `.godot/art-manager-control/ArtManagerControl.exe`；只需在首次使用或控制器源码更新后运行。根目录启动脚本只负责打开已经构建的程序。窗口只提供“启动服务”“打开页面”“停止服务”三个按钮，并实时显示服务状态、进程 ID 与当前项目目录。停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
 
 也可以直接启动服务：
 
 ```powershell
-pwsh.exe -NoProfile -File .\run-art-manager.ps1
+pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1
 py -3 -m unittest discover -s tools/art/asset_manager/tests -v
 ```
 

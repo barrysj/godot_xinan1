@@ -6,7 +6,7 @@
 ## 当前状态
 
 - 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
-- 功能入口：推荐 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器；仍可用 `pwsh.exe -NoProfile -File .\run-art-manager.ps1` 直接启动服务，本地页面为 `http://127.0.0.1:8765/`。
+- 功能入口：首次或源码更新后运行 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1`；日常用 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器。直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
 - 范围：只处理当前项目登记对象；不兼容任意目录，不提供跨项目预览，不承担审批、编辑、生图或运行时内容加载。
 
@@ -46,11 +46,12 @@
 
 ## 2026-09-16 桌面控制器验证
 
-- 构建：Windows .NET Framework C# 编译器生成无控制台 WinForms 可执行程序；PowerShell 7 启动器仅在源码更新时重建缓存。
+- 构建：Windows .NET Framework C# 编译器生成无控制台 WinForms 可执行程序；构建脚本与服务脚本归入 `tools/art/asset_manager/`，根目录入口只启动已构建控制器。
 - 状态：未启动时只启用“启动服务”；运行后显示实际 PID 并启用“打开页面”“停止服务”。工作目录显示当前项目根。
 - 生命周期自检：`initial=未启动`、`started=True`、`open_enabled=True`、`stopped=True`，退出码 0；结束后 8765 无监听。
+- 入口拆分回归：独立构建成功；根目录启动脚本成功创建控制器进程；工具目录服务脚本返回正确应用 ID、PID 与项目根，停止后 8765 无监听。
 - 后端回归：16 项 Python 测试通过，新增健康接口进程 ID 与项目根测试；PowerShell 脚本语法、Python 编译及 Git 差异检查通过。
-- 截图：`.godot/art-manager-control-running-v2-20260916.png`（本地验收产物，不入库）。
+- 截图：`.godot/art-manager-control-running-v2-20260916.png`、`.godot/art-manager-control-script-layout-20260916.png`（本地验收产物，不入库）。
 
 ## 已知边界
 

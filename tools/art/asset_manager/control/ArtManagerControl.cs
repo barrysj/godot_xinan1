@@ -228,7 +228,7 @@ namespace CyberPopCampus.ArtManager
             {
                 await Task.Run(delegate
                 {
-                    string launcher = Path.Combine(projectRoot, "run-art-manager.ps1");
+                    string launcher = Path.Combine(projectRoot, "tools", "art", "asset_manager", "run-server.ps1");
                     ProcessStartInfo info = new ProcessStartInfo("pwsh.exe");
                     info.Arguments = String.Format("-NoProfile -File \"{0}\" -NoOpen", launcher);
                     info.WorkingDirectory = projectRoot;
@@ -320,7 +320,7 @@ namespace CyberPopCampus.ArtManager
             DirectoryInfo current = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
             while (current != null)
             {
-                if (File.Exists(Path.Combine(current.FullName, "project.godot")) && File.Exists(Path.Combine(current.FullName, "run-art-manager.ps1")))
+                if (File.Exists(Path.Combine(current.FullName, "project.godot")) && File.Exists(Path.Combine(current.FullName, "tools", "art", "asset_manager", "run-server.ps1")))
                     return current.FullName;
                 current = current.Parent;
             }
