@@ -1,6 +1,6 @@
 # 粉笔精灵混合动画候选 003
 
-状态：待人工评审。候选 002 保留追溯，本轮不修改正式角色动画 005。
+状态：已于 2026-09-16 获批为正式资产，并以 `chalk_spirit.asset_006` 归档；候选 002 保留追溯，接入效果仍待实施与评审。
 
 ## 本轮反馈
 
@@ -15,6 +15,8 @@
 - 死亡仍完整复用正式 005 的 8 帧序列。
 
 法阵全部使用 Godot 原生 `Line2D`、`Polygon2D` 与既有粉尘纹理组成，不新增正式位图资产，也不进入 Manifest。评审入口在 `review/`：`rig-preview.gif` 为远程攻击，`rig-all-actions.gif` 为七动作巡演，两张 contact sheet 用于静态比较。
+
+获批版本的自包含快照位于 `assets/art/characters/chalk_spirit/006/`。正式版本复制了序列帧回退与全部骨骼拆件，不再跨候选目录依赖 `chalk-rig/001/parts`；Manifest 仅登记文件和批准状态，动作后端映射留给 Godot 资源。
 
 ## 技术验证
 

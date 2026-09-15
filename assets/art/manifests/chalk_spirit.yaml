@@ -127,7 +127,7 @@ variants:
   asset_005:
     stage: asset
     version: 005
-    selection: selected
+    selection: unselected
     approval: approved
     approval_evidence:
       source: docs/art/tasks/chalk-spirit.md
@@ -163,6 +163,47 @@ variants:
       godot:
         unit: res://resources/content/enemies/chalk.tres
         animation: res://resources/content/animations/chalk.tres
+    metadata:
+      normalized_canvas: [384, 384]
+      display_size: [140, 140]
+      anchor: [0.5, 0.875]
+      portrait_region: [70, 110, 250, 250]
+      impact_ratio: 0.625
+      launch_offset: [50, -52]
+      hit_offset: [0, -42]
+      attack_modes: [ranged]
+  asset_006:
+    stage: asset
+    version: 006
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/chalk-spirit-rig.md
+      date: 2026-09-16
+      decision: approved
+      quote: "是的，批准成为正式资产"
+      commit: aaf67f7
+    root: assets/art/characters/chalk_spirit/006
+    files:
+      locomotion_sheet: locomotion_sheet.png
+      combat_sheet: combat_sheet.png
+      reaction_sheet: reaction_sheet.png
+      frame_metadata: battle_animation.frames.json
+      rig_body: parts/body.png
+      rig_launcher: parts/launcher.png
+      rig_orbiter_back: parts/orbiter_back.png
+      rig_orbiter_top: parts/orbiter_top.png
+      rig_dust_particle: parts/dust_particle.png
+      rig_build_metadata: rig_manifest.json
+      generation_record: generation.md
+      gif_ranged: review/ranged-preview.gif
+      gif_all_actions: review/all-actions-preview.gif
+    animation:
+      frames: frame_metadata
+    previews:
+      gifs:
+        ranged: gif_ranged
+        all_actions: gif_all_actions
     metadata:
       normalized_canvas: [384, 384]
       display_size: [140, 140]
