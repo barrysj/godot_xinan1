@@ -1,0 +1,55 @@
+schema_version: 2
+object:
+  id: battle_classroom
+  display_name: 异变教室
+  type: background
+  subtype: battle
+variants:
+  anomaly:
+    stage: asset
+    version: anomaly
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    files:
+      background:
+        path: assets/art/backgrounds/battle_classroom/anomaly.png
+        role: image
+        sha256: 44242cc2c5e9b6b46232776a4ba5b99bf6c8f62a75e6320d9de16c3137134484
+    metadata:
+      asset_type: battle_background
+      resolution: [1931, 814]
+      transparent: false
+      display_rect: [24, 92, 1220, 516]
+      crop_mode: region
+      normalized_crop: [0.085, 0.123, 0.83, 0.833]
+      usage: [battle, deployment]
+      style_layer: anomaly
+integration:
+  status: authorized_active
+  active_variant: anomaly
+  owner_resource: resources/content/locations/classroom.tres
+  evidence: 2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。
+  effective_files:
+    background:
+      path: assets/art/backgrounds/battle_classroom/anomaly.png
+      role: image
+      sha256: 44242cc2c5e9b6b46232776a4ba5b99bf6c8f62a75e6320d9de16c3137134484
+  bindings:
+    background_baseline:
+      compare: baseline_hash
+      selected_file: background
+      effective_file: background
+    classroom_background:
+      compare: resource_reference
+      source: resources/content/locations/classroom.tres
+      source_sha256: 170ac2bd6408ad32d80d96db1b6fe848fba048635dddec7a81071b9930d2c441
+      target: res://assets/art/backgrounds/battle_classroom/anomaly.png
+    boss_background:
+      compare: resource_reference
+      source: resources/content/locations/boss.tres
+      source_sha256: e45346595b72ed8704d26c35467266084960b46e45e80bd0287ee10c17567143
+      target: res://assets/art/backgrounds/battle_classroom/anomaly.png

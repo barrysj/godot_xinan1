@@ -1,146 +1,24 @@
-version: 1
+schema_version: 2
 
 conventions:
-  status: [concept, review, approved, deprecated]
+  authority: manifest_only
+  file_hash: sha256_at_selection_integration_or_explicit_migration
+  selection: [unselected, selected, unknown]
+  approval: [pending, review, approved, rejected, deprecated, unknown]
+  integration: [not_integrated, authorized_active, active, unknown]
+  binding_compare: [sha256_equal, baseline_hash, resource_reference]
 
-assets:
-  characters:
-    guard:
-      battle_sheet:
-        file: assets/art/characters/guard/battle_sheet.png
-        type: battle_sprite_sheet
-        resolution: [1254, 1254]
-        transparent: true
-        grid: [4, 4]
-        frame_metadata: assets/art/characters/guard/battle_sheet.frames.json
-        animation_resource: resources/content/animations/guard.tres
-        normalized_canvas: [384, 384]
-        display_size: [128, 128]
-        anchor: [0.5, 0.875]
-        portrait_region: [100, 5, 140, 140]
-        usage: [battle, deployment, motion_preview]
-        style_layer: battle
-        status: review
-        integration_authorization: "2026-09-13 用户要求至少两名实际绘制角色及动作，明确授权本轮生成并接入；review 不代表最终视觉批准。"
-    archer:
-      battle_sheet:
-        file: assets/art/characters/archer/battle_sheet.png
-        type: battle_sprite_sheet
-        resolution: [1254, 1254]
-        transparent: true
-        grid: [4, 4]
-        frame_metadata: assets/art/characters/archer/battle_sheet.frames.json
-        animation_resource: resources/content/animations/archer.tres
-        normalized_canvas: [384, 384]
-        display_size: [128, 128]
-        anchor: [0.5, 0.875]
-        portrait_region: [100, 0, 140, 140]
-        usage: [battle, deployment, motion_preview]
-        style_layer: battle
-        status: review
-        integration_authorization: "2026-09-13 用户要求至少两名实际绘制角色及动作，授权本轮生成并接入；待最终视觉 QA。"
-    chalk_spirit:
-      battle_sheets:
-        file: assets/art/characters/chalk_spirit/locomotion_sheet.png
-        type: battle_sprite_sheet_set
-        resolution: [1254, 1254]
-        companion_files:
-          - assets/art/characters/chalk_spirit/combat_sheet.png
-          - assets/art/characters/chalk_spirit/reaction_sheet.png
-        companion_resolutions:
-          combat_sheet: [1536, 1536]
-          reaction_sheet: [1254, 1254]
-        transparent: true
-        grids:
-          locomotion: [4, 3]
-          combat: [4, 4]
-          reaction: [4, 4]
-        frame_metadata: assets/art/characters/chalk_spirit/battle_animation.frames.json
-        animation_resource: resources/content/animations/chalk.tres
-        normalized_canvas: [384, 384]
-        display_size: [140, 140]
-        anchor: [0.5, 0.875]
-        portrait_region: [70, 110, 250, 250]
-        projectile_resource: resources/content/animations/chalk_projectile.tres
-        usage: [battle, deployment, motion_preview]
-        style_layer: anomaly
-        status: approved
-        review_record: docs/art/tasks/chalk-spirit.md
-
-  effects:
-    chalk_projectile:
-      projectile:
-        file: assets/art/effects/chalk_projectile/projectile.png
-        type: projectile_sprite
-        resolution: [192, 96]
-        transparent: true
-        display_size: [32, 16]
-        anchor: [0.5, 0.5]
-        presentation_resource: resources/content/animations/chalk_projectile.tres
-        usage: [battle, motion_preview]
-        style_layer: anomaly
-        status: approved
-        review_record: docs/art/tasks/chalk-spirit.md
-    guard_shield:
-      burst_sheet:
-        file: assets/art/effects/guard_shield/burst_sheet.png
-        type: effect_sprite_sheet
-        resolution: [1254, 1254]
-        transparent: true
-        grid: [4, 4]
-        frame_metadata: assets/art/effects/guard_shield/burst_sheet.frames.json
-        animation_resource: resources/content/animations/guard_shield.tres
-        display_size: [144, 144]
-        anchor: [0.5, 0.5]
-        offset: [0, -44]
-        fps: 24
-        usage: [battle, motion_preview]
-        style_layer: battle
-        status: review
-        integration_authorization: "2026-09-13 用户明确要求生成并接入一个实际技能特效用于动画验证；待最终视觉 QA。"
-
-  backgrounds:
-    battle_courtyard:
-      day:
-        file: assets/art/backgrounds/battle_courtyard/day.png
-        type: battle_background
-        resolution: [1931, 814]
-        transparent: false
-        display_rect: [24, 92, 1220, 516]
-        crop_mode: region
-        normalized_crop: [0.085, 0.123, 0.83, 0.833]
-        usage: [battle, deployment]
-        style_layer: daily
-        status: review
-        integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
-    battle_lab:
-      night:
-        file: assets/art/backgrounds/battle_lab/night.png
-        type: battle_background
-        resolution: [1931, 814]
-        transparent: false
-        display_rect: [24, 92, 1220, 516]
-        crop_mode: region
-        normalized_crop: [0.085, 0.123, 0.83, 0.833]
-        usage: [battle, deployment]
-        style_layer: night
-        status: review
-        integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
-    battle_classroom:
-      anomaly:
-        file: assets/art/backgrounds/battle_classroom/anomaly.png
-        type: battle_background
-        resolution: [1931, 814]
-        transparent: false
-        display_rect: [24, 92, 1220, 516]
-        crop_mode: region
-        normalized_crop: [0.085, 0.123, 0.83, 0.833]
-        usage: [battle, deployment]
-        style_layer: anomaly
-        status: review
-        integration_authorization: "2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。"
+object_manifests:
+  guard: assets/art/manifests/guard.yaml
+  archer: assets/art/manifests/archer.yaml
+  guard_shield: assets/art/manifests/guard_shield.yaml
+  battle_courtyard: assets/art/manifests/battle_courtyard.yaml
+  battle_lab: assets/art/manifests/battle_lab.yaml
+  battle_classroom: assets/art/manifests/battle_classroom.yaml
+  chalk_spirit: assets/art/manifests/chalk_spirit.yaml
+  chalk_projectile: assets/art/manifests/chalk_projectile.yaml
 
 notes:
-  - 状态、必要字段和接入例外统一见 docs/art/WORKFLOW.md。
-  - 本表只登记实际文件；新批准用 review_record 引用对应任务的人工评审记录。
-  - 历史 review 与 integration_authorization 保留，不因文档整理升级为 approved。
+  discovery: 未登记文件不进入资源台；目录仅用于验证登记路径。
+  approval: 选取、批准与生效分别登记，生成成功不代表批准。
+  runtime: Godot 不读取本表；integration bindings 只校验现有运行引用。

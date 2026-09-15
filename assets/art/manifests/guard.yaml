@@ -1,0 +1,84 @@
+schema_version: 2
+object:
+  id: guard
+  display_name: 守护者
+  type: character
+  subtype: ally
+variants:
+  battle_current:
+    stage: asset
+    version: legacy-current
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    files:
+      battle_sheet:
+        path: assets/art/characters/guard/battle_sheet.png
+        role: atlas
+        sha256: 92af351810abdebe05772d1b2ee06b47aa344af82c3fc657c0afdc2d7aa0bb9e
+      frame_metadata:
+        path: assets/art/characters/guard/battle_sheet.frames.json
+        role: frame_metadata
+        sha256: 3100778867de38b0cd8c92e5f75b2090e42a66f177f673f5cd4b467e007eb3d0
+      animation_resource:
+        path: resources/content/animations/guard.tres
+        role: animation_resource
+        sha256: 85df97d9b7c95981d61c87abf979613983e6db11fe4dab910fefa62f510a6a1d
+    animation:
+      representation: sprite_frames
+      resource_file: animation_resource
+      clips_from: frame_metadata
+    previews:
+      godot:
+        unit: res://resources/content/characters/guard.tres
+        animation: res://resources/content/animations/guard.tres
+    metadata:
+      asset_type: battle_sprite_sheet
+      resolution: [1254, 1254]
+      transparent: true
+      grid: [4, 4]
+      normalized_canvas: [384, 384]
+      display_size: [128, 128]
+      anchor: [0.5, 0.875]
+      portrait_region: [100, 5, 140, 140]
+      usage: [battle, deployment, motion_preview]
+      style_layer: battle
+integration:
+  status: authorized_active
+  active_variant: battle_current
+  owner_resource: resources/content/characters/guard.tres
+  evidence: 2026-09-13 用户要求至少两名实际绘制角色及动作，明确授权本轮生成并接入；review 不代表最终视觉批准。
+  effective_files:
+    battle_sheet:
+      path: assets/art/characters/guard/battle_sheet.png
+      role: atlas
+      sha256: 92af351810abdebe05772d1b2ee06b47aa344af82c3fc657c0afdc2d7aa0bb9e
+    frame_metadata:
+      path: assets/art/characters/guard/battle_sheet.frames.json
+      role: frame_metadata
+      sha256: 3100778867de38b0cd8c92e5f75b2090e42a66f177f673f5cd4b467e007eb3d0
+    animation_resource:
+      path: resources/content/animations/guard.tres
+      role: animation_resource
+      sha256: 85df97d9b7c95981d61c87abf979613983e6db11fe4dab910fefa62f510a6a1d
+  bindings:
+    sheet_baseline:
+      compare: baseline_hash
+      selected_file: battle_sheet
+      effective_file: battle_sheet
+    frames_baseline:
+      compare: baseline_hash
+      selected_file: frame_metadata
+      effective_file: frame_metadata
+    animation_baseline:
+      compare: baseline_hash
+      selected_file: animation_resource
+      effective_file: animation_resource
+    unit_animation:
+      compare: resource_reference
+      source: resources/content/characters/guard.tres
+      source_sha256: 33f6814ba23d01bf4b3f897b6835ec526fb4461de00d785cacd78fc0f2b8f140
+      target: res://resources/content/animations/guard.tres
