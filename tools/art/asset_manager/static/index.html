@@ -15,19 +15,19 @@
       <div>
         <p class="eyebrow">CYBER POP CAMPUS · LOCAL ART DESK</p>
         <h1>美术资源台</h1>
-        <p class="subtitle">从文件夹找到对象，再看它的概念、图集与动画版本。</p>
+        <p class="subtitle">由 Manifest 管理对象、版本、预览与真实生效状态。</p>
       </div>
       <div class="hero-mark" aria-hidden="true"><span>ART</span><b>／01</b></div>
     </header>
 
     <section class="scan-panel" aria-labelledby="scan-title">
       <div class="section-heading">
-        <div><span class="step">01</span><h2 id="scan-title">扫描目录</h2></div>
-        <p>当前项目内每行一个目录；支持中文与空格，重叠目录自动去重。</p>
+        <div><span class="step">01</span><h2 id="scan-title">校验登记</h2></div>
+        <p>对象只来自 Manifest；目录仅限定当前项目的文件校验范围。</p>
       </div>
       <div class="scan-grid">
         <label class="field roots-field">
-          <span>本地目录</span>
+          <span>校验范围</span>
           <textarea id="roots" rows="3" spellcheck="false"></textarea>
         </label>
         <label class="field engine-field">
@@ -35,11 +35,11 @@
           <input id="engine" type="text" spellcheck="false" placeholder="预览时使用">
         </label>
         <div class="scan-actions">
-          <button id="scan" class="primary">扫描</button>
-          <button id="defaults" class="secondary">默认</button>
+          <button id="scan" class="primary">校验</button>
+          <button id="defaults" class="secondary">恢复</button>
         </div>
       </div>
-      <div id="notice" class="notice" role="status">准备扫描本项目资源。</div>
+      <div id="notice" class="notice" role="status">准备核对 Manifest 与实际文件。</div>
     </section>
 
     <section class="library" aria-labelledby="library-title">
@@ -50,8 +50,8 @@
       <nav id="filters" class="filters" aria-label="资源分类"></nav>
       <div id="empty" class="empty">
         <div class="empty-orbit"><span>＋</span></div>
-        <h3>等待扫描</h3>
-        <p>加入一个目录，资源们就会按对象排好队。</p>
+        <h3>等待校验</h3>
+        <p>登记过的资源会按对象与版本排好队。</p>
       </div>
       <div id="grid" class="object-grid"></div>
     </section>

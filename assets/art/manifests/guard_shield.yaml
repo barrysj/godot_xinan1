@@ -1,0 +1,80 @@
+schema_version: 2
+object:
+  id: guard_shield
+  display_name: 守护护盾
+  type: effect
+  subtype: skill
+variants:
+  burst_current:
+    stage: asset
+    version: legacy-current
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    files:
+      burst_sheet:
+        path: assets/art/effects/guard_shield/burst_sheet.png
+        role: atlas
+        sha256: 0264d426aa04f4c5ec25f1afc16e00aa423df80e057687738fc45c5254195697
+      frame_metadata:
+        path: assets/art/effects/guard_shield/burst_sheet.frames.json
+        role: frame_metadata
+        sha256: 903586f29bdb4d71e42d52c345ff2e130835926c127dc0bce94417085e5b5c41
+      effect_resource:
+        path: resources/content/animations/guard_shield.tres
+        role: effect_resource
+        sha256: 0fa0e3c672d250c87be79864b1d617353796760d0c71cf6dd054c07a93a5d2e4
+    animation:
+      representation: sprite_frames
+      resource_file: effect_resource
+      clips_from: frame_metadata
+    metadata:
+      asset_type: effect_sprite_sheet
+      resolution: [1254, 1254]
+      transparent: true
+      grid: [4, 4]
+      display_size: [144, 144]
+      anchor: [0.5, 0.5]
+      offset: [0, -44]
+      fps: 24
+      usage: [battle, motion_preview]
+      style_layer: battle
+integration:
+  status: authorized_active
+  active_variant: burst_current
+  owner_resource: resources/content/skills/guard.tres
+  evidence: 2026-09-13 用户明确要求生成并接入一个实际技能特效用于动画验证；待最终视觉 QA。
+  effective_files:
+    burst_sheet:
+      path: assets/art/effects/guard_shield/burst_sheet.png
+      role: atlas
+      sha256: 0264d426aa04f4c5ec25f1afc16e00aa423df80e057687738fc45c5254195697
+    frame_metadata:
+      path: assets/art/effects/guard_shield/burst_sheet.frames.json
+      role: frame_metadata
+      sha256: 903586f29bdb4d71e42d52c345ff2e130835926c127dc0bce94417085e5b5c41
+    effect_resource:
+      path: resources/content/animations/guard_shield.tres
+      role: effect_resource
+      sha256: 0fa0e3c672d250c87be79864b1d617353796760d0c71cf6dd054c07a93a5d2e4
+  bindings:
+    sheet_baseline:
+      compare: baseline_hash
+      selected_file: burst_sheet
+      effective_file: burst_sheet
+    frames_baseline:
+      compare: baseline_hash
+      selected_file: frame_metadata
+      effective_file: frame_metadata
+    effect_baseline:
+      compare: baseline_hash
+      selected_file: effect_resource
+      effective_file: effect_resource
+    skill_effect:
+      compare: resource_reference
+      source: resources/content/skills/guard.tres
+      source_sha256: eddcf4c25787becb6f068fcf1233b66be761383bc87046306fde96feaad393fa
+      target: res://resources/content/animations/guard_shield.tres

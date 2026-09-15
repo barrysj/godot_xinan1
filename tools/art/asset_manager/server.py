@@ -20,7 +20,7 @@ from urllib.parse import parse_qs, urlparse
 from catalog import AssetCatalog
 
 
-APP_ID = "cyber-pop-art-manager-v1"
+APP_ID = "cyber-pop-art-manager-v2"
 STATIC_ROOT = Path(__file__).resolve().parent / "static"
 
 
@@ -33,6 +33,8 @@ class PreviewManager(object):
             "state": "idle",
             "message": "尚未启动预览",
             "animation": None,
+            "unit": None,
+            "projectile": None,
             "started_at": None,
             "exit_code": None,
         }
@@ -73,16 +75,13 @@ class PreviewManager(object):
             script = Path(resolved["script"]).resolve()
             if script.parent != self.project_root or script.name != "run-motion-preview.ps1":
                 return False, "预览入口不受信"
-            args = [
-                pwsh,
-                "-NoProfile",
-                "-File",
-                str(script),
-                "-EnginePath",
-                engine,
-                "-Animation",
-                resolved["resource_uri"],
-            ]
+            args = [pwsh, "-NoProfile", "-File", str(script), "-EnginePath", engine]
+            if resolved.get("unit_uri"):
+                args.extend(["-Unit", resolved["unit_uri"]])
+            if resolved.get("animation_uri"):
+                args.extend(["-Animation", resolved["animation_uri"]])
+            if resolved.get("projectile_uri"):
+                args.extend(["-Projectile", resolved["projectile_uri"]])
             flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
             try:
                 self._process = subprocess.Popen(
@@ -99,7 +98,9 @@ class PreviewManager(object):
             self._last = {
                 "state": "running",
                 "message": "预览窗口已启动",
-                "animation": resolved["resource_uri"],
+                "animation": resolved.get("animation_uri"),
+                "unit": resolved.get("unit_uri"),
+                "projectile": resolved.get("projectile_uri"),
                 "started_at": int(time.time()),
                 "exit_code": None,
             }
@@ -122,7 +123,7 @@ class ArtManagerServer(ThreadingHTTPServer):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "CyberPopArtManager/1.0"
+    server_version = "CyberPopArtManager/2.0"
 
     def log_message(self, fmt, *args):
         message = re.sub(r"token=[^ &\"]+", "token=[redacted]", fmt % args)
@@ -192,7 +193,7 @@ class Handler(BaseHTTPRequestHandler):
             asset_id = query.get("id", [""])[0]
             path = self.server.catalog.resolve_file(asset_id)
             if path is None:
-                self._json(HTTPStatus.NOT_FOUND, {"error": "资源不存在或已离开扫描范围"})
+                self._json(HTTPStatus.NOT_FOUND, {"error": "资源不存在或未在 Manifest 登记"})
                 return
             content_type = mimetypes.guess_type(str(path))[0] or "application/octet-stream"
             try:
