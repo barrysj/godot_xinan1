@@ -255,8 +255,9 @@ class PreviewTests(unittest.TestCase):
         manager = PreviewManager(self.fixture.root)
         resolved = {"script": self.fixture.root / "run-motion-preview.ps1", "unit_uri": "res://resources/content/characters/chalk.tres", "animation_uri": "res://resources/content/animations/chalk.tres", "projectile_uri": "res://resources/content/animations/projectile.tres"}
         ok, message = manager.start(resolved, str(self.engine))
-        self.assertTrue(ok); self.assertIn("已启动", message)
+        self.assertTrue(ok); self.assertIn("准备预览", message)
         command = popen.call_args[0][0]
+        self.assertIn("-EnsureImport", command)
         self.assertEqual(["-Unit", resolved["unit_uri"], "-Animation", resolved["animation_uri"], "-Projectile", resolved["projectile_uri"]], command[-6:])
         self.assertFalse(popen.call_args[1]["shell"])
 

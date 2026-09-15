@@ -4,12 +4,19 @@ param(
     [string]$Unit = '',
     [string]$Animation = '',
     [string]$Projectile = '',
+    [switch]$EnsureImport,
     [switch]$Check,
     [switch]$Capture,
     [switch]$Tour
 )
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
 if (-not (Test-Path -LiteralPath $EnginePath)) { throw 'Godot not found. Set -EnginePath.' }
+if ($EnsureImport) {
+    $importLog = Join-Path $PSScriptRoot '.godot/art-manager-import.log'
+    $importArgs = @('--headless', '--editor', '--path', ('"{0}"' -f $PSScriptRoot), '--quit', '--log-file', ('"{0}"' -f $importLog))
+    $importProcess = Start-Process -FilePath $EnginePath -ArgumentList $importArgs -WorkingDirectory $PSScriptRoot -WindowStyle Hidden -Wait -PassThru
+    if ($importProcess.ExitCode -ne 0) { throw "Godot resource import failed with exit code $($importProcess.ExitCode)." }
+}
 $previewArgs = @('--path', $PSScriptRoot, '--rendering-method', 'gl_compatibility', '--log-file', (Join-Path $PSScriptRoot '.godot/motion-preview.log'))
 if ($Check) { $previewArgs += '--headless' }
 $previewArgs += @('res://scenes/battle_demo/motion_preview.tscn', '--')

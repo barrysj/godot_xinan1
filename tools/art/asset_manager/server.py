@@ -76,6 +76,7 @@ class PreviewManager(object):
             if script.parent != self.project_root or script.name != "run-motion-preview.ps1":
                 return False, "预览入口不受信"
             args = [pwsh, "-NoProfile", "-File", str(script), "-EnginePath", engine]
+            args.append("-EnsureImport")
             if resolved.get("unit_uri"):
                 args.extend(["-Unit", resolved["unit_uri"]])
             if resolved.get("animation_uri"):
@@ -97,7 +98,7 @@ class PreviewManager(object):
                 return False, "无法启动预览：%s" % exc
             self._last = {
                 "state": "running",
-                "message": "预览窗口已启动",
+                "message": "正在导入资源并准备预览",
                 "animation": resolved.get("animation_uri"),
                 "unit": resolved.get("unit_uri"),
                 "projectile": resolved.get("projectile_uri"),
