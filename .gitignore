@@ -5,6 +5,10 @@
 .import/
 .godot/
 
+# Python helper caches
+__pycache__/
+*.py[cod]
+
 # Builds/export directory
 builds/**/*
 !builds/.gdignore

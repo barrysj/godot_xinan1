@@ -2,7 +2,7 @@
 
 > **这是整个项目的当前状态，不是某一轮施工记录。** 由统筹 session 维护；具体功能的实现、验证和限制见[功能实施目录](implementation/README.md)，未来安排见 [Roadmap](roadmap.md)。
 
-最近统筹：2026-09-15；文档整理基线：`467784e`；已有功能验收基线：`7fe7529`。本次仅重组文档，未重跑游戏检查。功能 session 更新档案后，总览可能暂时滞后；最新可验证的功能证据优先。
+最近统筹：2026-09-15；M0 已有功能验收基线：`7fe7529`，文档结构基线：`1a2948e`；本次纳入粉笔资产 `b661bad` 与资源台 `c44a862`，合并验证详见功能档案。功能 session 更新档案后，总览可能暂时滞后；最新可验证的功能证据优先。
 
 ## 当前阶段
 
@@ -39,10 +39,10 @@
 | 存档退出 | 节点续玩、迁移与桌面 Web 刷新恢复已有证据 | [续玩](implementation/save-01.md)、[异常边界](implementation/save-02.md)、[暂停](implementation/ui-01.md) |
 | 内容生产 | Resource 录入与校验已有基础，仍以虚构样本为主 | [录入](implementation/content-01.md)、[内容样本](implementation/content-02.md) |
 | 纪念主线 | 剧情、人物与校园恢复仍需制作 | [主线](implementation/core-02.md)、[纪念内容](implementation/content-03.md) |
-| 美术音频 | 两角色、一个特效、三背景试接入；声音未接通 | [资产接入](implementation/art-02.md)、[工具](implementation/art-03.md)、[声音](implementation/audio-01.md) |
+| 美术音频 | 原六项试接入资产保留；新增已批准粉笔精灵及弹体，Manifest 版本管理与预览可用；声音未接通 | [资产接入](implementation/art-02.md)、[动作工具](implementation/art-03.md)、[资源台](implementation/art-05.md)、[声音](implementation/audio-01.md) |
 | 平台交付 | Windows 和本地桌面 Web 有证据，手机未通过 | [构建](implementation/release-01.md)、[平台](implementation/release-02.md) |
 
-全部 36 项稳定功能 ID 见[功能目录](implementation/README.md)，不在总览重复宽表。
+全部 37 项稳定功能 ID 见[功能目录](implementation/README.md)，不在总览重复宽表。
 
 ## 最重要的缺口
 

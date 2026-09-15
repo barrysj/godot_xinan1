@@ -2,3 +2,16 @@
 * text=auto eol=lf
 
 *.hdr binary
+# Preserve approved Manifest hash bytes, including authored mixed line endings.
+assets/art/characters/chalk_spirit/battle_animation.frames.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+assets/art/effects/chalk_projectile/projectile.metadata.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-projectile/001/projectile.metadata.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-spirit/003/battle_animation.frames.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-spirit/003/battle_animation.tres -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-spirit/004/battle_animation.frames.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-spirit/004/battle_animation.tres -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.frames.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres -text whitespace=trailing-space,space-before-tab,cr-at-eol
+resources/content/animations/chalk.tres -text whitespace=trailing-space,space-before-tab,cr-at-eol
+resources/content/animations/chalk_projectile.tres -text whitespace=trailing-space,space-before-tab,cr-at-eol

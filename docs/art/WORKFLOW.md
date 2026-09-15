@@ -10,7 +10,17 @@
 
 当前用 Codex 对话展示候选图和 Godot 实际截图，动作使用[现有预览入口](../battle-animation.md#独立动作预览)。每次展示包含资产名称、版本、评审阶段、图片或录像、本轮改动及当前待决事项；明确标出当前使用版与候选版。修改时并排展示两版，首次制作则展示候选本身；批量展示时提供编号与缩略图，点击可看原图。只提交当前阶段需要决定的事情，不要求负责人处理技术待办。
 
-暂不开发历史图库、独立资产管理软件或 Serpent 二次开发，也不接入 Serpent、数据库或自动写回服务。只有找图、比较或确认当前版本持续阻碍实际制作时，再按具体问题评估工具。后续即便使用工具，也必须绑定具体版本并保存人工决定，不能把评分或标签直接等同批准。
+项目现提供一个定制的本地“美术资源台”，用于校验、浏览和预览 Manifest 已登记资源；它不是审批平台、编辑器或历史图库，也不接入 Serpent、数据库、自动生图或自动写回服务。PowerShell 7 运行 `pwsh.exe -File .\run-art-manager.ps1`，服务仅监听 `127.0.0.1`，后台启动后打开本地页面。首次工作树尚无 Godot 导入缓存时，启动脚本先用配置的引擎导入资源；也可用 `-EnginePath 'Godot.exe 路径'` 覆盖默认值。
+
+### 本地资源台登记约定
+
+- [主索引](../../assets/art/asset_manifest.yaml)只维护 `object_id → assets/art/manifests/<object_id>.yaml`。对象身份、分类、版本、文件、关系、选择、批准、生效与预览均来自这些对象清单；目录名、最高版本号和近似文件名都不产生管理语义。未登记文件不进入资源台，目录输入仅校验路径仍位于本项目 `assets/art/` 或 `design/concepts/`。
+- 对象清单以 `object` 登记稳定 ID、显示名、类型和子类型；`variants` 按阶段登记版本。`selection`、`approval` 与 `integration.status` 是三条独立状态，不能互相推导。`approval_evidence` 至少记录任务文档、日期和人工决定；没有历史依据时写 `unknown`，不补造批准。
+- 每个 `files` 项登记项目相对路径、角色和保存时 SHA-256。动画通过 `animation.representation` 表明实际表示，`resource_file` 指向本版本文件键，`clips_from` 指向帧元数据文件键；资源台从 `.frames.json` 读取 clip，不在 Manifest 复制第二份动作定义。非图集动画可使用新的 representation 与相应文件角色，不得硬套 SpriteFrames。
+- GIF 先作为 `role: preview_gif` 的文件登记，再由 `previews.gifs.<clip_id>.file` 精确引用，可直接播放。Godot 预览在 `previews.godot` 显式登记 `unit`、`animation`、可选 `projectile`；角色候选必须保留 Unit 以加载能力元数据。缺省参数不猜，不回退默认角色；正式动画自身携带正式弹体时不额外覆盖 Projectile。
+- `integration.effective_files` 保存实际生效文件及各自接入时基线；`bindings` 用 `sha256_equal` 验证确定性复制，用 `baseline_hash` 验证允许内容正规化的正式文件，用 `resource_reference` 验证 Godot 所有者仍精确引用目标。校验每次重读真实文件，不更新基线；分别报告一致、不一致、缺失、未设基线、未选择和未接入。
+- 跨对象依赖用 `relationships` 的 `object_id` 与限定 `resource_ref` 登记，例如角色指向独立弹体对象；依赖对象的文件与哈希只在其自身清单维护。保留 `portrait_region`、`anchor`、`normalized_canvas`、显示尺寸等有效摘要，但运行参数仍以实际 Godot Resource 和配套元数据为准。
+- 资源台只读 Manifest。它不改变状态、不写批准、不接入候选；本机桥接使用每次启动生成的会话令牌并校验同源请求，只通过登记后的文件与预览 ID 读取或启动当前项目资源，不提供跨项目预览或任意目录浏览。
 
 ## 2. 三阶段生产
 
@@ -32,7 +42,7 @@
 
 1. 依据选定概念制作干净的正式候选；保留参考、生成提示词和实际输出，不覆盖待比较的旧版本。
 2. Codex 执行第 3 节检查，再展示正式候选及必要的局部放大、透明底或动作预览，负责人决定是否接受该具体版本。技术通过只代表可交付，资产仍等待人工评审。
-3. 负责人批准该版本后，将选定资产放入 `assets/art/`，登记 Manifest，资产状态为 `approved`，并关联任务评审记录。已存在的正式路径保持稳定，替换前记录版本；原文件通过 Git 或保留的候选版本追溯。
+3. 负责人批准该版本后，将选定资产放入 `assets/art/`，在 Manifest 分别登记 `selection: selected`、`approval: approved` 及结构化批准依据。已存在的正式路径保持稳定，替换前记录版本；原文件通过 Git 或保留的候选版本追溯。选中了待修改候选时只更新 selection，不提前写 approved。
 
 ### 接入阶段
 
@@ -45,7 +55,16 @@
 
 ## 3. 资产检查与登记
 
-资产统一登记到 [assets/art/asset_manifest.yaml](../../assets/art/asset_manifest.yaml)，表内路径相对项目根目录。它由 Codex 维护资产索引、技术摘要、资源关联与状态，不是负责人的操作界面。Godot 当前不直接读取此表，但其中的信息仍有用途；保留 `portrait_region`、`anchor`、`normalized_canvas`、`animation_resource` 等有效字段。
+资产统一由 [assets/art/asset_manifest.yaml](../../assets/art/asset_manifest.yaml) 索引到各对象清单，表内路径相对项目根目录。它由 Codex 维护生产版本、文件基线、资源关联与状态，不是负责人的操作界面。Godot 当前不直接读取此表；Manifest 通过生效文件与引用绑定核对现有 Godot 内容系统，不把游戏改成运行时读取 YAML。
+
+### 生产阶段回写
+
+1. 概念输出成功后立即登记对象、概念版本、实际文件和 SHA-256，写 `selection: unselected`、`approval: pending`；生成成功不代表被选中或批准。
+2. 人工选择或评审后，只更新相应版本的 `selection`、`approval` 和结构化 `approval_evidence`。被选中但要求修改的候选可以是 `selected + review`，不能自动升级为 approved。
+3. 图集、处理输出、动画资源、帧元数据及已保存预览生成后，作为同一资产版本的不同 file role 登记；多文件动画必须覆盖实际图像、帧数据、Godot 资源及必要依赖。动作由 `clips_from` 读取，不复制参数。
+4. 最终选取后冻结每个被选文件的 SHA-256。只有获得接入授权，才写 `integration.status`、`active_variant`、正式 `effective_files`、逐文件 binding 和 Godot 引用 binding；未接入版本保持 `not_integrated`。
+5. 接入后运行资源台校验：确定性复制用 `sha256_equal`，正规化后的 `.frames.json`／`.tres` 用双方各自基线与 `baseline_hash`，所有者引用用 `resource_reference`。任何检查都不得自动覆盖基线。
+6. 接入效果人工评审仍记录在任务文档；通过时更新 integration evidence，未通过则保留真实生效情况和待修改结论，不能用撤销登记伪装没有发生过接入。
 
 ### 参数依据与同步
 
@@ -65,10 +84,10 @@
 - 路径、文件名、格式、分辨率和用途一致；正式图不含概念标注框、说明文字或无关装饰。
 - 需要透明时检查真实 Alpha、边缘及裁切，拒收烘焙棋盘格；角色比例、身份连续性仍需看图。
 - 核对锚点、裁切、安全区域；NinePatch 记录边距。动作图集核对区域、统一画布、脚底与播放顺序，具体接入规则见[战斗动画](../battle-animation.md)。
-- Manifest 只登记实际存在的资产，不用不存在的示例预占位置。必要字段：`file`、`type`、`resolution`、`transparent`、`usage`、`style_layer`、`status`；按用途补 `anchor`、`crop_mode`、`nine_patch`、`recolor_allowed`、图集及动画资源引用。
-- 新批准记录用 `review_record` 引用任务文件；任务内记录相对路径、版本和 SHA-256。生成来源与提示词随资产保存在 `generation.md`，不复制通用规范。旧记录保留，不凭整理动作补造批准。
+- Manifest 只登记实际存在的资产，不用不存在的示例预占位置。对象至少登记身份、类型与版本；版本文件至少登记 `path`、`role`、`sha256`，按用途补尺寸、透明度、裁切、锚点、图集、动画、预览和关系。
+- 新批准记录用结构化 `approval_evidence` 引用任务文件；任务内保留详细评审意见与证据。生成来源与提示词随资产保存在 `generation.md`，不复制通用规范。旧记录保留，不凭整理动作补造批准。
 
-Manifest 状态仅描述资产：`concept` 是已有概念文件，`review` 是实际待评资产，`approved` 是负责人批准的资产版本，`deprecated` 是停用但保留追溯的资产。接入效果是否通过另见任务记录。
+Manifest 的 `stage` 描述概念或资产阶段；`approval` 描述人工决定；`selection` 描述当前选取；`integration` 描述真实接入。接入效果的详细评审仍见任务记录，Manifest 仅保存可核对的来源与当前摘要。
 
 默认只有资产通过后才接入游戏。负责人明确要求提前试用时，可记录 `integration_authorization`（授权范围与来源）并保留 `review`；它只放行试接入，不跳过最终评审。历史上已授权接入的 6 项 `review` 资产保持原状态，不能自动批准或因本轮整理撤下。
 
