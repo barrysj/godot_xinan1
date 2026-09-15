@@ -15,14 +15,14 @@ from pathlib import Path
 
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".svg"}
-RESOURCE_EXTENSIONS = {".tres", ".res"}
+RESOURCE_EXTENSIONS = {".tres", ".res", ".tscn"}
 CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "特效": 3, "未归类": 4}
 TYPE_CATEGORIES = {
     "character": "人物", "enemy": "人物", "background": "场景",
     "scene": "场景", "ui": "UI", "effect": "特效",
 }
 CLIP_LABELS = {
-    "idle": "待机", "move": "移动", "attack": "攻击", "cast": "施法",
+    "idle": "待机", "move": "移动", "attack": "攻击", "melee": "近战", "ranged": "远程", "cast": "施法",
     "hurt": "受击", "critical": "濒危", "death": "退场", "burst": "爆发",
 }
 ROLE_KINDS = {
@@ -153,7 +153,7 @@ def _uri_path(project_root, uri):
     return _registered_path(project_root, value[6:]) if value.startswith("res://") else None
 
 
-def godot_resource_info(path, trusted_project_root=None):
+def godot_resource_info(path, trusted_project_root=None, visited=None):
     text = _read_text(path)
     lower = text.lower()
     if "battle_animation_set.gd" in lower or 'script_class="battleanimationset"' in lower:
@@ -166,6 +166,8 @@ def godot_resource_info(path, trusted_project_root=None):
         resource_type = "GodotResource"
     project_root = Path(trusted_project_root).resolve() if trusted_project_root else find_project_root(path)
     references, missing_refs = [], []
+    visited = set() if visited is None else visited
+    visited.add(_path_key(path))
     if project_root:
         for reference in re.findall(r'path="res://([^"]+)"', text):
             uri = "res://" + reference
@@ -173,6 +175,9 @@ def godot_resource_info(path, trusted_project_root=None):
             target = (project_root / reference.replace("/", os.sep)).resolve()
             if not target.exists():
                 missing_refs.append(uri)
+            elif target.suffix in (".tres", ".tscn") and _inside(target, project_root) and _path_key(target) not in visited:
+                nested = godot_resource_info(target, project_root, visited)
+                missing_refs.extend(nested["missing_references"])
     return {"resource_type": resource_type, "project_root": str(project_root) if project_root else None, "references": references, "missing_references": missing_refs}
 
 
@@ -308,6 +313,13 @@ class AssetCatalog(object):
         if source_hash is None or target_hash is None:
             return {"id": file_id, "kind": "文件内容", "status": "missing", "label": "对比文件缺失"}
         if source_hash != target_hash:
+            source, target = Path(selected["path"]), Path(effective["path"])
+            if source.suffix in (".tres", ".tscn") and source.suffix == target.suffix:
+                def normalized(item):
+                    text = _read_text(item["path"]).replace("res://" + item["root"].replace("\\", "/") + "/", "res://__package/")
+                    return re.sub(r' uid="uid://[^\"]+"', '', text).replace("\r\n", "\n")
+                if normalized(selected) == normalized(effective):
+                    return {"id": file_id, "kind": "资源引用", "status": "matched", "label": "运行包引用映射一致"}
             return {"id": file_id, "kind": "文件内容", "status": "mismatch", "label": "选用与生效内容不同", "source_hash": source_hash, "target_hash": target_hash}
         return {"id": file_id, "kind": "文件内容", "status": "matched", "label": "选用与生效内容相同", "source_hash": source_hash, "target_hash": target_hash}
 

@@ -65,7 +65,7 @@ func _ready() -> void:
 	var hybrid_node: Node2D = battle.battle_presentations.get(hybrid_unit.id)
 	check(is_instance_valid(hybrid_node), "Runtime instantiates the presentation scene")
 	if is_instance_valid(hybrid_node):
-		check(hybrid_node.call("handles_presentation_state", &"attack"), "Rig handles authored actions")
+		check(hybrid_node.call("handles_presentation_state", &"ranged"), "Rig handles authored actions")
 		check(not hybrid_node.call("handles_presentation_state", &"death"), "Death falls back to SpriteFrames")
 		hybrid_unit.animation.state = &"death"
 		battle._update_battle_presentations()
