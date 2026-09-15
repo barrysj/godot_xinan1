@@ -198,14 +198,26 @@ variants:
       generation_record: generation.md
       presentation_script: chalk_spirit_presentation.gd
       presentation_scene: chalk_spirit_presentation.tscn
-      gif_ranged: review/rig-preview.gif
+      gif_idle: review/idle-preview.gif
+      gif_move: review/move-preview.gif
+      gif_ranged: review/ranged-preview.gif
+      gif_cast: review/cast-preview.gif
+      gif_hurt: review/hurt-preview.gif
+      gif_critical: review/critical-preview.gif
+      gif_death: review/death-preview.gif
       gif_all_actions: review/rig-all-actions.gif
     resource: design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres
     animation:
       frames: frame_metadata
     previews:
       gifs:
+        idle: gif_idle
+        move: gif_move
         attack: gif_ranged
+        cast: gif_cast
+        hurt: gif_hurt
+        critical: gif_critical
+        death: gif_death
       godot:
         unit: res://resources/content/enemies/chalk.tres
         animation: res://design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres

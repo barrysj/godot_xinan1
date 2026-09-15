@@ -14,7 +14,7 @@
 - 施法特效：移除单色圆球，改为青色十二节点外环、紫色八节点内环、紫色菱形核心、白色内核、半透明光晕和八颗旋转粉尘。蓄力时双环反向旋转，释放时整体扩散并淡出。
 - 死亡仍完整复用正式 005 的 8 帧序列。
 
-法阵全部使用 Godot 原生 `Line2D`、`Polygon2D` 与既有粉尘纹理组成，不新增正式位图资产，也不进入 Manifest。可播放 GIF 留在 `review/`：`rig-preview.gif` 为远程攻击，`rig-all-actions.gif` 为七动作巡演；仅供 Codex 工作流与任务记录使用的运行截图和 contact sheet 统一放在 `review/codex-workflow/`。
+法阵全部使用 Godot 原生 `Line2D`、`Polygon2D` 与既有粉尘纹理组成，不新增正式位图资产，也不进入 Manifest。可播放 GIF 留在 `review/`：待机、移动、远程、施法、受击、濒危和退场各有独立预览，`rig-all-actions.gif` 保留七动作巡演；仅供 Codex 工作流与任务记录使用的运行截图和 contact sheet 统一放在 `review/codex-workflow/`。
 
 获批候选的自包含快照位于本目录，包含序列帧回退、全部骨骼拆件、候选动画资源与表现场景。正式资产采用稳定目录 `assets/art/characters/chalk_spirit/`，运行时不包含版本号，也不再依赖任何试验别名目录；Manifest 分别登记候选根和正式接入根，动作后端映射保存在对应 Godot 资源中。
 

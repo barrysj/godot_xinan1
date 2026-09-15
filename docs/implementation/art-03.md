@@ -25,6 +25,8 @@
 
 2026-09-16 清理专用粉笔精灵评审脚手架后，运行 `pwsh.exe -NoProfile -File .\run-motion-preview.ps1 -Check -Unit 'res://resources/content/enemies/chalk.tres'`：待机、移动、远程、施法、受击、濒危和退场通过，近战按角色能力正确跳过，`MOTION_PREVIEW_CHECK failures=0`。任务记录引用的两个 GIF 和五张长期截图／contact sheet 均保留；未引用的十八张中间截图已移除。
 
+同日从统一 `motion_preview.tscn` 以 30 FPS 固定步长分别录制七个受支持动作，每段 60 个实际渲染帧；隔帧编码为 352×352、约 15 FPS 的独立 GIF，并全部登记到 006 Manifest 供资源台逐动作播放。该批 GIF 是合并前资产补全，不代表下一节的通用 `-ExportPreviews` 已实现；录制帧和一次性编码程序仅位于 `.godot/`，不作为角色专用工具入库。
+
 ## 已知边界与未完成项
 
 2026-09-15 在 main `1a2948e` 与粉笔 `b661bad`、工具 `c44a862` 合并树重跑粉笔七个受支持模式，`failures=0`，近战按能力跳过；入口支持显式 Unit、Animation、Projectile。验证命令及三分辨率截图见 [E19](verification.md#美术集成验证-e19)。这不是新增玩家内容或其他所有对象的验证。
