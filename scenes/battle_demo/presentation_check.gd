@@ -2,6 +2,7 @@ extends Node
 const Presenter = preload("res://scenes/battle_demo/unit_presentation.gd")
 const Animator = preload("res://scenes/battle_demo/battle_animation.gd")
 const AnimationSet = preload("res://game/content/battle_animation_set.gd")
+const Chalk = preload("res://resources/content/enemies/chalk.tres")
 var failures := 0
 func check(ok: bool, label: String) -> void:
 	if not ok:
@@ -48,6 +49,27 @@ func _ready() -> void:
 	add_child(battle)
 	battle.set_process(false)
 	battle.formation = [0, -1, 3, 2, 1, -1]
+	battle._start()
+	var hybrid_unit: Dictionary = battle._from_definition(Chalk, 1, 0, 0)
+	hybrid_unit.id = 999
+	hybrid_unit.position = Vector2(2, 2)
+	hybrid_unit.previous_position = hybrid_unit.position
+	hybrid_unit.cell = Vector2i(hybrid_unit.position)
+	hybrid_unit.destination = hybrid_unit.cell
+	hybrid_unit.moving = false
+	hybrid_unit.animation = Animator.new(hybrid_unit.battle_animation)
+	hybrid_unit.presentation = Presenter.new()
+	battle.units.append(hybrid_unit)
+	battle._clear_battle_presentations()
+	battle._create_battle_presentations()
+	var hybrid_node: Node2D = battle.battle_presentations.get(hybrid_unit.id)
+	check(is_instance_valid(hybrid_node), "Runtime instantiates the presentation scene")
+	if is_instance_valid(hybrid_node):
+		check(hybrid_node.call("handles_presentation_state", &"attack"), "Rig handles authored actions")
+		check(not hybrid_node.call("handles_presentation_state", &"death"), "Death falls back to SpriteFrames")
+		hybrid_unit.animation.state = &"death"
+		battle._update_battle_presentations()
+		check(not hybrid_node.visible, "Fallback hides the rig node")
 	var outcomes = []
 	for rate in [30, 60, 144]:
 		for multiplier in [1, 2]:

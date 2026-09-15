@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "version": "006",
+  "prototype": false,
+  "self_contained": true,
+  "approved_candidate": "design/concepts/chalk-spirit/chalk-spirit/006",
+  "sequence_source": "asset_005",
+  "source": "locomotion_sheet.png",
+  "source_sha256": "15154f8e56377337a2a2e772cc23057d01942ff1c203d595813b9b145318c1e8",
+  "canvas": [384, 384],
+  "anchor": [192, 336],
+  "launcher_pivot": [246, 191],
+  "parts": {
+    "body": {
+      "file": "parts/body.png",
+      "bbox": [122, 55, 270, 265]
+    },
+    "launcher": {
+      "file": "parts/launcher.png",
+      "bbox": [244, 176, 317, 243]
+    },
+    "orbiter_back": {
+      "file": "parts/orbiter_back.png",
+      "bbox": [122, 134, 165, 173]
+    },
+    "orbiter_top": {
+      "file": "parts/orbiter_top.png",
+      "bbox": [149, 115, 178, 134]
+    },
+    "dust_particle": {
+      "file": "parts/dust_particle.png",
+      "bbox": [202, 307, 211, 313]
+    }
+  }
+}

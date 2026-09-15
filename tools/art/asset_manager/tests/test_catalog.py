@@ -230,6 +230,11 @@ class CatalogTests(unittest.TestCase):
         result = AssetCatalog(project_root).scan(project_root / "assets/art/asset_manifest.yaml")
         objects = {obj["id"] for obj in result["objects"]}
         self.assertTrue({"guard", "archer", "guard_shield", "battle_courtyard", "battle_lab", "battle_classroom", "chalk_spirit", "chalk_projectile"}.issubset(objects))
+        chalk = next(obj for obj in result["objects"] if obj["id"] == "chalk_spirit")
+        asset_006 = next(variant for variant in chalk["variants"] if variant["id"] == "asset_006")
+        gif_previews = [preview for preview in asset_006["previews"] if preview["type"] == "gif"]
+        self.assertEqual(["idle", "move", "attack", "cast", "hurt", "critical", "death"], [preview["id"] for preview in gif_previews])
+        self.assertTrue(all(preview["supported"] for preview in gif_previews))
         self.assertEqual(0, result["summary"]["mismatches"])
         self.assertEqual(0, result["summary"]["missing"])
         for manifest in (project_root / "assets/art/manifests").glob("*.yaml"):

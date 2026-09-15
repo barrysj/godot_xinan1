@@ -19,6 +19,9 @@ func _ready() -> void:
 			"res://assets/art/characters/chalk_spirit/combat_sheet.png",
 			"res://assets/art/characters/chalk_spirit/reaction_sheet.png",
 		]
+		check(chalk_model.presentation_scene != null, "Chalk Spirit has a hybrid presentation scene")
+		if chalk_model.presentation_scene != null:
+			check(chalk_model.presentation_scene.resource_path == "res://scenes/battle_demo/presentations/chalk_spirit_presentation.tscn", "Chalk Spirit presentation resource is stable")
 		for clip in expected_counts:
 			check(chalk_model.frames.has_animation(clip), "Chalk Spirit has " + clip)
 			check(chalk_model.frames.get_frame_count(clip) == expected_counts[clip], "Chalk Spirit frame count for " + clip)

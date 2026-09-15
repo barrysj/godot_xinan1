@@ -1,9 +1,10 @@
-[gd_resource type="Resource" load_steps=51 format=3]
+[gd_resource type="Resource" load_steps=52 format=3]
 [ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/locomotion_sheet.png" id="locomotion"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/combat_sheet.png" id="combat"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/reaction_sheet.png" id="reaction"]
 [ext_resource type="Resource" path="res://resources/content/animations/chalk_projectile.tres" id="projectile"]
+[ext_resource type="PackedScene" path="res://scenes/battle_demo/presentations/chalk_spirit_presentation.tscn" id="presentation"]
 
 [sub_resource type="AtlasTexture" id="locomotion_0"]
 atlas = ExtResource("locomotion")
@@ -281,6 +282,7 @@ animations = [{"frames": [{"duration": 1.0, "texture": SubResource("locomotion_0
 [resource]
 script = ExtResource("script")
 frames = SubResource("frames")
+presentation_scene = ExtResource("presentation")
 display_size = Vector2(140, 140)
 anchor = Vector2(0.5, 0.875)
 impact_ratio = 0.625
