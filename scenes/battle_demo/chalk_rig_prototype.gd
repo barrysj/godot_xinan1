@@ -71,6 +71,9 @@ func handles_motion_preview_state(state: StringName) -> bool:
 
 
 func _ready() -> void:
+	# Painterly cutout parts rotate and shrink; nearest sampling inherited from the
+	# pixel battle scene makes their edges crawl between frames.
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	_build_sequence()
 	_build_rig()
 	if embedded_preview:
@@ -111,6 +114,10 @@ func _bone(parent: Node, title: String, position: Vector2) -> Bone2D:
 	var bone := Bone2D.new()
 	bone.name = title
 	bone.position = position
+	# These bones are transform pivots for rigid sprites, not length-driven IK chains.
+	bone.set_autocalculate_length_and_angle(false)
+	bone.set_length(1.0)
+	bone.set_bone_angle(0.0)
 	parent.add_child(bone)
 	bone.rest = bone.transform
 	return bone
@@ -538,6 +545,11 @@ func _draw() -> void:
 func _run_check() -> void:
 	set_process(false)
 	var failures := 0
+	if texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
+		failures += 1
+	for bone in [root_bone, launcher_bone, orbiter_back_bone, orbiter_top_bone]:
+		if bone.get_autocalculate_length_and_angle():
+			failures += 1
 	if root_bone == null or launcher_bone == null or launcher_bone.get_parent() != root_bone:
 		failures += 1
 	if dust_sprites.size() != 10 or projectile.texture == null:

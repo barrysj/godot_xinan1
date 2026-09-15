@@ -15,6 +15,7 @@
 - 候选 002：[生成与验证记录](../../../design/concepts/chalk-spirit/chalk-rig/002/generation.md)。远程强化前摇、快速出手、枪口光和后坐；新增移动、施法、受击与濒危骨骼动作，死亡明确保留正式 005 序列帧。
 - 候选 002 评审：需修改。负责人于 2026-09-15 指出远程出手把主体推向前方，方向应为向后后坐；施法单色圆球表现粗糙。
 - 候选 003：[生成与验证记录](../../../design/concepts/chalk-spirit/chalk-rig/003/generation.md)。远程改为前倾架枪、主体向左后坐、抬枪与浮游石惯性；施法改为青紫双环法阵、菱形核心、光晕与八颗旋转粉尘。
+- 候选 003 运行反馈：负责人于 2026-09-15 在游戏内统一预览中发现骨骼拆件边缘呈水波纹，并报告叶骨骼无法自动计算长度和角度的警告。确认原因为骨骼场景继承像素战斗场景的最近邻采样，以及刚性枢轴误用 `Bone2D` 默认自动骨长计算；现改为线性 mipmap 采样，并为四根枢轴骨显式关闭自动计算。
 - 当前结论：技术验证通过，待人工视觉评审；不视为正式接入批准。
 - 批准边界：当前仅可作为生产方式参考和评审原型；负责人批准前不得绑定角色定义、替换 `resources/content/animations/chalk.tres` 或更新 Manifest 为正式资产。
 
@@ -28,7 +29,7 @@
 - 候选 003 自检：七动作可用，出手时主体后坐方向与弹体方向相反，双环法阵及八颗施法粉尘存在，死亡继续读取正式 005，`failures=0`。
 - 候选 003 动画：[远程攻击 GIF](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-preview.gif)、[七动作巡演 GIF](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-all-actions.gif)、[攻击四阶段](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-attack-contact-sheet.png)和[七动作总览](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-all-actions-contact-sheet.png)。出手阶段完成三分辨率捕获。
 - 候选 003 已适配统一动作预览器：骨骼表现与正式序列帧共用战斗模拟时钟并按动作选择后端，六个骨骼动作与正式 005 退场序列帧可在同一角色中并存；支持动作指定、任意倍率、暂停、单步、循环和巡演。远程弹体由标准模拟器绘制，骨骼层只保留枪口光与后坐，避免双重弹体和时序漂移。接入仍仅用于评审，不改变正式资源绑定。
-- 统一预览证据：[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-1920x1080.png)、[远程 2560×1440](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-2560x1440.png)、[远程 1920×1200](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-1920x1200.png)与[正式 005 退场回退](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-death-1920x1080.png)。命令使用 `-Action` 与 `-Speed 0.5`，由 Godot 标准预览场景实际捕获。
+- 统一预览证据：[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-1920x1080.png)、[远程 2560×1440](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-2560x1440.png)、[远程 1920×1200](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-1920x1200.png)与[正式 005 退场回退](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-death-1920x1080.png)。水波纹修复后使用 `-Action` 与 `-Speed 0.25` 重新捕获；骨骼属性和纹理过滤回归检查为 `failures=0`，终端不再出现 `Bone2D` 自动计算警告。
 
 ## 制作建议
 
