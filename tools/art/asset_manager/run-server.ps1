@@ -8,8 +8,8 @@ param(
 
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
 
-$projectRoot = $PSScriptRoot
-$serverPath = Join-Path $projectRoot 'tools/art/asset_manager/server.py'
+$projectRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
+$serverPath = Join-Path $PSScriptRoot 'server.py'
 $previewScript = Join-Path $projectRoot 'run-motion-preview.ps1'
 $python = Get-Command py.exe -ErrorAction SilentlyContinue
 if (-not $python) { throw 'Python 3 launcher not found. Install Python 3 or expose py.exe.' }
@@ -33,7 +33,8 @@ $healthUrl = "${url}api/health"
 $isRunning = $false
 try {
     $health = Invoke-RestMethod -Uri $healthUrl -TimeoutSec 1
-    $isRunning = $health.app -eq 'cyber-pop-art-manager-v2'
+    $healthRoot = if ($health.project_root) { [System.IO.Path]::GetFullPath([string]$health.project_root) } else { '' }
+    $isRunning = $health.app -eq 'cyber-pop-art-manager-v4' -and [string]::Equals($projectRoot, $healthRoot, [System.StringComparison]::OrdinalIgnoreCase)
     if (-not $isRunning) { throw "Port $Port is occupied by another service." }
 } catch {
     if ($_.Exception.Message -like "*occupied by another service*") { throw }
@@ -55,7 +56,8 @@ if (-not $isRunning) {
         if ($service.HasExited) { throw "Art manager stopped during startup (exit code $($service.ExitCode))." }
         try {
             $health = Invoke-RestMethod -Uri $healthUrl -TimeoutSec 1
-            if ($health.app -eq 'cyber-pop-art-manager-v2') { $ready = $true; break }
+            $healthRoot = if ($health.project_root) { [System.IO.Path]::GetFullPath([string]$health.project_root) } else { '' }
+            if ($health.app -eq 'cyber-pop-art-manager-v4' -and [string]::Equals($projectRoot, $healthRoot, [System.StringComparison]::OrdinalIgnoreCase)) { $ready = $true; break }
         } catch { }
     }
     if (-not $ready) {

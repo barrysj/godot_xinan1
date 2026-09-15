@@ -1,7 +1,7 @@
-schema_version: 2
+schema_version: 3
 object:
   id: chalk_projectile
-  display_name: 粉笔弹体
+  display_name: "粉笔弹体"
   type: effect
   subtype: projectile
 variants:
@@ -16,23 +16,12 @@ variants:
       decision: approved
       quote: "还不错。采用"
       commit: 6206374
+    root: design/concepts/chalk-spirit/chalk-projectile/001
     files:
-      source_image:
-        path: design/concepts/chalk-spirit/chalk-projectile/001/projectile_source_rgba.png
-        role: source
-        sha256: d279a2797bd9271f70fe3d5b82c0cb0a62f456b5ad1d360fd9c7db25cc316046
-      projectile_sprite:
-        path: design/concepts/chalk-spirit/chalk-projectile/001/projectile.png
-        role: image
-        sha256: 007a244cdc3887d93322188f9f03a103f9ae5de934630c5c01c1063fd5a87820
-      build_metadata:
-        path: design/concepts/chalk-spirit/chalk-projectile/001/projectile.metadata.json
-        role: dependency
-        sha256: 5289c68626af0c3e4b82e26949f22ba7789256926840d13f0a527db24c94d96c
-      candidate_resource:
-        path: design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres
-        role: projectile_resource
-        sha256: 2c9665c4585b10688c8746a85f19a3a18548292df6949d19b62704bcfd76d47e
+      source_image: projectile_source_rgba.png
+      projectile_sprite: projectile.png
+      build_metadata: projectile.metadata.json
+    resource: design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres
     previews:
       godot:
         unit: res://resources/content/enemies/chalk.tres
@@ -47,36 +36,9 @@ variants:
 integration:
   status: active
   active_variant: asset_001
-  owner_resource: resources/content/animations/chalk_projectile.tres
+  root: assets/art/effects/chalk_projectile
+  files:
+    projectile_sprite: projectile.png
+    build_metadata: projectile.metadata.json
+  resource: resources/content/animations/chalk_projectile.tres
   evidence: "docs/art/tasks/chalk-spirit.md；2026-09-15 用户批准正式接入预览"
-  effective_files:
-    projectile_sprite:
-      path: assets/art/effects/chalk_projectile/projectile.png
-      role: image
-      sha256: 007a244cdc3887d93322188f9f03a103f9ae5de934630c5c01c1063fd5a87820
-    build_metadata:
-      path: assets/art/effects/chalk_projectile/projectile.metadata.json
-      role: dependency
-      sha256: a8bd81bb799a86050e6fc138c43b88f421f216c8b3890672f7d9d1e3802cd553
-    runtime_resource:
-      path: resources/content/animations/chalk_projectile.tres
-      role: projectile_resource
-      sha256: a6d9adaac60e654bcad964285928575af7876177a1fb185ccb5b39e3ea587c86
-  bindings:
-    sprite_copy:
-      compare: sha256_equal
-      selected_file: projectile_sprite
-      effective_file: projectile_sprite
-    metadata_baseline:
-      compare: baseline_hash
-      selected_file: build_metadata
-      effective_file: build_metadata
-    resource_baseline:
-      compare: baseline_hash
-      selected_file: candidate_resource
-      effective_file: runtime_resource
-    resource_texture:
-      compare: resource_reference
-      source: resources/content/animations/chalk_projectile.tres
-      source_sha256: a6d9adaac60e654bcad964285928575af7876177a1fb185ccb5b39e3ea587c86
-      target: res://assets/art/effects/chalk_projectile/projectile.png

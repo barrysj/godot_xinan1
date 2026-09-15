@@ -5,53 +5,61 @@
 
 ## 当前状态
 
-- 状态：已验证（本地资源登记、哈希核验与预览范围）。资源台与粉笔资产现已在同一集成工作树验证。
-- 功能入口：`pwsh.exe -NoProfile -File .\run-art-manager.ps1`，本地页面 `http://127.0.0.1:8765/`。
-- 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式说明见[工具说明](../../tools/art/asset_manager/README.md)。
+- 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
+- 功能入口：首次或源码更新后运行 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1`；日常用 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器。直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
+- 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
 - 范围：只处理当前项目登记对象；不兼容任意目录，不提供跨项目预览，不承担审批、编辑、生图或运行时内容加载。
 
-## 已实现能力
+## 当前接口
 
-1. Manifest 权威发现：对象、类型、版本、文件、关系和状态只来自主索引与对象清单；目录只验证登记文件位于项目边界，未登记文件不会进入受管列表。
-2. 分阶段状态：概念／资产版本分别展示 selection 与 approval；integration 独立记录实际生效版本、正式文件及 Godot 引用，避免把“选中”“批准”“已接入”混成一个状态。
-3. 多文件动画：同一版本登记图集、帧元数据、Godot Resource、必要依赖与 GIF；页面从指定 `.frames.json` 展开 clip，representation 可扩展，不假设所有动画都是帧图集。
-4. 双预览入口：已登记 GIF 直接播放；Godot 预览以固定参数数组传入显式 Unit、Animation 与可选 Projectile，不回退默认对象。
-5. 实时一致性：逐文件重算 SHA-256，报告一致、不一致、缺失或未设基线；`sha256_equal`、`baseline_hash`、`resource_reference` 分别验证确定性复制、正式基线与实际引用链，校验不写回基线。
+1. 页面只接收一个主 Manifest 路径。主文件索引对象清单，目录不再作为输入；路径可手填或通过 Windows 文件选择器选取。
+2. 对象版本使用一个项目相对 `root`，`files` 仅保存相对路径；单个 Godot 文件用 `resource` 登记。
+3. `stage` 决定概念、资产等详情选项卡。`selection` 表示当前选用版本；`approval` 表示负责人是否批准，二者独立显示；`integration` 记录真实接入。
+4. 动画动作直接读取 `.frames.json`；资源类型和依赖直接解析 `.tres`，不在 Manifest 保存 `representation`、`role` 或 `resource_reference` 比较规则。
+5. Manifest 不保存 SHA-256。资源台每次校验都根据选用路径与正式路径实时计算内容哈希；Godot 所有者引用与缺失依赖则从 `.tres` 实时检查。
+6. 跨对象关系只登记目标对象 ID。详情展示目标缩略图、状态与跳转入口。
+7. 详情内容用响应式网格适配可用宽度；不同 stage 不再纵向平铺。版本默认折叠为摘要，展开后分为图集、动画、其他三个子页。
+8. 概念与资产页可独立筛选选用和批准状态；生效版本及关联对象支持带返回入口的详情跳转。
+9. 校验状态只描述版本文件和 Godot 引用的实时完整性，由管理器计算而非 Manifest 字段，并以颜色标签显示；不从校验结果推断 `selection` 或 `approval`。
+10. Windows 桌面控制器只包含“启动服务”“打开页面”“停止服务”三个动作按钮，并显示实时服务状态、PID 和当前工作目录。健康接口返回服务 PID 与项目根；控制器核对应用 ID 和项目根后才允许停止，避免误杀同端口程序或其他工作树服务。
 
-## 迁移说明
+## 验证入口
 
-- 旧 v1 的守护者、远射手、守护护盾、校园庭院、电子实验室与异变教室六个对象已拆入独立 v2 清单。
-- 原有路径、分辨率、透明度、图集、画布、显示尺寸、锚点、头像裁切、用途、风格层与试接入说明均保留。
-- 六项旧资产仍是 `approval: review`；因旧记录没有明确版本选取证据，写为 `selection: unknown`。Godot 当前引用存在，所以 integration 为 `authorized_active`。文件哈希明确作为 2026-09-15 迁移／接入基线，不冒充历史选择时基线；迁移没有把它们升级成 selected 或 approved。
+- `py -3 -m unittest discover -s tools/art/asset_manager/tests -v`
+- `node --check tools/art/asset_manager/static/app.js`
+- `py -3 -m py_compile tools/art/asset_manager/catalog.py tools/art/asset_manager/server.py`
+- 页面需核对 Manifest 单输入、stage 切换、宽屏网格、粉笔弹体缩略图与跳转、GIF 播放和 Godot 预览入口。
 
-## 验证记录
+## 2026-09-15 验证记录
 
-- 日期：2026-09-15。
-- 代码基线：分支 `codex/art-asset-manager`，功能提交 `dea8869`、文档基线 `36b5c30`；粉笔精灵数据来自 `art/chalk-spirit-concept` 的对象清单提交 `8016e90` 与完整 v2 根索引提交 `b661bad`。
-- 命令：`py -3 -m unittest discover -s tools/art/asset_manager/tests -v`。
-- 结果：11 tests PASS。覆盖 Manifest-only 发现、未登记文件排除、概念／资产多版本、GIF HTTP 播放、clip、限定对象关系、真实哈希不一致、文件缺失、未选择／未接入、三种 binding、Unit+Animation+Projectile 参数、安全边界，以及六个旧对象迁移后全部基线一致。
-- 实际数据：六个对象、12 个唯一登记文件（选取侧与正式生效侧分别保留校验视图），0 个哈希不一致、0 个缺失；所有已声明生效对象的引用 binding 通过。
-- 页面验证：在 `http://127.0.0.1:8766/` 实际打开页面，显示 6 个 Manifest 对象、12 个登记文件、0 处不一致；守护者详情展开 7 个动作及各文件哈希，浏览器控制台无错误。点击“预览”返回 `预览窗口已启动 · res://resources/content/characters/guard.tres`，确认使用显式 Unit，并由自动化测试锁定 Unit+Animation+可选 Projectile 的参数数组顺序。
-- 数据兼容验证：用 `dea8869` 解析器只读扫描 `art/chalk-spirit-concept@b661bad` 的完整 v2 Manifest，得到 8 个对象、71 个唯一登记文件、0 个不一致、0 个缺失、全部对象 0 warning。粉笔精灵包含 5 个版本，005 展开 7 个 clip 与 7 个可播放 GIF，正式接入和弹体关系均为 matched；粉笔弹体 001 的接入与 Godot 预览目标均通过。
-- 组合页面验收：以 `dea8869` 的资源台服务只读指向 `art/chalk-spirit-concept@b661bad` 项目根，在 `http://127.0.0.1:8767/` 显示 8 个对象、71 个登记文件、0 处不一致。粉笔精灵详情准确展示概念 001、资产 002—005、正式 005 的 3 张图集、7 个动作、7 个 GIF、实际生效文件与弹体关系；同一 GIF 相隔 350 ms 的页面截图 SHA-256 不同，确认浏览器实际播放而非静态占位。
-- 组合预览验收：实际点击正式 005 的“预览”后，页面返回 `预览窗口已启动 · res://resources/content/enemies/chalk.tres`。关闭该开发预览后再点击粉笔弹体 001 的“预览”，实际 Godot 子进程命令行包含 `--preview-unit=res://resources/content/enemies/chalk.tres`、`--preview-animation=res://design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres` 与 `--preview-projectile=res://design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres`，没有默认对象回退。
-- 引擎验证：正式接入动画 `res://resources/content/animations/chalk.tres` 与候选动画＋弹体组合分别执行 `run-motion-preview.ps1 -Check`，均以退出码 0、`MOTION_PREVIEW_CHECK failures=0` 通过；待机、移动、远程、施法、受击、濒危、退场通过，近战按该单位能力正确跳过。候选动画＋弹体执行 `-Capture`，Godot OpenGL 实际渲染完成 1920×1080、2560×1440、1920×1200 三组截图，远程截图可见自定义序列帧角色与粉笔弹体。
+- 自动测试：15 项通过；Python 编译、JavaScript 语法与 Git 差异检查通过。
+- 数据校验：8 个对象、71 个登记文件，0 缺失、0 不一致。
+- 响应式：1600 px 视口为两列版本卡；700 px 视口自动降为单列，无横向溢出。
+- 交互：概念选项卡只显示版本 001；关联素材展示粉笔弹体缩略图，并可跳转到粉笔弹体详情。
+- 交互补充：版本默认折叠，筛选、三子页、生效版本跳转及两类返回入口通过；系统文件选择器接口通过服务端测试。
+- 状态与动画：版本摘要同时显示选用、批准、校验三类颜色标签；展开页只保留评审依据，不重复显示决定字段。动画动作以七项纵向按钮列表展示，点击“待机”与“攻击”时右侧均只出现对应的一个 GIF；子页与外层卡片使用不同背景层级。
+- Godot 预览：切分支后先增量导入再启动，1920×1080、2560×1440、1920×1200 三种截图均恢复正常画面。
+- 截图：`.godot/art-manager-v3-stage-tabs-20260915.png`、`.godot/art-manager-v3-related-20260915.png`（本地验收产物，不入库）。
+- 本轮截图：`.godot/art-manager-v4-version-summaries-20260915.png`、`.godot/art-manager-v4-version-animation-20260915.png`、`.godot/art-manager-v4-active-jump-20260915.png`、`.godot/art-manager-v4-manifest-picker-20260915.png`、`.godot/motion-preview-3-1920x1080.png`（本地验收产物，不入库）。
+- 状态与动作截图：`.godot/art-manager-v5-summary-status-20260915.png`、`.godot/art-manager-v5-animation-list-20260915.png`（本地验收产物，不入库）。
+- 展开层级截图：`.godot/art-manager-v6-expanded-contrast-20260915.png`；折叠卡、展开摘要、详情底层与子页面板使用独立背景，并以青色边框和左侧轨道标识当前展开版本（本地验收产物，不入库）。
+
+## 2026-09-16 桌面控制器验证
+
+- 构建：Windows .NET Framework C# 编译器生成无控制台 WinForms 可执行程序；构建脚本与服务脚本归入 `tools/art/asset_manager/`，根目录入口只启动已构建控制器。
+- 状态：未启动时只启用“启动服务”；运行后显示实际 PID 并启用“打开页面”“停止服务”。工作目录显示当前项目根。
+- 生命周期自检：`initial=未启动`、`started=True`、`open_enabled=True`、`stopped=True`，退出码 0；结束后 8765 无监听。
+- 入口拆分回归：独立构建成功；根目录启动脚本成功创建控制器进程；工具目录服务脚本返回正确应用 ID、PID 与项目根，停止后 8765 无监听。
+- 后端回归：16 项 Python 测试通过，新增健康接口进程 ID 与项目根测试；PowerShell 脚本语法、Python 编译及 Git 差异检查通过。
+- 截图：`.godot/art-manager-control-running-v2-20260916.png`、`.godot/art-manager-control-script-layout-20260916.png`（本地验收产物，不入库）。
 
 ## 已知边界
 
-- 上述 8767 记录是合并前的固定提交组合验收；集成后的结果见下节，不新增跨项目预览产品能力。
-- `BattleEffectSet` 当前没有独立 Godot 预览入口；可登记 GIF，或等待具体效果具备准确现有预览场景后再登记，不扩展通用播放器。
-- Godot 仍读取 `.tres`，不读取 YAML。Manifest 的职责是生产追溯与验证，不替代运行时内容系统。
+- 桌面控制器只支持 Windows，并依赖系统 .NET Framework 4.x C# 编译器；Web 资源台本身的范围与跨项目边界不变。
+- “打开页面”使用 Windows 默认浏览器；关闭控制器窗口不会自动停止服务，服务生命周期由三个明确按钮管理。
 
-## 集成验证与维护
+## 历史迁移
 
-- 日期：2026-09-15；基线：main `1a2948e`、粉笔数据 `b661bad`、工具 `c44a862` 的本次合并树；精确合并提交由 Git 历史记录。
-- 在同一项目重跑 11 项 Python 测试；迁移测试检查原六对象及粉笔两对象存在，不再假定全库只有六对象。实际清单为八对象、71 文件，无缺失和哈希差异。
-- 集成时发现粉笔分支的 12 个登记文本含 CRLF 或混合换行，检出为 LF 会改变 SHA-256。逐个验证原工作树字节符合原基准、与合并文件仅换行不同后恢复原字节，通过 `.gitattributes` 的精确路径 `-text` 规则保存；没有重写 Manifest 哈希或批准记录。
-- 新登记文本应在选取及计算基准前统一持久化字节与 Git 属性；不能在校验时自动正规化或重建基准。已有登记文件的字节保护不能随普通格式化移除。
-- 启动脚本健康检查改为识别实际 v2 服务标识；使用 `pwsh.exe -NoProfile -File ./run-art-manager.ps1 -Port 8770 -NoOpen` 验证集成目录服务。
-- 共享 Godot 检查与截图入口见 [E19](verification.md#美术集成验证-e19)，不在高层总览复制测试明细。
-
-## 交接给统筹
-
-已汇总至 2026-09-15 实现总览和功能目录；保留 main 的 M1 优先级与分层档案结构。此次仅纳入已授权的项目专用资源台例外。
+- v2 曾以逐文件 SHA-256、显式 role／representation 与三类 binding 保存完整迁移基线；该方案在 2026-09-15 通过 8 对象、71 文件与 Godot 组合验收。
+- v3 根据负责人反馈删除可从文件和 `.tres` 推导的字段。原有选择、批准、评审依据、接入状态、预览参数和有效视觉元数据保持不变；六项旧资产仍为 `approval: review`、`selection: unknown`，没有借迁移升级批准状态。
+- Godot 仍读取 `.tres`，不读取 YAML。Manifest 只负责生产对象、版本和路径语义。

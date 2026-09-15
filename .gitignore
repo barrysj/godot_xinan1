@@ -4,6 +4,8 @@
 # Godot-specific ignores
 .import/
 .godot/
+# Review evidence is served as source media and is not a runtime Godot resource.
+design/concepts/**/review/*.import
 
 # Python helper caches
 __pycache__/

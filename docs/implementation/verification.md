@@ -51,6 +51,6 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - Godot：以本文件 `$engine` 命令运行 `game/combat/action_check.tscn`、`scenes/battle_demo/presentation_check.tscn`、`scenes/battle_demo/skill_vfx_check.tscn`、`scenes/battle_demo/deployment_check.tscn -- --deployment-check`；分别出现 ACTION_CHECK、PRESENTATION_CHECK、SKILL_VFX_CHECK、DEPLOYMENT_CHECK 的 `failures=0`。覆盖动作时序、表现同步、粉笔弹体/旧护盾回退及 main 的部署行为。
 - 动作：`pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Check -Unit res://resources/content/enemies/chalk.tres -Animation res://resources/content/animations/chalk.tres`，七种受支持模式 PASS，近战 SKIP，`MOTION_PREVIEW_CHECK failures=0`。
 - 渲染：将上述 `-Check` 替换为 `-Capture`，完成 1920×1080、2560×1440、1920×1200，日志有三个 `MOTION_PREVIEW_CAPTURE`；截图为 `.godot/motion-preview-3-<分辨率>.png`。
-- 页面：`pwsh.exe -NoProfile -File ./run-art-manager.ps1 -Port 8771 -NoOpen` 冷启动成功；8770 同项目验收页显示八对象/71文件/0不一致，实际点击弹体预览启动粉笔 Unit、005 Animation 与001 Projectile，未回退默认对象。截图 `.godot/art-merge-overview.png`、`.godot/art-merge-preview-launch.png` 为本机缓存，不是跨 checkout 唯一证据。
+- 页面：`pwsh.exe -NoProfile -File ./tools/art/asset_manager/run-server.ps1 -Port 8771 -NoOpen` 冷启动成功；8770 同项目验收页显示八对象/71文件/0不一致，实际点击弹体预览启动粉笔 Unit、005 Animation 与001 Projectile，未回退默认对象。截图 `.godot/art-merge-overview.png`、`.godot/art-merge-preview-launch.png` 为本机缓存，不是跨 checkout 唯一证据。
 - 修复范围：启动器 v2 健康标识、旧六对象测试假设、登记文本字节被 Git 换行转换的问题；详见 [ART-05](art-05.md)。没有重写哈希或改变资产批准状态。
 - 边界：既有原图加载警告及无头环境证书警告仍存在；未重导出 Web、未重新验收全套 M0/手机/真人体验。美术批准继续以任务与 Manifest 为准。

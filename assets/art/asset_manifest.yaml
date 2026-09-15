@@ -1,24 +1,10 @@
-schema_version: 2
-
-conventions:
-  authority: manifest_only
-  file_hash: sha256_at_selection_integration_or_explicit_migration
-  selection: [unselected, selected, unknown]
-  approval: [pending, review, approved, rejected, deprecated, unknown]
-  integration: [not_integrated, authorized_active, active, unknown]
-  binding_compare: [sha256_equal, baseline_hash, resource_reference]
-
-object_manifests:
-  guard: assets/art/manifests/guard.yaml
-  archer: assets/art/manifests/archer.yaml
-  guard_shield: assets/art/manifests/guard_shield.yaml
-  battle_courtyard: assets/art/manifests/battle_courtyard.yaml
-  battle_lab: assets/art/manifests/battle_lab.yaml
-  battle_classroom: assets/art/manifests/battle_classroom.yaml
-  chalk_spirit: assets/art/manifests/chalk_spirit.yaml
-  chalk_projectile: assets/art/manifests/chalk_projectile.yaml
-
-notes:
-  discovery: 未登记文件不进入资源台；目录仅用于验证登记路径。
-  approval: 选取、批准与生效分别登记，生成成功不代表批准。
-  runtime: Godot 不读取本表；integration bindings 只校验现有运行引用。
+schema_version: 3
+objects:
+  guard: manifests/guard.yaml
+  archer: manifests/archer.yaml
+  guard_shield: manifests/guard_shield.yaml
+  battle_courtyard: manifests/battle_courtyard.yaml
+  battle_lab: manifests/battle_lab.yaml
+  battle_classroom: manifests/battle_classroom.yaml
+  chalk_spirit: manifests/chalk_spirit.yaml
+  chalk_projectile: manifests/chalk_projectile.yaml

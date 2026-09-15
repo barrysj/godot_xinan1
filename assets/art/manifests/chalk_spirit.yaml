@@ -1,7 +1,7 @@
-schema_version: 2
+schema_version: 3
 object:
   id: chalk_spirit
-  display_name: 粉笔精灵
+  display_name: "粉笔精灵"
   type: character
   subtype: enemy
 variants:
@@ -16,11 +16,9 @@ variants:
       decision: approved
       quote: "这个概念不错"
       commit: a26fb1c
+    root: design/concepts/chalk-spirit/chalk-spirit/001
     files:
-      concept:
-        path: design/concepts/chalk-spirit/chalk-spirit/001/chalk_spirit_concept_001.png
-        role: concept
-        sha256: d408cc9668d5f3e4f35b5d03fc926fbb9905959183e25cbb7f71b9169b93b7ca
+      concept: chalk_spirit_concept_001.png
   asset_002:
     stage: asset
     version: 002
@@ -32,27 +30,14 @@ variants:
       decision: rejected
       quote: "朝向不统一；动画像突然抽动、过渡帧过少"
       commit: fac11e6
+    root: design/concepts/chalk-spirit/chalk-spirit/002
     files:
-      source_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet_source_rgb.png
-        role: source
-        sha256: c6c0936bbf2918d9bff5a8258f3b8ffc18e512536def4faec7ee2411b5836395
-      battle_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.png
-        role: atlas
-        sha256: 9fcaf9abffb5a5f4b3bf685e365aa259183154083f1c077a5c92a09aff90d41a
-      frame_metadata:
-        path: design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.frames.json
-        role: frame_metadata
-        sha256: d08004e8ed4b4982cf3df5897afbbf071774db8914474e4ef3548f8361860cde
-      animation_resource:
-        path: design/concepts/chalk-spirit/chalk-spirit/002/battle_animation.tres
-        role: animation_resource
-        sha256: 15791cc3f77c2a1b529e9faa48ebfef6f8ee4ea2ebc55b595623caf808f19549
+      source_sheet: battle_sheet_source_rgb.png
+      battle_sheet: battle_sheet.png
+      frame_metadata: battle_sheet.frames.json
+    resource: design/concepts/chalk-spirit/chalk-spirit/002/battle_animation.tres
     animation:
-      representation: sprite_frames
-      resource_file: animation_resource
-      clips_from: frame_metadata
+      frames: frame_metadata
     previews:
       godot:
         unit: res://resources/content/enemies/chalk.tres
@@ -67,87 +52,34 @@ variants:
       date: 2026-09-15
       decision: rejected
       quote: "远程／施法主体比待机主体明显偏小"
+    root: design/concepts/chalk-spirit/chalk-spirit/003
     files:
-      locomotion_source:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/locomotion_sheet_source_rgb.png
-        role: source
-        sha256: db52be8cb7eabe5898406f7b6983304db0b9014f694f38a07810282744bf6334
-      combat_source:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/combat_sheet_source_rgb.png
-        role: source
-        sha256: 3b7510eb0fc595d85ef4a4f196babbe64365422cb05e61827f4de7fde938c1ff
-      reaction_source:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/reaction_sheet_source_rgb.png
-        role: source
-        sha256: 7535f09106a054342457258a9c306757c8de25e79a1f54bc2a54d86bdab37d57
-      locomotion_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/locomotion_sheet.png
-        role: atlas
-        sha256: 15154f8e56377337a2a2e772cc23057d01942ff1c203d595813b9b145318c1e8
-      combat_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/combat_sheet.png
-        role: atlas
-        sha256: 2c1b6194a524050ec72cc6d8d497c5d1c8c3915a94f8d8cffafede9bd23f0961
-      reaction_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/reaction_sheet.png
-        role: atlas
-        sha256: 4426f95e712b0c641cdd606df2c2c6120935098fa5c7c14ffa29af8ab91a927e
-      frame_metadata:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/battle_animation.frames.json
-        role: frame_metadata
-        sha256: f6572ada271ab0398f7b4059a933433bbbc269565945bfb7a601131e4fdaafd8
-      animation_resource:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/battle_animation.tres
-        role: animation_resource
-        sha256: 6e734cf785c37d6b87acffb3047e114bc2a0dca72fe36d551370c02efeb01e0e
-      gif_idle:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/idle-preview.gif
-        role: preview_gif
-        sha256: 909775cd11669bd80de8cd8ce4c49a71b35b52601b6d189bc9dece5a61adf0fa
-      gif_move:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/move-preview.gif
-        role: preview_gif
-        sha256: 5877edd717b543fb233c25d446c241c9ffd3ea8cba3ab13e6ad7ccef77b1df5b
-      gif_attack:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/attack-preview.gif
-        role: preview_gif
-        sha256: 4b4e74e97752d9e6791ed844d98cd7a6bbbf60131195f974ccdfdaea1f7ace60
-      gif_cast:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/cast-preview.gif
-        role: preview_gif
-        sha256: 9e57beaf6407d13c8c2600335ff4ba5a404863d9c61117026d5026fffe4c8b23
-      gif_hurt:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/hurt-preview.gif
-        role: preview_gif
-        sha256: e2516b6046c43e0569cb4d7ad47d847a2cd7b546dbe456bdcc47803e45f4bdc8
-      gif_critical:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/critical-preview.gif
-        role: preview_gif
-        sha256: 00b23d0b1303573fbd97db7c832ac8c5a8996b6719a8360dce4b0a6562d4b6b2
-      gif_death:
-        path: design/concepts/chalk-spirit/chalk-spirit/003/review/death-preview.gif
-        role: preview_gif
-        sha256: ce806472085f255baafaea1dea8cafdefa7b2a131a23118689e18f1dab94e7bf
+      locomotion_source: locomotion_sheet_source_rgb.png
+      combat_source: combat_sheet_source_rgb.png
+      reaction_source: reaction_sheet_source_rgb.png
+      locomotion_sheet: locomotion_sheet.png
+      combat_sheet: combat_sheet.png
+      reaction_sheet: reaction_sheet.png
+      frame_metadata: battle_animation.frames.json
+      gif_idle: review/idle-preview.gif
+      gif_move: review/move-preview.gif
+      gif_attack: review/attack-preview.gif
+      gif_cast: review/cast-preview.gif
+      gif_hurt: review/hurt-preview.gif
+      gif_critical: review/critical-preview.gif
+      gif_death: review/death-preview.gif
+    resource: design/concepts/chalk-spirit/chalk-spirit/003/battle_animation.tres
     animation:
-      representation: sprite_frames
-      resource_file: animation_resource
-      clips_from: frame_metadata
+      frames: frame_metadata
     previews:
       gifs:
-        idle:
-          file: gif_idle
-        move:
-          file: gif_move
-        attack:
-          file: gif_attack
-        cast:
-          file: gif_cast
-        hurt:
-          file: gif_hurt
-        critical:
-          file: gif_critical
-        death:
-          file: gif_death
+        idle: gif_idle
+        move: gif_move
+        attack: gif_attack
+        cast: gif_cast
+        hurt: gif_hurt
+        critical: gif_critical
+        death: gif_death
       godot:
         unit: res://resources/content/enemies/chalk.tres
         animation: res://design/concepts/chalk-spirit/chalk-spirit/003/battle_animation.tres
@@ -161,87 +93,34 @@ variants:
       date: 2026-09-15
       decision: rejected
       quote: "高度匹配后横向体量变胖"
+    root: design/concepts/chalk-spirit/chalk-spirit/004
     files:
-      locomotion_source:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet_source_rgb.png
-        role: source
-        sha256: db52be8cb7eabe5898406f7b6983304db0b9014f694f38a07810282744bf6334
-      combat_source:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet_source_rgb.png
-        role: source
-        sha256: af3bbe6589b39ca1467a7fbd971b5ce339c461e4e0b9ff93132a97b0b98412fd
-      reaction_source:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet_source_rgb.png
-        role: source
-        sha256: 7535f09106a054342457258a9c306757c8de25e79a1f54bc2a54d86bdab37d57
-      locomotion_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet.png
-        role: atlas
-        sha256: 15154f8e56377337a2a2e772cc23057d01942ff1c203d595813b9b145318c1e8
-      combat_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet.png
-        role: atlas
-        sha256: 5c1c38b269228a82e97f10695059a7bab78fb8e712c48ef18ce40782f0a9bb97
-      reaction_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet.png
-        role: atlas
-        sha256: 4426f95e712b0c641cdd606df2c2c6120935098fa5c7c14ffa29af8ab91a927e
-      frame_metadata:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/battle_animation.frames.json
-        role: frame_metadata
-        sha256: d2c39b72dc3560573532646041e8f303aee17d7ec368a1fb020290c6230b0fec
-      animation_resource:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/battle_animation.tres
-        role: animation_resource
-        sha256: 6938b960db1849b232bcc29c1d583a963805579464aa46100c24e2798af703d3
-      gif_idle:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/idle-preview.gif
-        role: preview_gif
-        sha256: 28e2907c91a372278703bd2bb44893ec99327de2bacd6b1521f3972177ad81bf
-      gif_move:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/move-preview.gif
-        role: preview_gif
-        sha256: bc4860646e6689e09b5d4b81a6166a0ce98b7208643152b2a08718c80149655c
-      gif_attack:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/attack-preview.gif
-        role: preview_gif
-        sha256: 9675eaed11d73623a1708887608c39ab7b546578575f34394642cf5d79f806dd
-      gif_cast:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/cast-preview.gif
-        role: preview_gif
-        sha256: fd7abcc97b7dd94afb9a23ce490526ce13eac470d53825f704c72f4b0883a74a
-      gif_hurt:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/hurt-preview.gif
-        role: preview_gif
-        sha256: 22749d9441cdfd43d56a5f80c283d934de2a4930ea719276a3fbe3d15511f425
-      gif_critical:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/critical-preview.gif
-        role: preview_gif
-        sha256: 6a3aa8fcbabcddf0c316a040780ad035a5a8cecae19b1cbbe48f5be6ef9640f7
-      gif_death:
-        path: design/concepts/chalk-spirit/chalk-spirit/004/review/death-preview.gif
-        role: preview_gif
-        sha256: 107fb3c84491fc8e3a1b46f26a30c7eb94c6c63c27d043bdbd1f9d38e20af6fb
+      locomotion_source: locomotion_sheet_source_rgb.png
+      combat_source: combat_sheet_source_rgb.png
+      reaction_source: reaction_sheet_source_rgb.png
+      locomotion_sheet: locomotion_sheet.png
+      combat_sheet: combat_sheet.png
+      reaction_sheet: reaction_sheet.png
+      frame_metadata: battle_animation.frames.json
+      gif_idle: review/idle-preview.gif
+      gif_move: review/move-preview.gif
+      gif_attack: review/attack-preview.gif
+      gif_cast: review/cast-preview.gif
+      gif_hurt: review/hurt-preview.gif
+      gif_critical: review/critical-preview.gif
+      gif_death: review/death-preview.gif
+    resource: design/concepts/chalk-spirit/chalk-spirit/004/battle_animation.tres
     animation:
-      representation: sprite_frames
-      resource_file: animation_resource
-      clips_from: frame_metadata
+      frames: frame_metadata
     previews:
       gifs:
-        idle:
-          file: gif_idle
-        move:
-          file: gif_move
-        attack:
-          file: gif_attack
-        cast:
-          file: gif_cast
-        hurt:
-          file: gif_hurt
-        critical:
-          file: gif_critical
-        death:
-          file: gif_death
+        idle: gif_idle
+        move: gif_move
+        attack: gif_attack
+        cast: gif_cast
+        hurt: gif_hurt
+        critical: gif_critical
+        death: gif_death
       godot:
         unit: res://resources/content/enemies/chalk.tres
         animation: res://design/concepts/chalk-spirit/chalk-spirit/004/battle_animation.tres
@@ -256,75 +135,31 @@ variants:
       decision: approved
       quote: "角色动画005也一并采用"
       commit: 6206374
+    root: design/concepts/chalk-spirit/chalk-spirit/005
     files:
-      locomotion_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/locomotion_sheet.png
-        role: atlas
-        sha256: 15154f8e56377337a2a2e772cc23057d01942ff1c203d595813b9b145318c1e8
-      combat_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/combat_sheet.png
-        role: atlas
-        sha256: 9b53ba658f59e780d8a6aae811734dde993e292e05e5e0cb1e335ed6353429d6
-      reaction_sheet:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/reaction_sheet.png
-        role: atlas
-        sha256: 4426f95e712b0c641cdd606df2c2c6120935098fa5c7c14ffa29af8ab91a927e
-      frame_metadata:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.frames.json
-        role: frame_metadata
-        sha256: de1d55eee2053c2d577feeb4bff185769bd574bb569b8019ac02a679d8d31838
-      animation_resource:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres
-        role: animation_resource
-        sha256: 645fe80390dd72fb99cb9d1fa8ad602c2348d0ea0b6fd4ee3511d5b351e70f29
-      gif_idle:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/idle-preview.gif
-        role: preview_gif
-        sha256: bce602597b3924e8ef13258d94e0e7004ea0919ad503c18c397c368910e8a21a
-      gif_move:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/move-preview.gif
-        role: preview_gif
-        sha256: e3daec6a42f53997cd8a8d10c2c8e05d4490793c5aaa241432c2025900d75215
-      gif_attack:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/attack-preview.gif
-        role: preview_gif
-        sha256: 2ac747c11b98cf450ecd6d09ad7d6cbbaed30efdc6cc129bf17bbde5be68aca7
-      gif_cast:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/cast-preview.gif
-        role: preview_gif
-        sha256: 9f461a74b1847a17ddaa22e47db46f3b45ffdd9c382552f9937de9229da9295c
-      gif_hurt:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/hurt-preview.gif
-        role: preview_gif
-        sha256: 40cab3172cee40a912f95d20f673b4f81a3a242b0e49d79b52f7444e44b9c4df
-      gif_critical:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/critical-preview.gif
-        role: preview_gif
-        sha256: d2247c77def29510ea7bc9aaf3a97ad268182c29efc02a7ef0c3c7dba8c27b8e
-      gif_death:
-        path: design/concepts/chalk-spirit/chalk-spirit/005/review/death-preview.gif
-        role: preview_gif
-        sha256: 8d1df87fce4df604efc15da4ff172f386e3baafa532e8ad41b3734d6e6f3987b
+      locomotion_sheet: locomotion_sheet.png
+      combat_sheet: combat_sheet.png
+      reaction_sheet: reaction_sheet.png
+      frame_metadata: battle_animation.frames.json
+      gif_idle: review/idle-preview.gif
+      gif_move: review/move-preview.gif
+      gif_attack: review/attack-preview.gif
+      gif_cast: review/cast-preview.gif
+      gif_hurt: review/hurt-preview.gif
+      gif_critical: review/critical-preview.gif
+      gif_death: review/death-preview.gif
+    resource: design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres
     animation:
-      representation: sprite_frames
-      resource_file: animation_resource
-      clips_from: frame_metadata
+      frames: frame_metadata
     previews:
       gifs:
-        idle:
-          file: gif_idle
-        move:
-          file: gif_move
-        attack:
-          file: gif_attack
-        cast:
-          file: gif_cast
-        hurt:
-          file: gif_hurt
-        critical:
-          file: gif_critical
-        death:
-          file: gif_death
+        idle: gif_idle
+        move: gif_move
+        attack: gif_attack
+        cast: gif_cast
+        hurt: gif_hurt
+        critical: gif_critical
+        death: gif_death
       godot:
         unit: res://resources/content/enemies/chalk.tres
         animation: res://resources/content/animations/chalk.tres
@@ -338,79 +173,16 @@ variants:
       hit_offset: [0, -42]
       attack_modes: [ranged]
 relationships:
-  projectile:
-    kind: projectile
-    object_id: chalk_projectile
-    resource_ref: chalk_projectile.files.runtime_resource
+  projectile: chalk_projectile
 integration:
   status: active
   active_variant: asset_005
-  owner_resource: resources/content/enemies/chalk.tres
+  owner: resources/content/enemies/chalk.tres
+  root: assets/art/characters/chalk_spirit
+  files:
+    locomotion_sheet: locomotion_sheet.png
+    combat_sheet: combat_sheet.png
+    reaction_sheet: reaction_sheet.png
+    frame_metadata: battle_animation.frames.json
+  resource: resources/content/animations/chalk.tres
   evidence: "docs/art/tasks/chalk-spirit.md；2026-09-15 用户批准正式接入预览"
-  effective_files:
-    locomotion_sheet:
-      path: assets/art/characters/chalk_spirit/locomotion_sheet.png
-      role: atlas
-      sha256: 15154f8e56377337a2a2e772cc23057d01942ff1c203d595813b9b145318c1e8
-    combat_sheet:
-      path: assets/art/characters/chalk_spirit/combat_sheet.png
-      role: atlas
-      sha256: 9b53ba658f59e780d8a6aae811734dde993e292e05e5e0cb1e335ed6353429d6
-    reaction_sheet:
-      path: assets/art/characters/chalk_spirit/reaction_sheet.png
-      role: atlas
-      sha256: 4426f95e712b0c641cdd606df2c2c6120935098fa5c7c14ffa29af8ab91a927e
-    frame_metadata:
-      path: assets/art/characters/chalk_spirit/battle_animation.frames.json
-      role: frame_metadata
-      sha256: d141b9f85c159d355ebcc6c4f2565ff31a7ba06960852d5fbc649638157bf155
-    animation_resource:
-      path: resources/content/animations/chalk.tres
-      role: animation_resource
-      sha256: 185eaa9c893f15d806218a160173edab2bb8eb2e66adcc4ae2d4ab91b84d252f
-  bindings:
-    locomotion_copy:
-      compare: sha256_equal
-      selected_file: locomotion_sheet
-      effective_file: locomotion_sheet
-    combat_copy:
-      compare: sha256_equal
-      selected_file: combat_sheet
-      effective_file: combat_sheet
-    reaction_copy:
-      compare: sha256_equal
-      selected_file: reaction_sheet
-      effective_file: reaction_sheet
-    frames_baseline:
-      compare: baseline_hash
-      selected_file: frame_metadata
-      effective_file: frame_metadata
-    animation_baseline:
-      compare: baseline_hash
-      selected_file: animation_resource
-      effective_file: animation_resource
-    unit_animation:
-      compare: resource_reference
-      source: resources/content/enemies/chalk.tres
-      source_sha256: 921415c6d81e63f2eff5847e283e479f98c44af7a5f8349af856b32ac9169497
-      target: res://resources/content/animations/chalk.tres
-    animation_locomotion:
-      compare: resource_reference
-      source: resources/content/animations/chalk.tres
-      source_sha256: 185eaa9c893f15d806218a160173edab2bb8eb2e66adcc4ae2d4ab91b84d252f
-      target: res://assets/art/characters/chalk_spirit/locomotion_sheet.png
-    animation_combat:
-      compare: resource_reference
-      source: resources/content/animations/chalk.tres
-      source_sha256: 185eaa9c893f15d806218a160173edab2bb8eb2e66adcc4ae2d4ab91b84d252f
-      target: res://assets/art/characters/chalk_spirit/combat_sheet.png
-    animation_reaction:
-      compare: resource_reference
-      source: resources/content/animations/chalk.tres
-      source_sha256: 185eaa9c893f15d806218a160173edab2bb8eb2e66adcc4ae2d4ab91b84d252f
-      target: res://assets/art/characters/chalk_spirit/reaction_sheet.png
-    animation_projectile:
-      compare: resource_reference
-      source: resources/content/animations/chalk.tres
-      source_sha256: 185eaa9c893f15d806218a160173edab2bb8eb2e66adcc4ae2d4ab91b84d252f
-      target: res://resources/content/animations/chalk_projectile.tres

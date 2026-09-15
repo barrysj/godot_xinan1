@@ -1,7 +1,7 @@
-schema_version: 2
+schema_version: 3
 object:
   id: archer
-  display_name: 远射手
+  display_name: "远射手"
   type: character
   subtype: ally
 variants:
@@ -14,23 +14,13 @@ variants:
       source: legacy_manifest_v1
       date: 2026-09-13
       decision: review_no_final_approval_recorded
+    root: assets/art/characters/archer
     files:
-      battle_sheet:
-        path: assets/art/characters/archer/battle_sheet.png
-        role: atlas
-        sha256: c30e568e7bf1ae19e052df66606ef3a23103d566c2456f7965305237e3dbc7c8
-      frame_metadata:
-        path: assets/art/characters/archer/battle_sheet.frames.json
-        role: frame_metadata
-        sha256: dea8dedb848806c8e3a1738b1967b80ed4f84924ac0578a2d53e3fd06e19aa52
-      animation_resource:
-        path: resources/content/animations/archer.tres
-        role: animation_resource
-        sha256: ba5a20eeee519376025b3129a38f8a34bbb79c30c0eae4606b420d56333402ad
+      battle_sheet: battle_sheet.png
+      frame_metadata: battle_sheet.frames.json
+    resource: resources/content/animations/archer.tres
     animation:
-      representation: sprite_frames
-      resource_file: animation_resource
-      clips_from: frame_metadata
+      frames: frame_metadata
     previews:
       godot:
         unit: res://resources/content/characters/archer.tres
@@ -49,36 +39,10 @@ variants:
 integration:
   status: authorized_active
   active_variant: battle_current
-  owner_resource: resources/content/characters/archer.tres
-  evidence: 2026-09-13 用户要求至少两名实际绘制角色及动作，授权本轮生成并接入；待最终视觉 QA。
-  effective_files:
-    battle_sheet:
-      path: assets/art/characters/archer/battle_sheet.png
-      role: atlas
-      sha256: c30e568e7bf1ae19e052df66606ef3a23103d566c2456f7965305237e3dbc7c8
-    frame_metadata:
-      path: assets/art/characters/archer/battle_sheet.frames.json
-      role: frame_metadata
-      sha256: dea8dedb848806c8e3a1738b1967b80ed4f84924ac0578a2d53e3fd06e19aa52
-    animation_resource:
-      path: resources/content/animations/archer.tres
-      role: animation_resource
-      sha256: ba5a20eeee519376025b3129a38f8a34bbb79c30c0eae4606b420d56333402ad
-  bindings:
-    sheet_baseline:
-      compare: baseline_hash
-      selected_file: battle_sheet
-      effective_file: battle_sheet
-    frames_baseline:
-      compare: baseline_hash
-      selected_file: frame_metadata
-      effective_file: frame_metadata
-    animation_baseline:
-      compare: baseline_hash
-      selected_file: animation_resource
-      effective_file: animation_resource
-    unit_animation:
-      compare: resource_reference
-      source: resources/content/characters/archer.tres
-      source_sha256: 34b4d8c4f90fd197aaeac16596f5e16f46c7958bcc1f700123c1b2f33d6aedbf
-      target: res://resources/content/animations/archer.tres
+  owner: resources/content/characters/archer.tres
+  root: assets/art/characters/archer
+  files:
+    battle_sheet: battle_sheet.png
+    frame_metadata: battle_sheet.frames.json
+  resource: resources/content/animations/archer.tres
+  evidence: "2026-09-13 用户要求至少两名实际绘制角色及动作，授权本轮生成并接入；待最终视觉 QA。"

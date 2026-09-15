@@ -20,8 +20,51 @@ from urllib.parse import parse_qs, urlparse
 from catalog import AssetCatalog
 
 
-APP_ID = "cyber-pop-art-manager-v2"
+APP_ID = "cyber-pop-art-manager-v4"
 STATIC_ROOT = Path(__file__).resolve().parent / "static"
+
+
+def pick_manifest_path(project_root, initial_path=""):
+    """Open the native file dialog while keeping selection inside this project."""
+    try:
+        from tkinter import Tk, filedialog
+    except ImportError:
+        raise RuntimeError("当前 Python 缺少文件选择器支持")
+    project_root = Path(project_root).resolve()
+    initial = Path(initial_path).resolve() if initial_path else project_root / "assets" / "art" / "asset_manifest.yaml"
+    try:
+        initial.relative_to(project_root)
+    except ValueError:
+        initial = project_root / "assets" / "art" / "asset_manifest.yaml"
+    try:
+        window = Tk()
+        window.withdraw()
+        window.attributes("-topmost", True)
+    except Exception as exc:
+        raise RuntimeError("无法打开系统文件选择器：%s" % exc)
+    try:
+        try:
+            selected = filedialog.askopenfilename(
+                parent=window,
+                title="选择主 Manifest",
+                initialdir=str(initial.parent if initial.suffix else initial),
+                initialfile=initial.name if initial.is_file() else "",
+                filetypes=(("YAML Manifest", "*.yaml *.yml"), ("所有文件", "*.*")),
+            )
+        except Exception as exc:
+            raise RuntimeError("无法打开系统文件选择器：%s" % exc)
+    finally:
+        window.destroy()
+    if not selected:
+        return None
+    path = Path(selected).resolve()
+    try:
+        path.relative_to(project_root)
+    except ValueError:
+        raise RuntimeError("只能选择当前项目内的 Manifest")
+    if path.suffix.lower() not in (".yaml", ".yml") or not path.is_file():
+        raise RuntimeError("请选择当前项目内存在的 YAML Manifest")
+    return str(path)
 
 
 class PreviewManager(object):
@@ -76,6 +119,7 @@ class PreviewManager(object):
             if script.parent != self.project_root or script.name != "run-motion-preview.ps1":
                 return False, "预览入口不受信"
             args = [pwsh, "-NoProfile", "-File", str(script), "-EnginePath", engine]
+            args.append("-EnsureImport")
             if resolved.get("unit_uri"):
                 args.extend(["-Unit", resolved["unit_uri"]])
             if resolved.get("animation_uri"):
@@ -97,7 +141,7 @@ class PreviewManager(object):
                 return False, "无法启动预览：%s" % exc
             self._last = {
                 "state": "running",
-                "message": "预览窗口已启动",
+                "message": "正在导入资源并准备预览",
                 "animation": resolved.get("animation_uri"),
                 "unit": resolved.get("unit_uri"),
                 "projectile": resolved.get("projectile_uri"),
@@ -116,10 +160,7 @@ class ArtManagerServer(ThreadingHTTPServer):
         self.catalog = AssetCatalog(self.project_root)
         self.preview = PreviewManager(self.project_root)
         self.token = secrets.token_urlsafe(32)
-        self.default_roots = [
-            str(self.project_root / "assets" / "art"),
-            str(self.project_root / "design" / "concepts"),
-        ]
+        self.default_manifest = str(self.project_root / "assets" / "art" / "asset_manifest.yaml")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -176,7 +217,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
         if parsed.path == "/api/health":
-            self._json(HTTPStatus.OK, {"app": APP_ID, "status": "ok"})
+            self._json(HTTPStatus.OK, {
+                "app": APP_ID,
+                "status": "ok",
+                "process_id": os.getpid(),
+                "project_root": str(self.server.project_root),
+            })
             return
         if parsed.path == "/api/preview/status":
             if not self._authorized():
@@ -213,7 +259,7 @@ class Handler(BaseHTTPRequestHandler):
             template = (STATIC_ROOT / "index.html").read_text(encoding="utf-8")
             boot = {
                 "token": self.server.token,
-                "defaultRoots": self.server.default_roots,
+                "defaultManifest": self.server.default_manifest,
                 "defaultEngine": self.server.preview.default_engine(),
             }
             body = template.replace("__ART_MANAGER_BOOT__", json.dumps(boot, ensure_ascii=False)).encode("utf-8")
@@ -253,12 +299,24 @@ class Handler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
             return
         parsed = urlparse(self.path)
-        if parsed.path == "/api/scan":
-            roots = payload.get("roots", [])
-            if not isinstance(roots, list) or len(roots) > 32:
-                self._json(HTTPStatus.BAD_REQUEST, {"error": "目录列表无效"})
+        if parsed.path == "/api/pick-manifest":
+            initial = payload.get("initial", self.server.default_manifest)
+            if not isinstance(initial, str) or len(initial) > 4096:
+                self._json(HTTPStatus.BAD_REQUEST, {"error": "Manifest 路径无效"})
                 return
-            result = self.server.catalog.scan(roots)
+            try:
+                selected = pick_manifest_path(self.server.project_root, initial)
+            except RuntimeError as exc:
+                self._json(HTTPStatus.CONFLICT, {"error": str(exc)})
+                return
+            self._json(HTTPStatus.OK, {"selected": bool(selected), "path": selected})
+            return
+        if parsed.path == "/api/scan":
+            manifest = payload.get("manifest", self.server.default_manifest)
+            if not isinstance(manifest, str) or len(manifest) > 4096:
+                self._json(HTTPStatus.BAD_REQUEST, {"error": "Manifest 路径无效"})
+                return
+            result = self.server.catalog.scan(manifest)
             self._json(HTTPStatus.OK, result)
             return
         if parsed.path == "/api/preview":
