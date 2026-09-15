@@ -59,11 +59,26 @@ var left_anchor := Vector2.ZERO
 var right_anchor := Vector2.ZERO
 var mode_label := "待机"
 var phase_label := "骨骼循环"
+var embedded_preview := false
+
+
+func configure_motion_preview() -> void:
+	embedded_preview = true
+
+
+func handles_motion_preview_state(state: StringName) -> bool:
+	return state in [&"idle", &"move", &"attack", &"cast", &"hurt", &"critical"]
 
 
 func _ready() -> void:
 	_build_sequence()
 	_build_rig()
+	if embedded_preview:
+		sequence_sprite.visible = false
+		hybrid_sequence_sprite.position = Vector2(0, -144)
+		rig.position = Vector2.ZERO
+		set_process(false)
+		return
 	get_viewport().size_changed.connect(_layout)
 	_layout()
 	_apply_mode(&"idle", 0.0)
@@ -216,6 +231,7 @@ func _build_rig() -> void:
 
 
 func _layout() -> void:
+	if embedded_preview: return
 	var size := get_viewport_rect().size
 	preview_scale = minf(size.x / 1920.0, size.y / 1080.0)
 	left_anchor = Vector2(size.x * 0.28, size.y * 0.67)
@@ -329,7 +345,7 @@ func _apply_attack(time: float) -> void:
 		orbiter_back_bone.position += Vector2(9.0, 1.0) * snap
 		orbiter_top_bone.position += Vector2(7.0, -1.0) * snap
 		var fire_progress := clampf((time - 0.78) / 0.22, 0.0, 1.0)
-		projectile.visible = time >= 0.78
+		projectile.visible = not embedded_preview and time >= 0.78
 		projectile.position = Vector2(126.0 + fire_progress * 230.0, -132.0)
 		muzzle_flash.visible = time >= 0.76 and time < 0.91
 		muzzle_flash.scale = Vector2.ONE * (0.75 + sin(fire_progress * PI) * 0.85)
@@ -344,7 +360,7 @@ func _apply_attack(time: float) -> void:
 		launcher_bone.rotation = -0.11 * strength
 		orbiter_back_bone.position += Vector2(8.0, 2.0) * strength
 		orbiter_top_bone.position += Vector2(6.0, -1.0) * strength
-		projectile.visible = recovery < 0.52
+		projectile.visible = not embedded_preview and recovery < 0.52
 		projectile.position = Vector2(356.0 + recovery * 100.0, -132.0)
 		_update_dust(time, 1.0 + strength * 0.6)
 	else:
@@ -453,6 +469,27 @@ func _apply_tour(time: float) -> void:
 	_apply_mode(state[0], state[1])
 
 
+func apply_motion_preview(context: Dictionary) -> void:
+	if not embedded_preview: return
+	var state: StringName = context.get("state", &"idle")
+	visible = handles_motion_preview_state(state)
+	if not visible: return
+	position = context.get("center", Vector2.ZERO)
+	var display_size: Vector2 = context.get("display_size", Vector2(64, 64))
+	var facing := 1.0 if context.get("facing_right", true) else -1.0
+	scale = Vector2(display_size.x / 288.0 * facing, display_size.y / 288.0)
+	modulate = context.get("tint", Color.WHITE)
+	var mode: StringName = state if state in MODES else &"idle"
+	var duration: float = context.get("duration", 0.0)
+	var age: float = context.get("age", 0.0)
+	var local_time: float
+	if mode in [&"idle", &"move", &"critical"]:
+		local_time = context.get("motion_time", age)
+	else:
+		local_time = MODE_DURATIONS[mode] * clampf(age / maxf(duration, 0.001), 0.0, 1.0)
+	_apply_mode(mode, local_time)
+
+
 func _update_dust(time: float, intensity: float) -> void:
 	for index in dust_sprites.size():
 		var mote := dust_sprites[index]
@@ -465,6 +502,7 @@ func _update_dust(time: float, intensity: float) -> void:
 
 
 func _process(delta: float) -> void:
+	if embedded_preview: return
 	if fixed_time >= 0:
 		_apply_mode(fixed_mode, fixed_time)
 	else:
@@ -477,6 +515,7 @@ func _text(position: Vector2, value: String, size: int, color := PAPER) -> void:
 
 
 func _draw() -> void:
+	if embedded_preview: return
 	var size := get_viewport_rect().size
 	draw_rect(Rect2(Vector2.ZERO, size), BACKGROUND)
 	draw_rect(Rect2(36, 28, size.x - 72, 78), PAPER)

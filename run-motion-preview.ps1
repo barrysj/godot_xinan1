@@ -4,6 +4,11 @@ param(
     [string]$Unit = '',
     [string]$Animation = '',
     [string]$Projectile = '',
+    [string]$Presentation = '',
+    [ValidateSet('Idle', 'Move', 'Melee', 'Ranged', 'Cast', 'Hurt', 'Critical', 'Death')]
+    [string]$Action = '',
+    [ValidateRange(0.05, 4.0)]
+    [double]$Speed = 1.0,
     [switch]$Check,
     [switch]$Capture,
     [switch]$Tour
@@ -19,5 +24,8 @@ elseif ($Tour) { $previewArgs += '--motion-preview-tour' }
 if ($Animation) { $previewArgs += "--preview-animation=$Animation" }
 if ($Unit) { $previewArgs += "--preview-unit=$Unit" }
 if ($Projectile) { $previewArgs += "--preview-projectile=$Projectile" }
+if ($Presentation) { $previewArgs += "--preview-presentation=$Presentation" }
+if ($Action) { $previewArgs += "--preview-action=$($Action.ToLowerInvariant())" }
+$previewArgs += "--preview-speed=$($Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture))"
 & $EnginePath @previewArgs
 exit $LASTEXITCODE

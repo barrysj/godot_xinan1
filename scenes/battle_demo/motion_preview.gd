@@ -6,13 +6,19 @@ const UnitDefinition = preload("res://game/content/unit_def.gd")
 const ActionProfile = preload("res://game/content/battle_action_profile.gd")
 enum Mode { IDLE, MOVE, MELEE, RANGED, CAST, HURT, CRITICAL, DEATH }
 const MODES = ["待机", "移动", "近战", "远程", "施法", "受击", "濒危", "退场"]
+const ACTION_MODES = {"idle": Mode.IDLE, "move": Mode.MOVE, "melee": Mode.MELEE,
+	"ranged": Mode.RANGED, "cast": Mode.CAST, "hurt": Mode.HURT,
+	"critical": Mode.CRITICAL, "death": Mode.DEATH}
 const EVENT_NAMES = {"action_started": "前摇", "action_released": "出手", "impact": "命中",
 	"action_finished": "收招", "action_cancelled": "取消", "action_missed": "落空", "projectile_expired": "消散"}
 @export var preview_animation: AnimationSet
 @export var preview_projectile: ProjectileStyle
+@export var preview_presentation_scene: PackedScene
 var preview_unit: Resource
 var mode := Mode.MELEE
 var slow := false
+var playback_speed := 1.0
+var action_was_requested := false
 var repeat := true
 var preview_elapsed := 0.0
 var history: Array[Dictionary] = []
@@ -23,6 +29,7 @@ var step_button: Button
 var tour := false
 var tour_stage := 0
 var tour_clock := 0.0
+var preview_presentations: Array[Node2D] = []
 
 func _ready() -> void:
 	super._ready()
@@ -48,6 +55,24 @@ func _ready() -> void:
 				if resource is ProjectileStyle: preview_projectile = resource
 				else: push_warning("Preview projectile requires a BattleProjectileStyle resource")
 			else: push_warning("Preview projectile resource does not exist: " + path)
+		elif arg.begins_with("--preview-presentation="):
+			var path = arg.trim_prefix("--preview-presentation=")
+			if ResourceLoader.exists(path):
+				var resource = load(path)
+				if resource is PackedScene: preview_presentation_scene = resource
+				else: push_warning("Preview presentation requires a PackedScene resource")
+			else: push_warning("Preview presentation scene does not exist: " + path)
+		elif arg.begins_with("--preview-action="):
+			var action := arg.trim_prefix("--preview-action=").to_lower()
+			if ACTION_MODES.has(action):
+				mode = ACTION_MODES[action]
+				action_was_requested = true
+			else: push_warning("Unknown preview action: " + action)
+		elif arg.begins_with("--preview-speed="):
+			var requested_speed := arg.trim_prefix("--preview-speed=").to_float()
+			if requested_speed >= 0.05 and requested_speed <= 4.0: playback_speed = requested_speed
+			else: push_warning("Preview speed must be between 0.05 and 4.0")
+	_create_preview_presentations()
 	_create_toolbar()
 	_update_mode_availability()
 	_reset_preview()
@@ -59,6 +84,21 @@ func _ready() -> void:
 		mode = Mode.IDLE
 		tour_stage = mode
 		_reset_preview()
+	get_viewport().size_changed.connect(_update_preview_presentations)
+
+func _create_preview_presentations() -> void:
+	if preview_presentation_scene == null: return
+	for index in 2:
+		var instance = preview_presentation_scene.instantiate()
+		if not instance is Node2D or not instance.has_method("apply_motion_preview"):
+			push_warning("Preview presentation root must be Node2D and implement apply_motion_preview(context)")
+			instance.queue_free()
+			continue
+		if instance.has_method("configure_motion_preview"):
+			instance.call("configure_motion_preview")
+		instance.name = "MotionPresentation%d" % index
+		add_child(instance)
+		preview_presentations.append(instance)
 
 func _create_toolbar() -> void:
 	var margin = MarginContainer.new()
@@ -201,10 +241,11 @@ func _reset_preview() -> void:
 func advance_preview(delta: float) -> void:
 	preview_elapsed += delta
 	super._process(delta)
+	_update_preview_presentations()
 
 func _process(delta: float) -> void:
 	if paused or leaving: return
-	var amount = delta * (0.25 if slow else 1.0)
+	var amount = delta * playback_speed * (0.25 if slow else 1.0)
 	advance_preview(amount)
 	if tour:
 		tour_clock += delta
@@ -220,6 +261,41 @@ func _process(delta: float) -> void:
 			mode = tour_stage
 			_reset_preview()
 	elif repeat and preview_elapsed >= maxf(2.0, finish_duration + 0.5): _reset_preview()
+
+func _presentation_context(actor: Dictionary, at: Vector2, factor: float) -> Dictionary:
+	var pose: Dictionary = actor.presentation.pose(actor, true)
+	var center: Vector2 = origin + (at + pose.offset * factor / 4.0) * scale_factor
+	var display_size: Vector2 = actor.battle_animation.display_size if actor.battle_animation != null else Vector2(64, 64)
+	var state: StringName = actor.animation.state
+	return {
+		"center": center,
+		"display_size": display_size * factor / 4.0 * scale_factor,
+		"state": state,
+		"age": actor.animation.age,
+		"duration": actor.animation._duration(state),
+		"motion_time": actor.presentation.motion_time,
+		"facing_right": actor.presentation.facing_right,
+		"tint": pose.tint,
+		"preview_mode": mode,
+	}
+
+func _update_preview_presentations() -> void:
+	if preview_presentations.size() != 2 or units.is_empty(): return
+	var actor: Dictionary = units[0]
+	preview_presentations[0].call("apply_motion_preview", _presentation_context(
+		actor, _unit_center(actor) + Vector2(0, 13), 4.0))
+	preview_presentations[1].call("apply_motion_preview", _presentation_context(
+		actor, Vector2(1080, 520), 8.0))
+
+func _presentation_handles(u: Dictionary) -> bool:
+	if preview_presentations.is_empty() or u.id != 0: return false
+	var presentation := preview_presentations[0]
+	return not presentation.has_method("handles_motion_preview_state") or presentation.call(
+		"handles_motion_preview_state", u.animation.state)
+
+func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
+	if _presentation_handles(u): return
+	super._pawn(u, at, factor)
 
 func _present_simulation_event(event: Dictionary) -> void:
 	super._present_simulation_event(event)
@@ -242,10 +318,11 @@ func _draw() -> void:
 	_pixel_panel(Rect2(24, 18, 1220, 58), PAPER)
 	_text(Vector2(44, 56), "动作预览 · " + MODES[mode], DARK, 24)
 	var source_name: String = preview_unit.display_name if preview_unit != null else "预设角色"
-	var source_detail := "自定义序列帧" if preview_animation != null else "角色动作图集"
+	var source_detail := "骨骼＋序列帧" if preview_presentation_scene != null else ("自定义序列帧" if preview_animation != null else "角色动作图集")
 	var active_projectile = units[0].battle_animation.projectile_style if not units.is_empty() and units[0].battle_animation != null else null
 	if preview_projectile != null or active_projectile != null: source_detail += "＋弹体"
-	_text(Vector2(520, 53), "开发测试 / " + source_name + " / " + source_detail + (" / 0.25×" if slow else " / 1×"), DARK, 17)
+	var effective_speed := playback_speed * (0.25 if slow else 1.0)
+	_text(Vector2(520, 53), "开发测试 / " + source_name + " / " + source_detail + " / %.2f×" % effective_speed, DARK, 17)
 	_campus(false)
 	var ordered = units.duplicate()
 	ordered.sort_custom(func(a, b): return _unit_center(a).y < _unit_center(b).y)
@@ -278,6 +355,8 @@ func _check_preview() -> void:
 		failures += 1
 	if selector.is_item_disabled(Mode.RANGED) != (not _mode_enabled(Mode.RANGED)):
 		failures += 1
+	if preview_presentation_scene != null and preview_presentations.size() != 2:
+		failures += 1
 	for index in MODES.size():
 		if not _mode_enabled(index):
 			print("MOTION_PREVIEW_MODE ", MODES[index], " SKIP unsupported")
@@ -293,8 +372,11 @@ func _check_preview() -> void:
 		if mode == Mode.RANGED:
 			var release = history.filter(func(e): return e.kind == "action_released")
 			ok = ok and impacts[0].time > release[0].time
+			if preview_presentation_scene != null: ok = ok and _presentation_handles(units[0])
 		if mode == Mode.CRITICAL: ok = ok and units[0].animation.state == &"critical"
-		if mode == Mode.DEATH: ok = ok and units[0].hp <= 0
+		if mode == Mode.DEATH:
+			ok = ok and units[0].hp <= 0
+			if preview_presentation_scene != null: ok = ok and not _presentation_handles(units[0])
 		if not ok:
 			failures += 1
 			push_error("Preview mode failed: " + MODES[mode])
@@ -311,18 +393,19 @@ func _check_preview() -> void:
 	toolbar.get_child(3).pressed.emit()
 	before = preview_elapsed
 	_process(0.2)
-	if not slow or not is_equal_approx(preview_elapsed - before, 0.05): failures += 1
+	if not slow or not is_equal_approx(preview_elapsed - before, 0.2 * playback_speed * 0.25): failures += 1
 	print("MOTION_PREVIEW_CHECK failures=", failures)
 	get_tree().quit(failures)
 
 func _capture_preview() -> void:
 	set_process(false)
 	repeat = false
+	var capture_modes: Array = [mode] if action_was_requested else [Mode.MELEE, Mode.RANGED, Mode.CAST, Mode.HURT, Mode.CRITICAL, Mode.DEATH]
 	for resolution in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(1920, 1200)]:
 		get_window().mode = Window.MODE_WINDOWED
 		get_window().size = resolution
 		await get_tree().process_frame
-		for index in [Mode.MELEE, Mode.RANGED, Mode.CAST, Mode.HURT, Mode.CRITICAL, Mode.DEATH]:
+		for index in capture_modes:
 			if not _mode_enabled(index): continue
 			mode = index
 			_reset_preview()
@@ -331,6 +414,7 @@ func _capture_preview() -> void:
 			await RenderingServer.frame_post_draw
 			var screenshot = get_viewport().get_texture().get_image()
 			assert(screenshot.get_size() == resolution)
-			screenshot.save_png("res://.godot/motion-preview-%d-%dx%d.png" % [mode, resolution.x, resolution.y])
+			var source_tag := "rig-" if preview_presentation_scene != null else ""
+			screenshot.save_png("res://.godot/motion-preview-%s%d-%dx%d.png" % [source_tag, mode, resolution.x, resolution.y])
 		print("MOTION_PREVIEW_CAPTURE ", resolution)
 	get_tree().quit()
