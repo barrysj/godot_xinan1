@@ -81,6 +81,10 @@ func _ready() -> void:
 	_create_toolbar()
 	_update_mode_availability()
 	_reset_preview()
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--capture-manifest="):
+			preload("res://tools/art/motion_capture.gd").run.call_deferred(self, arg.trim_prefix("--capture-manifest="))
+			return
 	if "--motion-preview-check" in OS.get_cmdline_user_args(): call_deferred("_check_preview")
 	elif "--motion-preview-capture" in OS.get_cmdline_user_args(): call_deferred("_capture_preview")
 	elif "--motion-preview-tour" in OS.get_cmdline_user_args():

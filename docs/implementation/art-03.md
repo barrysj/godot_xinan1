@@ -97,3 +97,9 @@
 ### 通用化批次 A（2026-09-16）
 
 基线 ee5b780；候选 006 与正式资源直接加载通过 hybrid_contract_check.tscn，锁定六骨骼动作、七类序列帧回退、死亡末帧、140×140 尺寸、脚底锚点与左右朝向。presentation_check.tscn 的 30／60／144 FPS × 0.25／1／2 倍速九组合中，全量模拟事件、结算时间和战斗统计一致；统一预览七动作、暂停与单步通过。增量导入完成后运行，运行检查无脚本错误及 Bone2D 警告。迁移前实际三分辨率截图保存在 .godot/hybrid-before/（可重建验证缓存）。待统筹：后续 B～F 尚未完成。
+
+### 通用化批次 B（2026-09-16）
+
+run-motion-preview.ps1 新增显式 -ExportPreviews（支持 -Action）、-PythonPath；motion_capture.gd 在单个 Godot 进程的隔离 SubViewport 捕获，motion_previews.py 按清单编码 352×352 GIF 与完整巡演并登记 Manifest。死亡 GIF 不循环；其余包含待机进入与回到待机。临时帧仅在 .godot/motion-capture/随机作业目录，路径校验后清理，清单与抽样截图保留。
+
+验证：候选 006 单动作远程、七动作完整导出通过；普通 -Check 和 -Tour 前后候选与正式目录全文件 SHA-256 相同。18 项 Python 单测、JS 语法与 Python 编译通过。Pillow 由 -PythonPath 指定的 Python 提供；本机使用 Codex bundled runtime，系统 py -3 仍可运行不依赖 Pillow 的资源台测试。后续 C～F 待实施。
