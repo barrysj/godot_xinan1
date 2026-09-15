@@ -53,7 +53,7 @@ func configure_motion_preview() -> void:
 
 
 func handles_presentation_state(state: StringName) -> bool:
-	return state in RIG_MODES
+	return state in RIG_MODES or state == &"ranged"
 
 
 func handles_motion_preview_state(state: StringName) -> bool:
@@ -66,6 +66,7 @@ func apply_motion_preview(context: Dictionary) -> void:
 
 func apply_presentation(context: Dictionary) -> void:
 	var state: StringName = context.get("state", &"idle")
+	if state == &"ranged": state = &"attack"
 	visible = handles_presentation_state(state)
 	if not visible:
 		return

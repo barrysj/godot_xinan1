@@ -342,6 +342,7 @@ func _smoke() -> void:
 func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary:
 	var unit = _unit(definition.display_name, role, side, slot, definition.health, definition.attack, definition.interval, definition.defense)
 	unit.attack_range = definition.attack_range
+	unit.attack_modes = definition.resolved_attack_modes()
 	unit.move_speed = definition.move_speed
 	unit.content_id = definition.id
 	unit.skill = definition.skill

@@ -52,11 +52,12 @@ func request_action(actor_id: int, target_id: int, kind: StringName = &"attack")
 	next_action_id += 1
 	actor.action = {"id": next_action_id, "target_id": target.id, "age": 0.0,
 		"windup": timing.x, "duration": timing.x + timing.y, "released": false,
-		"phase": "windup", "casts": actor.count + 1 >= actor.skill.attacks_to_trigger}
+		"phase": "windup", "casts": actor.count + 1 >= actor.skill.attacks_to_trigger,
+		"mode": "ranged" if actor.action_profile.is_projectile(actor.attack_range) else "melee"}
 	actor.timer = actor.interval
 	actor.facing = actor.position.direction_to(target.position)
 	_emit("action_started", actor, target, next_action_id, {"casts": actor.action.casts,
-		"windup": timing.x, "duration": timing.x + timing.y})
+		"windup": timing.x, "duration": timing.x + timing.y, "mode": actor.action.mode})
 	return true
 
 func advance(delta: float) -> Array[Dictionary]:

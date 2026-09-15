@@ -103,3 +103,9 @@
 run-motion-preview.ps1 新增显式 -ExportPreviews（支持 -Action）、-PythonPath；motion_capture.gd 在单个 Godot 进程的隔离 SubViewport 捕获，motion_previews.py 按清单编码 352×352 GIF 与完整巡演并登记 Manifest。死亡 GIF 不循环；其余包含待机进入与回到待机。临时帧仅在 .godot/motion-capture/随机作业目录，路径校验后清理，清单与抽样截图保留。
 
 验证：候选 006 单动作远程、七动作完整导出通过；普通 -Check 和 -Tour 前后候选与正式目录全文件 SHA-256 相同。18 项 Python 单测、JS 语法与 Python 编译通过。Pillow 由 -PythonPath 指定的 Python 提供；本机使用 Codex bundled runtime，系统 py -3 仍可运行不依赖 Pillow 的资源台测试。后续 C～F 待实施。
+
+### 通用化批次 C（2026-09-16）
+
+共享 hybrid_presentation.gd 以手动 AnimationPlayer 定位 context；不自行推进时间或结算战斗。BattleAnimationSet 声明 AnimationLibrary 与显式特殊扩展登记，SpriteFrames 缺失动作继续回退。模拟事件明确携带 melee／ranged；旧 attack 由角色 attack_modes 映射，双能力角色独立动作由同一时钟选择。表现动作副本每帧直接取模拟动作，不再自增第二份动作 age。
+
+增量导入后：hybrid_contract_check、presentation_check（九组合全量事件一致）、skill_vfx_check、animation_check、统一七动作检查全部通过；新增双攻击、旧 attack、手动定位、左右朝向、重开及缺失骨骼回退断言。正式远程三分辨率实际截图通过。006 专用脚本暂留兼容别名，待 D 数据化和 F 清理。

@@ -199,7 +199,7 @@ func _reset_preview() -> void:
 	var target = units.filter(func(u): return u.side == 1)[0]
 	if preview_unit != null:
 		actor = _from_definition(preview_unit, 0, 0, 0)
-		actor.animation = BattleAnimation.new(actor.battle_animation)
+		actor.animation = BattleAnimation.new(actor.battle_animation, actor.get("attack_modes", 1))
 		actor.presentation = UnitPresentation.new()
 	units.assign([actor, target])
 	selected = actor.role
@@ -227,11 +227,11 @@ func _reset_preview() -> void:
 		u.action_profile = u.action_profile.duplicate() if u.get("action_profile") != null else ActionProfile.new()
 	if preview_animation != null:
 		actor.battle_animation = preview_animation
-		actor.animation = BattleAnimation.new(preview_animation)
+		actor.animation = BattleAnimation.new(preview_animation, actor.get("attack_modes", 1))
 	if preview_projectile != null:
 		actor.battle_animation = actor.battle_animation.duplicate(true) if actor.battle_animation != null else AnimationSet.new()
 		actor.battle_animation.projectile_style = preview_projectile
-		actor.animation = BattleAnimation.new(actor.battle_animation)
+		actor.animation = BattleAnimation.new(actor.battle_animation, actor.get("attack_modes", 1))
 	actor.attack_range = 3.2 if mode == Mode.RANGED else (1.45 if mode in [Mode.MOVE, Mode.MELEE] else actor.attack_range)
 	if mode == Mode.MELEE: actor.action_profile.delivery = "melee"
 	if mode == Mode.RANGED: actor.action_profile.delivery = "projectile"

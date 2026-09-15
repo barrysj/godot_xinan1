@@ -11,10 +11,11 @@ func check(ok: bool, label: String) -> void:
 		push_error(label)
 
 func _ready() -> void:
+	_check_shared_controller()
 	for config in [Candidate, Chalk.battle_animation]:
 		var rig: Node2D = config.presentation_scene.instantiate()
 		add_child(rig)
-		var clock = Animator.new(config)
+		var clock = Animator.new(config, Chalk.resolved_attack_modes())
 		check(config.display_size == Vector2(140, 140), "Approved display size")
 		check(config.anchor == Vector2(0.5, 0.875), "Approved foot anchor")
 		for action in [&"idle", &"move", &"attack", &"cast", &"hurt", &"critical", &"death"]:
@@ -38,3 +39,37 @@ func _ready() -> void:
 		rig.free()
 	print("HYBRID_CONTRACT_CHECK failures=", failures)
 	get_tree().quit(failures)
+
+func _check_shared_controller() -> void:
+	var root := Node2D.new()
+	root.set_script(preload("res://scenes/battle_demo/presentations/hybrid_presentation.gd"))
+	var bone := Node2D.new()
+	bone.name = "Pivot"
+	root.add_child(bone)
+	var player := AnimationPlayer.new()
+	player.name = "AnimationPlayer"
+	root.add_child(player)
+	var library := AnimationLibrary.new()
+	var clip := Animation.new()
+	clip.length = 2.0
+	var track := clip.add_track(Animation.TYPE_VALUE)
+	clip.track_set_path(track, ^"Pivot:position")
+	clip.track_insert_key(track, 0.0, Vector2.ZERO)
+	clip.track_insert_key(track, 2.0, Vector2(20, 0))
+	library.add_animation(&"ranged", clip)
+	player.add_animation_library(&"", library)
+	add_child(root)
+	var context := {"state": &"ranged", "age": 0.25, "duration": 0.5,
+		"center": Vector2(100, 100), "display_size": Vector2(144, 144), "facing_right": false}
+	root.apply_presentation(context)
+	check(bone.position.is_equal_approx(Vector2(10, 0)), "Shared player seeks normalized authoritative time")
+	check(not player.is_playing() and root.scale == Vector2(-0.5, 0.5), "Manual player stays paused and mirrors from context")
+	root.apply_presentation(context)
+	check(bone.position.is_equal_approx(Vector2(10, 0)), "Repeated context is idempotent")
+	context.age = 0.0
+	root.apply_presentation(context)
+	check(bone.position == Vector2.ZERO, "Restart seeks beginning without hidden playback state")
+	context.state = &"death"
+	root.apply_presentation(context)
+	check(not root.visible, "Unsupported skeleton action delegates to shared SpriteFrames renderer")
+	root.free()
