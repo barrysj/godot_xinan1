@@ -1,0 +1,194 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/battle_demo/presentations/hybrid_presentation.gd" id="1_7brex"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/006/parts/dust_particle.png" id="2_g4qt7"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/006/parts/body.png" id="3_5sai8"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/006/parts/launcher.png" id="4_e5s2n"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/006/parts/orbiter_back.png" id="5_wk3lj"]
+[ext_resource type="Texture2D" path="res://design/concepts/chalk-spirit/chalk-spirit/006/parts/orbiter_top.png" id="6_fmttc"]
+[ext_resource type="AnimationLibrary" path="res://design/concepts/chalk-spirit/chalk-spirit/006/animations.tres" id="7_65nwd"]
+
+[node name="Presentation" type="Node2D" unique_id=592163968]
+visible = false
+texture_filter = 4
+script = ExtResource("1_7brex")
+
+[node name="HybridCutoutRig" type="Node2D" parent="." unique_id=580857485]
+
+[node name="LayeredCastSigil" type="Node2D" parent="HybridCutoutRig" unique_id=767954263]
+visible = false
+position = Vector2(96, -166)
+
+[node name="SoftHalo" type="Polygon2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=1666727904]
+color = Color(0.27058825, 0.84313726, 0.7411765, 0.14)
+polygon = PackedVector2Array(42, 0, 40.568886, 10.870399, 36.373066, 21, 29.698484, 29.698484, 21, 36.373066, 10.870399, 40.568886, 2.5716733e-15, 42, -10.870399, 40.568886, -21, 36.373066, -29.698484, 29.698484, -36.373066, 21, -40.568886, 10.870399, -42, 5.1433467e-15, -40.568886, -10.870399, -36.373066, -21, -29.698484, -29.698484, -21, -36.373066, -10.870399, -40.568886, -7.71502e-15, -42, 10.870399, -40.568886, 21, -36.373066, 29.698484, -29.698484, 36.373066, -21, 40.568886, -10.870399)
+
+[node name="TealChalkRing" type="Line2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=1859349693]
+points = PackedVector2Array(54, 0, 39.83717, 23, 27, 46.76537, 2.8165946e-15, 46, -27, 46.76537, -39.83717, 23, -54, 6.6128743e-15, -39.83717, -23, -27, -46.76537, -8.449784e-15, -46, 27, -46.76537, 39.83717, -23, 54, 0)
+width = 3.5
+default_color = Color(0.27058825, 0.84313726, 0.7411765, 0.88)
+
+[node name="MagentaRuneRing" type="Line2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=1790289904]
+points = PackedVector2Array(35, 0, 17.67767, 17.67767, 2.1430611e-15, 35, -17.67767, 17.67767, -35, 4.2861222e-15, -17.67767, -17.67767, -6.4291834e-15, -35, 17.67767, -17.67767, 35, 0)
+width = 2.5
+default_color = Color(0.9411765, 0.29411766, 0.7764706, 0.92)
+
+[node name="MagentaDiamondCore" type="Polygon2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=711118710]
+color = Color(0.9411765, 0.29411766, 0.7764706, 0.88)
+polygon = PackedVector2Array(0, -18, 14, 0, 0, 18, -14, 0)
+
+[node name="PaperCore" type="Polygon2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=1978255556]
+color = Color(1, 0.9764706, 0.93333334, 0.94)
+polygon = PackedVector2Array(0, -8, 6, 0, 0, 8, -6, 0)
+
+[node name="CastMote00" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=94940621]
+modulate = Color(1, 0.9764706, 0.93333334, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote01" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=1109147396]
+modulate = Color(0.9411765, 0.29411766, 0.7764706, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote02" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=997248618]
+modulate = Color(1, 0.9764706, 0.93333334, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote03" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=686173209]
+modulate = Color(0.9411765, 0.29411766, 0.7764706, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote04" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=1458998356]
+modulate = Color(1, 0.9764706, 0.93333334, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote05" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=570771355]
+modulate = Color(0.9411765, 0.29411766, 0.7764706, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote06" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=741131540]
+modulate = Color(1, 0.9764706, 0.93333334, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="CastMote07" type="Sprite2D" parent="HybridCutoutRig/LayeredCastSigil" unique_id=70294785]
+modulate = Color(0.9411765, 0.29411766, 0.7764706, 0.9)
+texture = ExtResource("2_g4qt7")
+
+[node name="Skeleton2D" type="Skeleton2D" parent="HybridCutoutRig" unique_id=1714540278]
+
+[node name="RootBone" type="Bone2D" parent="HybridCutoutRig/Skeleton2D" unique_id=1724609939]
+position = Vector2(-1.8789775, 14.818161)
+rotation = -0.06627387
+rest = Transform2D(1, 0, 0, 1, 0, 0)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+
+[node name="Body" type="Sprite2D" parent="HybridCutoutRig/Skeleton2D/RootBone" unique_id=769263262]
+position = Vector2(0, -144)
+texture = ExtResource("3_5sai8")
+
+[node name="LauncherBone" type="Bone2D" parent="HybridCutoutRig/Skeleton2D/RootBone" unique_id=913514943]
+position = Vector2(54, -140)
+rotation = 0.11
+rest = Transform2D(1, 0, 0, 1, 54, -145)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+
+[node name="Launcher" type="Sprite2D" parent="HybridCutoutRig/Skeleton2D/RootBone/LauncherBone" unique_id=414185831]
+position = Vector2(-54, 1)
+texture = ExtResource("4_e5s2n")
+
+[node name="OrbiterBackBone" type="Bone2D" parent="HybridCutoutRig/Skeleton2D/RootBone" unique_id=1382444421]
+position = Vector2(-40.5, -168.5)
+rest = Transform2D(1, 0, 0, 1, -48.5, -182.5)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+
+[node name="OrbiterBack" type="Sprite2D" parent="HybridCutoutRig/Skeleton2D/RootBone/OrbiterBackBone" unique_id=337423782]
+position = Vector2(48.5, 38.5)
+texture = ExtResource("5_wk3lj")
+
+[node name="OrbiterTopBone" type="Bone2D" parent="HybridCutoutRig/Skeleton2D/RootBone" unique_id=2021963456]
+position = Vector2(-23.5, -201.5)
+rest = Transform2D(1, 0, 0, 1, -28.5, -211.5)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+
+[node name="OrbiterTop" type="Sprite2D" parent="HybridCutoutRig/Skeleton2D/RootBone/OrbiterTopBone" unique_id=684314806]
+position = Vector2(28.5, 67.5)
+texture = ExtResource("6_fmttc")
+
+[node name="IndependentDust" type="Node2D" parent="HybridCutoutRig" unique_id=1200599113]
+
+[node name="Dust00" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=141372446]
+modulate = Color(0.88, 0.91, 0.91, 0.254592)
+position = Vector2(3.5242443, -48.896)
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust01" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1231672073]
+modulate = Color(0.88, 0.91, 0.91, 0.205326)
+position = Vector2(0.4015224, -36.338)
+scale = Vector2(0.77, 0.77)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust02" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1618553403]
+modulate = Color(0.88, 0.91, 0.91, 0.15606)
+position = Vector2(-6.3020244, -23.78)
+scale = Vector2(0.99, 0.99)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust03" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1010268804]
+modulate = Color(0.88, 0.91, 0.91, 0.106794)
+position = Vector2(2.925444, -11.222)
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust04" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=334163362]
+modulate = Color(0.88, 0.91, 0.91, 0.086904)
+position = Vector2(4.315856, -6.152)
+scale = Vector2(0.77, 0.77)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust05" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1938917680]
+modulate = Color(0.88, 0.91, 0.91, 0.037638)
+position = Vector2(-5.970861, 6.406)
+scale = Vector2(0.99, 0.99)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust06" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1228035316]
+modulate = Color(0.88, 0.91, 0.91, 0.294372)
+position = Vector2(-0.1798591, -59.036)
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust07" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1151830382]
+modulate = Color(0.88, 0.91, 0.91, 0.245106)
+position = Vector2(4.981325, -46.478)
+scale = Vector2(0.77, 0.77)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust08" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=1889679725]
+modulate = Color(0.88, 0.91, 0.91, 0.225216)
+position = Vector2(-1.565013, -41.408)
+scale = Vector2(0.99, 0.99)
+texture = ExtResource("2_g4qt7")
+
+[node name="Dust09" type="Sprite2D" parent="HybridCutoutRig/IndependentDust" unique_id=978800423]
+modulate = Color(0.88, 0.91, 0.91, 0.17595)
+position = Vector2(-3.1624212, -28.85)
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("2_g4qt7")
+
+[node name="MuzzleFlash" type="Polygon2D" parent="HybridCutoutRig" unique_id=2027117821]
+visible = false
+position = Vector2(126, -132)
+color = Color(0.9411765, 0.7882353, 0.3529412, 1)
+polygon = PackedVector2Array(-4, 0, -18, -6, -9, 0, -24, 8, -6, 5, -10, 18, 0, 8, 12, 15, 8, 3, 22, 0, 8, -3, 12, -15, 0, -8, -10, -18)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=789543407]
+callback_mode_process = 2
+libraries/ = ExtResource("7_65nwd")

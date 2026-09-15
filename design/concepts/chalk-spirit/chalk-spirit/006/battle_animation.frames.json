@@ -1526,7 +1526,7 @@
       "fps": 10.0,
       "loop": true
     },
-    "attack": {
+    "ranged": {
       "poses": [
         "combat:0",
         "combat:1",

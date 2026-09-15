@@ -109,3 +109,9 @@ run-motion-preview.ps1 新增显式 -ExportPreviews（支持 -Action）、-Pytho
 共享 hybrid_presentation.gd 以手动 AnimationPlayer 定位 context；不自行推进时间或结算战斗。BattleAnimationSet 声明 AnimationLibrary 与显式特殊扩展登记，SpriteFrames 缺失动作继续回退。模拟事件明确携带 melee／ranged；旧 attack 由角色 attack_modes 映射，双能力角色独立动作由同一时钟选择。表现动作副本每帧直接取模拟动作，不再自增第二份动作 age。
 
 增量导入后：hybrid_contract_check、presentation_check（九组合全量事件一致）、skill_vfx_check、animation_check、统一七动作检查全部通过；新增双攻击、旧 attack、手动定位、左右朝向、重开及缺失骨骼回退断言。正式远程三分辨率实际截图通过。006 专用脚本暂留兼容别名，待 D 数据化和 F 清理。
+
+### 通用化批次 D（2026-09-16）
+
+候选 006 改为 presentation.tscn＋animations.tres；六骨骼动作由共享 AnimationPlayer 控制器播放，远程统一为 ranged，七类 SpriteFrames 回退保留。动画库约 9 MB，静态层级、部件、枢轴、双环效果与挂点均为场景数据。通用采样和对照工具为 tools/art/bake_presentation.tscn、compare_presentation.tscn，无角色公式。
+
+增量导入后候选直接加载、统一七动作、共享契约、九组合事件及结算、技能特效和动画检查通过；七 GIF＋巡演重导出，三分辨率真实截图通过，无脚本错误或 Bone2D 警告。新旧逐节点对照通过，精确误差和 96 秒连续曲线边界见候选 generation.md；正式目录迁移留给 E，旧脚本待 F 删除。

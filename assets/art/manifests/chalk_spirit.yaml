@@ -197,7 +197,7 @@ variants:
       rig_build_metadata: "rig_manifest.json"
       generation_record: "generation.md"
       presentation_script: "chalk_spirit_presentation.gd"
-      presentation_scene: "chalk_spirit_presentation.tscn"
+      presentation_scene: "presentation.tscn"
       gif_idle: "review/idle-preview.gif"
       gif_move: "review/move-preview.gif"
       gif_ranged: "review/ranged-preview.gif"
@@ -206,6 +206,7 @@ variants:
       gif_critical: "review/critical-preview.gif"
       gif_death: "review/death-preview.gif"
       gif_all_actions: "review/all-actions.gif"
+      animation_library: "animations.tres"
     resource: "design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres"
     animation:
       frames: "frame_metadata"
@@ -213,11 +214,11 @@ variants:
       gifs:
         idle: "gif_idle"
         move: "gif_move"
-        attack: "gif_ranged"
         cast: "gif_cast"
         hurt: "gif_hurt"
         critical: "gif_critical"
         death: "gif_death"
+        ranged: "gif_ranged"
       godot:
         unit: "res://resources/content/enemies/chalk.tres"
         animation: "res://design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres"

@@ -18,7 +18,7 @@ func _ready() -> void:
 		var clock = Animator.new(config, Chalk.resolved_attack_modes())
 		check(config.display_size == Vector2(140, 140), "Approved display size")
 		check(config.anchor == Vector2(0.5, 0.875), "Approved foot anchor")
-		for action in [&"idle", &"move", &"attack", &"cast", &"hurt", &"critical", &"death"]:
+		for action in [&"idle", &"move", &"ranged", &"cast", &"hurt", &"critical", &"death"]:
 			check(clock._has_clip(action), "Sequence fallback exists: " + action)
 			check(rig.handles_presentation_state(action) == (action != &"death"), "Backend allocation: " + action)
 			for right in [true, false]:
