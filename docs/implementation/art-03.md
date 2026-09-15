@@ -1,117 +1,58 @@
 # ART-03 · 动作预览与切帧生产工具
 
-> 本文件是该功能的持续实施档案，不是某次 session 日志。功能 session 更新此处；全项目判断由统筹维护[总览](../implementation-status.md)。
+> 持续功能档案；整体统筹见 [总览](../implementation-status.md)，规则见 [战斗动画](../battle-animation.md)。
 
-- 功能 ID：ART-03
-- 所属系统：美术
-- 当前状态：已实装
-- 最近整理：2026-09-16；清理基线 `0fe6329`，通用化方案基线 `dc35f3e`，七动作 GIF 基线 `0e3df58`；推荐通用化方案为仅设计、待实施。
+- 功能 ID：ART-03；状态：已验证（Windows 桌面与当前测试角色范围）。
+- 验证日期：2026-09-16；起点 `ee5b780`；实现基线 `56dc3aa`＋本档案同提交的 F 清理树。
+- 实现入口：[预览器](../../scenes/battle_demo/motion_preview.tscn)、[共享控制器](../../scenes/battle_demo/presentations/hybrid_presentation.gd)、[捕获器](../../tools/art/motion_capture.gd)、[GIF 后处理](../../tools/art/motion_previews.py)、[确定性提升](../../tools/art/promote_animation.py)。
 
-## 玩家能力与接入范围
+## 骨骼＋序列帧通用生产与预览
 
-动作预览与切帧生产工具。玩家价值：降低后续动画试错。
+战斗模拟决定动作方式、阶段、出手、命中、收招和朝向。共享表现只定位 context；AnimationPlayer 使用手动模式，不自行推进战斗时间。普通角色提供场景、AnimationLibrary、SpriteFrames 和元数据；特殊扩展须在 BattleAnimationSet 与 rig_manifest 显式登记脚本及理由。
 
-## 实现与规则入口
+动作契约为 idle、move、melee、ranged、cast、hurt、critical、death。旧 attack 根据角色 attack_modes 映射；双能力角色能提供独立 melee／ranged，共用同一模拟时钟。预览禁用不支持的攻击入口。粉笔精灵 006 的前六种可用状态走骨骼，death 保留批准的序列帧。
 
-- 实现入口：[motion_preview.tscn](../../scenes/battle_demo/motion_preview.tscn)、[build_battle_frames.py](../../tools/art/build_battle_frames.py)
-- 规则事实源：[动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)
-- 跨系统边界参见[集成约束](integration.md)；本文件不另存规则数值或美术审批记录。
+### 显式导出
 
-## 验证与证据
+```powershell
+pwsh.exe -File ./run-motion-preview.ps1 -EnsureImport -Check -Unit res://resources/content/enemies/chalk.tres
+pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'
+pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -Action Ranged -PythonPath '<含 Pillow 的 python.exe>'
+py -3 tools/art/promote_animation.py chalk_spirit --check
+```
 
-- 已有证据：历史摘要；本轮静态。编号和重跑入口见[共享验证目录](verification.md)。
-- 以上是继承的验收记录，不表示本次文档整理重新验证。新增验证在此更新日期、代码基线、命令、结果与覆盖边界；共享检查变化同步目录。
-- 程序通过不等于真人体验、目标设备或美术审批通过。
+- 默认预览、-Action、-Tour、-Check 和资源台启动不生成 PNG／GIF，不写候选或正式包。-Capture 是单独的显式截图入口，仅写 .godot。
+- -ExportPreviews 从 Manifest 精确解析候选，可显式传 -Animation 选择历史版本；未指定动画时取角色当前接入候选。输出仅写该候选 review/。
+- 一个 Godot 进程连续导出全部支持动作；隔离 352×352 SubViewport 直接捕获角色，不落盘全屏中间帧。
+- 每动作 30 FPS、3 秒，涵盖待机→动作→收招→待机；移动与濒危在尾段回待机，死亡停末帧且 GIF 不循环。全量导出同时生成 all-actions.gif。
+- 捕获清单包含对象、版本、动作、后端、帧率、持续时间、循环、前后状态、事件与输出路径。后处理器不含角色 ID、骨骼名或动作公式。
+- 临时帧限于已校验的 .godot/motion-capture/<作业>/frames；编码后删除，JSON 与抽样 PNG 保留为本地验证缓存。GIF 映射写入 Manifest，资源台只消费预生成文件。
+- Python 后处理依赖 Pillow；-PythonPath 可指定环境，未指定则使用系统 py -3。当前系统 Python 可运行资源台单测，导出使用 Codex bundled Python。
 
-2026-09-16 清理专用粉笔精灵评审脚手架后，运行 `pwsh.exe -NoProfile -File .\run-motion-preview.ps1 -Check -Unit 'res://resources/content/enemies/chalk.tres'`：待机、移动、远程、施法、受击、濒危和退场通过，近战按角色能力正确跳过，`MOTION_PREVIEW_CHECK failures=0`。任务记录引用的两个 GIF 和五张长期截图／contact sheet 均保留；未引用的十八张中间截图已移除。
+### 运行包与提升
 
-同日从统一 `motion_preview.tscn` 以 30 FPS 固定步长分别录制七个受支持动作，每段 60 个实际渲染帧；隔帧编码为 352×352、约 15 FPS 的独立 GIF，并全部登记到 006 Manifest 供资源台逐动作播放。该批 GIF 是合并前资产补全，不代表下一节的通用 `-ExportPreviews` 已实现；录制帧和一次性编码程序仅位于 `.godot/`，不作为角色专用工具入库。
+候选和正式运行核心同构：presentation.tscn、animations.tres、battle_animation.tres、battle_animation.frames.json、rig_manifest.json、图集和 parts/。正式目录只保留运行文件及 Godot PNG 导入设置；generation.md、GIF、截图与旧实现追溯留在候选或 Git。
 
-与资源台桌面控制分支的合并树复验：16 项 Python 测试、JavaScript 语法和 Python 编译通过；资源台扫描 8 个对象、99 个登记文件、0 处不一致，006 动画页显示七个动作及对应 GIF。Godot 增量导入后，`MOTION_PREVIEW_CHECK failures=0`、`PRESENTATION_CHECK PASS failures=0`、`SKILL_VFX_CHECK failures=0`、`ANIMATION CHECK: PASS`。
+提升工具先验证批准／选用状态、允许列表、动作集合、外部依赖、特殊扩展登记和 owner，再复制并改写包内引用及 owner。拒绝候选路径泄漏、丢失依赖、未批准版本和正式包中的非运行文件。重复提升内容相同；--check 校验正式包等于确定性提升结果。角色不再保留专用播放脚本。
 
-## 已知边界与未完成项
+## 验证结果
 
-2026-09-15 在 main `1a2948e` 与粉笔 `b661bad`、工具 `c44a862` 合并树重跑粉笔七个受支持模式，`failures=0`，近战按能力跳过；入口支持显式 Unit、Animation、Projectile。验证命令及三分辨率截图见 [E19](verification.md#美术集成验证-e19)。这不是新增玩家内容或其他所有对象的验证。
+| 验证 | 结果 |
+| --- | --- |
+| Godot 增量导入后 run-motion-preview.ps1 -Check | 正式与候选七动作 PASS，近战 SKIP；暂停、单步、慢速通过 |
+| hybrid_contract_check.tscn | 候选直接加载、后端分配、尺寸／锚点、双朝向、手动定位与死亡末帧通过 |
+| presentation_check.tscn | 30／60／144 FPS × 0.25／1／2 倍速九组合的全部模拟事件、结算时间、伤害和治疗一致；暂停、重开通过 |
+| animation_check.tscn、skill_vfx_check.tscn | 双攻击、旧 attack 映射、缺失回退、帧时长、弹道和特效通过 |
+| 显式单动作及全量导出 | 7 个 352×352 GIF＋完整巡演；一轮一个 Godot 捕获进程 |
+| 普通预览与资源台 | 候选及正式包无新增文件、无内容变化 |
+| Python 单测、JS 语法、Python 编译 | 通过；命令见 ART-05 |
+| 三分辨率预览、真实战斗与新旧对照 | 1920×1080、2560×1440、1920×1200 无裁切；证据见粉笔精灵任务 |
 
-专用 `chalk_spirit_hybrid_preview`、专用 PowerShell runner 与候选 `build_review.py` 已由 `0fe6329` 清除；现有统一预览器继续覆盖交互预览和静态捕获，已保存的 006 GIF 继续供资源台读取。当前没有通用的逐动作 GIF 批量导出入口，下一节实施前不得重新建立角色专用导出脚本。
+运行日志无脚本错误、Bone2D 长度／角度警告；本机仍有既有根证书读取错误和像素原图加载提示。首次空缓存编辑器导入曾报告既有插件设置脚本问题，完成增量导入后的上述运行检查正常。
 
-## 推荐改造：骨骼＋序列帧通用生产与预览（仅设计，待实施）
+## 边界与统筹
 
-### 目标与非目标
-
-- 一个角色通过同一 `BattleAnimationSet` 同时声明骨骼动作和 `SpriteFrames` 回退；两类后端共用模拟动作、时间、朝向、显示尺寸、脚底锚点、受击色调、暂停和倍速。
-- 普通角色只提供场景、动画资源、贴图、序列帧与元数据，不提供专用播放控制脚本。共享表现控制器负责后端选择、定位动画和通用状态效果。
-- 固定骨骼动作优先保存为 `AnimationPlayer`／`AnimationLibrary` 轨道；骨骼层级、枢轴、Sprite2D、遮挡关系和 VFX 挂点保存在 `.tscn`。通用弹体、粉尘、法阵等拆为复用场景或资源，角色只配置挂点和参数。
-- `AnimationTree` 只在确有连续混合、分层或复杂过渡时引入；战斗模拟始终是动作状态与时间的唯一事实源，表现层不得维护第二套战斗状态机。
-- 不在本轮引入 Spine 等外部商业工具，不把所有序列帧强制改成骨骼；大透视、强形变和已批准的粉笔精灵死亡动画继续使用序列帧。
-
-### 目标职责
-
-| 层 | 唯一职责 | 角色专用内容 |
-| --- | --- | --- |
-| 战斗模拟 | 决定动作阶段、出手、命中、持续时间与朝向 | 无 |
-| 共享表现控制器 | 按模拟上下文选择骨骼／序列帧后端并定位播放 | 无 |
-| `presentation.tscn` | 骨骼层级、部件、枢轴、遮挡和挂点 | 有，纯场景数据 |
-| `animations.tres` | 骨骼关键帧、属性轨道和动作名称 | 有，纯动画数据 |
-| `battle_animation.tres` | 动作契约、显示参数和序列帧回退 | 有，纯资源数据 |
-| 通用 VFX | 粉尘、弹体、法阵与命中特效 | 尽量无；角色配置参数 |
-| `motion_preview` | 交互预览、检查、静态捕获和导出调度 | 无 |
-| 通用后处理器 | 按捕获清单编码 GIF、contact sheet 并安全清理缓存 | 无 |
-| 资源台 | 只读 Manifest、播放预生成 GIF、启动交互预览 | 无生产写入 |
-
-### 显式预览导出契约
-
-- 默认运行、`-Action`、`-Tour` 和资源台启动均不得生成 PNG、GIF 或写入候选目录；`-Check` 只执行验证并写普通 Godot 日志。
-- 新增显式 `-ExportPreviews`，可选单动作或全部支持动作。输出目标必须由 Manifest 中的候选版本根解析，并限制在该版本 `review/`；临时帧只进入 `.godot/`。
-- 捕获使用固定模拟步长。带背景评审可使用 Godot Movie Writer；需要透明输出时使用隔离 `SubViewport`。导出清单记录对象、候选版本、动作、后端、帧率、持续时间、循环、前后状态和输出路径。
-- 主评审 GIF 除死亡外必须包含“待机→动作→收招→待机”；死亡停在末帧。逐动作补充 GIF 不能代替完整状态边界。
-- Python 后处理器只能读取通用捕获清单和帧目录，不得出现对象 ID、骨骼名或角色动作公式。删除缓存前必须验证解析后的绝对路径位于项目 `.godot/` 指定子目录。
-- 导出全部动作后，Manifest 为每个可用动作登记对应 GIF；资产浏览器只播放现成文件，不在点击时调用导出。
-
-### 实施批次与本地提交边界
-
-| 批次 | Codex 实施内容 | 完成证据 |
-| --- | --- | --- |
-| A | 先写双后端契约检查，锁定现有粉笔精灵七动作、时钟和死亡回退 | 新检查先覆盖旧实现并通过 |
-| B | 建立显式通用导出、捕获清单与通用 GIF 后处理器 | 普通预览零输出；单动作和全动作导出通过 |
-| C | 建立共享表现控制器与数据化骨骼场景接口 | 骨骼／序列帧后端、暂停、倍速、朝向与回退检查通过 |
-| D | 迁移粉笔精灵 006 到 `presentation.tscn`＋`animations.tres`，保留死亡序列帧 | 迁移前后七动作 GIF、游戏截图和动作时序对比 |
-| E | 建立候选到正式资产的确定性提升与 Manifest 校验 | 正式目录为候选运行核心的同构子集，运行时无候选路径 |
-| F | 删除候选与正式专用控制脚本，更新资源台和文档 | 无旧类名／路径引用，完整回归通过 |
-
-每一批作为独立功能验证后立即本地提交；不得把通用导出、运行时重构和资产迁移压成一个不可回退的大提交。不自动推送远程。
-
-### 完成验收
-
-1. 粉笔精灵待机、移动、远程、施法、受击、濒危使用骨骼，死亡使用序列帧；近战仍按元数据置灰。
-2. 30／60／144 FPS 与 0.25×／1×／2× 下出手、命中、收招和战斗结果一致；暂停、单步、重开和左右朝向通过。
-3. 普通预览和资源台启动前后，候选与正式资产目录无新增文件；只有显式导出写入 `review/`。
-4. 导出七动作 GIF 与完整巡演，三种项目规定分辨率无裁切、主体比例漂移或骨骼水波纹，Godot 日志无 `Bone2D` 自动长度／角度警告。
-5. 真实战斗、统一预览器与导出共用同一表现资源；游戏运行时不引用 `design/concepts/`。
-6. 候选和正式目录的运行核心文件角色一致，正式目录不包含 review、Codex 证据、缓存或角色专用工具。
-
-## 交接给统筹
-
-待统筹：推荐改造将统一骨骼／序列帧运行时、预览导出、候选提升和资源台 GIF 消费边界；当前仅完成方案落盘与旧脚手架清理，未新增通用导出能力，也未改变玩家可见表现。实现完成后由统筹核验整体美术工具能力与依赖。
-
-### 通用化批次 A（2026-09-16）
-
-基线 ee5b780；候选 006 与正式资源直接加载通过 hybrid_contract_check.tscn，锁定六骨骼动作、七类序列帧回退、死亡末帧、140×140 尺寸、脚底锚点与左右朝向。presentation_check.tscn 的 30／60／144 FPS × 0.25／1／2 倍速九组合中，全量模拟事件、结算时间和战斗统计一致；统一预览七动作、暂停与单步通过。增量导入完成后运行，运行检查无脚本错误及 Bone2D 警告。迁移前实际三分辨率截图保存在 .godot/hybrid-before/（可重建验证缓存）。待统筹：后续 B～F 尚未完成。
-
-### 通用化批次 B（2026-09-16）
-
-run-motion-preview.ps1 新增显式 -ExportPreviews（支持 -Action）、-PythonPath；motion_capture.gd 在单个 Godot 进程的隔离 SubViewport 捕获，motion_previews.py 按清单编码 352×352 GIF 与完整巡演并登记 Manifest。死亡 GIF 不循环；其余包含待机进入与回到待机。临时帧仅在 .godot/motion-capture/随机作业目录，路径校验后清理，清单与抽样截图保留。
-
-验证：候选 006 单动作远程、七动作完整导出通过；普通 -Check 和 -Tour 前后候选与正式目录全文件 SHA-256 相同。18 项 Python 单测、JS 语法与 Python 编译通过。Pillow 由 -PythonPath 指定的 Python 提供；本机使用 Codex bundled runtime，系统 py -3 仍可运行不依赖 Pillow 的资源台测试。后续 C～F 待实施。
-
-### 通用化批次 C（2026-09-16）
-
-共享 hybrid_presentation.gd 以手动 AnimationPlayer 定位 context；不自行推进时间或结算战斗。BattleAnimationSet 声明 AnimationLibrary 与显式特殊扩展登记，SpriteFrames 缺失动作继续回退。模拟事件明确携带 melee／ranged；旧 attack 由角色 attack_modes 映射，双能力角色独立动作由同一时钟选择。表现动作副本每帧直接取模拟动作，不再自增第二份动作 age。
-
-增量导入后：hybrid_contract_check、presentation_check（九组合全量事件一致）、skill_vfx_check、animation_check、统一七动作检查全部通过；新增双攻击、旧 attack、手动定位、左右朝向、重开及缺失骨骼回退断言。正式远程三分辨率实际截图通过。006 专用脚本暂留兼容别名，待 D 数据化和 F 清理。
-
-### 通用化批次 D（2026-09-16）
-
-候选 006 改为 presentation.tscn＋animations.tres；六骨骼动作由共享 AnimationPlayer 控制器播放，远程统一为 ranged，七类 SpriteFrames 回退保留。动画库约 9 MB，静态层级、部件、枢轴、双环效果与挂点均为场景数据。通用采样和对照工具为 tools/art/bake_presentation.tscn、compare_presentation.tscn，无角色公式。
-
-增量导入后候选直接加载、统一七动作、共享契约、九组合事件及结算、技能特效和动画检查通过；七 GIF＋巡演重导出，三分辨率真实截图通过，无脚本错误或 Bone2D 警告。新旧逐节点对照通过，精确误差和 96 秒连续曲线边界见候选 generation.md；正式目录迁移留给 E，旧脚本待 F 删除。
+- 通用转换器 bake_presentation.tscn 从 JSON 设置采样旧实现，不含角色公式；compare_presentation.tscn 对照相同 context。交付运行不依赖转换器或旧脚本。
+- 006 连续曲线保存 96 秒，覆盖当前 90 秒战斗与收尾；普通预览会每轮重置。关闭循环并持续观看超过 96 秒时，曲线从起点循环。采样误差与迁移证据见候选 generation.md。
+- 当前骨骼样本是刚性分层动画；未引入 AnimationTree、商业骨骼格式或手机端验收。正式接入视觉评审仍单独保留。
+- **待统筹**：共享动画所有权、正式包路径、Pillow 导出依赖及资源台只读／生产写入边界已改变；高层总览和 Roadmap 未改。

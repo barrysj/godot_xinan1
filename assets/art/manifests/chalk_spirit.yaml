@@ -162,7 +162,7 @@ variants:
         death: "gif_death"
       godot:
         unit: "res://resources/content/enemies/chalk.tres"
-        animation: "res://resources/content/animations/chalk.tres"
+        animation: "res://design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres"
     metadata:
       normalized_canvas: [384, 384]
       display_size: [140, 140]
@@ -196,7 +196,6 @@ variants:
       rig_dust_particle: "parts/dust_particle.png"
       rig_build_metadata: "rig_manifest.json"
       generation_record: "generation.md"
-      presentation_script: "chalk_spirit_presentation.gd"
       presentation_scene: "presentation.tscn"
       gif_idle: "review/idle-preview.gif"
       gif_move: "review/move-preview.gif"

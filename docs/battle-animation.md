@@ -15,7 +15,8 @@
 | --- | --- |
 | `idle` | 常态循环 |
 | `move` | 移动循环；缺失时回退静止状态 |
-| `attack` | 普攻前摇开始，与模拟动作阶段同步 |
+| `melee` | 近战普攻前摇开始，与模拟动作阶段同步 |
+| `ranged` | 远程普攻前摇开始，与模拟动作阶段同步 |
 | `cast` | 带技能的一次攻击，替代攻击片段；群体效果不重复播放 |
 | `hurt` | 实际扣血，不能打断攻击或施法 |
 | `critical` | 存活且血量不超过 `critical_ratio`（默认 25%），静止时循环 |
@@ -25,7 +26,7 @@
 
 ## 表现与结算
 
-`game/combat/battle_simulation.gd` 负责前摇、出手、后摇和追踪弹道。具体规则与配置见 `docs/battle-demo.md` 的行动时序框架章节。无骨骼后端、根运动或物理击退。
+`game/combat/battle_simulation.gd` 负责前摇、出手、后摇和追踪弹道。具体规则与配置见 `docs/battle-demo.md` 的行动时序框架章节。已接入共享骨骼与序列帧双后端；没有根运动或物理击退。
 
 `unit_presentation.gd` 负责每个角色的表现状态；在模拟位置之间插值，程序前摇、攻击位移、受击偏移不修改占位。已有素材提供对应片段时让素材负责动作姿势；闪白、退场淡化仍统一生效。单位按插值后的脚底纵坐标排序。
 
@@ -39,7 +40,7 @@
 
 - `--headless --path . res://game/combat/action_check.tscn`：行动、命中与弹道边界。
 - `--headless --path . res://scenes/battle_demo/animation_check.tscn`：原有帧时长、优先级、恢复、缺失、暂停、倍速与重开。
-- `--headless --path . res://scenes/battle_demo/presentation_check.tscn`：移动片段、出手帧对齐、动画锁释放、插值、受击/死亡、30/60/144 FPS 和 1×/2×战斗结果与统计一致。
+- `--headless --path . res://scenes/battle_demo/presentation_check.tscn`：移动片段、出手帧对齐、动画锁释放、插值、受击/死亡、30/60/144 FPS × 0.25×/1×/2×全量模拟事件、战斗结果与统计一致。
 - `--path . res://scenes/battle_demo/battle_demo.tscn -- --autobattle-capture`：1920×1080、2560×1440、1920×1200 的运行截图，输出到 `.godot/`。
 
 现有部署、寻路和完整冒险回归入口继续保留。
@@ -71,7 +72,7 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - 适用动作：待机、移动、远程、施法、受击与濒危由刚性骨骼连续插值；新视角、强形变和退场优先使用序列帧。
 - 运行约束：两类后端共用战斗动作时钟、朝向与锚点；骨骼表现未处理的状态必须回退到主 `SpriteFrames`，不得维护第二套角色状态机。
 - 资源约束：候选版本保存在 `design/concepts/<task>/<object>/<version>/`，正式文件固定在 `assets/art/<type>/<object>/`；正式运行资源不得引用候选目录或版本号目录。
-- 预览约束：继续使用统一 `run-motion-preview.ps1` 指定角色、动作和速度；早期独立混合动画 runner 已由 `0fe6329` 清除，不得为新角色复制。现有候选 GIF 作为批准证据保留；显式通用批量导出、捕获清单和后处理器按 [ART-03 推荐改造](implementation/art-03.md#推荐改造骨骼序列帧通用生产与预览仅设计待实施) 实施。
+- 预览约束：继续使用统一 `run-motion-preview.ps1` 指定角色、动作和速度；早期独立混合动画 runner 已由 `0fe6329` 清除，不得为新角色复制。现有候选 GIF 作为批准证据保留；显式通用批量导出、捕获清单和后处理器已按 [ART-03](implementation/art-03.md#骨骼序列帧通用生产与预览) 完成。
 
 骨骼不是免切图方案。首次宽遮罩误带脸侧阴影，旋转后形成裂口；收紧遮罩并在主体保留肩部覆盖片后修复。因此正式生产应先定义部件边界、枢轴、前后遮挡和允许的动作幅度。提示词中的统一朝向、主体占框和特效边界仍用于关键姿势生成，但不能替代跨帧像素一致性。
 
@@ -93,7 +94,7 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 新增 `res://scenes/battle_demo/skill_vfx_check.tscn` 验证真实特效帧、群体释放一次、前摇取消、暂停/倍速、自动回收、重开和收尾时长。预览“施法”模式可慢速循环查看，`-Capture` 同时导出施法截图。
 
-粉笔精灵采用角色动画 005 与轻量弹体 001：正式动画位于 `resources/content/animations/chalk.tres`，弹体样式位于 `resources/content/animations/chalk_projectile.tres`。角色定义直接引用两者，正常预览不需要 `-Animation` 或 `-Projectile` 覆盖；`skill_vfx_check.tscn` 校验正式图集、头像、七动作帧数、弹体路径与旧弹道回退。
+粉笔精灵采用混合动画 006（保留 005 死亡帧）与轻量弹体 001：正式动画位于 `assets/art/characters/chalk_spirit/battle_animation.tres`，弹体样式位于 `resources/content/animations/chalk_projectile.tres`。角色定义直接引用两者，正常预览不需要 `-Animation` 或 `-Projectile` 覆盖；`skill_vfx_check.tscn` 校验正式图集、头像、七动作帧数、弹体路径与旧弹道回退。
 
 远射手同样接入 16 个绘制姿势和七类动画：银蓝短发、校园运动装与电子发射器。瞄准、发射、后坐、充能、受击和倒地均有独立画稿。两名角色的原始提示词与来源分别见 `assets/art/characters/guard/generation.md` 和 `assets/art/characters/archer/generation.md`；其余角色仍可按缺失动画回退规则正常战斗。
 
@@ -104,3 +105,14 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 `tools/art/build_battle_frames.py` 仅读取原始 RGBA 图集并生成 AtlasTexture/SpriteFrames 元数据，不修改原图像素。每格经透明边缘检查、裁切与 margin 补齐到 384×384，脚底统一为 (192,336)，战斗显示 128×128；动作源与每帧参数记录在旁边的 `.frames.json`。攻击/施法出手对应片段第 3 帧，归一化位置 0.4。左右朝向使用脚底局部变换镜像，避免负宽度绘制导致位移；侧栏按有限展示空间缩放。
 
 验证：Godot `--headless --path . res://scenes/battle_demo/authored_assets_check.tscn` 检查插画路径、统一画布、七类动作、不同动作画稿、出手帧和死亡末帧。完成两名角色后追加 `-- --require-two-models` 强制检查人数，避免以单一角色或空资源通过。
+
+## 共享混合动画运行包（2026-09-16）
+
+- BattleAnimationSet.animation_library 指定骨骼轨道；presentation_scene 指向包内 presentation.tscn。其 AnimationPlayer 引用同一 animations.tres，手动定位而不自动播放。共享 hybrid_presentation.gd 只消费状态、age／duration、motion_time、尺寸、中心、朝向与色调；未处理状态由共享 SpriteFrames 渲染器回退。
+- 模拟动作与事件携带 melee／ranged；旧 attack 经角色 attack_modes 解析为对应序列帧。双能力角色可分别提供两种轨道，不能复制模拟状态机。资源台也按元数据映射历史 attack 的动作按钮。
+- 普通角色仅提供资源；特殊脚本同时在 BattleAnimationSet.presentation_extension／extension_reason 与 rig_manifest.extension 登记，提升工具拒绝未登记脚本。
+- 用 `pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'` 导出全部动作；增加 `-Action Ranged` 只导出远程。普通预览、-Action、-Tour、-Check 和资源台均不写资产。
+- 显式导出在同一 Godot 进程中用 352×352 隔离视口连续捕获；通用后处理仅读取清单。GIF 覆盖待机→动作→收招→待机，死亡停末帧；全量导出含巡演。缓存位于 .godot，输出限于 Manifest 解析出的候选 review/。
+- 用 `py -3 tools/art/promote_animation.py chalk_spirit` 提升已批准候选，`--check` 检查确定性内容与依赖；正式包只包含允许列表及 Godot 导入元数据。角色直接引用正式包，不引用候选目录。
+- 验证前先增量导入；新增 hybrid_contract_check.tscn 覆盖候选直接加载、尺寸／锚点、左右朝向及死亡回退。真实战斗截图可用 `--demo-capture --demo-encounter=encounter_classroom --demo-capture-at=1.5`，同一实际战斗场景输出 .godot/battle_demo_combat.png。
+- 006 是误差受控的数据化迁移：连续曲线存储 96 秒，覆盖 90 秒战斗；超长预览会重新循环，关键帧压缩误差与生成来源见候选 generation.md。正式接入效果仍待人工评审。

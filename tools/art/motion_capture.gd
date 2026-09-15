@@ -69,7 +69,8 @@ static func run(preview: Node, manifest_path: String) -> void:
 			var backend := "skeleton" if handled else "sprite_frames"
 			if backend not in record.backends: record.backends.append(backend)
 			if context.state in [&"melee", &"ranged", &"attack"]:
-				record.source_clip = str(actor.battle_animation.frame_clip(context.state, actor.get("attack_modes", 1)))
+				var source_clip: StringName = actor.battle_animation.frame_clip(context.state, actor.get("attack_modes", 1))
+				record.source_clip = str(source_clip) if source_clip != &"" else action
 			if not handled:
 				sprite.texture = actor.animation.texture()
 				if sprite.texture != null:
