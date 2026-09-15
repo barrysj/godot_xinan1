@@ -45,7 +45,13 @@ var orbiter_back_bone: Bone2D
 var orbiter_top_bone: Bone2D
 var projectile: Sprite2D
 var muzzle_flash: Polygon2D
-var cast_orb: Polygon2D
+var cast_effect: Node2D
+var cast_halo: Polygon2D
+var cast_ring_outer: Line2D
+var cast_ring_inner: Line2D
+var cast_core: Polygon2D
+var cast_core_highlight: Polygon2D
+var cast_motes: Array[Sprite2D] = []
 var dust_layer: Node2D
 var dust_sprites: Array[Sprite2D] = []
 var preview_scale := 1.0
@@ -103,6 +109,16 @@ func _regular_polygon(points: int, radius: float) -> PackedVector2Array:
 	return polygon
 
 
+func _ring_points(points: int, radius: float, alternate: float) -> PackedVector2Array:
+	var polygon := PackedVector2Array()
+	for index in points:
+		var angle := TAU * index / points
+		var point_radius := radius + (alternate if index % 2 == 0 else -alternate)
+		polygon.append(Vector2(cos(angle), sin(angle)) * point_radius)
+	polygon.append(polygon[0])
+	return polygon
+
+
 func _build_rig() -> void:
 	rig = Node2D.new()
 	rig.name = "HybridCutoutRig"
@@ -148,12 +164,55 @@ func _build_rig() -> void:
 	muzzle_flash.position = Vector2(126, -132)
 	rig.add_child(muzzle_flash)
 
-	cast_orb = Polygon2D.new()
-	cast_orb.name = "IndependentCastEnergy"
-	cast_orb.polygon = _regular_polygon(16, 24.0)
-	cast_orb.color = MAGENTA
-	cast_orb.position = Vector2(0, -270)
-	rig.add_child(cast_orb)
+	cast_effect = Node2D.new()
+	cast_effect.name = "LayeredCastSigil"
+	cast_effect.position = Vector2(96, -166)
+	rig.add_child(cast_effect)
+	rig.move_child(cast_effect, 0)
+
+	cast_halo = Polygon2D.new()
+	cast_halo.name = "SoftHalo"
+	cast_halo.polygon = _regular_polygon(24, 42.0)
+	cast_halo.color = Color(TEAL, 0.14)
+	cast_effect.add_child(cast_halo)
+
+	cast_ring_outer = Line2D.new()
+	cast_ring_outer.name = "TealChalkRing"
+	cast_ring_outer.points = _ring_points(12, 50.0, 4.0)
+	cast_ring_outer.width = 3.5
+	cast_ring_outer.default_color = Color(TEAL, 0.88)
+	cast_effect.add_child(cast_ring_outer)
+
+	cast_ring_inner = Line2D.new()
+	cast_ring_inner.name = "MagentaRuneRing"
+	cast_ring_inner.points = _ring_points(8, 30.0, 5.0)
+	cast_ring_inner.width = 2.5
+	cast_ring_inner.default_color = Color(MAGENTA, 0.92)
+	cast_effect.add_child(cast_ring_inner)
+
+	cast_core = Polygon2D.new()
+	cast_core.name = "MagentaDiamondCore"
+	cast_core.polygon = PackedVector2Array([
+		Vector2(0, -18), Vector2(14, 0), Vector2(0, 18), Vector2(-14, 0),
+	])
+	cast_core.color = Color(MAGENTA, 0.88)
+	cast_effect.add_child(cast_core)
+
+	cast_core_highlight = Polygon2D.new()
+	cast_core_highlight.name = "PaperCore"
+	cast_core_highlight.polygon = PackedVector2Array([
+		Vector2(0, -8), Vector2(6, 0), Vector2(0, 8), Vector2(-6, 0),
+	])
+	cast_core_highlight.color = Color(PAPER, 0.94)
+	cast_effect.add_child(cast_core_highlight)
+
+	for index in 8:
+		var mote := Sprite2D.new()
+		mote.name = "CastMote%02d" % index
+		mote.texture = DUST
+		mote.modulate = Color(PAPER if index % 2 == 0 else MAGENTA, 0.9)
+		cast_effect.add_child(mote)
+		cast_motes.append(mote)
 
 
 func _layout() -> void:
@@ -221,7 +280,8 @@ func _reset_rig(time: float) -> void:
 	orbiter_top_bone.rotation = 0.0
 	projectile.visible = false
 	muzzle_flash.visible = false
-	cast_orb.visible = false
+	cast_effect.visible = false
+	cast_effect.modulate = Color.WHITE
 
 
 func _apply_idle(time: float) -> void:
@@ -250,22 +310,24 @@ func _apply_attack(time: float) -> void:
 		phase_label = "准备"
 		_apply_idle(time)
 	elif time < 0.72:
-		phase_label = "前摇蓄力"
+		phase_label = "前倾架枪"
 		var weight := smoothstep(0.0, 1.0, (time - 0.25) / 0.47)
-		root_bone.position += Vector2(-20.0, 6.0) * weight
-		root_bone.rotation = -0.10 * weight
-		launcher_bone.position += Vector2(-13.0, 4.0) * weight
-		launcher_bone.rotation = -0.19 * weight
-		orbiter_back_bone.position += Vector2(-18.0, 4.0) * weight
-		orbiter_top_bone.position += Vector2(-12.0, -5.0) * weight
+		root_bone.position += Vector2(9.0, 3.0) * weight
+		root_bone.rotation = 0.045 * weight
+		launcher_bone.position += Vector2(-5.0, 1.0) * weight
+		launcher_bone.rotation = -0.055 * weight
+		orbiter_back_bone.position += Vector2(-10.0, 3.0) * weight
+		orbiter_top_bone.position += Vector2(-7.0, -4.0) * weight
 		_update_dust(time, 0.75)
 	elif time < 1.0:
-		phase_label = "出手闪光"
+		phase_label = "后坐出手"
 		var snap := smoothstep(0.0, 1.0, minf((time - 0.72) / 0.12, 1.0))
-		root_bone.position += Vector2(lerpf(-20.0, 14.0, snap), lerpf(6.0, -2.0, snap))
-		root_bone.rotation = lerpf(-0.10, 0.085, snap)
-		launcher_bone.position += Vector2(lerpf(-13.0, 16.0, snap), lerpf(4.0, -3.0, snap))
-		launcher_bone.rotation = lerpf(-0.19, 0.085, snap)
+		root_bone.position += Vector2(lerpf(9.0, -19.0, snap), lerpf(3.0, -3.0, snap))
+		root_bone.rotation = lerpf(0.045, -0.11, snap)
+		launcher_bone.position += Vector2(lerpf(-5.0, 2.0, snap), lerpf(1.0, -3.0, snap))
+		launcher_bone.rotation = lerpf(-0.055, -0.13, snap)
+		orbiter_back_bone.position += Vector2(9.0, 1.0) * snap
+		orbiter_top_bone.position += Vector2(7.0, -1.0) * snap
 		var fire_progress := clampf((time - 0.78) / 0.22, 0.0, 1.0)
 		projectile.visible = time >= 0.78
 		projectile.position = Vector2(126.0 + fire_progress * 230.0, -132.0)
@@ -276,16 +338,36 @@ func _apply_attack(time: float) -> void:
 		phase_label = "后坐收招"
 		var recovery := clampf((time - 1.0) / 0.65, 0.0, 1.0)
 		var strength := pow(1.0 - recovery, 2.0)
-		root_bone.position += Vector2(12.0, -2.0) * strength
-		root_bone.rotation = 0.07 * strength
-		launcher_bone.position += Vector2(12.0, -2.0) * strength
-		launcher_bone.rotation = 0.07 * strength
+		root_bone.position += Vector2(-17.0, -3.0) * strength
+		root_bone.rotation = -0.095 * strength
+		launcher_bone.position += Vector2(2.0, -2.0) * strength
+		launcher_bone.rotation = -0.11 * strength
+		orbiter_back_bone.position += Vector2(8.0, 2.0) * strength
+		orbiter_top_bone.position += Vector2(6.0, -1.0) * strength
 		projectile.visible = recovery < 0.52
 		projectile.position = Vector2(356.0 + recovery * 100.0, -132.0)
 		_update_dust(time, 1.0 + strength * 0.6)
 	else:
 		phase_label = "返回待机"
 		_apply_idle(time)
+
+
+func _update_cast_effect(time: float, energy: float, release: float = 0.0) -> void:
+	cast_effect.visible = true
+	cast_effect.scale = Vector2.ONE * lerpf(0.36, 1.0, energy) * lerpf(1.0, 2.25, release)
+	cast_effect.rotation = time * 0.35
+	cast_effect.modulate = Color(1.0, 1.0, 1.0, (0.35 + energy * 0.65) * (1.0 - release))
+	cast_halo.scale = Vector2.ONE * (0.82 + sin(time * 9.0) * 0.08)
+	cast_ring_outer.rotation = time * 1.25
+	cast_ring_inner.rotation = -time * 1.75
+	cast_core.rotation = time * 0.8
+	cast_core.scale = Vector2.ONE * (0.72 + energy * 0.35 + sin(time * 16.0) * 0.08)
+	cast_core_highlight.scale = Vector2.ONE * (0.8 + sin(time * 20.0) * 0.18)
+	for index in cast_motes.size():
+		var angle := time * (2.2 if index % 2 == 0 else -1.7) + TAU * index / cast_motes.size()
+		var radius := 58.0 + sin(time * 5.0 + index) * 8.0
+		cast_motes[index].position = Vector2(cos(angle), sin(angle)) * radius
+		cast_motes[index].scale = Vector2.ONE * (0.7 + index % 3 * 0.22)
 
 
 func _apply_cast(time: float) -> void:
@@ -301,9 +383,7 @@ func _apply_cast(time: float) -> void:
 		orbiter_back_bone.rotation = -0.45 * charge
 		orbiter_top_bone.position += Vector2(25.0, -28.0) * charge
 		orbiter_top_bone.rotation = 0.55 * charge
-		cast_orb.visible = true
-		cast_orb.scale = Vector2.ONE * (0.25 + charge * 0.9 + sin(time * 18.0) * 0.06)
-		cast_orb.modulate = Color(1.0, 1.0, 1.0, 0.45 + charge * 0.55)
+		_update_cast_effect(time, charge)
 		_update_dust(time, 0.8 + charge * 0.8)
 	elif time < 1.55:
 		phase_label = "能量释放"
@@ -311,9 +391,7 @@ func _apply_cast(time: float) -> void:
 		root_bone.position.y -= 12.0 * (1.0 - release)
 		orbiter_back_bone.position += Vector2(-34.0, -16.0) * (1.0 - release)
 		orbiter_top_bone.position += Vector2(25.0, -28.0) * (1.0 - release)
-		cast_orb.visible = true
-		cast_orb.scale = Vector2.ONE * lerpf(1.15, 2.8, release)
-		cast_orb.modulate = Color(1.0, 1.0, 1.0, 1.0 - release)
+		_update_cast_effect(time, 1.0, release)
 		_update_dust(time, 1.6)
 	else:
 		phase_label = "返回待机"
@@ -402,11 +480,11 @@ func _draw() -> void:
 	var size := get_viewport_rect().size
 	draw_rect(Rect2(Vector2.ZERO, size), BACKGROUND)
 	draw_rect(Rect2(36, 28, size.x - 72, 78), PAPER)
-	_text(Vector2(62, 78), "粉笔精灵混合动画原型 002", 30, INK)
+	_text(Vector2(62, 78), "粉笔精灵混合动画原型 003", 30, INK)
 	_text(Vector2(size.x - 500, 76), "正式 005 vs 混合方案 · 0.5×", 20, INK)
 	draw_line(Vector2(size.x * 0.5, 142), Vector2(size.x * 0.5, size.y - 118), Color(PAPER, 0.28), 2)
 	_text(Vector2(size.x * 0.17, 178), "正式 005 · 序列帧", 24)
-	_text(Vector2(size.x * 0.61, 178), "候选 002 · 混合动画", 24)
+	_text(Vector2(size.x * 0.61, 178), "候选 003 · 混合动画", 24)
 	_text(Vector2(size.x * 0.17, 214), "当前正式动作", 17, Color(PAPER, 0.7))
 	_text(Vector2(size.x * 0.61, 214), "固定部件补间；死亡保留原帧", 17, Color(PAPER, 0.7))
 	for anchor in [left_anchor, right_anchor]:
@@ -415,7 +493,7 @@ func _draw() -> void:
 	var state_text := "%s · %s" % [mode_label, phase_label]
 	_text(Vector2(size.x * 0.5 - state_text.length() * 9, 270), state_text, 28, MAGENTA if mode_label in ["远程", "施法"] else TEAL)
 	draw_rect(Rect2(36, size.y - 94, size.x - 72, 54), Color(PAPER, 0.96))
-	_text(Vector2(58, size.y - 58), "骨骼：待机 / 移动 / 远程 / 施法 / 受击 / 濒危    序列帧：退场    独立层：粉尘 / 弹体 / 枪口光 / 聚能球", 18, INK)
+	_text(Vector2(58, size.y - 58), "骨骼：待机 / 移动 / 远程 / 施法 / 受击 / 濒危    序列帧：退场    独立层：粉尘 / 弹体 / 枪口光 / 双环法阵", 18, INK)
 
 
 func _run_check() -> void:
@@ -430,10 +508,13 @@ func _run_check() -> void:
 		if sequence_sprite.texture == null:
 			failures += 1
 	_apply_mode(&"attack", 0.86)
-	if not projectile.visible or not muzzle_flash.visible:
+	if not projectile.visible or not muzzle_flash.visible or root_bone.position.x >= 0.0 or projectile.position.x <= 0.0:
+		failures += 1
+	_apply_mode(&"attack", 0.62)
+	if root_bone.position.x <= 0.0:
 		failures += 1
 	_apply_mode(&"cast", 0.95)
-	if not cast_orb.visible:
+	if not cast_effect.visible or cast_motes.size() != 8 or cast_ring_outer.points.size() != 13 or cast_ring_inner.points.size() != 9:
 		failures += 1
 	_apply_mode(&"death", 1.40)
 	if rig.visible or not hybrid_sequence_sprite.visible:
@@ -458,7 +539,7 @@ func _capture_frame(path: String, resolution: Vector2i, time: float, mode: Strin
 
 func _capture() -> void:
 	set_process(false)
-	var review := "res://design/concepts/chalk-spirit/chalk-rig/002/review/"
+	var review := "res://design/concepts/chalk-spirit/chalk-rig/003/review/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(review))
 	for state in [
 		["idle", 0.10], ["windup", 0.62], ["release", 0.86], ["recovery", 1.28],

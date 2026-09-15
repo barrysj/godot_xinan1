@@ -17,7 +17,7 @@ $engineExitCode = $engineProcess.ExitCode
 if ($engineExitCode -ne 0) { exit $engineExitCode }
 if ($prototypeArgs -contains '--chalk-rig-capture') {
     if (-not (Test-Path -LiteralPath $PythonPath)) { throw 'Python with Pillow not found. Set -PythonPath.' }
-    & $PythonPath (Join-Path $PSScriptRoot 'design/concepts/chalk-spirit/chalk-rig/002/build_review.py')
+    & $PythonPath (Join-Path $PSScriptRoot 'design/concepts/chalk-spirit/chalk-rig/003/build_review.py')
     exit $LASTEXITCODE
 }
 exit 0
