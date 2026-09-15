@@ -41,6 +41,7 @@
 - 截图：`.godot/art-manager-v3-stage-tabs-20260915.png`、`.godot/art-manager-v3-related-20260915.png`（本地验收产物，不入库）。
 - 本轮截图：`.godot/art-manager-v4-version-summaries-20260915.png`、`.godot/art-manager-v4-version-animation-20260915.png`、`.godot/art-manager-v4-active-jump-20260915.png`、`.godot/art-manager-v4-manifest-picker-20260915.png`、`.godot/motion-preview-3-1920x1080.png`（本地验收产物，不入库）。
 - 状态与动作截图：`.godot/art-manager-v5-summary-status-20260915.png`、`.godot/art-manager-v5-animation-list-20260915.png`（本地验收产物，不入库）。
+- 展开层级截图：`.godot/art-manager-v6-expanded-contrast-20260915.png`；折叠卡、展开摘要、详情底层与子页面板使用独立背景，并以青色边框和左侧轨道标识当前展开版本（本地验收产物，不入库）。
 
 ## 历史迁移
 
