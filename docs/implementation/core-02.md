@@ -44,3 +44,9 @@
 2026-09-16；基线 `8918005` 后本功能提交。`campaign_hub.gd` 接入序章守卫与奖励、立即教学派遣、固定区域访问、区域Boss结算、临时人物兑现、系统回忆记录与重看。`campaign_checkpoint.gd` 独立编码M1访问与既有构筑模型，旧随机局继续原恢复路径。普通派遣在M1按1/2台终端开放，原计时不变。M1战场用静态矩形占位，不创建骨骼实例或绘制动画特效；原模拟层仍负责战斗。
 
 验证：图形 `expedition.tscn -- --campaign-flow-check`，71 checks、0 failures，实跑序章与三区域共13场模拟战斗，覆盖访问恢复及人物临时到永久。既有 `--meta-smoke` 67/0、`--dispatch-check` 36/0。截图 `.godot/m1-library-flow.png`、`.godot/m1-campaign-home.png`。已知边界：尚无终局入口；原照未提供；出发编队候选已载入但默认选择完善后续检查；真实设备、Web和陌生玩家未验。
+
+## M1 三阶段终局与永久恢复（待统筹）
+
+2026-09-16；基线 `2a89abe` 后本功能提交。三台终端开放终局；固定前奏、节点整备、三场自动战斗与逐阶段系统操作已接入。阶段提交幂等，操作边界存档恢复；结尾只读记录者与遥远未来暗示，可从基地重看。`campaign_hub.gd`、`campaign_checkpoint.gd` 为入口。
+
+验证：`expedition.tscn -- --campaign-flow-check`，84 checks / 0 failures；新增三场真实模拟战胜利、三个操作边界重载和永久恢复检查。截图 `.godot/m1-campaign-home.png`（本次为结尾）已聊天展示。无真人时长或设备验收；恢复画面当前为文字占位。

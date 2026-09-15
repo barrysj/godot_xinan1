@@ -51,13 +51,13 @@ func restore(source: Variant) -> bool:
 	if not source.get("temporary") is Array: return false
 	for id in source.temporary:
 		if id != "inventor": return false
-	if not source.get("screen") in ["route","visit","battle","report","reward","complete"]: return false
+	if not source.get("screen") in ["route","visit","battle","report","reward","operation","complete"]: return false
 	if not source.get("visit") is Dictionary: return false
 	var restored = Visit.new()
 	if not source.visit.is_empty():
 		if source.finished or not restored.restore(source.visit): return false
 		if not source.map[int(source.step)].has(source.visit.place): return false
-	if (source.screen in ["visit","battle","report","reward"]) != (not source.visit.is_empty()): return false
+	if (source.screen in ["visit","battle","report","reward","operation"]) != (not source.visit.is_empty()): return false
 	if (source.screen == "complete") != source.finished: return false
 	data = source.duplicate(true)
 	data.erase("visit")

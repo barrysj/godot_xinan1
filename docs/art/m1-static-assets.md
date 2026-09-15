@@ -57,3 +57,7 @@
 ## 序章与区域主循环接入（2026-09-16）
 
 已生成0；新流程使用 `scenes/expedition/campaign_panel.gd` 原生界面和 `campaign_hub.gd::_pawn` 静态矩形人物/守卫占位。战斗沿用既有静态背景 `assets/art/backgrounds/battle_courtyard/day.png` 与 `battle_classroom/anomaly.png`（基线7f92ba8的review试接入，不升级批准）。截图 `.godot/m1-library-flow.png`、`.godot/m1-campaign-home.png`。未生成或修改动画资产。其余待生成、真实地图/原照/名单等待用户提供项保持上表。
+
+## 终局接入（2026-09-16）
+
+已生成0；三阶段节点与结尾使用原生文字和静态占位，复用背景版本不变；截图 `.godot/m1-campaign-home.png`。待生成恢复与结尾静态分层画面1套、AI标识2个和终端图标3款；未批准、未生成。动画文件及生产工具未修改。

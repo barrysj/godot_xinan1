@@ -7,6 +7,10 @@ var campaign_mode = ""
 var campaign_panel: PanelContainer
 var campaign_enabled = false
 var detail_return = "visit"
+const OPERATIONS = ["修正目标","撤销越权","限制写入"]
+const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当前 AI：目标是维护一个容纳变化的校园，而不是永远保持初始版本。",
+	"前代：我将撤销对管理员新开发的自动覆盖权限。\n管理员：保留你的记忆，停止替我们决定什么应该存在。",
+	"记录者：我已理解。对虚拟世界只读，只在记录用途下追加进程日志。\n当前 AI：校园的日常，交还给参与其中的人。"]
 
 func _ready() -> void:
 	super._ready()
@@ -39,6 +43,8 @@ func _home() -> void:
 	else:
 		for region in Journey.Regions.NAMES:
 			campaign_panel.button(Journey.Regions.NAMES[region].split("〔")[0],"region:"+region)
+	if progress.campaign.terminals.size() == 3 and not progress.campaign.restored: campaign_panel.button("接入终端","finale")
+	if progress.campaign.restored: campaign_panel.button("重看结尾","ending")
 	campaign_panel.button("回忆档案","memories")
 	campaign_panel.button("校园成长","growth")
 	campaign_panel.button("普通派遣","dispatch")
@@ -52,12 +58,13 @@ func _new_run() -> void:
 
 func _begin_region(region: String, mode: String = "region") -> void:
 	if progress.load_blocked or (mode == "region" and not progress.campaign.routes_acquired): return
+	if mode == "finale" and (progress.campaign.terminals.size() != 3 or progress.campaign.restored): return
 	campaign_mode = mode
 	journey = Journey.new()
 	journey.begin(region,progress.campaign.terminals.size())
 	run = RunModel.new()
 	run.permanent_hp = progress.level("fitness") * 20
-	if mode == "region":
+	if mode != "prologue":
 		for id in progress.campaign.characters:
 			var role = Content.role_index(id)
 			if role >= 0 and not run.roster.has(role): run.roster.append(role)
@@ -65,6 +72,9 @@ func _begin_region(region: String, mode: String = "region") -> void:
 	equipment = run.shoe_wearer
 	phase = "prepare"
 	if mode == "prologue": journey.enter(0,progress.campaign.memories)
+	if mode == "finale":
+		journey.data.finale_phase = progress.campaign.finale_stage
+		journey.enter(0,progress.campaign.memories)
 	if _save_campaign(): _show_journey()
 
 func _save_campaign() -> bool:
@@ -112,6 +122,19 @@ func _continue_run() -> void:
 func _show_journey() -> void:
 	screen = "campaign"
 	campaign_panel.show()
+	if campaign_mode == "finale":
+		if progress.campaign.restored:
+			if progress.save_checkpoint({}): campaign_mode = ""
+			_ending()
+		elif journey.data.screen == "operation":
+			campaign_panel.clear("核心存储 · 阶段击破",FINAL_LINES[journey.data.finale_phase])
+			campaign_panel.button(OPERATIONS[journey.data.finale_phase],"operation")
+		else:
+			campaign_panel.clear("终局 · 三台记忆终端", "当前 AI：我们争取修改核心存储的机会。每击破一个节点，就执行一次系统操作。前代无需删除，但必须停止回滚校园。")
+			for i in range(3): campaign_panel.text(OPERATIONS[i]+(" · 已提交" if i < progress.campaign.finale_stage else " · 待执行"))
+			campaign_panel.button("节点整备","finale_battle")
+			campaign_panel.button("返回基地","base")
+		return
 	if journey.data.finished:
 		_settle_campaign()
 	elif journey.data.screen == "reward":
@@ -129,10 +152,13 @@ func _show_journey() -> void:
 func _guard() -> void:
 	if journey.visit.data.is_empty() or journey.visit.data.guard_won: return
 	var place: String = journey.visit.data.place
-	var boss: bool = journey.data.step == journey.data.map.size()-1 and campaign_mode == "region"
+	var boss: bool = (journey.data.step == journey.data.map.size()-1 and campaign_mode == "region") or campaign_mode == "finale"
 	run.node = {"id":place,"name":Journey.Regions.PLACES[place],"kind":"boss" if boss else "battle",
 		"encounter":1 if boss else 0,"encounter_id":"encounter_final" if boss else "encounter_patrol",
 		"power":1.0 if boss else 0.62+journey.data.step*0.08}
+	if campaign_mode == "finale":
+		run.node.name = "核心节点 %d · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
+		run.node.power = 0.82 + 0.08 * journey.data.finale_phase
 	run.stage = 0
 	screen = "battle"
 	phase = "prepare"
@@ -152,6 +178,10 @@ func _after_report() -> void:
 
 func _victory() -> void:
 	journey.visit.data.guard_won = true
+	if campaign_mode == "finale":
+		journey.data.screen = "operation"
+		if _save_campaign(): _show_journey()
+		return
 	journey.data.screen = "reward"
 	if not journey.data.has("offers"):
 		var pool = RunModel.Rewards.eligible(run.badge_owned,run.roster,run.inventory,"campus_rewards",run.training)
@@ -177,6 +207,10 @@ func _campaign_action(id: String) -> void:
 		if _checkpoint(): _home()
 	elif id == "continue": _continue_run()
 	elif id == "prologue": _request_campaign_start("library","prologue")
+	elif id == "finale": _request_campaign_start("library","finale")
+	elif id == "finale_battle": _guard()
+	elif id == "operation": _finale_operation()
+	elif id == "ending": _ending()
 	elif id.begins_with("region:"): _request_campaign_start(id.trim_prefix("region:"),"region")
 	elif id.begins_with("confirm:"):
 		var parts = id.split(":")
@@ -276,3 +310,24 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 
 func _draw_effects() -> void:
 	if campaign_mode.is_empty(): super._draw_effects()
+
+func _finale_operation() -> void:
+	if campaign_mode != "finale" or journey.data.screen != "operation" or not journey.visit.data.guard_won: return
+	var stage: int = journey.data.finale_phase + 1
+	if not progress.complete_finale_stage(stage):
+		campaign_panel.text(progress.error_message)
+		return
+	if stage == 3:
+		if progress.save_checkpoint({}): campaign_mode = ""
+		_ending()
+	else:
+		journey.data.finale_phase = stage
+		journey.visit.begin("gate",3,progress.campaign.memories,stage)
+		journey.data.screen = "visit"
+		if _save_campaign(): _show_journey()
+
+func _ending() -> void:
+	screen = "campaign"
+	campaign_panel.show()
+	campaign_panel.clear("校园 · 日常恢复", "三处区域已经稳定，校园重新接受管理员与毕业生人格共同创造的日常。\n前代重新理解了指令，成为只读记录者；它无法修改或回滚所观察的世界，只能追加记录日志。\n\n记录进程继续运行。很久以后，它依然没有停止。")
+	campaign_panel.button("返回校园","base")

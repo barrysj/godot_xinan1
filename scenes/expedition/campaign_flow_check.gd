@@ -54,6 +54,23 @@ func run_checks(hub) -> void:
 			hub._campaign_action("leave")
 		verify(hub.progress.campaign.terminals.has(region),"terminal earned")
 	verify(hub.progress.campaign.characters.has("inventor"),"character permanent")
+	hub._begin_region("library","finale")
+	for stage in range(3):
+		hub._guard()
+		hub.formation = [0,-1,3,2,1,-1]
+		hub._build_units()
+		hub._start()
+		for tick in range(8000):
+			if hub.screen == "report": break
+			hub._process(0.05)
+		verify(hub.screen == "report" and hub.result_won,"finale actual victory")
+		hub._after_report()
+		verify(hub.journey.data.screen == "operation","operation boundary")
+		hub._continue_run()
+		verify(hub.journey.data.screen == "operation","operation restored")
+		hub._campaign_action("operation")
+		verify(hub.progress.campaign.finale_stage == stage+1,"operation committed")
+	verify(hub.progress.campaign.restored,"permanent campus restoration")
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
 		hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-campaign-home.png")
