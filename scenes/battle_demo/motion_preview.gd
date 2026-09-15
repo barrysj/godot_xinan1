@@ -1,11 +1,17 @@
 extends "res://scenes/battle_demo/pixel_battle.gd"
 ## Developer-only harness: same simulation and renderer, no saves or production art mutation.
 const AnimationSet = preload("res://game/content/battle_animation_set.gd")
-const MODES = ["待机", "移动", "近战", "远程", "施法", "受击", "退场"]
+const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
+const UnitDefinition = preload("res://game/content/unit_def.gd")
+const ActionProfile = preload("res://game/content/battle_action_profile.gd")
+enum Mode { IDLE, MOVE, MELEE, RANGED, CAST, HURT, CRITICAL, DEATH }
+const MODES = ["待机", "移动", "近战", "远程", "施法", "受击", "濒危", "退场"]
 const EVENT_NAMES = {"action_started": "前摇", "action_released": "出手", "impact": "命中",
 	"action_finished": "收招", "action_cancelled": "取消", "action_missed": "落空", "projectile_expired": "消散"}
 @export var preview_animation: AnimationSet
-var mode := 2
+@export var preview_projectile: ProjectileStyle
+var preview_unit: Resource
+var mode := Mode.MELEE
 var slow := false
 var repeat := true
 var preview_elapsed := 0.0
@@ -28,14 +34,30 @@ func _ready() -> void:
 				if resource is AnimationSet: preview_animation = resource
 				else: push_warning("Preview requires a BattleAnimationSet resource")
 			else: push_warning("Preview animation resource does not exist: " + path)
+		elif arg.begins_with("--preview-unit="):
+			var path = arg.trim_prefix("--preview-unit=")
+			if ResourceLoader.exists(path):
+				var resource = load(path)
+				if resource is UnitDefinition: preview_unit = resource
+				else: push_warning("Preview unit requires a CampusUnit resource")
+			else: push_warning("Preview unit resource does not exist: " + path)
+		elif arg.begins_with("--preview-projectile="):
+			var path = arg.trim_prefix("--preview-projectile=")
+			if ResourceLoader.exists(path):
+				var resource = load(path)
+				if resource is ProjectileStyle: preview_projectile = resource
+				else: push_warning("Preview projectile requires a BattleProjectileStyle resource")
+			else: push_warning("Preview projectile resource does not exist: " + path)
 	_create_toolbar()
+	_update_mode_availability()
 	_reset_preview()
 	if "--motion-preview-check" in OS.get_cmdline_user_args(): call_deferred("_check_preview")
 	elif "--motion-preview-capture" in OS.get_cmdline_user_args(): call_deferred("_capture_preview")
 	elif "--motion-preview-tour" in OS.get_cmdline_user_args():
 		tour = true
 		repeat = false
-		mode = 0
+		mode = Mode.IDLE
+		tour_stage = mode
 		_reset_preview()
 
 func _create_toolbar() -> void:
@@ -77,6 +99,25 @@ func _create_toolbar() -> void:
 	step_button.tooltip_text = "暂停后推进 0.05 秒模拟"
 	_update_controls()
 
+func _attack_modes() -> int:
+	return preview_unit.resolved_attack_modes() if preview_unit != null else UnitDefinition.ATTACK_ALL
+
+func _mode_enabled(index: int) -> bool:
+	var capabilities := _attack_modes()
+	if index == Mode.MELEE:
+		return (capabilities & UnitDefinition.ATTACK_MELEE) != 0
+	if index == Mode.RANGED:
+		return (capabilities & UnitDefinition.ATTACK_RANGED) != 0
+	return true
+
+func _update_mode_availability() -> void:
+	selector.set_item_disabled(Mode.MELEE, not _mode_enabled(Mode.MELEE))
+	selector.set_item_disabled(Mode.RANGED, not _mode_enabled(Mode.RANGED))
+	if not _mode_enabled(mode):
+		mode = Mode.RANGED if _mode_enabled(Mode.RANGED) else Mode.MELEE
+	selector.selected = mode
+	selector.tooltip_text = "灰色攻击入口不属于当前角色；双能力角色可同时启用近战和远程。"
+
 func _preview_button(title: String, callback: Callable) -> Button:
 	var button = Button.new()
 	button.text = title
@@ -92,8 +133,12 @@ func _update_controls() -> void:
 func _reset_preview() -> void:
 	formation = [0, -1, 3, 2, 1, -1]
 	_build_units()
-	var actor = units.filter(func(u): return u.side == 0 and u.role == (1 if mode == 3 else 0))[0]
+	var actor = units.filter(func(u): return u.side == 0 and u.role == (1 if mode == Mode.RANGED else 0))[0]
 	var target = units.filter(func(u): return u.side == 1)[0]
+	if preview_unit != null:
+		actor = _from_definition(preview_unit, 0, 0, 0)
+		actor.animation = BattleAnimation.new(actor.battle_animation)
+		actor.presentation = UnitPresentation.new()
 	units.assign([actor, target])
 	selected = actor.role
 	equipment = -1
@@ -101,13 +146,14 @@ func _reset_preview() -> void:
 	target.id = 1
 	actor.position = Vector2(2, 3)
 	target.position = Vector2(3, 3)
-	if mode in [1, 3]:
+	if mode in [Mode.MOVE, Mode.RANGED]:
 		actor.position = Vector2(1, 3)
-		target.position = Vector2(4 if mode == 3 else 6, 3)
+		target.position = Vector2(4 if mode == Mode.RANGED else 6, 3)
 	for u in units:
 		u.position = Vector2(u.position.y, 6 - u.position.x)
 		u.cell = Vector2i(u.position)
 		u.destination = u.cell
+		u.target_id = -1
 		u.moving = false
 		u.timer = 1000.0
 		u.interval = 1000.0
@@ -115,15 +161,19 @@ func _reset_preview() -> void:
 		u.max_hp = 500.0
 		u.atk = 40.0
 		u.shield = 0
-		u.attack_range = 6.0
-		u.action_profile = preload("res://game/content/battle_action_profile.gd").new()
-		u.action_profile.delivery = "melee"
+		if u.get("attack_range") == null: u.attack_range = 6.0
+		u.action_profile = u.action_profile.duplicate() if u.get("action_profile") != null else ActionProfile.new()
 	if preview_animation != null:
 		actor.battle_animation = preview_animation
 		actor.animation = BattleAnimation.new(preview_animation)
-	actor.attack_range = 3.2 if mode == 3 else (1.45 if mode == 1 else 6.0)
-	if mode == 3: actor.action_profile.delivery = "projectile"
-	if mode == 4: actor.count = actor.skill.attacks_to_trigger - 1
+	if preview_projectile != null:
+		actor.battle_animation = actor.battle_animation.duplicate(true) if actor.battle_animation != null else AnimationSet.new()
+		actor.battle_animation.projectile_style = preview_projectile
+		actor.animation = BattleAnimation.new(actor.battle_animation)
+	actor.attack_range = 3.2 if mode == Mode.RANGED else (1.45 if mode in [Mode.MOVE, Mode.MELEE] else actor.attack_range)
+	if mode == Mode.MELEE: actor.action_profile.delivery = "melee"
+	if mode == Mode.RANGED: actor.action_profile.delivery = "projectile"
+	if mode == Mode.CAST: actor.count = actor.skill.attacks_to_trigger - 1
 	simulation.reset(units)
 	phase = "battle"
 	paused = false
@@ -134,12 +184,15 @@ func _reset_preview() -> void:
 	preview_elapsed = 0
 	visual_time = 0
 	history.clear()
-	if mode in [2, 3, 4]:
+	if mode == Mode.CRITICAL:
+		actor.hp = maxf(1.0, actor.max_hp * minf(0.2, actor.battle_animation.critical_ratio if actor.battle_animation != null else 0.2))
+		actor.animation.sync_health(actor.hp, actor.max_hp)
+	elif mode in [Mode.MELEE, Mode.RANGED, Mode.CAST]:
 		actor.timer = 0
 		simulation.request_action(0, 1)
-	elif mode in [5, 6]:
+	elif mode in [Mode.HURT, Mode.DEATH]:
 		target.timer = 0
-		if mode == 6: target.atk = 1000
+		if mode == Mode.DEATH: target.atk = 1000
 		simulation.request_action(1, 0)
 	if is_instance_valid(selector): selector.selected = mode
 	if is_instance_valid(step_button): _update_controls()
@@ -158,6 +211,8 @@ func _process(delta: float) -> void:
 		if tour_clock >= 2.0:
 			tour_clock -= 2.0
 			tour_stage += 1
+			while tour_stage < MODES.size() and not _mode_enabled(tour_stage):
+				tour_stage += 1
 			if tour_stage >= MODES.size():
 				print("MOTION_PREVIEW_TOUR completed all modes")
 				get_tree().quit()
@@ -186,7 +241,11 @@ func _draw() -> void:
 	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
 	_pixel_panel(Rect2(24, 18, 1220, 58), PAPER)
 	_text(Vector2(44, 56), "动作预览 · " + MODES[mode], DARK, 24)
-	_text(Vector2(560, 53), "开发测试 / " + ("自定义序列帧" if preview_animation != null else "角色动作图集") + (" / 0.25×" if slow else " / 1×"), DARK, 17)
+	var source_name: String = preview_unit.display_name if preview_unit != null else "预设角色"
+	var source_detail := "自定义序列帧" if preview_animation != null else "角色动作图集"
+	var active_projectile = units[0].battle_animation.projectile_style if not units.is_empty() and units[0].battle_animation != null else null
+	if preview_projectile != null or active_projectile != null: source_detail += "＋弹体"
+	_text(Vector2(520, 53), "开发测试 / " + source_name + " / " + source_detail + (" / 0.25×" if slow else " / 1×"), DARK, 17)
 	_campus(false)
 	var ordered = units.duplicate()
 	ordered.sort_custom(func(a, b): return _unit_center(a).y < _unit_center(b).y)
@@ -215,24 +274,32 @@ func _check_preview() -> void:
 	set_process(false)
 	repeat = false
 	var failures = 0
+	if selector.is_item_disabled(Mode.MELEE) != (not _mode_enabled(Mode.MELEE)):
+		failures += 1
+	if selector.is_item_disabled(Mode.RANGED) != (not _mode_enabled(Mode.RANGED)):
+		failures += 1
 	for index in MODES.size():
+		if not _mode_enabled(index):
+			print("MOTION_PREVIEW_MODE ", MODES[index], " SKIP unsupported")
+			continue
 		mode = index
 		_reset_preview()
 		for i in 25: advance_preview(STEP)
 		var impacts = history.filter(func(e): return e.kind == "impact")
 		var ok = true
-		if mode in [0, 1]: ok = impacts.is_empty()
+		if mode in [Mode.IDLE, Mode.MOVE, Mode.CRITICAL]: ok = impacts.is_empty()
 		else: ok = not impacts.is_empty()
-		if mode == 1: ok = ok and units[0].position.y < 5
-		if mode == 3:
+		if mode == Mode.MOVE: ok = ok and units[0].position.y < 5
+		if mode == Mode.RANGED:
 			var release = history.filter(func(e): return e.kind == "action_released")
 			ok = ok and impacts[0].time > release[0].time
-		if mode == 6: ok = ok and units[0].hp <= 0
+		if mode == Mode.CRITICAL: ok = ok and units[0].animation.state == &"critical"
+		if mode == Mode.DEATH: ok = ok and units[0].hp <= 0
 		if not ok:
 			failures += 1
 			push_error("Preview mode failed: " + MODES[mode])
 		print("MOTION_PREVIEW_MODE ", MODES[mode], " ", "PASS" if ok else "FAIL")
-	mode = 2
+	mode = Mode.RANGED if _mode_enabled(Mode.RANGED) else Mode.MELEE
 	_reset_preview()
 	preview_pause.pressed.emit()
 	var before = simulation.elapsed
@@ -255,10 +322,11 @@ func _capture_preview() -> void:
 		get_window().mode = Window.MODE_WINDOWED
 		get_window().size = resolution
 		await get_tree().process_frame
-		for index in [2, 3, 4, 5, 6]:
+		for index in [Mode.MELEE, Mode.RANGED, Mode.CAST, Mode.HURT, Mode.CRITICAL, Mode.DEATH]:
+			if not _mode_enabled(index): continue
 			mode = index
 			_reset_preview()
-			for i in (10 if mode == 4 else (7 if mode == 3 else 5)): advance_preview(STEP)
+			for i in (10 if mode == Mode.CAST else (7 if mode == Mode.RANGED else 5)): advance_preview(STEP)
 			queue_redraw()
 			await RenderingServer.frame_post_draw
 			var screenshot = get_viewport().get_texture().get_image()

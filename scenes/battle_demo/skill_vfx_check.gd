@@ -1,5 +1,7 @@
 extends Node
 const Shield = preload("res://resources/content/animations/guard_shield.tres")
+const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
+const Chalk = preload("res://resources/content/enemies/chalk.tres")
 var failures := 0
 func check(ok: bool, label: String) -> void:
 	if not ok:
@@ -7,6 +9,28 @@ func check(ok: bool, label: String) -> void:
 		push_error(label)
 
 func _ready() -> void:
+	check(Chalk.portrait is AtlasTexture and Chalk.portrait.atlas.resource_path == "res://assets/art/characters/chalk_spirit/locomotion_sheet.png", "Chalk Spirit uses the approved portrait source")
+	check(Chalk.battle_animation != null, "Chalk Spirit has an approved battle animation")
+	if Chalk.battle_animation != null:
+		var chalk_model = Chalk.battle_animation
+		var expected_counts = {&"idle": 4, &"move": 8, &"attack": 8, &"cast": 8, &"hurt": 4, &"critical": 4, &"death": 8}
+		var approved_sheets = [
+			"res://assets/art/characters/chalk_spirit/locomotion_sheet.png",
+			"res://assets/art/characters/chalk_spirit/combat_sheet.png",
+			"res://assets/art/characters/chalk_spirit/reaction_sheet.png",
+		]
+		for clip in expected_counts:
+			check(chalk_model.frames.has_animation(clip), "Chalk Spirit has " + clip)
+			check(chalk_model.frames.get_frame_count(clip) == expected_counts[clip], "Chalk Spirit frame count for " + clip)
+			for index in chalk_model.frames.get_frame_count(clip):
+				var frame = chalk_model.frames.get_frame_texture(clip, index)
+				check(frame is AtlasTexture and frame.get_size() == Vector2(384, 384), "Chalk Spirit normalized frame")
+				check(frame is AtlasTexture and frame.atlas.resource_path in approved_sheets, "Chalk Spirit uses approved sheets")
+		check(chalk_model.projectile_style != null and chalk_model.projectile_style.usable(), "Chalk Spirit has an approved projectile")
+		if chalk_model.projectile_style != null:
+			check(chalk_model.projectile_style.resource_path == "res://resources/content/animations/chalk_projectile.tres", "Chalk Spirit projectile resource is stable")
+			check(chalk_model.projectile_style.texture.resource_path == "res://assets/art/effects/chalk_projectile/projectile.png", "Chalk Spirit projectile uses approved art")
+			check(chalk_model.projectile_style.display_size == Vector2(32, 16), "Chalk Spirit projectile display size")
 	check(is_equal_approx(Shield.duration(), 16.0 / 24.0), "Authored 16-frame burst duration")
 	var regions := {}
 	for i in 16:
@@ -66,6 +90,15 @@ func _ready() -> void:
 	var shot: Dictionary = preview.simulation.projectiles[0]
 	var shooter: Dictionary = preview.units[0]
 	var target: Dictionary = preview.units[1]
+	var projectile_style = ProjectileStyle.new()
+	check(not projectile_style.usable(), "Projectile style requires a texture")
+	projectile_style.texture = load("res://assets/pixel/kenney/tiny-town.png")
+	check(projectile_style.usable(), "Configured projectile style is usable")
+	shooter.battle_animation = shooter.battle_animation.duplicate(true)
+	shooter.battle_animation.projectile_style = projectile_style
+	check(preview._projectile_style(shot) == projectile_style, "Projectile presentation resolves from the shooter")
+	shooter.battle_animation.projectile_style = null
+	check(preview._projectile_style(shot) == null, "Absent projectile style preserves the fallback")
 	check(preview._projectile_point(shot, 0).is_equal_approx(preview._project(shot.origin) + shooter.battle_animation.launch_offset), "Projectile starts at illustrated weapon")
 	var arrived = shot.duplicate()
 	arrived.position = target.position

@@ -1,0 +1,50 @@
+schema_version: 2
+object:
+  id: battle_lab
+  display_name: 电子实验室
+  type: background
+  subtype: battle
+variants:
+  night:
+    stage: asset
+    version: night
+    selection: unknown
+    approval: review
+    approval_evidence:
+      source: legacy_manifest_v1
+      date: 2026-09-13
+      decision: review_no_final_approval_recorded
+    files:
+      background:
+        path: assets/art/backgrounds/battle_lab/night.png
+        role: image
+        sha256: 5e42b350a291981e8323f4a0d77f55d733376652a01ff7e22445f1b875f24ff6
+    metadata:
+      asset_type: battle_background
+      resolution: [1931, 814]
+      transparent: false
+      display_rect: [24, 92, 1220, 516]
+      crop_mode: region
+      normalized_crop: [0.085, 0.123, 0.83, 0.833]
+      usage: [battle, deployment]
+      style_layer: night
+integration:
+  status: authorized_active
+  active_variant: night
+  owner_resource: resources/content/locations/lab.tres
+  evidence: 2026-09-13 用户授权生成一组战斗背景并完善战斗场景，已接入供视觉 QA。
+  effective_files:
+    background:
+      path: assets/art/backgrounds/battle_lab/night.png
+      role: image
+      sha256: 5e42b350a291981e8323f4a0d77f55d733376652a01ff7e22445f1b875f24ff6
+  bindings:
+    background_baseline:
+      compare: baseline_hash
+      selected_file: background
+      effective_file: background
+    lab_background:
+      compare: resource_reference
+      source: resources/content/locations/lab.tres
+      source_sha256: c69c457f1e8b2c1358ac34a5e3ff8c7e7d2356bfda78404c30f47309e5ff1949
+      target: res://assets/art/backgrounds/battle_lab/night.png

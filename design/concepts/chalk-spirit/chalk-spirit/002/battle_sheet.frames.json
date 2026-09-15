@@ -1,0 +1,35 @@
+{
+  "source": "design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.png",
+  "source_size": [1254, 1254],
+  "canvas": [384, 384],
+  "anchor": [0.5, 0.875],
+  "portrait_region": [42, 10, 250, 250],
+  "transparent_pixels": 1190342,
+  "poses": [
+    {"pose": 0, "region": [45, 10, 248, 304], "margin": [80, 32, 136, 80], "source_baseline": 314},
+    {"pose": 1, "region": [372, 10, 201, 303], "margin": [93.5, 35, 183, 81], "source_baseline": 311},
+    {"pose": 2, "region": [648, 35, 244, 268], "margin": [56.5, 70, 140, 116], "source_baseline": 301},
+    {"pose": 3, "region": [1009, 21, 219, 270], "margin": [104, 68, 165, 114], "source_baseline": 289},
+    {"pose": 4, "region": [44, 314, 231, 313], "margin": [79, 23, 153, 71], "source_baseline": 313},
+    {"pose": 5, "region": [353, 327, 274, 298], "margin": [74.5, 40, 110, 86], "source_baseline": 309},
+    {"pose": 6, "region": [627, 349, 289, 270], "margin": [35.5, 68, 95, 114], "source_baseline": 303},
+    {"pose": 7, "region": [979, 317, 252, 308], "margin": [74, 30, 132, 76], "source_baseline": 309},
+    {"pose": 8, "region": [77, 627, 181, 308], "margin": [112, 30, 203, 76], "source_baseline": 306},
+    {"pose": 9, "region": [345, 640, 282, 287], "margin": [66.5, 51, 102, 97], "source_baseline": 298},
+    {"pose": 10, "region": [627, 652, 288, 284], "margin": [35.5, 54, 96, 100], "source_baseline": 307},
+    {"pose": 11, "region": [978, 631, 233, 301], "margin": [73, 37, 151, 83], "source_baseline": 303},
+    {"pose": 12, "region": [79, 961, 169, 278], "margin": [114, 60, 215, 106], "source_baseline": 297},
+    {"pose": 13, "region": [353, 957, 237, 284], "margin": [74.5, 54, 147, 100], "source_baseline": 299},
+    {"pose": 14, "region": [672, 1006, 243, 218], "margin": [80.5, 120, 141, 166], "source_baseline": 282},
+    {"pose": 15, "region": [969, 1079, 264, 145], "margin": [64, 193, 120, 239], "source_baseline": 282}
+  ],
+  "clips": {
+    "idle": {"poses": [0, 1, 0], "weights": [1.8, 0.5, 1.8], "fps": 3.0},
+    "move": {"poses": [2, 0, 3, 1], "weights": [1.0, 0.35, 1.0, 0.35], "fps": 6.0},
+    "attack": {"poses": [0, 4, 5, 6, 7, 0], "weights": [0.3, 0.7, 0.35, 0.4, 0.45, 0.3], "fps": 6.0},
+    "cast": {"poses": [0, 8, 9, 9, 7, 0], "weights": [0.3, 0.7, 0.35, 0.4, 0.45, 0.3], "fps": 6.0},
+    "hurt": {"poses": [10, 11, 0], "weights": [1, 1, 0.5], "fps": 10.0},
+    "critical": {"poses": [12], "weights": [1], "fps": 2.0},
+    "death": {"poses": [13, 14, 15], "weights": [0.8, 1, 1.2], "fps": 4.0}
+  }
+}

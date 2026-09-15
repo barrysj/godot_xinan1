@@ -1,0 +1,1252 @@
+{
+  "version": "004",
+  "canvas": [
+    352,
+    352
+  ],
+  "anchor": [
+    0.5,
+    0.875
+  ],
+  "portrait": {
+    "sheet": "locomotion",
+    "region": [
+      70,
+      110,
+      250,
+      250
+    ],
+    "preview": "design/concepts/chalk-spirit/chalk-spirit/004/review/portrait-preview.png",
+    "sha256": "bd0aef76b9210593d5a30f3a80ef431c0643625a91c58281a02e58bb045ae614"
+  },
+  "sheets": {
+    "locomotion": {
+      "source": "design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet_source_rgb.png",
+      "output": "design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        3
+      ],
+      "row_boundaries": [
+        0,
+        458,
+        828,
+        1254
+      ],
+      "column_boundaries_by_row": [
+        [
+          0,
+          339,
+          644,
+          958,
+          1254
+        ],
+        [
+          0,
+          346,
+          667,
+          977,
+          1254
+        ],
+        [
+          0,
+          345,
+          668,
+          972,
+          1254
+        ]
+      ],
+      "transparent_pixels": 1316339,
+      "source_sha256": "db52be8cb7eabe5898406f7b6983304db0b9014f694f38a07810282744bf6334",
+      "output_sha256": "15154f8e56377337a2a2e772cc23057d01942ff1c203d595813b9b145318c1e8"
+    },
+    "combat": {
+      "source": "design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet_source_rgb.png",
+      "output": "design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "row_boundaries": [
+        0,
+        332,
+        635,
+        944,
+        1254
+      ],
+      "column_boundaries_by_row": [
+        [
+          0,
+          322,
+          632,
+          956,
+          1254
+        ],
+        [
+          0,
+          322,
+          666,
+          978,
+          1254
+        ],
+        [
+          0,
+          323,
+          638,
+          963,
+          1254
+        ],
+        [
+          0,
+          334,
+          671,
+          986,
+          1254
+        ]
+      ],
+      "transparent_pixels": 1148053,
+      "source_sha256": "af3bbe6589b39ca1467a7fbd971b5ce339c461e4e0b9ff93132a97b0b98412fd",
+      "output_sha256": "5c1c38b269228a82e97f10695059a7bab78fb8e712c48ef18ce40782f0a9bb97"
+    },
+    "reaction": {
+      "source": "design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet_source_rgb.png",
+      "output": "design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "row_boundaries": [
+        0,
+        342,
+        638,
+        944,
+        1254
+      ],
+      "column_boundaries_by_row": [
+        [
+          0,
+          324,
+          634,
+          950,
+          1254
+        ],
+        [
+          0,
+          326,
+          642,
+          952,
+          1254
+        ],
+        [
+          0,
+          329,
+          640,
+          950,
+          1254
+        ],
+        [
+          0,
+          316,
+          632,
+          942,
+          1254
+        ]
+      ],
+      "transparent_pixels": 1333477,
+      "source_sha256": "7535f09106a054342457258a9c306757c8de25e79a1f54bc2a54d86bdab37d57",
+      "output_sha256": "4426f95e712b0c641cdd606df2c2c6120935098fa5c7c14ffa29af8ab91a927e"
+    }
+  },
+  "poses": {
+    "locomotion": [
+      {
+        "pose": "locomotion:0",
+        "region": [
+          98,
+          122,
+          199,
+          285
+        ],
+        "margin": [
+          104.5,
+          25,
+          153,
+          67
+        ],
+        "cell_edge_margin": [
+          100,
+          124,
+          44,
+          53
+        ],
+        "source_baseline": 405
+      },
+      {
+        "pose": "locomotion:1",
+        "region": [
+          392,
+          121,
+          205,
+          281
+        ],
+        "margin": [
+          76.5,
+          29,
+          147,
+          71
+        ],
+        "cell_edge_margin": [
+          55,
+          123,
+          49,
+          58
+        ],
+        "source_baseline": 400
+      },
+      {
+        "pose": "locomotion:2",
+        "region": [
+          691,
+          122,
+          217,
+          279
+        ],
+        "margin": [
+          66.0,
+          31,
+          135,
+          73
+        ],
+        "cell_edge_margin": [
+          49,
+          124,
+          52,
+          59
+        ],
+        "source_baseline": 399
+      },
+      {
+        "pose": "locomotion:3",
+        "region": [
+          1018,
+          130,
+          201,
+          281
+        ],
+        "margin": [
+          88.0,
+          29,
+          151,
+          71
+        ],
+        "cell_edge_margin": [
+          62,
+          132,
+          37,
+          49
+        ],
+        "source_baseline": 409
+      },
+      {
+        "pose": "locomotion:4",
+        "region": [
+          70,
+          506,
+          244,
+          280
+        ],
+        "margin": [
+          73.0,
+          30,
+          108,
+          72
+        ],
+        "cell_edge_margin": [
+          72,
+          50,
+          34,
+          44
+        ],
+        "source_baseline": 326
+      },
+      {
+        "pose": "locomotion:5",
+        "region": [
+          379,
+          508,
+          264,
+          277
+        ],
+        "margin": [
+          48.5,
+          33,
+          88,
+          75
+        ],
+        "cell_edge_margin": [
+          35,
+          52,
+          26,
+          45
+        ],
+        "source_baseline": 325
+      },
+      {
+        "pose": "locomotion:6",
+        "region": [
+          691,
+          508,
+          261,
+          276
+        ],
+        "margin": [
+          45.0,
+          34,
+          91,
+          76
+        ],
+        "cell_edge_margin": [
+          26,
+          52,
+          27,
+          46
+        ],
+        "source_baseline": 324
+      },
+      {
+        "pose": "locomotion:7",
+        "region": [
+          1002,
+          507,
+          231,
+          277
+        ],
+        "margin": [
+          62.5,
+          33,
+          121,
+          75
+        ],
+        "cell_edge_margin": [
+          27,
+          51,
+          23,
+          46
+        ],
+        "source_baseline": 324
+      },
+      {
+        "pose": "locomotion:8",
+        "region": [
+          65,
+          870,
+          244,
+          280
+        ],
+        "margin": [
+          68.5,
+          30,
+          108,
+          72
+        ],
+        "cell_edge_margin": [
+          67,
+          44,
+          38,
+          106
+        ],
+        "source_baseline": 320
+      },
+      {
+        "pose": "locomotion:9",
+        "region": [
+          383,
+          871,
+          259,
+          280
+        ],
+        "margin": [
+          52.5,
+          30,
+          93,
+          72
+        ],
+        "cell_edge_margin": [
+          40,
+          45,
+          28,
+          105
+        ],
+        "source_baseline": 321
+      },
+      {
+        "pose": "locomotion:10",
+        "region": [
+          695,
+          872,
+          241,
+          278
+        ],
+        "margin": [
+          51.0,
+          32,
+          111,
+          74
+        ],
+        "cell_edge_margin": [
+          29,
+          46,
+          38,
+          106
+        ],
+        "source_baseline": 320
+      },
+      {
+        "pose": "locomotion:11",
+        "region": [
+          1024,
+          871,
+          207,
+          283
+        ],
+        "margin": [
+          87.0,
+          27,
+          145,
+          69
+        ],
+        "cell_edge_margin": [
+          54,
+          45,
+          25,
+          102
+        ],
+        "source_baseline": 324
+      }
+    ],
+    "combat": [
+      {
+        "pose": "combat:0",
+        "region": [
+          51,
+          35,
+          239,
+          289
+        ],
+        "margin": [
+          66.0,
+          21,
+          113,
+          63
+        ],
+        "cell_edge_margin": [
+          53,
+          37,
+          34,
+          10
+        ],
+        "source_baseline": 322
+      },
+      {
+        "pose": "combat:1",
+        "region": [
+          353,
+          35,
+          234,
+          288
+        ],
+        "margin": [
+          52.0,
+          22,
+          118,
+          64
+        ],
+        "cell_edge_margin": [
+          33,
+          37,
+          47,
+          11
+        ],
+        "source_baseline": 321
+      },
+      {
+        "pose": "combat:2",
+        "region": [
+          676,
+          34,
+          240,
+          291
+        ],
+        "margin": [
+          58.0,
+          19,
+          112,
+          61
+        ],
+        "cell_edge_margin": [
+          46,
+          36,
+          42,
+          9
+        ],
+        "source_baseline": 323
+      },
+      {
+        "pose": "combat:3",
+        "region": [
+          995,
+          35,
+          188,
+          290
+        ],
+        "margin": [
+          66.0,
+          20,
+          164,
+          62
+        ],
+        "cell_edge_margin": [
+          41,
+          37,
+          73,
+          9
+        ],
+        "source_baseline": 323
+      },
+      {
+        "pose": "combat:4",
+        "region": [
+          43,
+          339,
+          254,
+          292
+        ],
+        "margin": [
+          58.0,
+          18,
+          98,
+          60
+        ],
+        "cell_edge_margin": [
+          45,
+          9,
+          27,
+          6
+        ],
+        "source_baseline": 297
+      },
+      {
+        "pose": "combat:5",
+        "region": [
+          346,
+          339,
+          316,
+          290
+        ],
+        "margin": [
+          28.0,
+          20,
+          36,
+          62
+        ],
+        "cell_edge_margin": [
+          26,
+          9,
+          6,
+          8
+        ],
+        "source_baseline": 295
+      },
+      {
+        "pose": "combat:6",
+        "region": [
+          669,
+          339,
+          289,
+          290
+        ],
+        "margin": [
+          23.0,
+          20,
+          63,
+          62
+        ],
+        "cell_edge_margin": [
+          5,
+          9,
+          22,
+          8
+        ],
+        "source_baseline": 295
+      },
+      {
+        "pose": "combat:7",
+        "region": [
+          997,
+          338,
+          237,
+          293
+        ],
+        "margin": [
+          57.0,
+          17,
+          115,
+          59
+        ],
+        "cell_edge_margin": [
+          21,
+          8,
+          22,
+          6
+        ],
+        "source_baseline": 297
+      },
+      {
+        "pose": "combat:8",
+        "region": [
+          51,
+          641,
+          238,
+          294
+        ],
+        "margin": [
+          65.5,
+          16,
+          114,
+          58
+        ],
+        "cell_edge_margin": [
+          53,
+          8,
+          36,
+          11
+        ],
+        "source_baseline": 298
+      },
+      {
+        "pose": "combat:9",
+        "region": [
+          357,
+          640,
+          235,
+          296
+        ],
+        "margin": [
+          52.5,
+          14,
+          117,
+          56
+        ],
+        "cell_edge_margin": [
+          36,
+          7,
+          48,
+          10
+        ],
+        "source_baseline": 299
+      },
+      {
+        "pose": "combat:10",
+        "region": [
+          684,
+          639,
+          236,
+          297
+        ],
+        "margin": [
+          59.5,
+          13,
+          116,
+          55
+        ],
+        "cell_edge_margin": [
+          48,
+          6,
+          45,
+          10
+        ],
+        "source_baseline": 299
+      },
+      {
+        "pose": "combat:11",
+        "region": [
+          1006,
+          639,
+          214,
+          300
+        ],
+        "margin": [
+          73.5,
+          10,
+          138,
+          52
+        ],
+        "cell_edge_margin": [
+          45,
+          6,
+          36,
+          7
+        ],
+        "source_baseline": 302
+      },
+      {
+        "pose": "combat:12",
+        "region": [
+          41,
+          951,
+          272,
+          282
+        ],
+        "margin": [
+          50.0,
+          28,
+          80,
+          70
+        ],
+        "cell_edge_margin": [
+          43,
+          9,
+          23,
+          23
+        ],
+        "source_baseline": 287
+      },
+      {
+        "pose": "combat:13",
+        "region": [
+          354,
+          950,
+          314,
+          284
+        ],
+        "margin": [
+          27.5,
+          26,
+          38,
+          68
+        ],
+        "cell_edge_margin": [
+          22,
+          8,
+          5,
+          22
+        ],
+        "source_baseline": 288
+      },
+      {
+        "pose": "combat:14",
+        "region": [
+          674,
+          949,
+          305,
+          285
+        ],
+        "margin": [
+          21.5,
+          25,
+          47,
+          67
+        ],
+        "cell_edge_margin": [
+          5,
+          7,
+          9,
+          22
+        ],
+        "source_baseline": 288
+      },
+      {
+        "pose": "combat:15",
+        "region": [
+          993,
+          951,
+          235,
+          287
+        ],
+        "margin": [
+          49.0,
+          23,
+          117,
+          65
+        ],
+        "cell_edge_margin": [
+          9,
+          9,
+          28,
+          18
+        ],
+        "source_baseline": 292
+      }
+    ],
+    "reaction": [
+      {
+        "pose": "reaction:0",
+        "region": [
+          75,
+          76,
+          193,
+          225
+        ],
+        "margin": [
+          89.0,
+          85,
+          159,
+          127
+        ],
+        "cell_edge_margin": [
+          77,
+          78,
+          58,
+          43
+        ],
+        "source_baseline": 299
+      },
+      {
+        "pose": "reaction:1",
+        "region": [
+          385,
+          76,
+          199,
+          224
+        ],
+        "margin": [
+          82.0,
+          86,
+          153,
+          128
+        ],
+        "cell_edge_margin": [
+          63,
+          78,
+          52,
+          44
+        ],
+        "source_baseline": 298
+      },
+      {
+        "pose": "reaction:2",
+        "region": [
+          684,
+          76,
+          209,
+          226
+        ],
+        "margin": [
+          68.0,
+          84,
+          143,
+          126
+        ],
+        "cell_edge_margin": [
+          52,
+          78,
+          59,
+          42
+        ],
+        "source_baseline": 300
+      },
+      {
+        "pose": "reaction:3",
+        "region": [
+          1007,
+          87,
+          187,
+          216
+        ],
+        "margin": [
+          81.0,
+          94,
+          165,
+          136
+        ],
+        "cell_edge_margin": [
+          59,
+          89,
+          62,
+          41
+        ],
+        "source_baseline": 301
+      },
+      {
+        "pose": "reaction:4",
+        "region": [
+          75,
+          389,
+          196,
+          204
+        ],
+        "margin": [
+          88.0,
+          106,
+          156,
+          148
+        ],
+        "cell_edge_margin": [
+          77,
+          49,
+          57,
+          47
+        ],
+        "source_baseline": 249
+      },
+      {
+        "pose": "reaction:5",
+        "region": [
+          395,
+          392,
+          194,
+          199
+        ],
+        "margin": [
+          87.0,
+          111,
+          158,
+          153
+        ],
+        "cell_edge_margin": [
+          71,
+          52,
+          55,
+          49
+        ],
+        "source_baseline": 247
+      },
+      {
+        "pose": "reaction:6",
+        "region": [
+          702,
+          391,
+          196,
+          201
+        ],
+        "margin": [
+          81.0,
+          109,
+          156,
+          151
+        ],
+        "cell_edge_margin": [
+          62,
+          51,
+          56,
+          48
+        ],
+        "source_baseline": 248
+      },
+      {
+        "pose": "reaction:7",
+        "region": [
+          1014,
+          389,
+          196,
+          202
+        ],
+        "margin": [
+          87.0,
+          108,
+          156,
+          150
+        ],
+        "cell_edge_margin": [
+          64,
+          49,
+          46,
+          49
+        ],
+        "source_baseline": 247
+      },
+      {
+        "pose": "reaction:8",
+        "region": [
+          81,
+          682,
+          196,
+          218
+        ],
+        "margin": [
+          92.5,
+          92,
+          156,
+          134
+        ],
+        "cell_edge_margin": [
+          83,
+          46,
+          54,
+          46
+        ],
+        "source_baseline": 260
+      },
+      {
+        "pose": "reaction:9",
+        "region": [
+          399,
+          690,
+          187,
+          209
+        ],
+        "margin": [
+          90.5,
+          101,
+          165,
+          143
+        ],
+        "cell_edge_margin": [
+          72,
+          54,
+          56,
+          47
+        ],
+        "source_baseline": 259
+      },
+      {
+        "pose": "reaction:10",
+        "region": [
+          698,
+          696,
+          196,
+          205
+        ],
+        "margin": [
+          79.0,
+          105,
+          156,
+          147
+        ],
+        "cell_edge_margin": [
+          60,
+          60,
+          58,
+          45
+        ],
+        "source_baseline": 261
+      },
+      {
+        "pose": "reaction:11",
+        "region": [
+          1010,
+          709,
+          195,
+          188
+        ],
+        "margin": [
+          84.0,
+          122,
+          157,
+          164
+        ],
+        "cell_edge_margin": [
+          62,
+          73,
+          51,
+          49
+        ],
+        "source_baseline": 257
+      },
+      {
+        "pose": "reaction:12",
+        "region": [
+          77,
+          987,
+          193,
+          199
+        ],
+        "margin": [
+          95.0,
+          111,
+          159,
+          153
+        ],
+        "cell_edge_margin": [
+          79,
+          45,
+          48,
+          70
+        ],
+        "source_baseline": 240
+      },
+      {
+        "pose": "reaction:13",
+        "region": [
+          361,
+          1022,
+          231,
+          157
+        ],
+        "margin": [
+          63.0,
+          153,
+          121,
+          195
+        ],
+        "cell_edge_margin": [
+          47,
+          80,
+          42,
+          77
+        ],
+        "source_baseline": 233
+      },
+      {
+        "pose": "reaction:14",
+        "region": [
+          673,
+          1053,
+          238,
+          123
+        ],
+        "margin": [
+          62.0,
+          187,
+          114,
+          229
+        ],
+        "cell_edge_margin": [
+          43,
+          111,
+          33,
+          80
+        ],
+        "source_baseline": 230
+      },
+      {
+        "pose": "reaction:15",
+        "region": [
+          973,
+          1067,
+          237,
+          114
+        ],
+        "margin": [
+          51.0,
+          196,
+          115,
+          238
+        ],
+        "cell_edge_margin": [
+          33,
+          125,
+          46,
+          75
+        ],
+        "source_baseline": 235
+      }
+    ]
+  },
+  "clips": {
+    "idle": {
+      "poses": [
+        "locomotion:0",
+        "locomotion:1",
+        "locomotion:2",
+        "locomotion:3"
+      ],
+      "fps": 6.0,
+      "loop": true
+    },
+    "move": {
+      "poses": [
+        "locomotion:4",
+        "locomotion:5",
+        "locomotion:6",
+        "locomotion:7",
+        "locomotion:8",
+        "locomotion:9",
+        "locomotion:10",
+        "locomotion:11"
+      ],
+      "fps": 10.0,
+      "loop": true
+    },
+    "attack": {
+      "poses": [
+        "combat:0",
+        "combat:1",
+        "combat:2",
+        "combat:3",
+        "combat:4",
+        "combat:5",
+        "combat:6",
+        "combat:7"
+      ],
+      "fps": 12.0,
+      "loop": false
+    },
+    "cast": {
+      "poses": [
+        "combat:8",
+        "combat:9",
+        "combat:10",
+        "combat:11",
+        "combat:12",
+        "combat:13",
+        "combat:14",
+        "combat:15"
+      ],
+      "fps": 12.0,
+      "loop": false
+    },
+    "hurt": {
+      "poses": [
+        "reaction:0",
+        "reaction:1",
+        "reaction:2",
+        "reaction:3"
+      ],
+      "fps": 12.0,
+      "loop": false
+    },
+    "critical": {
+      "poses": [
+        "reaction:4",
+        "reaction:5",
+        "reaction:6",
+        "reaction:7"
+      ],
+      "fps": 6.0,
+      "loop": true
+    },
+    "death": {
+      "poses": [
+        "reaction:8",
+        "reaction:9",
+        "reaction:10",
+        "reaction:11",
+        "reaction:12",
+        "reaction:13",
+        "reaction:14",
+        "reaction:15"
+      ],
+      "fps": 8.0,
+      "loop": false
+    }
+  },
+  "runtime_preview_timing": {
+    "windup": 0.2,
+    "recovery": 0.25,
+    "impact_ratio": 0.625
+  },
+  "scale_consistency": {
+    "metric": "median opaque silhouette height",
+    "locomotion_px": 280.0,
+    "combat_px": 290.0,
+    "combat_to_locomotion": 1.0357,
+    "accepted_range": [
+      0.9,
+      1.1
+    ],
+    "visual_evidence": "design/concepts/chalk-spirit/chalk-spirit/004/review/cross-clip-scale.png"
+  }
+}

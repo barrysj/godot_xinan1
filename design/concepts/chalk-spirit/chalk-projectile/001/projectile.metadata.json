@@ -1,0 +1,30 @@
+{
+  "version": "001",
+  "source": "design/concepts/chalk-spirit/chalk-projectile/001/projectile_source_rgba.png",
+  "output": "design/concepts/chalk-spirit/chalk-projectile/001/projectile.png",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "source_bbox": [
+    370,
+    518,
+    898,
+    724
+  ],
+  "canvas": [
+    192,
+    96
+  ],
+  "content_size": [
+    164,
+    64
+  ],
+  "display_size": [
+    32,
+    16
+  ],
+  "alpha_threshold": 8,
+  "source_sha256": "d279a2797bd9271f70fe3d5b82c0cb0a62f456b5ad1d360fd9c7db25cc316046",
+  "output_sha256": "007a244cdc3887d93322188f9f03a103f9ae5de934630c5c01c1063fd5a87820"
+}
