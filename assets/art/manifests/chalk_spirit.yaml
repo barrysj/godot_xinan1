@@ -178,12 +178,12 @@ variants:
     selection: selected
     approval: approved
     approval_evidence:
-      source: docs/art/tasks/chalk-spirit-rig.md
+      source: docs/art/tasks/chalk-spirit.md
       date: 2026-09-16
       decision: approved
       quote: "是的，批准成为正式资产"
       commit: aaf67f7
-    root: assets/art/characters/chalk_spirit/006
+    root: design/concepts/chalk-spirit/chalk-spirit/006
     files:
       locomotion_sheet: locomotion_sheet.png
       combat_sheet: combat_sheet.png
@@ -196,9 +196,11 @@ variants:
       rig_dust_particle: parts/dust_particle.png
       rig_build_metadata: rig_manifest.json
       generation_record: generation.md
-      gif_ranged: review/ranged-preview.gif
-      gif_all_actions: review/all-actions-preview.gif
-    resource: resources/content/animations/chalk.tres
+      presentation_script: chalk_spirit_presentation.gd
+      presentation_scene: chalk_spirit_presentation.tscn
+      gif_ranged: review/rig-preview.gif
+      gif_all_actions: review/rig-all-actions.gif
+    resource: design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres
     animation:
       frames: frame_metadata
     previews:
@@ -206,7 +208,7 @@ variants:
         attack: gif_ranged
       godot:
         unit: res://resources/content/enemies/chalk.tres
-        animation: res://resources/content/animations/chalk.tres
+        animation: res://design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres
         projectile: res://resources/content/animations/chalk_projectile.tres
     metadata:
       normalized_canvas: [384, 384]
@@ -223,7 +225,7 @@ integration:
   status: active
   active_variant: asset_006
   owner: resources/content/enemies/chalk.tres
-  root: assets/art/characters/chalk_spirit/006
+  root: assets/art/characters/chalk_spirit
   files:
     locomotion_sheet: locomotion_sheet.png
     combat_sheet: combat_sheet.png
@@ -236,4 +238,4 @@ integration:
     rig_dust_particle: parts/dust_particle.png
     rig_build_metadata: rig_manifest.json
   resource: resources/content/animations/chalk.tres
-  evidence: "docs/art/tasks/chalk-spirit-rig.md；2026-09-16 技术接入完成，效果待人工评审"
+  evidence: "docs/art/tasks/chalk-spirit.md；2026-09-16 技术接入完成，效果待人工评审"

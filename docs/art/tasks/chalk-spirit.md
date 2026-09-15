@@ -1,6 +1,6 @@
 # 美术任务：粉笔精灵
 
-状态：已完成。概念 001、角色动画 005、轻量弹体 001 与正式接入效果均获人工批准；正式资产已登记并由粉笔精灵使用。资产候选 002、003、004 经评审需修改，仅保留追溯。生产与评审规则见[美术工作流](../WORKFLOW.md)。
+状态：进行中。概念 001、角色动画 005、混合动画 006、轻量弹体 001 均获人工批准；混合动画 006 已完成正式技术接入，接入效果待人工复核。资产候选 002、003、004 经评审需修改，仅保留追溯。生产与评审规则见[美术工作流](../WORKFLOW.md)。
 
 ## 目标与范围
 
@@ -17,6 +17,7 @@
 - 已退回资产候选 003：[待机／移动](../../../design/concepts/chalk-spirit/chalk-spirit/003/locomotion_sheet.png)、[远程／施法](../../../design/concepts/chalk-spirit/chalk-spirit/003/combat_sheet.png)、[受击／濒危／退场](../../../design/concepts/chalk-spirit/chalk-spirit/003/reaction_sheet.png)三张 1254×1254 RGBA 图集；动作专属帧解决了 002 的复用抽动，但战斗图集主体比移动图集明显偏小，且旧 GIF 未展示返回待机的真实跳变。
 - 已退回资产候选 004：[待机／移动](../../../design/concepts/chalk-spirit/chalk-spirit/004/locomotion_sheet.png)、[远程／施法](../../../design/concepts/chalk-spirit/chalk-spirit/004/combat_sheet.png)、[受击／濒危／退场](../../../design/concepts/chalk-spirit/chalk-spirit/004/reaction_sheet.png)；高度接近目标，但 ImageGen 重绘改变了横向体量，角色显得变胖。
 - 已批准角色动画 005：正式文件位于 `assets/art/characters/chalk_spirit/`，从 003 原始帧做 1.30 倍等比变换，不重新生成角色；候选、处理参数和 QA 见[005 generation.md](../../../design/concepts/chalk-spirit/chalk-spirit/005/generation.md)。
+- 已批准混合动画 006：候选快照位于[粉笔精灵 006](../../../design/concepts/chalk-spirit/chalk-spirit/006/generation.md)，正式文件继续使用稳定目录 `assets/art/characters/chalk_spirit/`。待机、移动、远程、施法、受击与濒危使用分层刚性骨骼，退场保留已批准 005 的序列帧。
 - 已批准轻量弹体 001：正式文件位于 `assets/art/effects/chalk_projectile/`；单枚水平朝右粉笔由程序沿轨迹旋转，三颗递减点仍由程序绘制。候选与完整提示词见[候选生成记录](../../../design/concepts/chalk-spirit/chalk-projectile/001/generation.md)。
 - 方案：粉笔块组成的非人浮游体，以黑板擦为核心；长粉笔前臂与环绕弹体表达远程攻击，青／品红裂纹只做局部异常强化。轮廓刻意区别于学生角色和大型 Boss。
 - 需保留：真实课堂物件来源、粉笔白／黑板绿主色、非人阵营读性、低复杂度轮廓、明确远程姿态。
@@ -38,6 +39,8 @@
 | 资产 | 005 三张 RGBA 图集；哈希见 005 生成记录 | 通过 | “角色动画005也一并采用”；从 003 原始战斗帧做 1.30×1.30 等比缩放，保持原横纵比 | 当前对话，2026-09-15 |
 | 资产 | `projectile.png`；轻量弹体 001；`007a244cdc3887d93322188f9f03a103f9ae5de934630c5c01c1063fd5a87820` | 通过 | “还不错。采用”；单枚弹体贴图加三颗程序尾迹点 | 当前对话，2026-09-15 |
 | 接入效果 | 正式角色动画 005＋轻量弹体 001；接入提交 `6206374` | 通过 | “预览后看起来是可以的”；正式资源绑定、尺寸和尾迹节奏获准采用 | 当前对话，2026-09-15 |
+| 资产 | 混合动画 006；SHA-256 见 006 构建元数据 | 通过 | “是的，批准成为正式资产”；六类骨骼动作与 005 退场序列帧并存 | 当前对话，2026-09-16 |
+| 接入效果 | 混合动画 006；技术接入提交 `0cac80a` | 待评审 | 真实战斗与统一预览器从同一动画资源解析骨骼表现，退场回退序列帧 | 当前对话，2026-09-16 |
 
 ## 验证与结果
 
@@ -61,5 +64,11 @@
 - 正式接入证据：[1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/integration-motion-preview-3-1920x1080.png)、[2560×1440](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/integration-motion-preview-3-2560x1440.png)、[1920×1200](../../../design/concepts/chalk-spirit/chalk-spirit/005/review/integration-motion-preview-3-1920x1200.png)。预览标题显示“角色动作图集＋弹体”，证明组合来自正式角色资源而非命令行候选覆盖。
 - 实际预览证据：[候选头像裁切](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/portrait-preview.png)、[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-3-1920x1080.png)、[施法 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-4-1920x1080.png)、[退场 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-6-1920x1080.png)、[检查日志](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-check.log)、[捕获日志](../../../design/concepts/chalk-spirit/chalk-spirit/002/review/motion-preview-capture.log)。头像预览为 250×250 RGBA，SHA-256 为 `36214bd7cec38f01c7c71370d3a74c720f412f55a2c1828e08efb3a16c21d35b`；其余 12 张为 `.godot/` 可重建缓存。
 - 已知验证噪声：Godot 报告既有根证书读取错误及 `tiny-town.png`／`tiny-dungeon.png` 编辑器原图加载警告；完成标记、专项断言和候选纹理加载均正常。
-- 未解决问题：无；后续若改变原图、运行尺寸、锚点或尾迹节奏，按受影响阶段重新评审。
-- 本地提交：概念批准 `a26fb1c`；轻量弹体候选与通用接口 `bde0942`；正式资产与接入 `6206374`。
+
+## 骨骼＋序列帧混合方案 006
+
+- 006 混合动画检查：六类骨骼动作与序列帧退场在统一预览器和真实战斗中共用时钟；`MOTION_PREVIEW_CHECK failures=0`、`PRESENTATION_CHECK PASS failures=0`、`SKILL_VFX_CHECK failures=0`、`ANIMATION CHECK: PASS`。远程后坐方向与弹体相反，施法使用青紫双环法阵；线性 mipmap 采样和显式骨骼属性消除了水波纹与 `Bone2D` 自动计算警告。
+- 006 评审证据：[远程攻击 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/rig-preview.gif)、[七动作巡演 GIF](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/rig-all-actions.gif)、[攻击四阶段](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/rig-attack-contact-sheet.png)、[七动作总览](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/rig-all-actions-contact-sheet.png)、[正式远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/asset-006-ranged-1920x1080.png)、[施法](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/asset-006-cast-1920x1080.png)与[序列帧退场](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/asset-006-death-1920x1080.png)。
+- 006 目录归一：早期试验曾用同一对象的临时别名；正式批准后已将最终候选归入 `design/concepts/chalk-spirit/chalk-spirit/006/`，移除全部别名目录，正式运行资产回归无版本号稳定路径。Git 历史保留被淘汰试验的追溯信息。
+- 未解决问题：混合动画 006 的正式接入效果仍待人工评审；后续若改变原图、运行尺寸、锚点、骨骼时序或尾迹节奏，按受影响阶段重新评审。
+- 本地提交：概念批准 `a26fb1c`；轻量弹体候选与通用接口 `bde0942`；角色动画 005 正式资产与接入 `6206374`；混合方案验证 `aaf67f7`；资产 006 批准 `bcdac72`；混合运行时接入 `0cac80a`；Manifest 预览修复 `8bd5411`。

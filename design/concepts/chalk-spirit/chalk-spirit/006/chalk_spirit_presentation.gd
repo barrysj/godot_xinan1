@@ -2,11 +2,11 @@ extends Node2D
 ## Production cutout presentation for chalk spirit asset 006.
 ## The shared battle clock supplies state and time; unhandled states use SpriteFrames.
 
-const BODY = preload("res://assets/art/characters/chalk_spirit/parts/body.png")
-const LAUNCHER = preload("res://assets/art/characters/chalk_spirit/parts/launcher.png")
-const ORBITER_BACK = preload("res://assets/art/characters/chalk_spirit/parts/orbiter_back.png")
-const ORBITER_TOP = preload("res://assets/art/characters/chalk_spirit/parts/orbiter_top.png")
-const DUST = preload("res://assets/art/characters/chalk_spirit/parts/dust_particle.png")
+const BODY = preload("res://design/concepts/chalk-spirit/chalk-spirit/006/parts/body.png")
+const LAUNCHER = preload("res://design/concepts/chalk-spirit/chalk-spirit/006/parts/launcher.png")
+const ORBITER_BACK = preload("res://design/concepts/chalk-spirit/chalk-spirit/006/parts/orbiter_back.png")
+const ORBITER_TOP = preload("res://design/concepts/chalk-spirit/chalk-spirit/006/parts/orbiter_top.png")
+const DUST = preload("res://design/concepts/chalk-spirit/chalk-spirit/006/parts/dust_particle.png")
 
 const PAPER := Color("fff9ee")
 const TEAL := Color("45d7bd")
