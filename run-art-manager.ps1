@@ -33,7 +33,8 @@ $healthUrl = "${url}api/health"
 $isRunning = $false
 try {
     $health = Invoke-RestMethod -Uri $healthUrl -TimeoutSec 1
-    $isRunning = $health.app -eq 'cyber-pop-art-manager-v4'
+    $healthRoot = if ($health.project_root) { [System.IO.Path]::GetFullPath([string]$health.project_root) } else { '' }
+    $isRunning = $health.app -eq 'cyber-pop-art-manager-v4' -and [string]::Equals($projectRoot, $healthRoot, [System.StringComparison]::OrdinalIgnoreCase)
     if (-not $isRunning) { throw "Port $Port is occupied by another service." }
 } catch {
     if ($_.Exception.Message -like "*occupied by another service*") { throw }
@@ -55,7 +56,8 @@ if (-not $isRunning) {
         if ($service.HasExited) { throw "Art manager stopped during startup (exit code $($service.ExitCode))." }
         try {
             $health = Invoke-RestMethod -Uri $healthUrl -TimeoutSec 1
-            if ($health.app -eq 'cyber-pop-art-manager-v4') { $ready = $true; break }
+            $healthRoot = if ($health.project_root) { [System.IO.Path]::GetFullPath([string]$health.project_root) } else { '' }
+            if ($health.app -eq 'cyber-pop-art-manager-v4' -and [string]::Equals($projectRoot, $healthRoot, [System.StringComparison]::OrdinalIgnoreCase)) { $ready = $true; break }
         } catch { }
     }
     if (-not $ready) {

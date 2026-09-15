@@ -217,7 +217,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
         if parsed.path == "/api/health":
-            self._json(HTTPStatus.OK, {"app": APP_ID, "status": "ok"})
+            self._json(HTTPStatus.OK, {
+                "app": APP_ID,
+                "status": "ok",
+                "process_id": os.getpid(),
+                "project_root": str(self.server.project_root),
+            })
             return
         if parsed.path == "/api/preview/status":
             if not self._authorized():

@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import http.client
 import json
+import os
 import tempfile
 import threading
 import unittest
@@ -290,6 +291,14 @@ class ServerSecurityTests(unittest.TestCase):
         body = json.dumps({"manifest": str(manifest)}).encode("utf-8")
         connection.request("POST", "/api/scan", body=body, headers={"Content-Type": "application/json", "Content-Length": str(len(body)), "X-Art-Token": self.server.token})
         response = connection.getresponse(); payload = json.loads(response.read().decode("utf-8")); return connection, response, payload
+
+    def test_health_identifies_exact_process_and_project(self):
+        port = self.server.server_address[1]; connection = http.client.HTTPConnection("127.0.0.1", port, timeout=3)
+        connection.request("GET", "/api/health")
+        response = connection.getresponse(); payload = json.loads(response.read().decode("utf-8")); connection.close()
+        self.assertEqual(200, response.status)
+        self.assertEqual(os.getpid(), payload["process_id"])
+        self.assertEqual(str(self.fixture.root.resolve()), payload["project_root"])
 
     def test_cross_site_launch_and_unknown_file_id_are_rejected(self):
         port = self.server.server_address[1]; connection = http.client.HTTPConnection("127.0.0.1", port, timeout=3)

@@ -5,8 +5,8 @@
 
 ## 当前状态
 
-- 状态：Manifest v3 已实现并完成页面验收。
-- 功能入口：`pwsh.exe -NoProfile -File .\run-art-manager.ps1`，本地页面 `http://127.0.0.1:8765/`。
+- 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
+- 功能入口：推荐 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器；仍可用 `pwsh.exe -NoProfile -File .\run-art-manager.ps1` 直接启动服务，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
 - 范围：只处理当前项目登记对象；不兼容任意目录，不提供跨项目预览，不承担审批、编辑、生图或运行时内容加载。
 
@@ -21,6 +21,7 @@
 7. 详情内容用响应式网格适配可用宽度；不同 stage 不再纵向平铺。版本默认折叠为摘要，展开后分为图集、动画、其他三个子页。
 8. 概念与资产页可独立筛选选用和批准状态；生效版本及关联对象支持带返回入口的详情跳转。
 9. 校验状态只描述版本文件和 Godot 引用的实时完整性，由管理器计算而非 Manifest 字段，并以颜色标签显示；不从校验结果推断 `selection` 或 `approval`。
+10. Windows 桌面控制器只包含“启动服务”“打开页面”“停止服务”三个动作按钮，并显示实时服务状态、PID 和当前工作目录。健康接口返回服务 PID 与项目根；控制器核对应用 ID 和项目根后才允许停止，避免误杀同端口程序或其他工作树服务。
 
 ## 验证入口
 
@@ -42,6 +43,19 @@
 - 本轮截图：`.godot/art-manager-v4-version-summaries-20260915.png`、`.godot/art-manager-v4-version-animation-20260915.png`、`.godot/art-manager-v4-active-jump-20260915.png`、`.godot/art-manager-v4-manifest-picker-20260915.png`、`.godot/motion-preview-3-1920x1080.png`（本地验收产物，不入库）。
 - 状态与动作截图：`.godot/art-manager-v5-summary-status-20260915.png`、`.godot/art-manager-v5-animation-list-20260915.png`（本地验收产物，不入库）。
 - 展开层级截图：`.godot/art-manager-v6-expanded-contrast-20260915.png`；折叠卡、展开摘要、详情底层与子页面板使用独立背景，并以青色边框和左侧轨道标识当前展开版本（本地验收产物，不入库）。
+
+## 2026-09-16 桌面控制器验证
+
+- 构建：Windows .NET Framework C# 编译器生成无控制台 WinForms 可执行程序；PowerShell 7 启动器仅在源码更新时重建缓存。
+- 状态：未启动时只启用“启动服务”；运行后显示实际 PID 并启用“打开页面”“停止服务”。工作目录显示当前项目根。
+- 生命周期自检：`initial=未启动`、`started=True`、`open_enabled=True`、`stopped=True`，退出码 0；结束后 8765 无监听。
+- 后端回归：16 项 Python 测试通过，新增健康接口进程 ID 与项目根测试；PowerShell 脚本语法、Python 编译及 Git 差异检查通过。
+- 截图：`.godot/art-manager-control-running-v2-20260916.png`（本地验收产物，不入库）。
+
+## 已知边界
+
+- 桌面控制器只支持 Windows，并依赖系统 .NET Framework 4.x C# 编译器；Web 资源台本身的范围与跨项目边界不变。
+- “打开页面”使用 Windows 默认浏览器；关闭控制器窗口不会自动停止服务，服务生命周期由三个明确按钮管理。
 
 ## 历史迁移
 
