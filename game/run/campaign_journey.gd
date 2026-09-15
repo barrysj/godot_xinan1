@@ -52,6 +52,19 @@ func restore(source: Variant) -> bool:
 	for id in source.temporary:
 		if id != "inventor": return false
 	if not source.get("screen") in ["route","visit","battle","report","reward","operation","complete"]: return false
+	if source.screen == "report" and not source.get("won") is bool: return false
+	if source.screen == "report":
+		if not source.get("report",[]) is Array: return false
+		for row in source.get("report",[]):
+			if not row is Dictionary or not row.get("name") is String: return false
+			for key in ["damage","healing"]:
+				if not (row.get(key) is int or row.get(key) is float): return false
+		if not (source.get("elapsed",0) is int or source.get("elapsed",0) is float): return false
+	if source.has("offers"):
+		if not source.offers is Array or source.offers.is_empty() or source.offers.size() > 3: return false
+		for offer in source.offers:
+			if not preload("res://game/run/reward_catalog.gd").valid_snapshot(offer): return false
+	if source.screen == "reward" and not source.has("offers"): return false
 	if not source.get("visit") is Dictionary: return false
 	var restored = Visit.new()
 	if not source.visit.is_empty():
@@ -59,6 +72,7 @@ func restore(source: Variant) -> bool:
 		if not source.map[int(source.step)].has(source.visit.place): return false
 	if (source.screen in ["visit","battle","report","reward","operation"]) != (not source.visit.is_empty()): return false
 	if (source.screen == "complete") != source.finished: return false
+	if source.screen in ["reward","operation"] and not restored.data.guard_won: return false
 	data = source.duplicate(true)
 	data.erase("visit")
 	data.schema = 1

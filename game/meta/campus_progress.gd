@@ -23,6 +23,7 @@ func _apply(data: Dictionary) -> void:
 	campaign = data.get("campaign", Campaign.fresh()).duplicate(true)
 	campaign.schema = int(campaign.schema)
 	campaign.finale_stage = int(campaign.finale_stage)
+	if not campaign.has("formation"): campaign.formation = Campaign.fresh().formation
 	points = maxi(0,int(data.get("points",0)))
 	completions = maxi(0,int(data.get("completions",0)))
 	upgrades = data.get("upgrades",{}).duplicate(true)
@@ -156,8 +157,10 @@ func complete_finale_stage(stage: int) -> bool:
 func unlock_reason(id: String) -> String:
 	var item = Catalog.find(Catalog.UNLOCKS,id)
 	if item.is_empty(): return "没有这个升级"
+	if campaign.routes_acquired and id in ["dispatch","gym"]: return "战役中由记忆终端开放"
 	if level(id) >= item.costs.size(): return "已满级"
-	if not item.requires.is_empty() and level(item.requires) == 0: return "需要先解锁派遣事务所"
+	if not item.requires.is_empty() and level(item.requires) == 0:
+		if not (campaign.routes_acquired and item.requires == "dispatch" and dispatch_unlocked("library")): return "需要先解锁派遣事务所"
 	if points < item.costs[level(id)]: return "修复资源不足"
 	return ""
 
@@ -178,6 +181,16 @@ func unlock_supply() -> bool:
 
 func save_checkpoint(snapshot: Dictionary) -> bool:
 	var before = to_dict()
+	active_run = snapshot.duplicate(true)
+	return _commit(before)
+
+func save_campaign_checkpoint(snapshot: Dictionary, lineup: Array) -> bool:
+	var before = to_dict()
+	if lineup.size() == 6 and lineup.count("") == 2:
+		var allowed = true
+		for id in lineup:
+			if not id in ["","guard","archer","healer","striker"] and not campaign.characters.has(id): allowed = false
+		if allowed: campaign.formation = lineup.duplicate()
 	active_run = snapshot.duplicate(true)
 	return _commit(before)
 

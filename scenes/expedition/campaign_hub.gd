@@ -13,9 +13,13 @@ const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当�
 	"记录者：我已理解。对虚拟世界只读，只在记录用途下追加进程日志。\n当前 AI：校园的日常，交还给参与其中的人。"]
 
 func _ready() -> void:
+	theme = preload("res://resources/theme/theme-main.tres").duplicate()
+	theme.default_font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	super._ready()
 	campaign_enabled = not is_test or "--campaign-flow-check" in OS.get_cmdline_user_args()
 	if not campaign_enabled: return
+	inspector.theme = theme
+	deployment.theme = theme
 	campaign_panel = preload("res://scenes/expedition/campaign_panel.gd").new()
 	add_child(campaign_panel)
 	move_child(pause_overlay,get_child_count()-1)
@@ -46,6 +50,9 @@ func _home() -> void:
 	if progress.campaign.terminals.size() == 3 and not progress.campaign.restored: campaign_panel.button("接入终端","finale")
 	if progress.campaign.restored: campaign_panel.button("重看结尾","ending")
 	campaign_panel.button("回忆档案","memories")
+	if progress.supply_unlocked:
+		campaign_panel.text("出发补给："+("携带厚笔记本" if chosen_supply else "未携带"),19)
+		campaign_panel.button("切换补给","supply")
 	campaign_panel.button("校园成长","growth")
 	campaign_panel.button("普通派遣","dispatch")
 	campaign_panel.button("主菜单","menu")
@@ -64,11 +71,16 @@ func _begin_region(region: String, mode: String = "region") -> void:
 	journey.begin(region,progress.campaign.terminals.size())
 	run = RunModel.new()
 	run.permanent_hp = progress.level("fitness") * 20
+	if mode != "prologue" and progress.supply_unlocked and chosen_supply:
+		run.badge_owned = true
+		run.badge_wearer = 2
 	if mode != "prologue":
 		for id in progress.campaign.characters:
 			var role = Content.role_index(id)
 			if role >= 0 and not run.roster.has(role): run.roster.append(role)
 	formation = [-1,-1,-1,-1,-1,-1]
+	if mode != "prologue":
+		formation = progress.campaign.formation.map(func(id): return -1 if id.is_empty() else Content.role_index(id))
 	equipment = run.shoe_wearer
 	phase = "prepare"
 	if mode == "prologue": journey.enter(0,progress.campaign.memories)
@@ -80,7 +92,8 @@ func _begin_region(region: String, mode: String = "region") -> void:
 func _save_campaign() -> bool:
 	if campaign_mode.is_empty(): return true
 	run.formation = formation.duplicate()
-	last_save_ok = progress.save_checkpoint(CampaignSave.pack(journey,run,campaign_mode))
+	var lineup = formation.map(func(role): return "" if role == -1 else Content.role_id(role)) if campaign_mode != "prologue" else []
+	last_save_ok = progress.save_campaign_checkpoint(CampaignSave.pack(journey,run,campaign_mode),lineup)
 	if not last_save_ok:
 		var restored = CampaignSave.decode(progress.active_run)
 		if not restored.is_empty():
@@ -98,6 +111,8 @@ func _checkpoint() -> bool:
 	elif screen == "report":
 		journey.data.screen = "report"
 		journey.data.won = result_won
+		journey.data.report = report.duplicate(true)
+		journey.data.elapsed = elapsed
 	return _save_campaign()
 
 func _continue_run() -> void:
@@ -115,8 +130,13 @@ func _continue_run() -> void:
 	equipment = run.shoe_wearer
 	if journey.data.screen == "battle": _guard()
 	elif journey.data.screen == "report":
-		if journey.data.get("won",false): _victory()
-		else: _guard()
+		screen = "report"
+		result_won = journey.data.won
+		report.clear()
+		for row in journey.data.get("report",[]): report.append(row.duplicate(true))
+		elapsed = float(journey.data.get("elapsed",0))
+		run.node = {"name":Journey.Regions.PLACES[journey.visit.data.place]}
+		campaign_panel.hide()
 	else: _show_journey()
 
 func _show_journey() -> void:
@@ -218,6 +238,9 @@ func _campaign_action(id: String) -> void:
 	elif id == "tutorial":
 		if progress.complete_tutorial_dispatch(): _home()
 		else: campaign_panel.text(progress.error_message)
+	elif id == "supply":
+		chosen_supply = not chosen_supply
+		_home()
 	elif id.begins_with("enter:"):
 		if journey.enter(int(id.trim_prefix("enter:")),progress.campaign.memories) and _save_campaign(): _show_journey()
 	elif id == "leave":
@@ -238,6 +261,15 @@ func _campaign_action(id: String) -> void:
 			journey.data.screen = "visit"
 			if _save_campaign(): _show_journey()
 	elif id == "visit": _show_journey()
+	elif id == "photo":
+		var memory = preload("res://resources/content/library_memory.tres")
+		if memory.photograph != null and progress.record_memory(memory.id):
+			detail_return = "visit"
+			for spot in journey.visit.data.hotspots:
+				if spot.kind == "memory": journey.visit.view(spot.id)
+			if _save_campaign(): campaign_panel.photograph(memory)
+	elif id in ["photo_zoom","photo_fit"]:
+		campaign_panel.photograph(preload("res://resources/content/library_memory.tres"),id == "photo_zoom",detail_return)
 	elif id == "settle": _settle_campaign()
 	elif id == "memories":
 		campaign_panel.clear("回忆档案","系统记录为机制样本，尚无真实照片与共同经历。")
@@ -249,6 +281,11 @@ func _campaign_action(id: String) -> void:
 		if progress.campaign.prologue_done: campaign_panel.button("重看序章","replay_prologue")
 		campaign_panel.button("返回基地","base")
 	elif id.begins_with("memory:"):
+		var memory = preload("res://resources/content/library_memory.tres")
+		if id.trim_prefix("memory:") == memory.id and memory.photograph != null:
+			detail_return = "memories"
+			campaign_panel.photograph(memory,false,"memories")
+			return
 		campaign_panel.clear("系统记录〔占位〕",id.trim_prefix("memory:")+"\n2026 年虚拟校园记录。真实照片及共同经历尚待提供；此处不代表真实纪念内容。")
 		campaign_panel.button("返回档案","memories")
 	elif id == "replay_prologue":
@@ -310,6 +347,16 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 
 func _draw_effects() -> void:
 	if campaign_mode.is_empty(): super._draw_effects()
+
+func _draw() -> void:
+	super._draw()
+	if not campaign_mode.is_empty() and screen == "battle":
+		draw_set_transform(origin,0,Vector2.ONE*scale_factor)
+		_pixel_panel(Rect2(230,25,430,48),Color("202027"))
+		var heading = "序章 · 部署教学"
+		if campaign_mode == "region": heading = "%d / 4 · %s" % [journey.data.step+1,run.node.name]
+		elif campaign_mode == "finale": heading = "终局 %d / 3 · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
+		_text(Vector2(244,54),heading,PAPER,22)
 
 func _finale_operation() -> void:
 	if campaign_mode != "finale" or journey.data.screen != "operation" or not journey.visit.data.guard_won: return

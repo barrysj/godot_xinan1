@@ -54,3 +54,22 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - 页面：`pwsh.exe -NoProfile -File ./tools/art/asset_manager/run-server.ps1 -Port 8771 -NoOpen` 冷启动成功；8770 同项目验收页显示八对象/71文件/0不一致，实际点击弹体预览启动粉笔 Unit、005 Animation 与001 Projectile，未回退默认对象。截图 `.godot/art-merge-overview.png`、`.godot/art-merge-preview-launch.png` 为本机缓存，不是跨 checkout 唯一证据。
 - 修复范围：启动器 v2 健康标识、旧六对象测试假设、登记文本字节被 Git 换行转换的问题；详见 [ART-05](art-05.md)。没有重写哈希或改变资产批准状态。
 - 边界：既有原图加载警告及无头环境证书警告仍存在；未重导出 Web、未重新验收全套 M0/手机/真人体验。美术批准继续以任务与 Manifest 为准。
+
+## M1 战役验证 E20
+
+2026-09-16；基线为 `7f92ba8` 起点及 `8140863`、`8918005`、`2a89abe`、`7f95448` 后本文件所在提交。全部使用独立测试档，不覆盖玩家档。引擎路径沿用本页开头，命令显式PowerShell 7。
+
+| 检查入口 | 结果与范围 |
+| --- | --- |
+| `--headless --path . res://game/meta/campaign_check.tscn` | 103 checks / 0 failures；旧v3迁移、不凭旧通关补终端、六顺序、幂等与写失败回滚 |
+| `--headless --path . res://game/run/location_check.tscn` | 134 checks / 0 failures；全部分支、四访问、守卫门槛、可选回忆与不重抽 |
+| `--headless --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check --order=012` | 六顺序012/021/102/120/201/210各124 checks / 0 failures；实际16场模拟战斗、报告/奖励/访问恢复、暂停、人物兑现、终局操作边界 |
+| 同上去掉`--headless` | 1920×1080、2560×1440、1920×1200图书馆及结尾截图，保存于`.godot/m1-library-*.png`和`m1-ending-*.png`；小屏仍可滚动，不作真机结论 |
+| 原`--meta-smoke` / `--dispatch-check` / `--run-smoke` | 67/0、36/0及旧三路线PASS（7/9/7资源）；旧档、派遣、战斗与续玩保留 |
+| `game/combat/action_check.tscn` | ACTION_CHECK PASS failures=0；模拟层动作时序未改 |
+
+桌面Web：使用主仓库缓存的4.7.2标准版引擎`E:/Documents/works/godot_xinan1/.godot/web-tools/engine/Godot_v4.7.2-stable_win64_console.exe`导出当前worktree的`builds/web/index.html`成功。新建输出目录后运行`--headless --path . --export-release Web builds/web/index.html`；不要用Mono导出。日志`.godot/m1-web-export.log`。已修复新面板子控件不继承中文字体造成Web方框的问题。
+
+通过本地HTTP 127.0.0.1:8793、Codex应用内浏览器实测：Start→新档序章→真实拖动四人→开战后立即刷新→同场战前4/4恢复；首战胜利11.4秒→待选三奖励→刷新后同三奖励恢复。另在导出HTML副本`m1-check.html`把args设为`["--","--campaign-flow-check"]`，点击Start后独立`user://campaign-flow-test-profile.json`执行整条战役，浏览器控制台`CAMPAIGN_FLOW checks=124 failures=0`并展示结尾。标准Web模板不支持命令行覆盖场景路径，因此副本仍从真实菜单进入。HTML副本位于忽略的builds目录，不是正式入口。
+
+边界：Web全流程检查为程序驱动，真实鼠标只覆盖序章与刷新；不能代替陌生玩家。Android横屏真机、真实照片、正式美术批准和60～90分钟体验均未验收。既有证书/原图警告、导出编辑器缓存权限提示仍在，但本次构建产物与上述完成标记已实际核验。

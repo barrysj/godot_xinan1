@@ -25,14 +25,13 @@
 
 ## 已知边界与未完成项
 
-profile v3／checkpoint schema 1／run schema 5；Web 写后显式同步；半场不恢复 HP
+profile v4／旧checkpoint schema 1／旧run schema 5／M1独立checkpoint schema 1；Web 写后显式同步；半场不恢复 HP
 
 ## 交接给统筹
 
 当前状态已纳入 2026-09-15 总览。后续 session 在此注明影响其他功能、平台支持、里程碑或整体可玩流程的变化，由统筹汇总；不要追加逐日施工过程。
 
-## M1 战役状态基础（待统筹）
 
-2026-09-16；实现基线为 `7f92ba8` 后的本功能提交。当前为部分实装：`game/meta/campaign_state.gd` 定义永久事实与合法性；`campus_progress.gd` profile v4 原子保存序章、路线资料、终端、回忆、人物及终局阶段，基地显示当前目标。流程入口尚待后续模块接入。
+## M1当前接入与验证（待统筹）
 
-验证：Godot `--headless --path . --log-file .godot/campaign-check.log res://game/meta/campaign_check.tscn`，101 checks、0 failures；既有 `expedition.tscn -- --meta-smoke`，67 checks、0 failures。覆盖六种区域顺序、重复结算、阶段磁盘恢复和保存失败回滚。图形 `--meta-capture` 截图 `.godot/meta_continue.png` 已在聊天展示。无真机、Web 或真人新证据；引擎既有证书和原图加载警告保留。
+2026-09-16；基线 `7f95448` 后本功能提交。固定区域、地点访问与当前M1主流程已接入，入口和状态见[CORE-02](core-02.md)，精确命令和本次结果见[验证E20](verification.md#m1-战役验证-e20)。旧随机活动局保留原快照恢复；M1保存访问、等级、构筑、临时人物、战报和待选奖励；中断战斗从战前恢复。普通派遣在M1按终端数量开放，保持原计时与费用；旧解锁购买仅适用于旧流程。地图、照片与真实人物仍占位，设备与真人边界不变。

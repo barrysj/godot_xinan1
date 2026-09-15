@@ -5,7 +5,7 @@ const REGIONS = ["library", "region_b", "region_c"]
 static func fresh() -> Dictionary:
 	return {"schema": 1, "prologue_done": false, "routes_acquired": false,
 		"terminals": [], "memories": [], "characters": [], "settled_runs": [],
-		"finale_stage": 0, "restored": false}
+		"finale_stage": 0, "restored": false, "formation":["guard","","striker","healer","archer",""]}
 
 static func valid(data: Variant) -> bool:
 	if not data is Dictionary or data.get("schema") != 1: return false
@@ -24,6 +24,16 @@ static func valid(data: Variant) -> bool:
 	if data.routes_acquired and not data.prologue_done: return false
 	if not data.terminals.is_empty() and not data.routes_acquired: return false
 	if stage > 0 and data.terminals.size() != 3: return false
+	var formation = data.get("formation",fresh().formation)
+	if not formation is Array or formation.size() != 6: return false
+	var active = []
+	for id in formation:
+		if not id is String: return false
+		if id.is_empty(): continue
+		if not id in ["guard","archer","healer","striker"] and not data.characters.has(id): return false
+		if active.has(id): return false
+		active.append(id)
+	if active.size() != 4: return false
 	return data.restored == (stage == 3)
 
 static func objective(data: Dictionary) -> String:

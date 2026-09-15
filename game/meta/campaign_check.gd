@@ -42,9 +42,15 @@ func _ready() -> void:
 			p = loaded
 		verify(p.campaign.restored and p.complete_finale_stage(3), "ending idempotent")
 	var before = p.to_dict()
+	verify(p.record_memory("library_system_1") and p.record_memory("library_system_1") and p.campaign.memories.size() == 1,"memory idempotent")
+	before = p.to_dict()
 	p.path = "res://.godot/missing-campaign-directory/profile.json"
 	verify(not p.record_memory("library_photo") and p.to_dict() == before, "memory write rollback")
 	verify(not p.settle_region("replay", "library", ["new_person"], 5) and p.to_dict() == before, "settlement write rollback")
+	p.campaign.finale_stage = 2
+	p.campaign.restored = false
+	before = p.to_dict()
+	verify(not p.complete_finale_stage(3) and p.to_dict() == before,"finale write rollback")
 	p.campaign = p.Campaign.fresh()
 	before = p.to_dict()
 	verify(not p.complete_prologue() and p.to_dict() == before, "prologue rollback")
