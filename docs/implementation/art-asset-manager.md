@@ -24,7 +24,7 @@
 ## 验证记录
 
 - 日期：2026-09-15。
-- 代码基线：分支 `codex/art-asset-manager`；本档案首次建立时改动尚未提交，最终提交见本轮 Git 记录。
+- 代码基线：分支 `codex/art-asset-manager`，功能提交 `dea8869`。
 - 命令：`py -3 -m unittest discover -s tools/art/asset_manager/tests -v`。
 - 结果：11 tests PASS。覆盖 Manifest-only 发现、未登记文件排除、概念／资产多版本、GIF HTTP 播放、clip、限定对象关系、真实哈希不一致、文件缺失、未选择／未接入、三种 binding、Unit+Animation+Projectile 参数、安全边界，以及六个旧对象迁移后全部基线一致。
 - 实际数据：六个对象、12 个唯一登记文件（选取侧与正式生效侧分别保留校验视图），0 个哈希不一致、0 个缺失；所有已声明生效对象的引用 binding 通过。
