@@ -32,3 +32,9 @@
 ## 交接给统筹
 
 当前状态已纳入 2026-09-15 总览。后续 session 在此注明影响其他功能、平台支持、里程碑或整体可玩流程的变化，由统筹汇总；不要追加逐日施工过程。
+
+## M1 战役状态基础（待统筹）
+
+2026-09-16；实现基线为 `7f92ba8` 后的本功能提交。当前为部分实装：`game/meta/campaign_state.gd` 定义永久事实与合法性；`campus_progress.gd` profile v4 原子保存序章、路线资料、终端、回忆、人物及终局阶段，基地显示当前目标。流程入口尚待后续模块接入。
+
+验证：Godot `--headless --path . --log-file .godot/campaign-check.log res://game/meta/campaign_check.tscn`，101 checks、0 failures；既有 `expedition.tscn -- --meta-smoke`，67 checks、0 failures。覆盖六种区域顺序、重复结算、阶段磁盘恢复和保存失败回滚。图形 `--meta-capture` 截图 `.godot/meta_continue.png` 已在聊天展示。无真机、Web 或真人新证据；引擎既有证书和原图加载警告保留。

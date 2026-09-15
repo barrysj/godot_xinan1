@@ -1,6 +1,8 @@
 extends RefCounted
 ## Atomic profile: meta progress, current expedition and dispatch jobs commit together.
 const Catalog = preload("res://game/meta/meta_catalog.gd")
+const Campaign = preload("res://game/meta/campaign_state.gd")
+var campaign: Dictionary = Campaign.fresh()
 var points = 0
 var completions = 0
 var supply_unlocked = false
@@ -13,11 +15,14 @@ var error_message = ""
 var load_blocked = false
 
 func to_dict() -> Dictionary:
-	return {"version":3, "points":points, "completions":completions, "supply_unlocked":supply_unlocked,
+	return {"version":4, "campaign":campaign.duplicate(true), "points":points, "completions":completions, "supply_unlocked":supply_unlocked,
 		"upgrades":upgrades.duplicate(true), "active_run":active_run.duplicate(true),
 		"dispatches":dispatches.duplicate(true), "last_settled_run":last_settled_run}
 
 func _apply(data: Dictionary) -> void:
+	campaign = data.get("campaign", Campaign.fresh()).duplicate(true)
+	campaign.schema = int(campaign.schema)
+	campaign.finale_stage = int(campaign.finale_stage)
 	points = maxi(0,int(data.get("points",0)))
 	completions = maxi(0,int(data.get("completions",0)))
 	upgrades = data.get("upgrades",{}).duplicate(true)
@@ -35,7 +40,8 @@ func read_save() -> bool:
 	if parser.parse(file.get_as_text()) != OK: return _invalid_save()
 	var data = parser.data
 	if not data is Dictionary: return _invalid_save()
-	if data.get("version",0) != 1 and data.get("version",0) != 2 and data.get("version",0) != 3: return _invalid_save()
+	if data.get("version",0) != 1 and data.get("version",0) != 2 and data.get("version",0) != 3 and data.get("version",0) != 4: return _invalid_save()
+	if data.version == 4 and not Campaign.valid(data.get("campaign")): return _invalid_save()
 	if not data.get("upgrades",{}) is Dictionary or not data.get("active_run",{}) is Dictionary or not data.get("dispatches",[]) is Array: return _invalid_save()
 	for key in ["points","completions"]:
 		if not (data.get(key,0) is int or data.get(key,0) is float): return _invalid_save()
@@ -103,6 +109,49 @@ func _commit(before: Dictionary) -> bool:
 
 func level(id: String) -> int:
 	return int(upgrades.get(id,0))
+
+func complete_prologue() -> bool:
+	if campaign.prologue_done: return not load_blocked
+	var before = to_dict()
+	campaign.prologue_done = true
+	return _commit(before)
+
+func complete_tutorial_dispatch() -> bool:
+	if not campaign.prologue_done: return false
+	if campaign.routes_acquired: return not load_blocked
+	var before = to_dict()
+	campaign.routes_acquired = true
+	return _commit(before)
+
+func record_memory(id: String) -> bool:
+	if id.is_empty(): return false
+	if campaign.memories.has(id): return not load_blocked
+	var before = to_dict()
+	campaign.memories.append(id)
+	return _commit(before)
+
+func settle_region(run_id: String, region: String, characters: Array, earned: int) -> bool:
+	if not campaign.routes_acquired or not Campaign.REGIONS.has(region) or run_id.is_empty(): return false
+	if campaign.settled_runs.has(run_id): return not load_blocked
+	for id in characters:
+		if not id is String or id.is_empty(): return false
+	var before = to_dict()
+	campaign.settled_runs.append(run_id)
+	if not campaign.terminals.has(region): campaign.terminals.append(region)
+	for id in characters:
+		if not campaign.characters.has(id): campaign.characters.append(id)
+	points += maxi(0, earned)
+	completions += 1
+	return _commit(before)
+
+func complete_finale_stage(stage: int) -> bool:
+	if campaign.terminals.size() != 3 or stage < 1 or stage > 3: return false
+	if stage <= campaign.finale_stage: return not load_blocked
+	if stage != campaign.finale_stage + 1: return false
+	var before = to_dict()
+	campaign.finale_stage = stage
+	campaign.restored = stage == 3
+	return _commit(before)
 
 func unlock_reason(id: String) -> String:
 	var item = Catalog.find(Catalog.UNLOCKS,id)

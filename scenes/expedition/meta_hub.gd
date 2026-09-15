@@ -311,6 +311,7 @@ func _draw_base() -> void:
 	preload("res://scenes/ui/comic_ui.gd").card(self,Rect2(416,40,448,77),Color("e92746"))
 	_center(Vector2(640,96),"重 返 校 园",Color("fff9ee"),44)
 	_center(Vector2(640,137),"RETURN TO SUMMER / 忆夏学园",Color("fff9ee"),17)
+	_center(Vector2(640,590),progress.Campaign.objective(progress.campaign),PAPER,19)
 	_home_panel(Rect2(20,173,217,390))
 	_home_panel(Rect2(1043,173,217,390))
 	_text(Vector2(43,218),"探索",PAPER,28)
