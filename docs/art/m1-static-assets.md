@@ -49,3 +49,7 @@
 - 已复用：既有静态校园图块 `assets/pixel/kenney/tiny-town.png` 1套、原生共享 UI `scenes/ui/comic_ui.gd` 与思源黑体 `assets/fonts/SourceHanSansSC-Medium.otf`，沿用基线 `7f92ba8`。用途为基地战役目标展示，不新增美术版本或改变批准状态；已接入，截图 `.godot/meta_continue.png`，已在聊天展示。
 - 待生成：上表三区域视图、6～8地点静态环境、3终端图标、2 AI标识、占位敌人替换及恢复结尾静态状态，数量与要求维持上表预算，均未批准。
 - 待用户提供：真实底图1份、图书馆原照至少1张、其余终点身份、首发名单与外观参考、真实共同经历；尚未提供。
+
+## 固定区域与地点访问模块（2026-09-16）
+
+已生成0；复用 `resources/theme/theme-main.tres` 和既有思源字体，新增原生控件 `scenes/expedition/campaign_panel.gd`，无图片资产与新增批准。七地点均为逻辑占位，图书馆尚未精制。运行截图 `.godot/m1-route.png`、`.godot/m1-location.png`。待生成和待用户提供项保持上表；图书馆照片不得用系统文本占位冒充。

@@ -30,3 +30,9 @@
 ## 交接给统筹
 
 当前状态已纳入 2026-09-15 总览。后续 session 在此注明影响其他功能、平台支持、里程碑或整体可玩流程的变化，由统筹汇总；不要追加逐日施工过程。
+
+## M1 固定区域与地点访问（待统筹）
+
+2026-09-16，基线 `8140863` 后本功能提交；当前模块已验证、玩家流程尚待接入。`game/run/campus_region.gd` 提供七个共享地点的逻辑占位图；`campaign_journey.gd` 保存固定图、等级、所选路径及临时人物；`location_visit.gd` 封装热点、调查、守卫和离场门槛；`scenes/expedition/campaign_panel.gd` 提供原生控件界面。
+
+验证：Godot `--path . --log-file .godot/m1-location-check.log res://game/run/location_check.tscn -- --capture`，134 checks、0 failures，覆盖全部区域分支、四次访问、离场门槛、跳过回忆及未记录优先、JSON恢复不重抽。截图 `.godot/m1-route.png` / `.godot/m1-location.png`；地点图已聊天展示。当前是模块检查，不等于战役全流程或真实地图验收。
