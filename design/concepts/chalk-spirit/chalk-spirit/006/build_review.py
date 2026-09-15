@@ -1,4 +1,4 @@
-"""Assemble Godot captures for the throwaway hybrid-animation candidate 003."""
+"""Assemble Godot captures for the approved chalk-spirit hybrid animation 006."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[5]
 HERE = Path(__file__).resolve().parent
 REVIEW = HERE / "review"
+CODEX_WORKFLOW = REVIEW / "codex-workflow"
 ATTACK_FRAMES = ROOT / ".godot/chalk-spirit-hybrid-frames"
 TOUR_FRAMES = ROOT / ".godot/chalk-spirit-hybrid-tour-frames"
 
@@ -39,16 +40,17 @@ def contact_sheet(names: list[str], columns: int, output: str) -> None:
     cell = (width // columns, height // rows)
     sheet = Image.new("RGB", (width, height), (32, 58, 53))
     for index, name in enumerate(names):
-        image = Image.open(REVIEW / f"rig-{name}-1920x1080.png").convert("RGB")
+        image = Image.open(CODEX_WORKFLOW / f"rig-{name}-1920x1080.png").convert("RGB")
         image.thumbnail(cell, Image.Resampling.LANCZOS)
         x = (index % columns) * cell[0] + (cell[0] - image.width) // 2
         y = (index // columns) * cell[1] + (cell[1] - image.height) // 2
         sheet.paste(image, (x, y))
         image.close()
-    sheet.save(REVIEW / output)
+    sheet.save(CODEX_WORKFLOW / output)
 
 
 def main() -> None:
+    CODEX_WORKFLOW.mkdir(parents=True, exist_ok=True)
     attack = load_frames(ATTACK_FRAMES, 40)
     tour = load_frames(TOUR_FRAMES, 112)
     save_gif(attack, REVIEW / "rig-preview.gif", 80)
@@ -59,7 +61,7 @@ def main() -> None:
         frame.close()
     shutil.rmtree(ATTACK_FRAMES)
     shutil.rmtree(TOUR_FRAMES)
-    print("chalk rig 003 review: attack GIF, all-actions GIF, contact sheets")
+    print("chalk spirit 006 review: attack GIF, all-actions GIF, contact sheets")
 
 
 if __name__ == "__main__":

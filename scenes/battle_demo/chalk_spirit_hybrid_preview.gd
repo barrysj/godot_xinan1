@@ -590,7 +590,7 @@ func _capture_frame(path: String, resolution: Vector2i, time: float, mode: Strin
 
 func _capture() -> void:
 	set_process(false)
-	var review := "res://design/concepts/chalk-spirit/chalk-spirit/006/review/"
+	var review := "res://design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(review))
 	for state in [
 		["idle", 0.10], ["windup", 0.62], ["release", 0.86], ["recovery", 1.28],
