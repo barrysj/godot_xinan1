@@ -34,6 +34,7 @@ var debug_shortcuts: Node
 var inspected_enemy_slot = -1
 var codex_panel: Control
 var deployment: Control
+var battle_presentations: Dictionary = {}
 
 func _gear_inventory() -> Dictionary:
 	return {"shoe": equipment}
@@ -148,6 +149,7 @@ func _start() -> void:
 	if phase == "battle" and is_instance_valid(deployment): deployment.cancel()
 
 func _build_units() -> void:
+	_clear_battle_presentations()
 	super._build_units()
 	battle_background = _battle_backdrop()
 	background_canvas = CanvasTexture.new()
@@ -157,6 +159,8 @@ func _build_units() -> void:
 	for u in units:
 		u.animation = BattleAnimation.new(u.battle_animation)
 		u.presentation = UnitPresentation.new()
+	_create_battle_presentations()
+	_update_battle_presentations()
 	effects.clear()
 	skill_effects.clear()
 	banner_time = 0
@@ -183,6 +187,7 @@ func _process(delta: float) -> void:
 		if not u.get("action", {}).is_empty() and not u.presentation.action.is_empty():
 			u.presentation.action.age = minf(u.action.age + accumulator, u.action.duration)
 		u.animation.sync_motion(u.moving and not simulation.closing, u.presentation.action)
+	_update_battle_presentations()
 
 func _tick() -> void:
 	super._tick()
@@ -190,6 +195,60 @@ func _tick() -> void:
 		u.screen_facing = Board.direction(u.facing)
 		u.animation.sync_health(u.hp, u.max_hp)
 		u.presentation.advance(0, u)
+	_update_battle_presentations()
+
+func _clear_battle_presentations() -> void:
+	for instance in battle_presentations.values():
+		if is_instance_valid(instance):
+			instance.queue_free()
+	battle_presentations.clear()
+
+func _create_battle_presentations() -> void:
+	for u in units:
+		if u.battle_animation == null or u.battle_animation.presentation_scene == null:
+			continue
+		var instance = u.battle_animation.presentation_scene.instantiate()
+		if not instance is Node2D or not instance.has_method("apply_presentation"):
+			push_warning("Battle presentation root must be Node2D and implement apply_presentation(context)")
+			instance.queue_free()
+			continue
+		instance.name = "UnitPresentation%d" % u.id
+		add_child(instance)
+		battle_presentations[u.id] = instance
+
+func _presentation_context(actor: Dictionary, at: Vector2, factor: float) -> Dictionary:
+	var pose: Dictionary = actor.presentation.pose(actor, true)
+	var center: Vector2 = origin + (at + pose.offset * factor / 4.0) * scale_factor
+	var display_size: Vector2 = actor.battle_animation.display_size
+	return {
+		"center": center,
+		"display_size": display_size * factor / 4.0 * scale_factor,
+		"state": actor.animation.state,
+		"age": actor.animation.age,
+		"duration": actor.animation._duration(actor.animation.state),
+		"motion_time": actor.presentation.motion_time,
+		"facing_right": actor.presentation.facing_right,
+		"tint": pose.tint,
+	}
+
+func _update_battle_presentations() -> void:
+	for u in units:
+		var instance: Node2D = battle_presentations.get(u.id)
+		if not is_instance_valid(instance):
+			continue
+		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role):
+			instance.visible = false
+			continue
+		var at := _unit_center(u) + Vector2(0, 13)
+		instance.z_index = int(round(at.y))
+		instance.call("apply_presentation", _presentation_context(u, at, 4.0))
+
+func _presentation_handles(u: Dictionary) -> bool:
+	var instance: Node2D = battle_presentations.get(u.id)
+	if not is_instance_valid(instance):
+		return false
+	return not instance.has_method("handles_presentation_state") or instance.call(
+		"handles_presentation_state", u.animation.state)
 
 func _finish_delay() -> float:
 	var remaining := 0.65
@@ -336,6 +395,8 @@ func _legacy_campus(show_battle_marks: bool = true) -> void:
 		draw_rect(Rect2(p, Vector2(4, 4)), Color("b28bbb"))
 
 func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
+	if _presentation_handles(u):
+		return
 	var alive: bool = u.hp > 0
 	var animated_texture: Texture2D = u.animation.texture()
 	var pose: Dictionary = u.presentation.pose(u, animated_texture != null)

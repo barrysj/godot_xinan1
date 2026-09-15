@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skill"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/locomotion_sheet.png" id="atlas"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/006/locomotion_sheet.png" id="atlas"]
 [ext_resource type="Resource" path="res://resources/content/animations/chalk.tres" id="animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")

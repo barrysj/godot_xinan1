@@ -72,6 +72,11 @@ func _ready() -> void:
 			var requested_speed := arg.trim_prefix("--preview-speed=").to_float()
 			if requested_speed >= 0.05 and requested_speed <= 4.0: playback_speed = requested_speed
 			else: push_warning("Preview speed must be between 0.05 and 4.0")
+	var resolved_preview_animation: AnimationSet = preview_animation
+	if resolved_preview_animation == null and preview_unit != null:
+		resolved_preview_animation = preview_unit.battle_animation
+	if preview_presentation_scene == null and resolved_preview_animation != null:
+		preview_presentation_scene = resolved_preview_animation.presentation_scene
 	_create_preview_presentations()
 	_create_toolbar()
 	_update_mode_availability()
@@ -90,8 +95,8 @@ func _create_preview_presentations() -> void:
 	if preview_presentation_scene == null: return
 	for index in 2:
 		var instance = preview_presentation_scene.instantiate()
-		if not instance is Node2D or not instance.has_method("apply_motion_preview"):
-			push_warning("Preview presentation root must be Node2D and implement apply_motion_preview(context)")
+		if not instance is Node2D or not _can_apply_presentation(instance):
+			push_warning("Preview presentation root must be Node2D and implement apply_presentation(context)")
 			instance.queue_free()
 			continue
 		if instance.has_method("configure_motion_preview"):
@@ -99,6 +104,19 @@ func _create_preview_presentations() -> void:
 		instance.name = "MotionPresentation%d" % index
 		add_child(instance)
 		preview_presentations.append(instance)
+
+func _create_battle_presentations() -> void:
+	# This harness owns two preview instances: one in battle and one enlarged.
+	pass
+
+func _can_apply_presentation(instance: Node) -> bool:
+	return instance.has_method("apply_presentation") or instance.has_method("apply_motion_preview")
+
+func _apply_preview_presentation(instance: Node, context: Dictionary) -> void:
+	if instance.has_method("apply_presentation"):
+		instance.call("apply_presentation", context)
+	else:
+		instance.call("apply_motion_preview", context)
 
 func _create_toolbar() -> void:
 	var margin = MarginContainer.new()
@@ -282,14 +300,16 @@ func _presentation_context(actor: Dictionary, at: Vector2, factor: float) -> Dic
 func _update_preview_presentations() -> void:
 	if preview_presentations.size() != 2 or units.is_empty(): return
 	var actor: Dictionary = units[0]
-	preview_presentations[0].call("apply_motion_preview", _presentation_context(
+	_apply_preview_presentation(preview_presentations[0], _presentation_context(
 		actor, _unit_center(actor) + Vector2(0, 13), 4.0))
-	preview_presentations[1].call("apply_motion_preview", _presentation_context(
+	_apply_preview_presentation(preview_presentations[1], _presentation_context(
 		actor, Vector2(1080, 520), 8.0))
 
 func _presentation_handles(u: Dictionary) -> bool:
 	if preview_presentations.is_empty() or u.id != 0: return false
 	var presentation := preview_presentations[0]
+	if presentation.has_method("handles_presentation_state"):
+		return presentation.call("handles_presentation_state", u.animation.state)
 	return not presentation.has_method("handles_motion_preview_state") or presentation.call(
 		"handles_motion_preview_state", u.animation.state)
 

@@ -198,12 +198,17 @@ variants:
       generation_record: generation.md
       gif_ranged: review/ranged-preview.gif
       gif_all_actions: review/all-actions-preview.gif
+    resource: resources/content/animations/chalk.tres
     animation:
       frames: frame_metadata
     previews:
       gifs:
         ranged: gif_ranged
         all_actions: gif_all_actions
+      godot:
+        unit: res://resources/content/enemies/chalk.tres
+        animation: res://resources/content/animations/chalk.tres
+        projectile: res://resources/content/animations/chalk_projectile.tres
     metadata:
       normalized_canvas: [384, 384]
       display_size: [140, 140]
@@ -217,13 +222,19 @@ relationships:
   projectile: chalk_projectile
 integration:
   status: active
-  active_variant: asset_005
+  active_variant: asset_006
   owner: resources/content/enemies/chalk.tres
-  root: assets/art/characters/chalk_spirit
+  root: assets/art/characters/chalk_spirit/006
   files:
     locomotion_sheet: locomotion_sheet.png
     combat_sheet: combat_sheet.png
     reaction_sheet: reaction_sheet.png
     frame_metadata: battle_animation.frames.json
+    rig_body: parts/body.png
+    rig_launcher: parts/launcher.png
+    rig_orbiter_back: parts/orbiter_back.png
+    rig_orbiter_top: parts/orbiter_top.png
+    rig_dust_particle: parts/dust_particle.png
+    rig_build_metadata: rig_manifest.json
   resource: resources/content/animations/chalk.tres
-  evidence: "docs/art/tasks/chalk-spirit.md；2026-09-15 用户批准正式接入预览"
+  evidence: "docs/art/tasks/chalk-spirit-rig.md；2026-09-16 技术接入完成，效果待人工评审"

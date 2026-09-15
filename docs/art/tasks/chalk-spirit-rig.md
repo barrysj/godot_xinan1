@@ -1,6 +1,6 @@
 # 美术任务：粉笔精灵分层骨骼试验
 
-状态：资产 006 已批准并完成正式归档，Godot 接入待实施与评审。此任务验证并引入骨骼＋序列帧混合生产方法；轻量弹体 001 的已批准状态不变。
+状态：资产 006 已批准并完成 Godot 接入，接入效果待人工评审。此任务验证并引入骨骼＋序列帧混合生产方法；轻量弹体 001 的已批准状态不变。
 
 ## 目标与范围
 
@@ -18,7 +18,8 @@
 - 候选 003 运行反馈：负责人于 2026-09-15 在游戏内统一预览中发现骨骼拆件边缘呈水波纹，并报告叶骨骼无法自动计算长度和角度的警告。确认原因为骨骼场景继承像素战斗场景的最近邻采样，以及刚性枢轴误用 `Bone2D` 默认自动骨长计算；现改为线性 mipmap 采样，并为四根枢轴骨显式关闭自动计算。
 - 候选 003 资产评审：负责人于 2026-09-16 回复“是的，批准成为正式资产”。该候选以新稳定版本 `asset_006` 登记，不能复用历史上已拒绝的 `asset_003`。
 - 当前结论：资产 006 已批准并选用；已整理为 `assets/art/characters/chalk_spirit/006/` 下的自包含快照，包含骨骼拆件、正式 005 的序列帧回退、构建元数据和保存的 GIF。
-- 批准边界：本次决定只批准正式资产，不等于批准游戏接入效果。在 Godot 实际接入、三分辨率截图和人工复核完成前，Manifest 的 `integration.active_variant` 继续指向 `asset_005`。
+- 批准边界：本次决定只批准正式资产，不等于批准游戏接入效果。技术接入前 Manifest 的 `integration.active_variant` 保持 `asset_005`；当前已完成正式路径验证并如实切到 `asset_006`，最终视觉决定仍等待负责人复核本轮截图。
+- 接入实现：`BattleAnimationSet` 新增可选表现场景，真实战斗与统一预览器都从同一主动画资源解析。资产 006 的待机、移动、远程、施法、受击与濒危由刚性骨骼处理，退场由同一资源的序列帧回退；技术验证与三分辨率证据完成后切换 `integration.active_variant`，但最终视觉决定仍待负责人评审。
 
 ## 验证证据
 
@@ -31,6 +32,8 @@
 - 候选 003 动画：[远程攻击 GIF](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-preview.gif)、[七动作巡演 GIF](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-all-actions.gif)、[攻击四阶段](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-attack-contact-sheet.png)和[七动作总览](../../../design/concepts/chalk-spirit/chalk-rig/003/review/rig-all-actions-contact-sheet.png)。出手阶段完成三分辨率捕获。
 - 候选 003 已适配统一动作预览器：骨骼表现与正式序列帧共用战斗模拟时钟并按动作选择后端，六个骨骼动作与正式 005 退场序列帧可在同一角色中并存；支持动作指定、任意倍率、暂停、单步、循环和巡演。远程弹体由标准模拟器绘制，骨骼层只保留枪口光与后坐，避免双重弹体和时序漂移。接入仍仅用于评审，不改变正式资源绑定。
 - 统一预览证据：[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-1920x1080.png)、[远程 2560×1440](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-2560x1440.png)、[远程 1920×1200](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-ranged-1920x1200.png)与[正式 005 退场回退](../../../design/concepts/chalk-spirit/chalk-rig/003/review/standard-preview-death-1920x1080.png)。水波纹修复后使用 `-Action` 与 `-Speed 0.25` 重新捕获；骨骼属性和纹理过滤回归检查为 `failures=0`，终端不再出现 `Bone2D` 自动计算警告。
+- 正式 006 接入证据：[远程 1920×1080](../../../design/concepts/chalk-spirit/chalk-rig/003/review/asset-006-ranged-1920x1080.png)、[远程 2560×1440](../../../design/concepts/chalk-spirit/chalk-rig/003/review/asset-006-ranged-2560x1440.png)、[远程 1920×1200](../../../design/concepts/chalk-spirit/chalk-rig/003/review/asset-006-ranged-1920x1200.png)、[施法](../../../design/concepts/chalk-spirit/chalk-rig/003/review/asset-006-cast-1920x1080.png)与[序列帧退场回退](../../../design/concepts/chalk-spirit/chalk-rig/003/review/asset-006-death-1920x1080.png)。捕获只传正式角色与 `-Speed 0.25`，未使用候选 `-Presentation` 覆盖；预览器从 `resources/content/animations/chalk.tres` 自动解析混合场景。
+- 接入回归：`MOTION_PREVIEW_CHECK failures=0`、`PRESENTATION_CHECK PASS failures=0`、`SKILL_VFX_CHECK failures=0`、`ANIMATION CHECK: PASS`。真实战斗检查显式验证表现场景实例化、骨骼动作处理及 death 回退；未再出现 `Bone2D` 自动骨长警告。
 
 ## 制作建议
 

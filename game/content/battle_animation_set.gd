@@ -4,6 +4,8 @@ extends Resource
 const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
 
 @export var frames: SpriteFrames
+## Optional rigid/mesh presentation. States it declines fall back to SpriteFrames.
+@export var presentation_scene: PackedScene
 @export var display_size := Vector2(64, 64)
 @export var anchor := Vector2(0.5, 0.875)
 @export_range(0.0, 1.0) var critical_ratio: float = 0.25

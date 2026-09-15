@@ -53,8 +53,8 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - `-Projectile 'res://路径/弹体资源.tres'` 仅给本次预览的动画资源深复制件挂载 `BattleProjectileStyle`，便于先审弹体再决定是否正式接入，不会修改角色定义或候选动画文件。
 - Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
-- `run-motion-preview.ps1` 同时支持序列帧与实现 `apply_motion_preview(context)` 的 `Node2D` 骨骼表现场景。表现场景可用 `handles_motion_preview_state(state)` 声明由骨骼负责的动作；未声明或返回 `false` 的动作自动回退到角色的 `BattleAnimationSet` 序列帧，因此同一角色可以按动作混合两种后端。使用 `-Presentation` 指定骨骼场景，`-Action` 选择单个动作，`-Speed` 精确设置 `0.05`～`4.0` 倍速；暂停后的“单步”仍固定推进 `0.05` 秒模拟时间。
-- 粉笔精灵候选 003 示例：`pwsh.exe -File .\run-motion-preview.ps1 -Unit res://resources/content/enemies/chalk.tres -Presentation res://scenes/battle_demo/chalk_rig_prototype.tscn -Action Ranged -Speed 0.5`。待机、移动、远程、施法、受击和濒危由骨骼表现，退场自动回退到正式 005 序列帧。标准模拟器负责前摇、出手、弹道、命中和收招，表现场景只消费当前动作、时间、方向、尺寸和受击色调；不得在骨骼场景中另行推进战斗时间。
+- `BattleAnimationSet.presentation_scene` 可选绑定实现 `apply_presentation(context)` 的 `Node2D` 表现场景。表现场景用 `handles_presentation_state(state)` 声明骨骼负责的动作；未声明或返回 `false` 的动作自动回退到同一资源的 `SpriteFrames`，因此真实战斗与预览器共用一套混合后端。`run-motion-preview.ps1` 会从动画资源自动解析该场景；`-Presentation` 只保留为开发覆盖入口。`-Action` 选择单个动作，`-Speed` 精确设置 `0.05`～`4.0` 倍速；暂停后的“单步”仍固定推进 `0.05` 秒模拟时间。
+- 粉笔精灵正式 006 示例：`pwsh.exe -File .\run-motion-preview.ps1 -Unit res://resources/content/enemies/chalk.tres -Action Ranged -Speed 0.5`。待机、移动、远程、施法、受击和濒危由骨骼表现，退场自动回退到资产 006 自带的 005 序列帧。标准模拟器负责前摇、出手、弹道、命中和收招，表现场景只消费当前动作、时间、方向、尺寸和受击色调；不得在表现场景中另行推进战斗时间。
 
 跨片段验收不能只检查统一画布与锚点：同一画布仍可能装入不同大小的主体。候选生成器应比较待机／移动与攻击／施法的主体轮廓尺度，设置宽松的自动拦截区间，并用头盔、躯干核心等稳定部位做人工复核；尾迹、弹体和碎块只能作为动作效果，不能作为主体尺寸依据。
 

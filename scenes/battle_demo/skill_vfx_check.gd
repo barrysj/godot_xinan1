@@ -9,16 +9,19 @@ func check(ok: bool, label: String) -> void:
 		push_error(label)
 
 func _ready() -> void:
-	check(Chalk.portrait is AtlasTexture and Chalk.portrait.atlas.resource_path == "res://assets/art/characters/chalk_spirit/locomotion_sheet.png", "Chalk Spirit uses the approved portrait source")
+	check(Chalk.portrait is AtlasTexture and Chalk.portrait.atlas.resource_path == "res://assets/art/characters/chalk_spirit/006/locomotion_sheet.png", "Chalk Spirit uses the approved portrait source")
 	check(Chalk.battle_animation != null, "Chalk Spirit has an approved battle animation")
 	if Chalk.battle_animation != null:
 		var chalk_model = Chalk.battle_animation
 		var expected_counts = {&"idle": 4, &"move": 8, &"attack": 8, &"cast": 8, &"hurt": 4, &"critical": 4, &"death": 8}
 		var approved_sheets = [
-			"res://assets/art/characters/chalk_spirit/locomotion_sheet.png",
-			"res://assets/art/characters/chalk_spirit/combat_sheet.png",
-			"res://assets/art/characters/chalk_spirit/reaction_sheet.png",
+			"res://assets/art/characters/chalk_spirit/006/locomotion_sheet.png",
+			"res://assets/art/characters/chalk_spirit/006/combat_sheet.png",
+			"res://assets/art/characters/chalk_spirit/006/reaction_sheet.png",
 		]
+		check(chalk_model.presentation_scene != null, "Chalk Spirit has a hybrid presentation scene")
+		if chalk_model.presentation_scene != null:
+			check(chalk_model.presentation_scene.resource_path == "res://scenes/battle_demo/presentations/chalk_spirit_presentation.tscn", "Chalk Spirit presentation resource is stable")
 		for clip in expected_counts:
 			check(chalk_model.frames.has_animation(clip), "Chalk Spirit has " + clip)
 			check(chalk_model.frames.get_frame_count(clip) == expected_counts[clip], "Chalk Spirit frame count for " + clip)
