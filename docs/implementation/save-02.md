@@ -19,6 +19,10 @@
 
 ## 验证与证据
 
+- 2026-09-16 main 合并（`48acc51` / `f32fa4f`）：存档实现与合并前 main 完全一致，保留 v4 与 campus_progress.json，不把 v4 写入旧分支的 v3 专用档；下述 v3 隔离记录仅适用于历史闪卡分支。退出失败显式放弃功能保留。测试改为 `.godot` 隔离档，覆盖 v1～v4 可读、v5 拒绝且不可覆盖，以及取消/显式退出；SAVE_COMPAT_CHECK PASS。CAMPAIGN_CHECK 103/0、完整 CAMPAIGN_FLOW 124/0 通过，未写入玩家存档。待统筹：默认路径说明已同步 campus-demo.md。
+
+- 2026-09-16，基线 996cee4：只读实际档复现 loaded=false/blocked=true，确认是共享 user:// 中 v4 战役档被仅支持 v1～v3 的读取器拒绝，并非文件不可读或 JSON 损坏。v3 默认改用 campus_progress_v3.json，旧兼容档只读沿用，新版档保留并提示独立进度；不降级、不覆盖玩家档。scenes/expedition/save_compat_check.tscn 图形运行加 `-- --codex-check` PASS，覆盖实际只读复现、隔离版本1～4、未来档禁止写入、退出失败取消及实际显式不保存退出；截图 .godot/save-compat-exit.png。meta-smoke 67 checks / 0 failures，原玩家档 SHA256 前后一致。项目原像素图警告仍存在。待统筹：按schema隔离写入，非按工作树隔离；未新增进程锁，禁止并发写同档。
+
 - 已有证据：E05、E07、E14。编号和重跑入口见[共享验证目录](verification.md)。
 - 以上是继承的验收记录，不表示本次文档整理重新验证。新增验证在此更新日期、代码基线、命令、结果与覆盖边界；共享检查变化同步目录。
 - 程序通过不等于真人体验、目标设备或美术审批通过。

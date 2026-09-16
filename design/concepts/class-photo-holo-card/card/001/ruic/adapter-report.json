@@ -1,0 +1,16 @@
+{
+  "blender": "4.5.14 LTS",
+  "upstream_commit": "ae25b5d02996eb5f5eb2540b91c26fe20f484d55",
+  "card_aspect": [
+    8,
+    7
+  ],
+  "source_preserved": true,
+  "runtime": "Godot native CanvasItem, does not load GLB or blend",
+  "render_views": [
+    "front",
+    "left",
+    "right"
+  ],
+  "browser_tested": false
+}

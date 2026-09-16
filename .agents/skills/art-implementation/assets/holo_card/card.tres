@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/art/holo_card_visual.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/holo_cards/REPLACE_CARD_ID/photo.jpg" id="2"]
+
+[resource]
+script = ExtResource("1")
+photo = ExtResource("2")
+title = "替换标题"
+subtitle = "替换副标题"
+caption = "替换说明短句"
+edition = "MEMORY / 002"
+foil_strength = 0.7
+photo_foil_strength = 0.65
+photo_depth = 0.004

@@ -11,6 +11,8 @@ var tabs: Array[Button] = []
 var exit_button: Button
 var portrait: TextureRect
 var gear_icon: Button
+var regular_nodes: Array[Control] = []
+var holo_page: Control
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -50,10 +52,10 @@ func _ready() -> void:
 	exit_button.position = Vector2(1075,32)
 	exit_button.size = Vector2(160,52)
 	content.add_child(exit_button)
-	for i in range(5):
-		var tab = button(Catalog.CATEGORIES[i],select_category.bind(i))
-		tab.position = Vector2(40+i*242,117)
-		tab.size = Vector2(230,54)
+	for i in range(6):
+		var tab = button(Catalog.CATEGORIES[i] if i < 5 else "闪卡",select_category.bind(i))
+		tab.position = Vector2(40+i*202,117)
+		tab.size = Vector2(190,54)
 		tab.toggle_mode = true
 		content.add_child(tab)
 		tabs.append(tab)
@@ -92,6 +94,11 @@ func _ready() -> void:
 	detail.size = Vector2(766,360)
 	detail.add_theme_color_override("default_color",Color("181820"))
 	content.add_child(detail)
+	regular_nodes.assign([scroll,panel,heading,portrait,gear_icon,detail])
+	holo_page = preload("res://scenes/codex/holo_card_page.gd").new()
+	holo_page.position = Vector2(40,193)
+	holo_page.size = Vector2(1200,476)
+	content.add_child(holo_page)
 	resized.connect(layout)
 	layout()
 	select_category(0)
@@ -112,6 +119,12 @@ func layout() -> void:
 func select_category(index: int) -> void:
 	category = index
 	for i in range(tabs.size()): tabs[i].button_pressed = i == index
+	for node in regular_nodes: node.visible = index != 5
+	holo_page.visible = index == 5
+	holo_page.close_card(false)
+	if index == 5:
+		holo_page.refresh()
+		return
 	for child in listing.get_children():
 		listing.remove_child(child)
 		child.queue_free()
@@ -153,4 +166,5 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") or event.is_action_pressed("ggt_debug_pause_game"):
 		if event is InputEventKey and event.echo: return
 		get_viewport().set_input_as_handled()
+		if category == 5 and holo_page.close_card(): return
 		close_guide()

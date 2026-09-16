@@ -16,10 +16,10 @@ from pathlib import Path
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".svg"}
 RESOURCE_EXTENSIONS = {".tres", ".res", ".tscn"}
-CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "特效": 3, "未归类": 4}
+CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "闪卡": 3, "特效": 4, "未归类": 5}
 TYPE_CATEGORIES = {
     "character": "人物", "enemy": "人物", "background": "场景",
-    "scene": "场景", "ui": "UI", "effect": "特效",
+    "scene": "场景", "ui": "UI", "effect": "特效", "holo_card": "闪卡",
 }
 CLIP_LABELS = {
     "idle": "待机", "move": "移动", "attack": "攻击", "melee": "近战", "ranged": "远程", "cast": "施法",
@@ -261,6 +261,19 @@ def _legacy_attack_modes(variant, project_root):
 
 
 def _preview_target_info(config, project_root):
+    if config.get("card"):
+        uri = str(config["card"])
+        path = _uri_path(project_root, uri)
+        root = Path(project_root) / "assets/art/holo_cards"
+        if path is None or not _inside(path, root) or not path.is_file():
+            return False, "卡片资源缺失或越出卡目录", None
+        info = godot_resource_info(path, project_root)
+        if "res://game/art/holo_card_visual.gd" not in info["references"] or info["missing_references"]:
+            return False, "卡片类型或引用无效", None
+        script = Path(project_root) / "run-holo-card.ps1"
+        if not script.is_file():
+            return False, "缺少卡片预览入口", None
+        return True, "可预览", {"script": script, "card_uri": uri}
     unit = str(config.get("unit") or "")
     animation = str(config.get("animation") or "")
     projectile = str(config.get("projectile") or "")
@@ -324,6 +337,11 @@ class AssetCatalog(object):
             return main_path, [], [{"path": str(main_path), "message": "仅支持 Manifest schema_version 3"}]
         loaded, errors = [], []
         for object_id, raw_path in (main.get("objects", {}) or {}).items():
+            if isinstance(raw_path, dict):
+                cards, problems = self._load_holo_cards(object_id, raw_path, main_path)
+                loaded.extend(cards)
+                errors.extend(problems)
+                continue
             path = _registered_path(self.project_root, raw_path, main_path.parent)
             if path is None or not path.is_file():
                 errors.append({"path": str(raw_path), "message": "对象 Manifest 不存在或越出当前项目"})
@@ -337,6 +355,70 @@ class AssetCatalog(object):
                 continue
             loaded.append((object_id, path, data))
         return main_path, loaded, errors
+
+    def _load_holo_cards(self, collection_id, config, main_path):
+        """Directory registration is a narrow opt-in, not arbitrary file discovery."""
+        root = _registered_path(self.project_root, config.get("root"))
+        allowed = self.project_root / "assets/art/holo_cards"
+        if config.get("type") != "holo_card" or root is None or not _inside(root, allowed) or not root.is_dir():
+            return [], [{"path": str(config), "message": "全息卡目录不存在或越出 assets/art/holo_cards"}]
+        loaded, errors = [], []
+        for resource in sorted(root.glob("*/card.tres")):
+            try:
+                if not _inside(resource, root):
+                    raise ValueError("卡资源越出登记目录")
+                text = resource.read_text(encoding="utf-8-sig")
+                parts = re.split(r"(?m)^\[resource\]\s*$", text, maxsplit=1)
+                if len(parts) != 2:
+                    raise ValueError("缺少 [resource] 段")
+                header, body = parts
+                if re.search(r"(?m)^\[", body):
+                    raise ValueError("卡资源应为简单 Resource")
+                refs = {}
+                for line in header.splitlines():
+                    if line.startswith("[ext_resource "):
+                        attrs = dict(re.findall(r'(\w+)="([^"]*)"', line))
+                        refs[attrs.get("id")] = attrs
+                properties = {}
+                for line in body.splitlines():
+                    if "=" in line and not line.lstrip().startswith(";"):
+                        key, value = line.split("=", 1)
+                        properties[key.strip()] = value.strip()
+                def reference(key):
+                    match = re.fullmatch(r'ExtResource\("([^"]+)"\)', properties.get(key, ""))
+                    if not match or match.group(1) not in refs:
+                        raise ValueError("缺少 " + key + " 引用")
+                    return refs[match.group(1)]
+                script = reference("script")
+                if script.get("path") != "res://game/art/holo_card_visual.gd" or script.get("type") != "Script":
+                    raise ValueError("不是 HoloCardVisual")
+                photo = reference("photo")
+                photo_path = _uri_path(self.project_root, photo.get("path"))
+                if photo.get("type") != "Texture2D" or photo_path is None or not _inside(photo_path, resource.parent):
+                    raise ValueError("照片必须位于卡片目录内")
+                review = resource.parent / "review.png"
+                if not _inside(review, root):
+                    raise ValueError("review.png 越出目录")
+                content = {}
+                for key in ("title", "subtitle", "caption", "edition"):
+                    content[key] = json.loads(properties.get(key, '""'))
+                    if not isinstance(content[key], str):
+                        raise ValueError("文案必须是字符串：" + key)
+                relative_root = resource.parent.relative_to(self.project_root).as_posix()
+                uri = "res://" + resource.relative_to(self.project_root).as_posix()
+                data = {
+                    "object": {"display_name": content["title"] or resource.parent.name, "type": "holo_card"},
+                    "holo_card": dict(content, resource=uri),
+                    "variants": {"card": {
+                        "stage": "card", "root": relative_root,
+                        "files": {"review": "review.png", "source_image": photo_path.relative_to(resource.parent.resolve()).as_posix()},
+                        "resource": uri[6:], "previews": {"godot": {"card": uri}},
+                    }},
+                }
+                loaded.append((str(collection_id) + "/" + resource.parent.name, main_path, data))
+            except (OSError, ValueError, TypeError) as exc:
+                errors.append({"path": str(resource), "message": "卡片读取失败：" + str(exc)})
+        return loaded, errors
 
     def _copy_check(self, file_id, selected, effective):
         if selected is None:
@@ -508,6 +590,7 @@ class AssetCatalog(object):
                 "type": identity.get("type") or "unknown", "subtype": identity.get("subtype"),
                 "category": TYPE_CATEGORIES.get(str(identity.get("type") or ""), "未归类"),
                 "manifest_path": str(manifest_path), "variants": variants, "assets": all_assets,
+                "holo_card": data.get("holo_card"),
                 "thumbnail_id": None, "relationships": relationships,
                 "integration": {"declared_status": declared, "verified_status": verified, "active_variant": active_variant or None, "owner_resource": owners[0] if owners else None, "owners": owners, "resource": resource, "evidence": raw_integration.get("evidence"), "effective_files": effective_files, "bindings": checks},
                 "warnings": warnings,
@@ -519,6 +602,8 @@ class AssetCatalog(object):
         for obj in result_objects:
             candidates = [asset for variant in obj["variants"] for asset in variant["files"] if asset["is_image"] and asset["role"] not in ("source", "preview_gif")]
             selected_ids = {variant["id"] for variant in obj["variants"] if variant["selection"] == "selected"}
+            if obj["holo_card"]:
+                candidates = [asset for asset in candidates if asset["file_id"] == "review" and asset["integrity"]["status"] != "missing"]
             candidates.sort(key=lambda asset: (asset["stage"] != "asset", asset["variant_id"] not in selected_ids))
             obj["thumbnail_id"] = candidates[0]["id"] if candidates else None
         for obj in result_objects:
@@ -542,6 +627,9 @@ class AssetCatalog(object):
         resolved = self.preview_items.get(asset_id)
         if not resolved:
             return None
+        if resolved.get("card_uri"):
+            supported, _, fresh = _preview_target_info({"card": resolved["card_uri"]}, self.project_root)
+            return dict(fresh, project_root=self.project_root) if supported else None
         for uri in (resolved.get("unit_uri"), resolved.get("animation_uri"), resolved.get("projectile_uri")):
             path = _uri_path(self.project_root, uri) if uri else None
             if uri and (path is None or not path.is_file()):

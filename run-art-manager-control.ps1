@@ -3,7 +3,8 @@ param([switch]$PassThru)
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
 
 $projectRoot = $PSScriptRoot
-$outputPath = Join-Path $projectRoot '.godot/art-manager-control/ArtManagerControl.exe'
+$ErrorActionPreference = 'Stop'
+$outputPath = Join-Path $projectRoot 'tools/art/asset_manager/control/ArtManagerControl.exe'
 $buildScript = Join-Path $projectRoot 'tools/art/asset_manager/control/build-control.ps1'
 $sourcePath = Join-Path $projectRoot 'tools/art/asset_manager/control/ArtManagerControl.cs'
 $stampPath = "$outputPath.sources"

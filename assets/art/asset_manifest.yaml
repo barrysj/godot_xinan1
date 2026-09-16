@@ -1,5 +1,8 @@
 schema_version: 3
 objects:
+  holo_cards:
+    type: holo_card
+    root: assets/art/holo_cards
   guard: manifests/guard.yaml
   archer: manifests/archer.yaml
   guard_shield: manifests/guard_shield.yaml

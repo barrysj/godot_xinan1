@@ -97,7 +97,7 @@ class PreviewManager(object):
                 code = self._process.poll()
                 if code is None:
                     self._last["state"] = "running"
-                    self._last["message"] = "预览窗口正在运行"
+                    self._last["message"] = "预览进程运行中（含资源导入）；请查看 Godot 窗口"
                 else:
                     self._last["exit_code"] = code
                     self._last["state"] = "finished" if code == 0 else "failed"
@@ -116,10 +116,15 @@ class PreviewManager(object):
             if not engine or not Path(engine).is_file():
                 return False, "Godot 路径无效，请在页面配置 EnginePath"
             script = Path(resolved["script"]).resolve()
-            if script.parent != self.project_root or script.name != "run-motion-preview.ps1":
+            is_card = bool(resolved.get("card_uri"))
+            expected_script = "run-holo-card.ps1" if is_card else "run-motion-preview.ps1"
+            if script.parent != self.project_root or script.name != expected_script:
                 return False, "预览入口不受信"
-            args = [pwsh, "-NoProfile", "-File", str(script), "-EnginePath", engine]
-            args.append("-EnsureImport")
+            args = [pwsh, "-NoProfile", "-File", str(script), "-Godot" if is_card else "-EnginePath", engine]
+            if is_card:
+                args.extend(["-Card", resolved["card_uri"]])
+            else:
+                args.append("-EnsureImport")
             if resolved.get("unit_uri"):
                 args.extend(["-Unit", resolved["unit_uri"]])
             if resolved.get("animation_uri"):
@@ -142,6 +147,7 @@ class PreviewManager(object):
             self._last = {
                 "state": "running",
                 "message": "正在导入资源并准备预览",
+                "card": resolved.get("card_uri"),
                 "animation": resolved.get("animation_uri"),
                 "unit": resolved.get("unit_uri"),
                 "projectile": resolved.get("projectile_uri"),
@@ -323,7 +329,7 @@ class Handler(BaseHTTPRequestHandler):
             asset_id = str(payload.get("asset_id", ""))
             resolved = self.server.catalog.resolve_animation(asset_id)
             if resolved is None:
-                self._json(HTTPStatus.BAD_REQUEST, {"error": "动画不可预览；请刷新扫描结果并检查资源状态"})
+                self._json(HTTPStatus.BAD_REQUEST, {"error": "资源不可预览；请刷新扫描结果并检查资源状态"})
                 return
             ok, message = self.server.preview.start(resolved, payload.get("engine_path", ""))
             status = HTTPStatus.ACCEPTED if ok else HTTPStatus.CONFLICT

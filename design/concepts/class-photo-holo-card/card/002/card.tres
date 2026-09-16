@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/art/holo_card_visual.gd" id="1"]
+[ext_resource type="Texture2D" path="res://design/concepts/class-photo-holo-card/card/001/source.jpg" id="2"]
+[resource]
+script = ExtResource("1")
+photo = ExtResource("2")
+title = "那年 · 我们"
+subtitle = "CAMPUS MEMORIES / 校园记忆"
+caption = "一起走过的日子，仍在这里。"
+edition = "MEMORY / 001"
+photo_foil_strength = 0.65

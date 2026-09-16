@@ -27,6 +27,8 @@
 
 profile v4／旧checkpoint schema 1／旧run schema 5／M1独立checkpoint schema 1；Web 写后显式同步；半场不恢复 HP
 
+2026-09-16 合并闪卡分支：保留 main 的 v4 读取／写入及 campus_progress.json 路径，不引入旧短局分支的 v3 专用路径，避免向该文件写入 v4。保存失败时可显式选择不保存退出；详见 campus-demo.md 与 SAVE-02。已有 v3 分支档不自动合并，也不覆盖玩家档。
+
 ## 交接给统筹
 
 当前状态已纳入 2026-09-15 总览。后续 session 在此注明影响其他功能、平台支持、里程碑或整体可玩流程的变化，由统筹汇总；不要追加逐日施工过程。

@@ -58,7 +58,7 @@ function countLabel(object) {
 }
 
 function renderFilters() {
-  const categories = ["全部", "场景", "人物", "UI", "特效", "未归类"];
+  const categories = ["全部", "场景", "人物", "UI", "闪卡", "特效", "未归类"];
   filters.replaceChildren();
   categories.forEach(category => {
     const count = category === "全部" ? state.objects.length : state.objects.filter(item => item.category === category).length;
@@ -90,8 +90,8 @@ function renderGrid() {
     const body = document.createElement("div"); body.className = "card-body";
     const top = document.createElement("div"); top.className = "card-top";
     const category = document.createElement("span"); category.className = "category"; category.textContent = object.category;
-    const verified = object.integration.verified_status;
-    const status = document.createElement("span"); status.className = `status integrity-${verified}`; status.textContent = integrationLabels[verified] || verified;
+    const verified = object.holo_card ? (object.warnings.length ? "missing" : "matched") : object.integration.verified_status;
+    const status = document.createElement("span"); status.className = `status integrity-${verified}`; status.textContent = (object.holo_card ? validationLabels : integrationLabels)[verified] || verified;
     top.append(category, status);
     const title = document.createElement("h3"); title.textContent = object.name;
     const counts = document.createElement("div"); counts.className = "counts";
@@ -113,7 +113,7 @@ function metadataList(metadata) {
   return dl;
 }
 
-function assetCard(asset, compact = false) {
+function assetCard(asset, compact = false, showOriginalAction = true) {
   const card = document.createElement("article"); card.className = `asset-card${compact ? " compact" : ""}`;
   if (asset.is_image && !compact) {
     const image = document.createElement("img"); image.className = "asset-preview"; image.src = fileUrl(asset); image.alt = asset.name; image.loading = "lazy"; card.append(image);
@@ -128,7 +128,7 @@ function assetCard(asset, compact = false) {
   integrity.textContent = `${asset.integrity.label} · 实时 SHA-256 ${asset.integrity.actual ? asset.integrity.actual.slice(0, 12) : "—"}`;
   info.append(heading, path, integrity);
   const actions = document.createElement("div"); actions.className = "asset-actions";
-  if (asset.is_image) {
+  if (asset.is_image && showOriginalAction) {
     const original = document.createElement("button"); original.className = "original"; original.textContent = "原图";
     original.addEventListener("click", () => showOriginal(asset)); actions.append(original);
   }
@@ -381,6 +381,31 @@ function openDetail(object, options = {}) {
   state.selected = object.id; detailContent.replaceChildren(); detailBack.hidden = state.history.length === 0;
   const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = `${object.category} · ${object.type}${object.subtype ? ` / ${object.subtype}` : ""}`;
   const title = document.createElement("h2"); title.id = "detail-title"; title.textContent = object.name;
+  if (object.holo_card) {
+    detailContent.append(kicker, title);
+    for (const key of ["subtitle", "caption", "edition", "resource"]) {
+      const text = document.createElement("p"); text.className = "detail-lead";
+      text.textContent = object.holo_card[key] || ""; detailContent.append(text);
+    }
+    object.warnings.forEach(message => { const warning = document.createElement("div"); warning.className = "warning"; warning.textContent = message; detailContent.append(warning); });
+    const variant = object.variants[0];
+    const preview = godotPreviewPanel(variant); if (preview) detailContent.append(preview);
+    const list = document.createElement("div"); list.className = "asset-list";
+    const review = variant.files.find(asset => asset.file_id === "review");
+    if (review && review.integrity.status !== "missing") list.append(assetCard(review, false, false));
+    const source = variant.files.find(asset => asset.file_id === "source_image");
+    const original = document.createElement("button"); original.className = "original"; original.textContent = "原图";
+    original.disabled = !source || source.integrity.status === "missing";
+    original.addEventListener("click", () => showOriginal(source));
+    const actions = document.createElement("div"); actions.className = "asset-actions"; actions.append(original);
+    const info = list.querySelector(".asset-info");
+    if (info) info.append(actions); else list.append(actions);
+    detailContent.append(list);
+    state.detailView = { objectId: object.id };
+    detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+    detail.querySelector(".detail-sheet").scrollTop = 0;
+    return;
+  }
   const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本默认折叠，校验、选用与批准状态分别显示。`;
   const legend = document.createElement("div"); legend.className = "state-legend";
   legend.innerHTML = "<span><strong>校验</strong>：文件与 Godot 引用的实时结果（非 Manifest 字段）</span><span><strong>选用</strong>：当前流程选择的版本</span><span><strong>批准</strong>：负责人认可的版本</span>";
@@ -408,12 +433,28 @@ function showOriginal(asset) { lightboxImage.src = fileUrl(asset); lightboxCapti
 
 async function startPreview(preview, button) {
   button.disabled = true; setNotice("正在导入资源并准备预览…");
+  const reason = button.parentElement.querySelector(".reason");
+  if (reason) { reason.textContent = "正在导入资源并准备预览…"; reason.classList.remove("bad"); }
   try {
-    const payload = await api("/api/preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ asset_id: preview.asset_id, engine_path: engine.value.trim() }) });
-    const target = payload.status.unit || payload.status.animation || "已登记目标";
+    const payload = await api("/api/preview", { method: "POST", signal: AbortSignal.timeout(10000), headers: { "Content-Type": "application/json" }, body: JSON.stringify({ asset_id: preview.asset_id, engine_path: engine.value.trim() }) });
+    const target = payload.status.card || payload.status.unit || payload.status.animation || "已登记目标";
     setNotice(`${payload.message} · ${target}`, "success");
-  } catch (error) { setNotice(error.message, "error"); }
+    await trackPreview(target, button);
+  } catch (error) { setNotice(error.message, "error"); if (reason) { reason.textContent = error.message; reason.classList.add("bad"); } }
   finally { button.disabled = !preview.supported; }
+}
+
+async function trackPreview(target, button) {
+  for (;;) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const status = await api("/api/preview/status", { signal: AbortSignal.timeout(10000) });
+    const message = `${status.message} · ${target}`;
+    setNotice(message, status.state === "failed" ? "error" : "success");
+    button.title = status.message;
+    const reason = button.parentElement.querySelector(".reason");
+    if (reason) { reason.textContent = status.message; reason.classList.toggle("bad", status.state === "failed"); }
+    if (status.state !== "running") return;
+  }
 }
 
 async function chooseManifest() {
@@ -448,5 +489,9 @@ scanButton.addEventListener("click", scan);
 detailBack.addEventListener("click", returnDetail);
 detail.querySelectorAll("[data-close]").forEach(node => node.addEventListener("click", closeDetail));
 document.getElementById("lightbox-close").addEventListener("click", () => lightbox.close());
+lightbox.addEventListener("close", () => { lightboxImage.removeAttribute("src"); lightboxCaption.textContent = ""; });
+lightbox.addEventListener("click", event => {
+  if (event.target === lightbox) lightbox.close();
+});
 document.addEventListener("keydown", event => { if (event.key === "Escape" && detail.classList.contains("open") && !lightbox.open) closeDetail(); });
 renderFilters(); scan();

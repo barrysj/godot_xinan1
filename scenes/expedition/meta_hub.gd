@@ -10,6 +10,7 @@ var team_panel: Control
 var panel_was_paused = false
 var campus_map: Control
 var location_panel: Control
+var discard_exit_button: Button
 
 func _create_campus_map() -> void:
 	campus_map = preload("res://scenes/expedition/campus_map.gd").new()
@@ -240,6 +241,7 @@ func _to_base() -> void:
 	notice = "探索已保存，可继续探索或管理基地。"
 
 func _request_exit(destination: String) -> void:
+	if is_instance_valid(discard_exit_button): discard_exit_button.hide()
 	if is_instance_valid(team_panel): team_panel.close_panel()
 	super._request_exit(destination)
 	if destination == "new_run":
@@ -254,8 +256,23 @@ func _confirm_exit() -> void:
 		_new_run()
 		return
 	if not _checkpoint():
-		pause_caption.text = "保存失败，暂未退出。\n请重试，原存档仍保留。"
+		pause_caption.text = "保存失败，原存档保留。可重试或取消；\n不保存离开将丢失本次未保存进度。"
+		if not is_instance_valid(discard_exit_button):
+			discard_exit_button = _menu_button("不保存退出",_leave_without_save)
+			pause_content.add_child(discard_exit_button)
+			discard_exit_button.position = Vector2(450,420)
+			discard_exit_button.size = Vector2(380,56)
+		discard_exit_button.text = "不保存退出" if pending_exit == "quit" else "不保存返回"
+		discard_exit_button.show()
 		return
+	super._confirm_exit()
+
+func _open_pause() -> void:
+	if is_instance_valid(discard_exit_button): discard_exit_button.hide()
+	super._open_pause()
+
+func _leave_without_save() -> void:
+	if pending_exit not in ["quit","menu"]: return
 	super._confirm_exit()
 
 func _return_to_formation() -> void:

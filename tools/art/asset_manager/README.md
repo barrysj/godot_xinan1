@@ -1,6 +1,14 @@
 # 美术资源台
 
-本工具只读取用户指定的主 Manifest。对象、版本和文件均由 Manifest 登记产生；不会扫描目录补对象，也不提供跨项目预览。
+## 桌面控制器启动
+
+PowerShell 7 在项目根运行 `./run-art-manager-control.ps1`：缺少 EXE 或控制器源码更新时自动构建，再打开窗口。EXE 与 C# 源码同目录，清理 .godot 不会移除它；构建产物被 Git 忽略。需系统 .NET Framework C# 编译器；若重新编译时报文件占用，关闭控制器窗口后重试，不需要停止已启动的浏览服务。
+
+可直接双击项目内 `tools/art/asset_manager/control/ArtManagerControl.exe`；也可执行 `& './tools/art/asset_manager/control/ArtManagerControl.exe'`。EXE 从自身目录向上查找项目，不依赖启动时的当前目录；不要单独搬到项目外。直接运行 EXE 不自动编译，新工作树首次请先用根启动脚本。窗口内“启动服务”启动本地后台服务，“打开页面”打开默认浏览器，“停止服务”只停止核验属于此工作目录的服务；关闭控制器窗口不会停止服务。
+
+本工具只读取用户指定的主 Manifest。普通对象由对象清单登记；`holo_card` 集合允许在显式登记的目录内发现卡片，不扫描其他目录，也不提供跨项目预览。
+
+全息卡登记：在 `objects` 下增加 `holo_cards: {type: holo_card, root: assets/art/holo_cards}`。每个直接子目录放 `card.tres`、其引用的本目录原图和 `review.png`。资源台直接读取 `.tres` 文案、显示实际截图、启动同份 Godot 资源，不显示 concept/asset 审批阶段。闪卡为独立分类；列表与详情仅加载 `review.png`，缺少截图时不回退原照。点击“原图”才加载原照并在弹窗显示，关闭后清空弹窗图片；服务端文件完整性校验仍正常读取原照。截图生成命令与限制见 [照片卡工作流](../../../docs/art/holo-cards.md#当前最简流程2026-09-16)。
 
 ## 主 Manifest
 
@@ -92,7 +100,7 @@ pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1
 pwsh.exe -NoProfile -File .\run-art-manager-control.ps1
 ```
 
-构建脚本用 Windows 自带的 .NET Framework C# 编译器生成 `.godot/art-manager-control/ArtManagerControl.exe`；根目录入口会在首次使用、缓存清理或源码／构建脚本内容变化时自动构建，其余时候直接打开缓存程序；也可单独运行构建脚本。窗口只提供“启动服务”“打开页面”“停止服务”三个按钮，并实时显示服务状态、进程 ID 与当前项目目录。停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
+构建脚本用 Windows 自带的 .NET Framework C# 编译器，在源码同目录生成 `tools/art/asset_manager/control/ArtManagerControl.exe`。根启动脚本在缺失或源码／构建脚本内容哈希变化时自动构建，同目录 `.exe.sources` 保存签名，两者均不入库。窗口只提供“启动服务”“打开页面”“停止服务”三个按钮，并实时显示服务状态、进程 ID 与当前项目目录。停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
 
 也可以直接启动服务：
 
@@ -103,4 +111,4 @@ py -3 -m unittest discover -s tools/art/asset_manager/tests -v
 
 资源台启动动作预览前会先让 Godot 增量导入当前项目资源；这是为了修复切换分支后 `.godot/imported` 目录存在但内部缓存不完整时出现的灰屏。
 
-服务只监听 `127.0.0.1`。文件和预览由本次启动令牌保护；预览入口固定为当前项目的 `run-motion-preview.ps1`。
+服务只监听 `127.0.0.1`。文件和预览由本次启动令牌保护；预览入口限定为当前项目的 `run-motion-preview.ps1` 或闪卡的 `run-holo-card.ps1`。预览按钮旁跟踪进程运行、结束和失败；运行包含导入阶段，不代表画面已经就绪。闪卡导入最多等待 120 秒，导入失败可查 `.godot/holo-import.log`，运行失败可查 `.godot/holo-card.log`。原图按钮统一位于文件信息下面，弹窗可点空白区域或“关闭”退出。

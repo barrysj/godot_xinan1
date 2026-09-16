@@ -1,9 +1,9 @@
 # Build the native Windows art-manager controller.
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
+$ErrorActionPreference = 'Stop'
 
-$projectRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../../..'))
 $sourcePath = Join-Path $PSScriptRoot 'ArtManagerControl.cs'
-$outputDirectory = Join-Path $projectRoot '.godot/art-manager-control'
+$outputDirectory = $PSScriptRoot
 $outputPath = Join-Path $outputDirectory 'ArtManagerControl.exe'
 $frameworkRoot = Join-Path $env:WINDIR 'Microsoft.NET'
 $compiler = @(
@@ -16,7 +16,7 @@ if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) { throw "Controlle
 
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
 & $compiler /nologo /target:winexe /optimize+ /out:$outputPath /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll /reference:System.Web.Extensions.dll $sourcePath
-if ($LASTEXITCODE -ne 0) { throw "Controller build failed with exit code $LASTEXITCODE." }
+if ($LASTEXITCODE -ne 0) { throw "Controller build failed with exit code $LASTEXITCODE. If the controller is open, close its window and retry." }
 ((Get-FileHash -LiteralPath $sourcePath,$PSCommandPath -Algorithm SHA256).Hash -join ':') | Set-Content -LiteralPath "$outputPath.sources"
 
 Write-Host "Built controller: $outputPath"

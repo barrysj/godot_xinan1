@@ -1,0 +1,29 @@
+{
+  "failures": 0,
+  "results": [
+    {
+      "direction": "left",
+      "opposite_span": 524,
+      "passed": true,
+      "pointer_side_span": 504
+    },
+    {
+      "direction": "right",
+      "opposite_span": 524,
+      "passed": true,
+      "pointer_side_span": 504
+    },
+    {
+      "direction": "up",
+      "opposite_span": 602,
+      "passed": true,
+      "pointer_side_span": 578
+    },
+    {
+      "direction": "down",
+      "opposite_span": 602,
+      "passed": true,
+      "pointer_side_span": 578
+    }
+  ]
+}

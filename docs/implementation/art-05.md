@@ -5,6 +5,14 @@
 
 ## 当前状态
 
+- 2026-09-16（基线32387d4）：按用户要求，控制器构建输出改为与 ArtManagerControl.cs 同目录的 `tools/art/asset_manager/control/ArtManagerControl.exe`，根启动入口同步，EXE 加入精确 Git 忽略项；不再受 .godot 清理影响。旧路径的记录仅作历史验证。待统筹：控制器构建位置变化，不改资源台协议或功能。
+
+- 2026-09-16（基线 fad0254）启动恢复：复现清除 .godot/art-manager-control/ArtManagerControl.exe 后根入口抛出 Controller is not built。run-art-manager-control.ps1 现会在 EXE 缺失或 C#／构建脚本较新时自动编译，构建错误终止启动并提示关闭占用窗口；无需清缓存后另跑构建。直接运行的 EXE 仍须先构建并保留项目内位置，以便向上定位项目根。
+
+- 页面实测：9 个对象、102 个登记文件、0 处不一致；卡片详情显示真实 review.png 与原图、同份文案，没有阶段审批页。点击预览后已核对 Godot 进程参数为 `--card=res://assets/art/holo_cards/class_photo/card.tres`，运行日志无错误。卡片列表标签使用“校验通过”，不暗示主游戏已接入。浏览器实际截图已在对话展示。
+
+- 2026-09-16（基线 b9daea3）：新增 `holo_card` 集合目录登记，自动发现直接子目录的卡资源；详情读取同份 `.tres` 文案，展示 review/原图并将同份资源传入 Godot 预览。入口为 catalog.py、server.py、static/app.js；普通对象规则不变。验证：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`，25 项通过（含 9 项卡片测试）；JavaScript 语法检查通过。目录约束、缺图、缺截图、恶意路径、文案刷新和启动参数均覆盖。待统筹：Manifest 允许显式卡片集合扫描，卡片不走阶段审批。
+
 - 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
 - 功能入口：运行 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1`，首次或源码更新时自动补建控制器；直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
@@ -25,6 +33,16 @@
 11. 资源台只消费 Manifest 已登记的预生成 GIF，并可启动无写入的统一动作预览；点击动作、展开版本或启动 Godot 均不得隐式生成预览文件。通用 GIF 导出属于 [ART-03](art-03.md#骨骼序列帧通用生产与预览) 的显式生产入口，已完成并通过单动作及七动作导出验证。
 
 ## 验证入口
+
+- 2026-09-16 main 合并验收（双亲 `48acc51` / `f32fa4f`）：保留 main 动画后端、近战/远程动作及 `.tscn` 识别，同时接入闪卡集合与按需原图；控制器合并“源码旁 EXE”与 main 的内容哈希重建机制，保留 PassThru。33 项 Python 测试、JS 语法、控制器构建与实际启动通过；Godot HYBRID_CONTRACT_CHECK、PRESENTATION_CHECK、HOLO_CATALOG_CHECK、HOLO_CODEX_CHECK 与菜单 CODEX_CHECK（35 条目）通过。闪卡三尺寸截图 `.godot/holo-detail-*.png`，1920×1080 已在对话展示。待统筹：原高层总览未改；继承的 Android EditorSettings 退出噪声、像素图直读警告与菜单检查退出时单个 ObjectDB 泄漏仍存在，未作为本次功能扩展处理。
+
+- 预览启动与原图交互修复（2026-09-16，基线 `43c91ab`）：浏览器默认图形版 Godot 经 PowerShell `&` 启动不可靠等待，导致闪卡脚本过早检查退出码而失败；网页只保留初始提示，未跟踪退出结果。`run-holo-card.ps1` 改为 Start-Process 显式等待导入及预览，导入超时 120 秒；网页轮询已有状态接口，在详情按钮旁显示运行/结束/失败，请求超时 10 秒。运行状态仅代表进程存活（包含导入），不冒充画面就绪。原图按钮复用文件信息下的动作栏样式；弹窗空白区域点击关闭，图片本体点击不关闭。验证：26 项 Python 测试通过；`pwsh.exe -NoProfile -File tools/art/asset_manager/tests/check-holo-launch.ps1 -Godot '<图形版Godot.exe>'` 修复前 exit1，修复后 HOLO_LAUNCH_CHECK PASS；该集成检查沿用 Check 模式，会刷新历史验证截图。浏览器真实点击启动卡片进程，日志无错误；关闭窗口后页面显示结束、按钮恢复。DOM/截图验证按钮位置、按需加载、点击图片保持打开、遮罩关闭并清空 src。截图已在对话展示。JavaScript 语法与 Git 差异检查通过。
+
+- 闪卡独立分类与按需原图（2026-09-16，基线 `5a01a53`）：`catalog.py` 将 holo_card 归入“闪卡”，缩略图仅允许有效 review；`static/app.js` 详情仅显示 review，点击“原图”才加载原照并打开现有模态子窗口，关闭清空图片。缺 review 不回退原照，缺原照禁用按钮；Godot 预览和游戏资源加载不变。25 项 Python 测试通过，新增分类计数与缺 review 无缩略图断言；JavaScript 语法、Git 差异检查通过。8876 独立测试服务实测分类计数闪卡1/UI0，详情 DOM 只有 review 图片与无 src 弹窗，点击后原照显示、关闭后 src 清空；实际截图已在对话展示。边界：按需加载约束针对浏览器图片请求，后端完整性校验仍读取源文件。
+
+- 同目录构建验证（2026-09-16）：根启动脚本自动生成源码旁 EXE 并打开窗口；从临时目录直接运行该 EXE 的 --screenshot 模式退出码0，工作目录识别正确，截图 .godot/control-source-dir.png 已展示。git check-ignore 确认二进制不入库，git diff --check 通过；仅改构建路径，未改服务实现。
+
+- 2026-09-16 启动恢复实测：临时移开确切 EXE 后，旧入口报 Controller is not built；修复入口自动构建并创建控制器进程。再次启动文件时间戳不变（不重复编译）。从项目外直接运行 EXE `--self-test <报告路径>`：initial=未启动、started=True、open_enabled=True、stopped=True，退出码0。实际截图 `.godot/art-manager-control-fixed.png` 已展示。服务健康检查 project_root 指向卡片工作树。未复现当前已有 EXE 状态下的启动失败，确认修复的是缓存清理/首次工作树缺构建产物的可靠复现路径。
 
 - `py -3 -m unittest discover -s tools/art/asset_manager/tests -v`
 - `node --check tools/art/asset_manager/static/app.js`
