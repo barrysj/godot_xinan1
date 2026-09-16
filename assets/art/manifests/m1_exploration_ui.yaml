@@ -55,6 +55,26 @@ variants:
       hotspot_count: 4
       detail_mode: click_popup
       implementation_note: review_composite_only_native_ui_for_production
+  concept_004:
+    stage: concept
+    version: 004
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/004
+    files:
+      concept: review-detail.png
+      default: review-default.png
+      focus: review-focus.png
+      complete: review-complete.png
+      overlay_default: overlay-default.svg
+      overlay_focus: overlay-focus.svg
+      overlay_detail: overlay-detail.svg
+      overlay_complete: overlay-complete.svg
+    metadata:
+      resolution: [1600, 900]
+      style_layer: anomaly
+      detail_mode: click_popup
+      implementation_note: static_state_studies_not_runtime
 integration:
   status: not_integrated
-  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 003 等待人工审核，未获试接入授权。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 等待人工审核，未获试接入授权。"
