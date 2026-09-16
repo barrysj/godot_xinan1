@@ -1,18 +1,6 @@
 # 美术任务：M1 图书馆静态环境
 
-状态：concept_005 三视角概念已获人工批准并选用；asset_006 正式资产候选待评审；未接入 Godot。下方历轮状态为当时记录，以本节最新决定为准。
-
-## 正式资产候选：asset_006（2026-09-17）
-
-依据已批准 `concept_005` 制作三视角正式资产候选。为保留负责人刚批准的空间关系，本轮采用像素原样复制，不重新生成或调色；来源、用途、哈希与边界见 `design/concepts/m1-library-environment/m1_library_environment/006/generation.md`。
-
-| 文件（006 目录） | 来源绑定 | 当前决定 |
-| --- | --- | --- |
-| `atrium-down.png` | 与 005 同名文件 SHA-256 完全一致 | 资产待评审 |
-| `window-corridor.png` | 与 005 同名文件 SHA-256 完全一致 | 资产待评审 |
-| `shelf-to-atrium.png` | 与 005 同名文件 SHA-256 完全一致 | 资产待评审 |
-
-Manifest 登记 `asset_006` 为 `unselected + pending`，`integration` 保持 `not_integrated`。概念批准不自动成为正式资产批准；负责人需要对这三个具体候选文件另作决定。验证日期 2026-09-17、基线 `840ac04`：逐文件哈希绑定、PNG 尺寸／色彩类型检查、AssetCatalog 扫描及 `git diff --check`。未修改游戏画面，无运行截图。
+状态：concept_005 三视角概念已获人工批准并选用；未制作正式资产、未接入 Godot。下方历轮待审状态为当时记录，以本节最新决定为准。
 
 ## 概念批准：concept_005（2026-09-17）
 
