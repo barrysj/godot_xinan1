@@ -38,6 +38,10 @@ func run_checks(hub) -> void:
 	hub.progress = hub.ProgressModel.new()
 	hub.progress.path = "user://campaign-flow-test-profile.json" if OS.has_feature("web") else "res://.godot/campaign-flow-profile.json"
 	hub.set_process(false)
+	if "--readability-capture" in OS.get_cmdline_user_args():
+		await capture_readability(hub)
+		hub.get_tree().quit()
+		return
 	hub._begin_region("library","prologue")
 	fight(hub)
 	hub._campaign_action("leave")
@@ -104,3 +108,22 @@ func run_checks(hub) -> void:
 			hub._ending()
 	print("CAMPAIGN_FLOW checks=%d failures=%d" % [checks,failures])
 	if not OS.has_feature("web"): hub.get_tree().quit(1 if failures else 0)
+
+func capture_readability(hub) -> void:
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		hub.get_window().size = resolution
+		hub._begin_region("library","prologue")
+		hub._guard()
+		hub.formation = [0,-1,3,2,1,-1]
+		hub._build_units()
+		hub.queue_redraw()
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-readable-battle-%dx%d.png" % [resolution.x,resolution.y])
+		hub._start()
+		for tick in range(8000):
+			if hub.screen == "report": break
+			hub._process(0.05)
+		hub.queue_redraw()
+		await RenderingServer.frame_post_draw
+		hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-readable-report-%dx%d.png" % [resolution.x,resolution.y])

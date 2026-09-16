@@ -34,3 +34,7 @@
 ## M1出发与静态表现（待统筹）
 
 2026-09-16；`campaign_hub.gd`复用原部署/装备与构筑模块。序章空场教部署；正式区域与终局载入已永久人物，沿用上次合法四人阵位；临时人物加入候补，在区域成功前不写入永久出发选择。M1战场矩形占位、头像为固定裁切。验证见[E20](verification.md#m1-战役验证-e20)的实际战斗与浏览器四人拖动/刷新，不宣称手机可用。
+
+## 战场辨识修复（待统筹）
+
+2026-09-16；基线3fb297a。campaign_hub.gd改用已有资源的idle首帧或固定头像，取消人/卫矩形；保留敌我底线、生命、护盾与装备标识，不播放新动画。新增战场目标与战报下一步说明，修复战报恢复缺少kind。完整战役124项零失败。运行命令：Godot --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check --readability-capture；截图.godot/m1-readable-battle-*.png与report-*.png。混合素材风格仍待正式美术统一；真人可理解性未验收。

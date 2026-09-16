@@ -135,7 +135,7 @@ func _continue_run() -> void:
 		report.clear()
 		for row in journey.data.get("report",[]): report.append(row.duplicate(true))
 		elapsed = float(journey.data.get("elapsed",0))
-		run.node = {"name":Journey.Regions.PLACES[journey.visit.data.place]}
+		run.node = {"name":Journey.Regions.PLACES[journey.visit.data.place],"kind":"battle"}
 		campaign_panel.hide()
 	else: _show_journey()
 
@@ -342,21 +342,57 @@ func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
 	if campaign_mode.is_empty():
 		super._pawn(u,at,factor)
 		return
-	draw_rect(Rect2(at-Vector2(22,54),Vector2(44,54)),Color("71b8dc") if u.side == 0 else Color("df9386"))
-	_center(at-Vector2(0,20),"人" if u.side == 0 else "卫",DARK,20)
+	# Reuse the existing identity and idle frame without playing an animation.
+	var texture: Texture2D = u.portrait
+	var dimensions = Vector2(16,16) * factor
+	var anchor = Vector2(0.5,0.875)
+	var animation = u.battle_animation
+	if animation != null and animation.frames != null and animation.frames.has_animation("idle") and animation.frames.get_frame_count("idle") > 0:
+		texture = animation.frames.get_frame_texture("idle",0)
+		dimensions = animation.display_size * factor / 4.0
+		anchor = animation.anchor
+	var tint = Color.WHITE if u.hp > 0 else Color(0.6,0.6,0.6,0.35)
+	draw_texture_rect(texture,Rect2(at-dimensions*anchor,dimensions),false,tint)
+	var side_color = Color("4AAFD0") if u.side == 0 else Color("DF7468")
+	draw_line(at+Vector2(-26,8),at+Vector2(26,8),side_color,4)
+	if u.shield > 0 and u.hp > 0: draw_arc(at-Vector2(0,24),38,PI,TAU,24,Color("8dd7e7"),3)
+	if u.side == 0 and u.role == equipment: _tile(dungeon,8,10,at+Vector2(24,-3),1.3)
+
+func _draw_report() -> void:
+	super._draw_report()
+	if campaign_mode.is_empty(): return
+	var next_step = "领取一份奖励，再返回地点。可以继续调查，也可以离开。"
+	if campaign_mode == "finale": next_step = "节点已击破：接下来执行系统操作。"
+	if not result_won: next_step = "阵容与装备保留。调整前排与后排，再挑战一次。"
+	_pixel_panel(Rect2(30,78,1210,38),PAPER)
+	_text(Vector2(48,104),next_step,DARK,19)
+	_flow_button(Rect2(405,587,470,66),("系统操作" if campaign_mode == "finale" else "领奖") if result_won else "重新编队")
 
 func _draw_effects() -> void:
 	if campaign_mode.is_empty(): super._draw_effects()
+
+func _draw_unit(u: Dictionary) -> void:
+	super._draw_unit(u)
+	if campaign_mode.is_empty(): return
+	var at = _unit_center(u)
+	if at.y > 520:
+		_pixel_panel(Rect2(at+Vector2(-46,-68),Vector2(92,22)),PAPER)
+		_center(at+Vector2(0,-52),u.name if u.hp > 0 else "已退场",DARK,14)
 
 func _draw() -> void:
 	super._draw()
 	if not campaign_mode.is_empty() and screen == "battle":
 		draw_set_transform(origin,0,Vector2.ONE*scale_factor)
-		_pixel_panel(Rect2(230,25,430,48),Color("202027"))
+		_pixel_panel(Rect2(230,25,530,48),Color("202027"))
 		var heading = "序章 · 部署教学"
 		if campaign_mode == "region": heading = "%d / 4 · %s" % [journey.data.step+1,run.node.name]
 		elif campaign_mode == "finale": heading = "终局 %d / 3 · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
 		_text(Vector2(244,54),heading,PAPER,22)
+		_pixel_panel(Rect2(28,96,1208,32),Color("202027"))
+		var goal = "目标：击败守卫，领取奖励后返回地点。青色为我方，红色为敌方。"
+		if campaign_mode == "prologue": goal = "目标：突破校门封锁。部署四名同学后开战；胜利后取回校园路线。"
+		elif campaign_mode == "finale": goal = "目标：击破核心节点，然后执行「%s」。" % OPERATIONS[journey.data.finale_phase]
+		_text(Vector2(42,118),goal,PAPER,17)
 
 func _finale_operation() -> void:
 	if campaign_mode != "finale" or journey.data.screen != "operation" or not journey.visit.data.guard_won: return
