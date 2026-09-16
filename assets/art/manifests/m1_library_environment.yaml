@@ -37,6 +37,19 @@ variants:
       transparent: false
       state: daily
       source_identity: user_provided_library_atrium_references
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/003
+    files:
+      atrium_down: atrium-down.png
+      window_corridor: window-corridor.png
+      shelf_to_atrium: shelf-to-atrium.png
+    metadata:
+      source_identity: user_photos_radial_layout_and_atrium_correction
+      state: daily
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-library-environment.md
