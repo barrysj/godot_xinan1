@@ -113,6 +113,19 @@ variants:
     metadata:
       implementation_note: imagegen_rgba_base_skins_pending_runtime_and_state_validation
       concept_basis: concept_004
+  asset_007:
+    stage: asset
+    version: 007
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/007
+    files:
+      character: character.png
+      guardian: guardian.png
+      source_notes: generation.md
+    metadata:
+      implementation_note: partial_revision_two_icons_only_not_integrated
+      concept_basis: concept_004
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 已批准，正式组件、交互与多分辨率运行效果未验收，尚未接入。"
