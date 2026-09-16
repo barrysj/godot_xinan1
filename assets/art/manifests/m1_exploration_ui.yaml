@@ -126,6 +126,21 @@ variants:
     metadata:
       implementation_note: partial_revision_two_icons_only_not_integrated
       concept_basis: concept_004
+  asset_009:
+    stage: asset
+    version: 009
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/009
+    files:
+      memory: memory.png
+      character: character.png
+      terminal: terminal.png
+      guardian: guardian.png
+      source_notes: generation.md
+    metadata:
+      implementation_note: asymmetric_free_silhouette_hotspots_pending_runtime_validation
+      concept_basis: concept_004
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 已批准，正式组件、交互与多分辨率运行效果未验收，尚未接入。"
