@@ -6,6 +6,8 @@
 
 ## 验证
 
+- 2026-09-16（基线 b9daea3）：活动卡移至 `assets/art/holo_cards/class_photo/`，保留历史实验；默认预览加载活动资源，共享 Resource 不再携带合照默认文案。新增 `tools/art/holo_card/render-review.ps1` 与 `scenes/holo_card/render_review.tscn`，运行 `-Card res://assets/art/holo_cards/class_photo/card.tres -Godot <引擎路径>` 生成实际 1600×1400 默认角度流光 review.png。Godot 4.7.2 Compatibility 渲染通过，无渲染报错；重复渲染 SHA256 一致。首次导入仍有项目原有字体缓存、插件常量及 EditorSettings 提示，不算全项目无错误。待统筹：活动卡采用原图 + 单份资源 + 截图最简流程，截图需在内容或共享特效改动后手动重建；不增加 Blender 依赖，主游戏未接入。
+
 - 2026-09-16 归属盘点和清理，基线 `2587e92`：见[复用盘点与简化建议](../art/holo-cards.md#复用盘点与简化建议)。移除本工作树 304 个可重建缓存／临时文件，共 148.55 MiB；Git 忽略文件清单清空，保留全部源资产、评审证据和资源身份文件。本轮不改运行画面，不重启引擎；静态检查路径、Manifest、Git 差异。通用化建议未实施；待统筹项包含解耦样本、统一检查／导入和正式导出资源筛选，不改总览或 Roadmap。
 
 - 2026-09-16 倾斜方向修复，基线 `3023205`：屏幕 Y 向下而旋转矩阵 pitch 未反号，导致上下与左右方向相反。仅反转垂直角，不改输入、流光或照片位移。新增 `scenes/holo_card/check_tilt_direction.tscn`，通过实际组件鼠标事件入口驱动四向输入并测量 GPU 渲染透明轮廓：修复前左右通过、上下失败（指针侧跨度 602 > 对侧 578），修复后四向通过（上下 578 < 602，左右 504 < 524）。用 Godot `--path . --rendering-method gl_compatibility res://scenes/holo_card/check_tilt_direction.tscn` 重跑，failures=0；既有 `--card-check` 全部通过，覆盖四分辨率及独立流光开关。证据位于 review/codex-workflow/tilt-direction/，含 up-before.png 与 checks-before.json；最终场景测试无脚本／shader 报错。初次脚本型测试触发项目 autoload 对 current_scene 的空引用，已改为常规场景测试避免该无关启动问题。

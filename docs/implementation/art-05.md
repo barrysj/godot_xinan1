@@ -5,6 +5,10 @@
 
 ## 当前状态
 
+- 页面实测：9 个对象、102 个登记文件、0 处不一致；卡片详情显示真实 review.png 与原图、同份文案，没有阶段审批页。点击预览后已核对 Godot 进程参数为 `--card=res://assets/art/holo_cards/class_photo/card.tres`，运行日志无错误。卡片列表标签使用“校验通过”，不暗示主游戏已接入。浏览器实际截图已在对话展示。
+
+- 2026-09-16（基线 b9daea3）：新增 `holo_card` 集合目录登记，自动发现直接子目录的卡资源；详情读取同份 `.tres` 文案，展示 review/原图并将同份资源传入 Godot 预览。入口为 catalog.py、server.py、static/app.js；普通对象规则不变。验证：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`，25 项通过（含 9 项卡片测试）；JavaScript 语法检查通过。目录约束、缺图、缺截图、恶意路径、文案刷新和启动参数均覆盖。待统筹：Manifest 允许显式卡片集合扫描，卡片不走阶段审批。
+
 - 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
 - 功能入口：首次或源码更新后运行 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1`；日常用 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器。直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。

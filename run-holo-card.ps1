@@ -2,7 +2,7 @@
 param(
     [ValidateSet('Preview','Check','Layers')][string]$Mode = 'Preview',
     [string]$Godot = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe',
-    [string]$Card = 'res://design/concepts/class-photo-holo-card/card/002/card.tres'
+    [string]$Card = 'res://assets/art/holo_cards/class_photo/card.tres'
 )
 $ErrorActionPreference = 'Stop'
 if (-not (Test-Path -LiteralPath $Godot)) { throw '请用 -Godot 指定引擎。' }

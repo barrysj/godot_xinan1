@@ -1,7 +1,7 @@
 extends Control
 const Card = preload("res://scenes/holo_card/holo_card_view.gd")
 const Visual = preload("res://game/art/holo_card_visual.gd")
-const SAMPLE = "res://design/concepts/class-photo-holo-card/card/002/card.tres"
+const SAMPLE = "res://assets/art/holo_cards/class_photo/card.tres"
 const EVIDENCE = "res://design/concepts/class-photo-holo-card/review/codex-workflow/photo-foil-002"
 const FONT = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 var card: Control
@@ -22,9 +22,14 @@ func _ready() -> void:
     get_window().title = "校园记忆 · 全息照片卡"
     get_window().content_scale_size = Vector2i.ZERO
     checking = "--card-check" in OS.get_cmdline_user_args()
-    var data: Resource = load(SAMPLE)
+    var card_path = SAMPLE
     for arg in OS.get_cmdline_user_args():
-        if arg.begins_with("--card="): data = load(arg.trim_prefix("--card="))
+        if arg.begins_with("--card="): card_path = arg.trim_prefix("--card=")
+    var data = load(card_path)
+    if not data is Visual or data.photo == null:
+        push_error("卡资源无效或缺少照片：" + card_path)
+        get_tree().quit(1)
+        return
     layout = HBoxContainer.new()
     layout.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     layout.add_theme_constant_override("separation",50)

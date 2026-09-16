@@ -1,10 +1,10 @@
 extends Resource
 ## Card-specific data; frame, shader and interactions are shared.
 @export var photo: Texture2D
-@export var title: String = "那年 · 我们"
-@export var subtitle: String = "CAMPUS MEMORIES / 校园记忆"
-@export var caption: String = "一起走过的日子，仍在这里。"
-@export var edition: String = "MEMORY / 001"
+@export var title: String = ""
+@export var subtitle: String = ""
+@export var caption: String = ""
+@export var edition: String = ""
 @export_range(0.0, 1.0) var foil_strength: float = 0.7
 ## Zero preserves the original frame-only cards.
 @export_range(0.0, 1.0) var photo_foil_strength: float = 0.0

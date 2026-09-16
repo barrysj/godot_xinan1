@@ -90,8 +90,8 @@ function renderGrid() {
     const body = document.createElement("div"); body.className = "card-body";
     const top = document.createElement("div"); top.className = "card-top";
     const category = document.createElement("span"); category.className = "category"; category.textContent = object.category;
-    const verified = object.integration.verified_status;
-    const status = document.createElement("span"); status.className = `status integrity-${verified}`; status.textContent = integrationLabels[verified] || verified;
+    const verified = object.holo_card ? (object.warnings.length ? "missing" : "matched") : object.integration.verified_status;
+    const status = document.createElement("span"); status.className = `status integrity-${verified}`; status.textContent = (object.holo_card ? validationLabels : integrationLabels)[verified] || verified;
     top.append(category, status);
     const title = document.createElement("h3"); title.textContent = object.name;
     const counts = document.createElement("div"); counts.className = "counts";
@@ -381,6 +381,23 @@ function openDetail(object, options = {}) {
   state.selected = object.id; detailContent.replaceChildren(); detailBack.hidden = state.history.length === 0;
   const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = `${object.category} · ${object.type}${object.subtype ? ` / ${object.subtype}` : ""}`;
   const title = document.createElement("h2"); title.id = "detail-title"; title.textContent = object.name;
+  if (object.holo_card) {
+    detailContent.append(kicker, title);
+    for (const key of ["subtitle", "caption", "edition", "resource"]) {
+      const text = document.createElement("p"); text.className = "detail-lead";
+      text.textContent = object.holo_card[key] || ""; detailContent.append(text);
+    }
+    object.warnings.forEach(message => { const warning = document.createElement("div"); warning.className = "warning"; warning.textContent = message; detailContent.append(warning); });
+    const variant = object.variants[0];
+    const preview = godotPreviewPanel(variant); if (preview) detailContent.append(preview);
+    const list = document.createElement("div"); list.className = "asset-list";
+    variant.files.filter(asset => asset.file_id === "review" || asset.file_id === "source_image").forEach(asset => list.append(assetCard(asset)));
+    detailContent.append(list);
+    state.detailView = { objectId: object.id };
+    detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+    detail.querySelector(".detail-sheet").scrollTop = 0;
+    return;
+  }
   const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本默认折叠，校验、选用与批准状态分别显示。`;
   const legend = document.createElement("div"); legend.className = "state-legend";
   legend.innerHTML = "<span><strong>校验</strong>：文件与 Godot 引用的实时结果（非 Manifest 字段）</span><span><strong>选用</strong>：当前流程选择的版本</span><span><strong>批准</strong>：负责人认可的版本</span>";
@@ -410,7 +427,7 @@ async function startPreview(preview, button) {
   button.disabled = true; setNotice("正在导入资源并准备预览…");
   try {
     const payload = await api("/api/preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ asset_id: preview.asset_id, engine_path: engine.value.trim() }) });
-    const target = payload.status.unit || payload.status.animation || "已登记目标";
+    const target = payload.status.card || payload.status.unit || payload.status.animation || "已登记目标";
     setNotice(`${payload.message} · ${target}`, "success");
   } catch (error) { setNotice(error.message, "error"); }
   finally { button.disabled = !preview.supported; }

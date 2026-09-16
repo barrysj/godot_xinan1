@@ -4,4 +4,8 @@
 [resource]
 script = ExtResource("1")
 photo = ExtResource("2")
+title = "那年 · 我们"
+subtitle = "CAMPUS MEMORIES / 校园记忆"
+caption = "一起走过的日子，仍在这里。"
+edition = "MEMORY / 001"
 photo_foil_strength = 0.65

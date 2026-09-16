@@ -4,6 +4,31 @@
 
 ## 换图与复用
 
+### 当前最简流程（2026-09-16）
+
+活动卡统一放在 `assets/art/holo_cards/<id>/`：`photo.jpg` 是原图，`card.tres` 是图片引用与文案的唯一事实源，`review.png` 是 Godot 实际正面流光截图。Godot 自动生成的 `.import` / `.uid` 元数据另行保留。无需 Blender，也无需每卡单独 Manifest 或 concept/asset 阶段。
+
+复制 `assets/art/holo_cards/class_photo/` 到新 ID，替换原图，修改 `card.tres` 的图片路径和四项文案，再执行：
+
+```powershell
+./tools/art/holo_card/render-review.ps1 -Card res://assets/art/holo_cards/class_photo/card.tres -Godot '你的 Godot 可执行文件'
+```
+
+也可通过 `GODOT_PATH` 指定引擎。默认先导入；已导入且只调整文案时可加 `-SkipImport`。脚本用真实 Compatibility 渲染器生成 1600×1400、固定正面、无调试 UI 的截图；照片与边框效果打开，强度取自资源。不可用 headless 替代截图渲染。输出覆盖同目录 `review.png`；改图、文案或共享特效后应重新运行，浏览工具不会自动重绘或判断截图新旧。
+
+主 Manifest 只登记一次集合：
+
+```yaml
+objects:
+  holo_cards:
+    type: holo_card
+    root: assets/art/holo_cards
+```
+
+资源台仅发现该集合下一层的 `*/card.tres`，读取同份文案，以 `review.png` 作缩略图，保留原图查看与 Godot 预览。刷新扫描即可发现新卡；缺图、缺截图会提示。图片引用必须留在对应卡目录内。普通对象沿用原 Manifest 流程。
+
+下面的 001/002 与 Blender 路线是历史实验记录，不是新增卡片的必经步骤。活动默认预览已指向 `assets/art/holo_cards/class_photo/card.tres`。
+
 1. 复制 `design/concepts/class-photo-holo-card/card/002/card.tres` 为新卡资源，修改 `photo` 的纹理引用；可选修改 `title`、`subtitle`、`caption`、`edition`。001 是仅边框流光版本，002 新增照片镀膜扫光，原图共用、不重绘。
 2. 实例化 `scenes/holo_card/holo_card_view.tscn`，给根节点的 `visual` 指定该资源。容器使用 8:7 比例，例如 AspectRatioContainer；建议一次仅展示少量详情卡。
 3. 运行时使用 `set_visual(resource)` 换卡。虹彩、扫光、倾斜、指针／触摸／方向键输入均复用；不同实例独立材质，不串参数。
