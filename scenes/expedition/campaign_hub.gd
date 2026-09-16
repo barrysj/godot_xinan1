@@ -7,12 +7,15 @@ var campaign_mode = ""
 var campaign_panel: PanelContainer
 var campaign_enabled = false
 var detail_return = "visit"
+var reset_pending = false
 const OPERATIONS = ["修正目标","撤销越权","限制写入"]
 const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当前 AI：目标是维护一个容纳变化的校园，而不是永远保持初始版本。",
 	"前代：我将撤销对管理员新开发的自动覆盖权限。\n管理员：保留你的记忆，停止替我们决定什么应该存在。",
 	"记录者：我已理解。对虚拟世界只读，只在记录用途下追加进程日志。\n当前 AI：校园的日常，交还给参与其中的人。"]
 
 func _ready() -> void:
+	if "--profile-reset-check" in OS.get_cmdline_user_args():
+		progress.path = "res://.godot/profile-reset-ui.json"
 	theme = preload("res://resources/theme/theme-main.tres").duplicate()
 	theme.default_font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	super._ready()
@@ -25,14 +28,48 @@ func _ready() -> void:
 	move_child(pause_overlay,get_child_count()-1)
 	campaign_panel.action.connect(_campaign_action)
 	_home()
+	if "--profile-reset-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/profile_reset_check.gd").new()
+		test_runner.run_checks(self)
 	if "--campaign-flow-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/campaign_flow_check.gd").new()
 		test_runner.run_checks(self)
 
 func _home() -> void:
+	reset_pending = false
 	screen = "base"
 	campaign_panel.show()
 	campaign_panel.home(progress,chosen_supply)
+	campaign_panel.button("重开存档","reset_profile")
+
+func _profile_action(id: String) -> bool:
+	if id == "reset_profile" and screen == "base":
+		reset_pending = true
+		campaign_panel.clear("重开存档", "将清空主线进度、角色解锁、回忆、资源、成长、派遣和当前探索。设置保留。\n确认后先备份当前存档，再从序章开始。")
+		campaign_panel.button("取消","reset_cancel")
+		campaign_panel.button("确认重开","reset_confirm")
+		return true
+	if id == "reset_cancel" and reset_pending:
+		_home()
+		return true
+	if id == "reset_confirm" and reset_pending:
+		if not progress.restart_profile():
+			campaign_panel.text(progress.error_message)
+			return true
+		campaign_mode = ""
+		journey = Journey.new()
+		run = RunModel.new()
+		formation = run.formation.duplicate()
+		equipment = run.shoe_wearer
+		chosen_supply = false
+		report.clear()
+		phase = "prepare"
+		checkpoint_error = ""
+		last_save_ok = true
+		_home()
+		campaign_panel.text("新存档已建立。" + ("旧档备份：" + progress.last_backup_path if not progress.last_backup_path.is_empty() else ""),16)
+		return true
+	return id in ["reset_profile","reset_cancel","reset_confirm"]
 
 func _new_run() -> void:
 	if not campaign_enabled:
@@ -209,7 +246,9 @@ func _memory_text(id: String) -> String:
 	return title+" · 运行记录\n这里仍保留着校园的空间数据，但通路被守卫封锁。解除封锁后，管理员可以继续修复。\n——虚拟校园系统档案"
 
 func _campaign_action(id: String) -> void:
-	if paused or progress.load_blocked: return
+	if paused: return
+	if _profile_action(id): return
+	if progress.load_blocked: return
 	if id == "base":
 		if _checkpoint(): _home()
 	elif id == "continue": _continue_run()
