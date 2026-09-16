@@ -21,7 +21,8 @@ description: 在 Cyber Pop Campus 项目中设计、生成、处理和接入美�
 - 用户要求用原图与文案制作／修改闪卡、全息照片卡或生成其 review 图时，先读 `docs/art/holo-cards.md` 的当前能力、最简流程、组件复用与验证章节；只有需要 Blender 产物或追溯旧方案时才读历史支线。功能状态与验证证据见 `docs/implementation/art-06.md`。
 - 直接维护 `assets/art/holo_cards/<id>/` 的原图、`card.tres` 和 Godot 实际渲染的 `review.png`；复用现有组件和截图脚本，不重绘用户原照，不要求 Blender、逐卡 Manifest、概念／资产／正式阶段或额外任务模板。
 - 内容只写入 `card.tres`；主 Manifest 只登记集合目录。制作后显式生成 review、查看实际截图并校验资源台；不把浏览动作变成生成动作。参数、命令与失败边界以照片卡文档为准，不在技能内复制。
-- 区分资产制作、独立预览和主游戏接入。新增卡文件不自动创建游戏入口、运行时目录扫描、解锁或存档逻辑；不得把技术校验解释为公开照片授权。仅修改文档时做静态检查，不为执行此子流程重新渲染。
+- 新卡从 [card.tres 模板](assets/holo_card/card.tres) 复制到活动卡目录，替换 `REPLACE_CARD_ID`、图片文件名与四项文案；不复制旧 UID/import 身份。模板不是活动卡，不直接加载，不为它制作 review。
+- 主游戏图鉴已有“闪卡”页，进入该页自动发现 `assets/art/holo_cards/<id>/card.tres`；新增图片须先导入，导出包须重新构建，不是外部文件热更新或 Mod 系统。缺 review 时游戏回退原图，但交付仍应生成 review。无解锁或存档逻辑，不把技术校验解释为公开照片授权。仅修改文档时做静态检查，不重新渲染。
 
 ### 通用与普通资产
 

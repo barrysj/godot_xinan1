@@ -18,7 +18,7 @@ func _ready() -> void:
 	refresh()
 
 func card_resources() -> Array:
-	return [load("res://assets/art/holo_cards/class_photo/card.tres")]
+	return preload("res://game/art/holo_card_catalog.gd").cards()
 
 func refresh() -> void:
 	for child in grid.get_children():

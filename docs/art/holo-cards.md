@@ -1,10 +1,10 @@
 # 可复用照片闪卡
 
-本能力不绑定某个里程碑。当前为独立预览原型，不改变主游戏流程；人工评审见[合照卡任务](tasks/class-photo-holo-card.md)。
+本能力不绑定某个里程碑。已接入主游戏“图鉴 → 闪卡”，保留独立预览；人工评审见[合照卡任务](tasks/class-photo-holo-card.md)。
 
 ## 当前能力与实现
 
-实现基线 `dc8da12`。已完成原照保留、原生卡框、边框虹彩与照片镀膜、独立开关、四向倾斜修正、共享卡片组件、集合登记及可复用截图。普通运行游戏还看不到合照卡；现有入口只有独立预览与资产浏览工具。
+已完成原照保留、原生卡框、边框虹彩与照片镀膜、独立开关、四向倾斜修正、共享卡片组件、集合登记及可复用截图。`5b8728d` 接入图鉴第六页“闪卡”：静态缩略图点击打开实时详情，支持鼠标、拖动和方向键；Esc 先返回列表，下一次退出图鉴。详情关闭释放渲染实例，不在列表逐卡渲染。自动发现由 `game/art/holo_card_catalog.gd` 提供。
 
 | 层次 | 实现入口 | 职责 |
 | --- | --- | --- |
@@ -16,7 +16,7 @@
 
 `card.tres → 共享组件 → 游戏效果／review.png`；资源台读取同份 `.tres` 和已生成 PNG，不维护另一份卡片文案，不在游戏内加载 YAML。
 
-**自动发现边界：**资产浏览工具会发现集合的直接子目录；Godot 编辑器会导入资源，但游戏运行时尚无卡片目录加载器，也没有卡册、展示入口、解锁或存档接入。导出包的资源包含规则及导出后发现能力尚未验收，不能从编辑器导入成功推断这些能力已完成。
+**自动发现边界：**游戏每次进入闪卡页以 `ResourceLoader.list_directory` 枚举固定目录的直接子目录，按目录名排序，再加载 `card.tres`；类型错误或缺照片跳过，缺 review 回退原图。资源台仍由 Manifest 登记同一目录，不需要逐卡索引。使用 [Godot 的资源枚举接口](https://docs.godotengine.org/en/stable/classes/class_resourceloader.html#class-resourceloader-method-list-directory) 保留导出后的逻辑路径，已验证项目外运行 PCK 可发现当前卡。新增图片先经编辑器或截图脚本导入，重新进入页即可发现；导出游戏必须重新构建并包含卡资源，不能向已发布 exe 旁放图实现热更新。无解锁和存档逻辑，不承诺手机/Web或大量卡片性能。
 
 ## 换图与复用
 
@@ -25,6 +25,8 @@
 活动卡统一放在 `assets/art/holo_cards/<id>/`：`photo.jpg` 是原图，`card.tres` 是图片引用与文案的唯一事实源，`review.png` 是 Godot 实际正面流光截图。Godot 自动生成的 `.import` / `.uid` 元数据另行保留。无需 Blender，也无需每卡单独 Manifest 或 concept/asset 阶段。
 
 用户提供原图和文案即可由 Codex 制作。创建新 ID 目录，复制样本 `card.tres`（不要复制旧 `.import` 的资源身份），放入原图并修改图片路径及 `title`、`subtitle`、`caption`、`edition`；文字使用短句，缺少必要文案时询问或明确标为草案，不冒充用户原文。照片流光按样本的 `photo_foil_strength = 0.65` 起步；新建空 Resource 默认是 0，仅开边框光。然后执行：
+
+优先使用技能中的 [card.tres 模板](../../.agents/skills/art-implementation/assets/holo_card/card.tres)，替换 `REPLACE_CARD_ID` 与文案，放到对应活动卡目录；模板自身不进入游戏扫描范围。现有导出预设为 all_resources，可包含新增活动卡；若以后改为选择性导出，必须显式包含整个卡目录与依赖，并重新跑 PCK 检查。
 
 ```powershell
 ./tools/art/holo_card/render-review.ps1 -Card res://assets/art/holo_cards/class_photo/card.tres -Godot '你的 Godot 可执行文件'
@@ -80,6 +82,8 @@ PowerShell 7，在项目根执行：
 这次迁移保留全息卡的交互意图，不保证 Cycles／浏览器逐像素一致；没有运行上游 Three.js 页面。ruic 和工具目录均有 .gdignore，避免离线源文件参与 Godot 导入。上游 verification.json 是包装适配前报告；adapter-report.json 与最终 renders 才对应适配后结果。
 
 ## 验证范围
+
+2026-09-16 图鉴与自动发现：`scenes/codex/holo_card_check.tscn` 实际渲染三种桌面窗口、检查开关页与 Esc；`menu.tscn -- --codex-check` 覆盖菜单/暂停里的闪卡打开、原35项浏览和战斗冻结恢复；`scenes/codex/holo_catalog_check.tscn` 覆盖实际集合、隔离新增、排序、空集合、错误资源跳过及模板替换后加载。导出 Windows Desktop PCK 后从项目外用 `--main-pack <pck>` 运行目录检查 PASS。截图位于 `.godot/holo-detail-*.png`、`.godot/holo-list.png`。打包仍有原项目 EditorSettings 退出错误提示，运行检查通过；不等于整个游戏导出验收。
 
 `dc8da12`：资源台 25 项测试通过，实际页面 9 对象／102 登记文件／0 不一致；截图脚本实际输出 1600×1400 PNG，重复生成 SHA256 一致，预览进程参数核对为活动卡资源。命令：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`。这是已记录的实现验证，不表示每次文档更新都重跑引擎。
 

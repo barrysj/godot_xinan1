@@ -14,6 +14,23 @@ func run() -> void:
 		await get_tree().create_timer(0.2).timeout
 		page.grid.get_child(0).pressed.emit()
 		assert(is_instance_valid(page.active_card))
+		var card = page.active_card
+		var toggles = page.detail_panel.find_children("*","CheckButton",true,false)
+		assert(toggles.size() == 3)
+		toggles[0].button_pressed = false
+		assert(not card.photo_effects_enabled and card.frame_effects_enabled)
+		toggles[0].button_pressed = true
+		toggles[1].button_pressed = false
+		assert(card.photo_effects_enabled and not card.frame_effects_enabled)
+		toggles[1].button_pressed = true
+		toggles[2].button_pressed = true
+		assert(card.reduced_motion)
+		toggles[2].button_pressed = false
+		await RenderingServer.frame_post_draw
+		var motion = InputEventMouseMotion.new()
+		motion.position = card.get_global_transform_with_canvas() * (card.size * Vector2(0.8,0.4))
+		get_viewport().push_input(motion,true)
+		assert(card.target_tilt.x > 0.0)
 		page.active_card.set_tilt(Vector2(0.35,-0.25),true)
 		for i in range(5): await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("res://.godot/holo-detail-%dx%d.png" % [dimensions.x,dimensions.y])

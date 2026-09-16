@@ -1,10 +1,12 @@
 # ART-06 可复用照片全息卡
 
-状态：独立原型已验证，002 在 2587e92 的预览效果获用户认可；主游戏未接入，源资产和公开发布批准不由此推定。
+状态：已按用户授权接入主游戏“图鉴 → 闪卡”，支持缩略图、实时交互详情与目录自动发现；002 在 2587e92 的预览效果获用户认可，新增图鉴布局待用户体验，公开发布批准不由此推定。
 
 入口：`scenes/holo_card/holo_card_preview.tscn`、`holo_card_view.tscn`；资源：`game/art/holo_card_visual.gd`；启动／验证：`run-holo-card.ps1`。操作和离线制作规则见[照片卡](../art/holo-cards.md)，批准事实源见[美术任务](../art/tasks/class-photo-holo-card.md)。
 
 ## 验证
+
+- 2026-09-16 自动发现，基线 5b8728d：holo_card_catalog.gd 使用 ResourceLoader.list_directory，固定扫描活动目录直接子项、按目录名排序、类型与照片检查；进入闪卡页刷新，缺 review 回退原图。holo_catalog_check.tscn 在源码及项目外 PCK 运行均 PASS，测试空目录、新增两卡、排序和错误类型跳过，源码附模板替换加载检查；holo_card_check.tscn 自动发现后实际截图 PASS。模板位于技能 assets/holo_card/card.tres；需替换 ID 和文案、导入图片并生成 review。待统筹：已接入图鉴和自动发现，但不加解锁/存档；新增发布内容需重新导出，当前 all_resources 配置须保留或显式包含卡目录。非全平台验收。
 
 - 2026-09-16 图鉴接入，基线 521c84d：新增 scenes/codex/holo_card_page.gd 与 holo_card_check.tscn；从现有图鉴进入缩略图列表与实时详情，关闭即释放。使用 Godot 图形模式运行 holo_card_check.tscn 与 menu.tscn -- --codex-check，均 PASS；截图覆盖三种桌面窗口目标，原有图鉴35项与战斗暂停恢复通过。项目旧像素图加载警告仍存在，不属于闪卡错误。用户已授权本地游戏接入，公开照片使用仍待另行确认。
 
@@ -27,4 +29,4 @@
 
 ## 边界与待统筹
 
-新增可独立复用视觉能力，不绑定里程碑；无游戏运行时第三方依赖，但可选离线制作引入 Blender/Pillow。待统筹：确认未来放入图鉴、回忆解锁还是其他入口；本次不改总览/Roadmap，不连存档／奖励逻辑。未测批量卡片性能、真机和 Web，当前固定横向模板，正式发布前确认合照公开使用范围。
+新增可独立复用视觉能力，不绑定里程碑；无游戏运行时第三方依赖，可选离线制作使用 Blender/Pillow。待统筹：图鉴展示与自动发现已完成，回忆解锁/奖励/存档仍未接入；不改总览/Roadmap。未测批量卡片性能、真机和 Web，当前固定横向模板，正式发布前确认合照公开使用范围。
