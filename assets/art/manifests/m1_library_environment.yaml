@@ -1,0 +1,39 @@
+schema_version: 3
+object:
+  id: m1_library_environment
+  display_name: "M1 图书馆日常环境"
+  type: background
+  subtype: campaign_location
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/001
+    files:
+      concept: concept.png
+    metadata:
+      asset_type: environment_concept
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      usage: [campaign_library]
+      source_identity: fictional_style_concept_no_real_site_reference
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/002
+    files:
+      concept: concept.png
+    metadata:
+      asset_type: environment_concept
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      source_identity: user_provided_library_atrium_references
+integration:
+  status: not_integrated
+  evidence: docs/art/tasks/m1-library-environment.md
