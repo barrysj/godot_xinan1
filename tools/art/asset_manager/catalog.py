@@ -16,10 +16,10 @@ from pathlib import Path
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".svg"}
 RESOURCE_EXTENSIONS = {".tres", ".res"}
-CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "特效": 3, "未归类": 4}
+CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "闪卡": 3, "特效": 4, "未归类": 5}
 TYPE_CATEGORIES = {
     "character": "人物", "enemy": "人物", "background": "场景",
-    "scene": "场景", "ui": "UI", "effect": "特效", "holo_card": "UI",
+    "scene": "场景", "ui": "UI", "effect": "特效", "holo_card": "闪卡",
 }
 CLIP_LABELS = {
     "idle": "待机", "move": "移动", "attack": "攻击", "cast": "施法",
@@ -548,6 +548,8 @@ class AssetCatalog(object):
         for obj in result_objects:
             candidates = [asset for variant in obj["variants"] for asset in variant["files"] if asset["is_image"] and asset["role"] not in ("source", "preview_gif")]
             selected_ids = {variant["id"] for variant in obj["variants"] if variant["selection"] == "selected"}
+            if obj["holo_card"]:
+                candidates = [asset for asset in candidates if asset["file_id"] == "review" and asset["integrity"]["status"] != "missing"]
             candidates.sort(key=lambda asset: (asset["stage"] != "asset", asset["variant_id"] not in selected_ids))
             obj["thumbnail_id"] = candidates[0]["id"] if candidates else None
         for obj in result_objects:

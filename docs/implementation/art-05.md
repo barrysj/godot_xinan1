@@ -34,6 +34,8 @@
 
 ## 验证入口
 
+- 闪卡独立分类与按需原图（2026-09-16，基线 `5a01a53`）：`catalog.py` 将 holo_card 归入“闪卡”，缩略图仅允许有效 review；`static/app.js` 详情仅显示 review，点击“原图”才加载原照并打开现有模态子窗口，关闭清空图片。缺 review 不回退原照，缺原照禁用按钮；Godot 预览和游戏资源加载不变。25 项 Python 测试通过，新增分类计数与缺 review 无缩略图断言；JavaScript 语法、Git 差异检查通过。8876 独立测试服务实测分类计数闪卡1/UI0，详情 DOM 只有 review 图片与无 src 弹窗，点击后原照显示、关闭后 src 清空；实际截图已在对话展示。边界：按需加载约束针对浏览器图片请求，后端完整性校验仍读取源文件。
+
 - 同目录构建验证（2026-09-16）：根启动脚本自动生成源码旁 EXE 并打开窗口；从临时目录直接运行该 EXE 的 --screenshot 模式退出码0，工作目录识别正确，截图 .godot/control-source-dir.png 已展示。git check-ignore 确认二进制不入库，git diff --check 通过；仅改构建路径，未改服务实现。
 
 - 2026-09-16 启动恢复实测：临时移开确切 EXE 后，旧入口报 Controller is not built；修复入口自动构建并创建控制器进程。再次启动文件时间戳不变（不重复编译）。从项目外直接运行 EXE `--self-test <报告路径>`：initial=未启动、started=True、open_enabled=True、stopped=True，退出码0。实际截图 `.godot/art-manager-control-fixed.png` 已展示。服务健康检查 project_root 指向卡片工作树。未复现当前已有 EXE 状态下的启动失败，确认修复的是缓存清理/首次工作树缺构建产物的可靠复现路径。

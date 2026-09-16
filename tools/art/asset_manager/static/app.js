@@ -58,7 +58,7 @@ function countLabel(object) {
 }
 
 function renderFilters() {
-  const categories = ["全部", "场景", "人物", "UI", "特效", "未归类"];
+  const categories = ["全部", "场景", "人物", "UI", "闪卡", "特效", "未归类"];
   filters.replaceChildren();
   categories.forEach(category => {
     const count = category === "全部" ? state.objects.length : state.objects.filter(item => item.category === category).length;
@@ -113,7 +113,7 @@ function metadataList(metadata) {
   return dl;
 }
 
-function assetCard(asset, compact = false) {
+function assetCard(asset, compact = false, showOriginalAction = true) {
   const card = document.createElement("article"); card.className = `asset-card${compact ? " compact" : ""}`;
   if (asset.is_image && !compact) {
     const image = document.createElement("img"); image.className = "asset-preview"; image.src = fileUrl(asset); image.alt = asset.name; image.loading = "lazy"; card.append(image);
@@ -128,7 +128,7 @@ function assetCard(asset, compact = false) {
   integrity.textContent = `${asset.integrity.label} · 实时 SHA-256 ${asset.integrity.actual ? asset.integrity.actual.slice(0, 12) : "—"}`;
   info.append(heading, path, integrity);
   const actions = document.createElement("div"); actions.className = "asset-actions";
-  if (asset.is_image) {
+  if (asset.is_image && showOriginalAction) {
     const original = document.createElement("button"); original.className = "original"; original.textContent = "原图";
     original.addEventListener("click", () => showOriginal(asset)); actions.append(original);
   }
@@ -391,8 +391,14 @@ function openDetail(object, options = {}) {
     const variant = object.variants[0];
     const preview = godotPreviewPanel(variant); if (preview) detailContent.append(preview);
     const list = document.createElement("div"); list.className = "asset-list";
-    variant.files.filter(asset => asset.file_id === "review" || asset.file_id === "source_image").forEach(asset => list.append(assetCard(asset)));
-    detailContent.append(list);
+    const review = variant.files.find(asset => asset.file_id === "review");
+    if (review && review.integrity.status !== "missing") list.append(assetCard(review, false, false));
+    const source = variant.files.find(asset => asset.file_id === "source_image");
+    const original = document.createElement("button"); original.className = "original"; original.textContent = "原图";
+    original.disabled = !source || source.integrity.status === "missing";
+    original.addEventListener("click", () => showOriginal(source));
+    const actions = document.createElement("div"); actions.className = "asset-actions"; actions.append(original);
+    detailContent.append(actions, list);
     state.detailView = { objectId: object.id };
     detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
     detail.querySelector(".detail-sheet").scrollTop = 0;
@@ -465,5 +471,6 @@ scanButton.addEventListener("click", scan);
 detailBack.addEventListener("click", returnDetail);
 detail.querySelectorAll("[data-close]").forEach(node => node.addEventListener("click", closeDetail));
 document.getElementById("lightbox-close").addEventListener("click", () => lightbox.close());
+lightbox.addEventListener("close", () => { lightboxImage.removeAttribute("src"); lightboxCaption.textContent = ""; });
 document.addEventListener("keydown", event => { if (event.key === "Escape" && detail.classList.contains("open") && !lightbox.open) closeDetail(); });
 renderFilters(); scan();

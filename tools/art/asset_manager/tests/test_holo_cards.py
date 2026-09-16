@@ -32,6 +32,9 @@ class HoloCardsTests(unittest.TestCase):
         obj = result["objects"][0]
         self.assertEqual("holo_cards/first", obj["id"])
         self.assertEqual("我们的卡", obj["name"])
+        self.assertEqual("闪卡", obj["category"])
+        self.assertEqual(1, result["summary"]["categories"]["闪卡"])
+        self.assertEqual(0, result["summary"]["categories"]["UI"])
         self.assertEqual("第一行\n第二行", obj["holo_card"]["caption"])
         thumbnail = next(a for a in obj["assets"] if a["id"] == obj["thumbnail_id"])
         self.assertEqual("review.png", thumbnail["name"])
@@ -49,6 +52,7 @@ class HoloCardsTests(unittest.TestCase):
         result = self.catalog.scan()
         self.assertEqual(1, result["summary"]["missing"])
         self.assertFalse(self.review.exists())
+        self.assertIsNone(result["objects"][0]["thumbnail_id"])
         self.assertTrue(result["objects"][0]["variants"][0]["previews"][0]["supported"])
 
     def test_missing_photo_disables_preview(self):
