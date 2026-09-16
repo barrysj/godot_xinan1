@@ -58,8 +58,14 @@ variants:
   concept_004:
     stage: concept
     version: 004
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-exploration-ui.md
+      date: 2026-09-17
+      decision: approved
+      commit: cac5703
+      quote: "004 的视觉方向、布局与状态设计通过；正式组件、交互及多分辨率效果在后续运行验收"
     root: design/concepts/m1-exploration-ui/m1_exploration_ui/004
     files:
       concept: review-detail.png
@@ -77,4 +83,4 @@ variants:
       implementation_note: static_state_studies_not_runtime
 integration:
   status: not_integrated
-  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 等待人工审核，未获试接入授权。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 已批准，正式组件、交互与多分辨率运行效果未验收，尚未接入。"
