@@ -1,6 +1,18 @@
 # 美术任务：M1 图书馆静态环境
 
-状态：概念候选已生成，等待人工概念评审；尚未批准、未制作正式资产、未接入 Godot。
+状态：concept_005 三视角概念已获人工批准并选用；未制作正式资产、未接入 Godot。下方历轮待审状态为当时记录，以本节最新决定为准。
+
+## 概念批准：concept_005（2026-09-17）
+
+负责人在本任务聊天中明确回复“接受这一版”，对应刚展示的 005 三视角及提交 66f4dbc 的实际文件。批准范围为本版日常环境概念，不扩展为正式资产或接入效果批准，也不代表真实建筑测绘精度确认。
+
+| 被评文件（005 目录） | SHA-256 | 人工决定 |
+| --- | --- | --- |
+| atrium-down.png | 899cf22547c661346acef848640f3a8b7f0cdde54f72bfed398fe8df7d320bca | 概念批准 |
+| window-corridor.png | 66acb9fc0eafcc5ea0611d7b0b050afc6d67053d466473c4ddfdab714d74215e | 概念批准 |
+| shelf-to-atrium.png | 2ca0eb9bc4c4a1f6f9ad7504cfe1267fbc82773352a58cf56bc4b5384ae35b0c | 概念批准 |
+
+Manifest 回写 selected + approved，approval_evidence 引用本任务；integration 保持 not_integrated。001—004 状态不变。验证日期 2026-09-17、基线 66f4dbc：资源台扫描与三图 SHA-256 核对、git diff --check；本次仅记录批准，不修改图片或运行画面。待统筹：图书馆日常三视角概念已通过，正式资产与 Godot 接入仍未完成。
 
 ## 当前修订：concept_005（2026-09-17）
 

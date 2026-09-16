@@ -66,8 +66,12 @@ variants:
   concept_005:
     stage: concept
     version: "005"
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-library-environment.md
+      date: 2026-09-17
+      decision: approved
     root: design/concepts/m1-library-environment/m1_library_environment/005
     files:
       atrium_down: atrium-down.png
