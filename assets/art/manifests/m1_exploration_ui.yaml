@@ -13,6 +13,7 @@ variants:
     root: design/concepts/m1-exploration-ui/m1_exploration_ui/001
     files:
       concept: library-exploration-layout.svg
+      review: review.png
     metadata:
       asset_type: ui_layout_concept
       resolution: [1600, 900]
@@ -21,6 +22,21 @@ variants:
       hotspot_count: 4
       expanded_detail_count: 1
       implementation_note: native_components_or_vector_only
+  concept_002:
+    stage: concept
+    version: 002
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/002
+    files:
+      concept: library-exploration-layout.svg
+      review: review.png
+    metadata:
+      resolution: [1600, 900]
+      style_layer: anomaly
+      hotspot_count: 4
+      expanded_detail_count: 1
+      implementation_note: native_components_or_vector_only
 integration:
   status: not_integrated
-  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 001 等待人工审核，未获试接入授权。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 002 等待人工审核，未获试接入授权。"

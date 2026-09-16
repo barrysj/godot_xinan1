@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<title>M1 探索 UI 概念 002 · 异变信号</title>
+<defs>
+ <radialGradient id="haze"><stop stop-color="#A855F7" stop-opacity=".26"/><stop offset="1" stop-color="#080A12" stop-opacity="0"/></radialGradient>
+ <radialGradient id="cyan"><stop stop-color="#00F0FF" stop-opacity=".2"/><stop offset="1" stop-color="#080A12" stop-opacity="0"/></radialGradient>
+ <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <pattern id="scan" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 1H8" stroke="#00F0FF" stroke-opacity=".035"/></pattern>
+ <style>text{font-family:'Microsoft YaHei','Source Han Sans SC',sans-serif;fill:#F7FBFF} .muted{fill:#94a4b9}.code{font-family:Consolas,monospace;letter-spacing:2px;fill:#00F0FF}.pink{fill:#FF2DAA}</style>
+</defs>
+<rect width="1600" height="900" fill="#080A12"/>
+<ellipse cx="825" cy="410" rx="600" ry="410" fill="url(#haze)"/>
+<ellipse cx="330" cy="600" rx="550" ry="400" fill="url(#cyan)"/>
+<rect width="1040" height="900" fill="url(#scan)"/>
+<!-- Compact framing, no fabricated architecture -->
+<path d="M40 120V65l24-25h590M40 776v60h650M1015 185v-42" fill="none" stroke="#00F0FF" stroke-opacity=".5"/>
+<path d="M44 118V65l24-25h195" fill="none" stroke="#FF2DAA" opacity=".5"/>
+<text x="72" y="79" class="code" font-size="14">CAMPUS / EXPLORATION</text>
+<text x="72" y="129" font-size="38" class="pink" opacity=".35">图书馆</text>
+<text x="75" y="128" font-size="38" font-weight="700">图书馆</text>
+<text x="73" y="163" class="muted" font-size="16">四站路线 · 02 / 04</text>
+<path d="M350 144h180" stroke="#384158"/>
+<circle cx="351" cy="144" r="5" fill="#00F0FF"/><circle cx="411" cy="144" r="8" fill="#080A12" stroke="#00F0FF" stroke-width="2"/>
+<circle cx="471" cy="144" r="5" fill="#384158"/><circle cx="531" cy="144" r="5" fill="#384158"/>
+<path d="M728 76h38l9-11 8 24 9-13h143" fill="none" stroke="#FF2DAA" stroke-width="2" filter="url(#glow)"/>
+<text x="729" y="113" class="pink" font-size="16">信号干扰</text>
+<text x="729" y="141" class="muted" font-size="13">异常状态视觉示意</text>
+<!-- Broken signal streaks confined to blank scene space -->
+<g fill="#00F0FF" opacity=".22"><rect x="59" y="242" width="170" height="2"/><rect x="78" y="248" width="94" height="5"/><rect x="468" y="718" width="87" height="3"/><rect x="801" y="687" width="175" height="2"/></g>
+<g fill="#FF2DAA" opacity=".28"><rect x="788" y="221" width="220" height="3"/><rect x="848" y="229" width="71" height="6"/><rect x="54" y="730" width="155" height="2"/></g>
+<path d="M111 294h34M111 294v34M937 681h-34M937 681v-34" fill="none" stroke="#53617a"/>
+<text x="520" y="463" text-anchor="middle" class="muted" font-size="18">场景资料待补</text>
+<text x="520" y="491" text-anchor="middle" class="code" opacity=".5" font-size="11">ENVIRONMENT RESERVED</text>
+<!-- Four hotspot icons, one active detail -->
+<g transform="translate(221 571)">
+ <path d="M-44-34l12-12h65l12 12v67L33 45h-65l-12-12z" fill="#101321" stroke="#4ba4b4"/>
+ <rect x="-21" y="-20" width="42" height="34" rx="2" fill="none" stroke="#c3e4ec" stroke-width="2"/>
+ <path d="M-18 9l11-11 10 8 7-12 9 15" fill="none" stroke="#c3e4ec" stroke-width="2"/><circle cx="-8" cy="-10" r="3" fill="#c3e4ec"/>
+ <text y="78" text-anchor="middle" font-size="19">校园记忆</text><text y="103" text-anchor="middle" class="muted" font-size="13">可选调查</text>
+</g>
+<g transform="translate(405 329)">
+ <path d="M-44-34l12-12h65l12 12v67L33 45h-65l-12-12z" fill="#101321" stroke="#4ba4b4"/>
+ <circle cy="-12" r="10" fill="none" stroke="#c3e4ec" stroke-width="2"/><path d="M-20 23q0-27 40 0" fill="none" stroke="#c3e4ec" stroke-width="2"/>
+ <text y="78" text-anchor="middle" font-size="19">人物事件</text><text y="103" text-anchor="middle" class="muted" font-size="13">可选调查</text>
+</g>
+<g transform="translate(676 591)">
+ <circle r="64" fill="none" stroke="#00F0FF" stroke-opacity=".32" stroke-width="2" filter="url(#glow)"/>
+ <path d="M-45-35l12-12h66l12 12v68L33 45h-66l-12-12z" fill="#101321" stroke="#00F0FF" stroke-width="2"/>
+ <path d="M-53-18v-22l15-14h22M53 18v22L38 54H16" fill="none" stroke="#00F0FF" stroke-width="3"/>
+ <rect x="-23" y="-23" width="46" height="32" rx="2" fill="none" stroke="#00F0FF" stroke-width="3"/><path d="M0 9v12M-12 21h24" stroke="#00F0FF" stroke-width="3"/>
+ <text y="92" text-anchor="middle" font-size="20">借阅终端</text><text y="118" text-anchor="middle" class="code" font-size="12">SELECTED</text>
+</g>
+<!-- Electrical hazard: broken conductor + crisp core -->
+<path id="arc" d="M789 311l25-25-11-30 26 12 8-32 25 16 31-17-5 31 34 12-15 26 35 26-28 17 10 29-33-2-14 28-22-23-31 9 1-31-30-12z" fill="none" stroke="#FF2DAA" stroke-width="2" filter="url(#glow)"/>
+<path d="M930 363l38 8-8 22 24 5-5 46 19 12M800 285l-32-14 9-19-34-9" fill="none" stroke="#FF2DAA" stroke-width="2"/>
+<g transform="translate(859 314)">
+ <path d="M0-33l29 13v24q-4 19-29 32Q-25 23-29 4v-24z" fill="#101321" stroke="#FF2DAA" stroke-width="3"/>
+ <path d="M4-18L-9 4H2l-7 18L14-3H2z" fill="#F7EA39"/>
+ <text y="102" text-anchor="middle" font-size="20">守卫战</text><text y="129" text-anchor="middle" class="pink" font-size="14">主线必经 · 通路封锁</text>
+</g>
+<!-- Floating detail: solid readable centre, disturbance outside edges -->
+<path d="M1076 171h408l32 32v526l-25 26h-415z" fill="#101321" stroke="#37425b"/>
+<path d="M1076 240v-69h159M1466 755h25l25-26v-55" fill="none" stroke="#00F0FF" stroke-width="2" filter="url(#glow)"/>
+<path d="M1068 307v-49M1524 525v51l-8 9" fill="none" stroke="#FF2DAA" stroke-width="2" opacity=".7"/>
+<text x="1114" y="217" class="code" font-size="12">03 / SYSTEM NODE</text>
+<text x="1112" y="273" font-size="32" font-weight="700">借阅终端</text>
+<path d="M1114 301h43" stroke="#00F0FF" stroke-width="3"/>
+<text x="1114" y="345" class="muted" font-size="18">前代系统仍在执行早期目标。</text>
+<text x="1114" y="377" class="muted" font-size="18">查看线索，了解校园的异常。</text>
+<path d="M1114 427h361" stroke="#303c52"/>
+<text x="1114" y="469" font-size="15" fill="#00F0FF">可选调查</text>
+<text x="1114" y="500" class="muted" font-size="15">不影响守卫战与离场条件。</text>
+<path d="M1114 563h337l23 23v49h-360z" fill="#00F0FF" fill-opacity=".09" stroke="#00F0FF" stroke-width="2"/>
+<text x="1293" y="609" text-anchor="middle" font-size="23">查看</text>
+<path d="M1430 591l10 10-10 10" fill="none" stroke="#00F0FF" stroke-width="2"/>
+<text x="1114" y="686" class="muted" font-size="15">离场前须击败守卫并领取奖励</text>
+<text x="1114" y="716" class="pink" font-size="14">出口封锁</text>
+<path d="M73 786h18l8-9 6 20 8-11h148" fill="none" stroke="#FF2DAA" stroke-width="2"/>
+<text x="74" y="817" class="muted" font-size="15">击败守卫 → 领取奖励 → 出口开放</text>
+<text x="73" y="870" class="muted" font-size="12">概念 002 · 异变信号 / 静态 UI 研究 · 场景参考待提供</text>
+<text x="1518" y="870" text-anchor="end" class="code" font-size="12">REVIEW / PENDING</text>
+</svg>
