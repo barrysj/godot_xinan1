@@ -1,5 +1,6 @@
 schema_version: 3
 objects:
+  class_photo_card: manifests/class_photo_card.yaml
   guard: manifests/guard.yaml
   archer: manifests/archer.yaml
   guard_shield: manifests/guard_shield.yaml

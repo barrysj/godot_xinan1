@@ -1,0 +1,8 @@
+{
+  "title": "那年 · 我们",
+  "subtitle": "CAMPUS MEMORIES / 校园记忆",
+  "technique": "校园合照",
+  "description": "用户提供的原照，完整展示；卡框流光独立计算。",
+  "parameters": {"subjectScale": 1.0, "subjectDepth": 0.0, "backgroundDepth": -0.03, "foil": 0.7},
+  "safeArea": {"scale": 1.0, "offset": [0.0, 0.0]}
+}

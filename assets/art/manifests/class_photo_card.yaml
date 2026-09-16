@@ -1,0 +1,26 @@
+schema_version: 3
+object:
+  id: class_photo_card
+  display_name: "校园合照全息卡"
+  type: ui
+variants:
+  asset_001:
+    stage: asset
+    version: 001
+    selection: unselected
+    approval: review
+    root: design/concepts/class-photo-holo-card/card/001
+    files:
+      source_image: source.jpg
+      build_metadata: generation.md
+      blender_source: ruic/card.blend
+      preview_image: ruic/renders/front.png
+      glb_reference: ruic/web/assets/card.glb
+    resource: design/concepts/class-photo-holo-card/card/001/card.tres
+    integration_authorization:
+      source: docs/art/tasks/class-photo-holo-card.md
+      scope: "仅独立 Godot 预览试制，不接入正式主界面"
+      date: 2026-09-16
+integration:
+  status: not_integrated
+  evidence: "独立预览已验证，主游戏未接入；docs/art/tasks/class-photo-holo-card.md"
