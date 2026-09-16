@@ -8,7 +8,7 @@ func verify(ok: bool, label: String) -> void:
 		failures += 1
 		push_error("CAMPAIGN_FLOW: "+label)
 
-func fight(hub) -> void:
+func fight(hub, choose: bool = true) -> void:
 	hub._guard()
 	hub.formation = [0,-1,3,2,1,-1]
 	hub._build_units()
@@ -31,15 +31,26 @@ func fight(hub) -> void:
 	var offers = hub.journey.data.offers.duplicate(true)
 	hub._continue_run()
 	verify(hub.journey.data.offers == offers,"reward restore stable")
-	hub._campaign_action("reward:0")
-	verify(hub.journey.visit.can_leave(),"reward and guard gate")
+	if choose:
+		hub._campaign_action("reward:0")
+		verify(hub.journey.visit.can_leave(),"reward and guard gate")
 
 func run_checks(hub) -> void:
 	hub.progress = hub.ProgressModel.new()
 	hub.progress.path = "user://campaign-flow-test-profile.json" if OS.has_feature("web") else "res://.godot/campaign-flow-profile.json"
 	hub.set_process(false)
+	if "--exploration-preview" in OS.get_cmdline_user_args():
+		hub.progress.complete_prologue()
+		hub.progress.complete_tutorial_dispatch()
+		hub.set_process(true)
+		hub._home()
+		return
 	if "--readability-capture" in OS.get_cmdline_user_args():
 		await capture_readability(hub)
+		hub.get_tree().quit()
+		return
+	if "--exploration-capture" in OS.get_cmdline_user_args():
+		await capture_exploration(hub)
 		hub.get_tree().quit()
 		return
 	hub._begin_region("library","prologue")
@@ -110,6 +121,8 @@ func run_checks(hub) -> void:
 	if not OS.has_feature("web"): hub.get_tree().quit(1 if failures else 0)
 
 func capture_readability(hub) -> void:
+	hub.get_window().mode = Window.MODE_WINDOWED
+	await hub.get_tree().process_frame
 	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
 		hub.get_window().size = resolution
 		hub._begin_region("library","prologue")
@@ -127,3 +140,43 @@ func capture_readability(hub) -> void:
 		hub.queue_redraw()
 		await RenderingServer.frame_post_draw
 		hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-readable-report-%dx%d.png" % [resolution.x,resolution.y])
+
+func capture_exploration(hub) -> void:
+	hub.get_window().mode = Window.MODE_WINDOWED
+	await hub.get_tree().process_frame
+	hub.progress.complete_prologue()
+	hub.progress.complete_tutorial_dispatch()
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		hub.get_window().size = resolution
+		await hub.get_tree().process_frame
+		await hub.get_tree().process_frame
+		hub._home()
+		await capture_page(hub,"home",resolution)
+		hub._begin_region("library")
+		await capture_page(hub,"route",resolution)
+		for step in range(3):
+			hub._campaign_action("enter:0")
+			fight(hub)
+			hub._campaign_action("leave")
+		hub._campaign_action("enter:0")
+		await capture_page(hub,"library",resolution)
+		hub._hotspot("person")
+		hub._show_journey()
+		fight(hub,false)
+		await capture_page(hub,"rewards",resolution)
+		hub._campaign_action("reward:0")
+		verify(hub.journey.visit.can_leave(),"reward and guard gate")
+		await capture_page(hub,"opened",resolution)
+		hub._campaign_action("leave")
+		await capture_page(hub,"settlement",resolution)
+	print("EXPLORATION_CAPTURE checks=%d failures=%d" % [checks,failures])
+
+func capture_page(hub, label: String, resolution: Vector2i) -> void:
+	hub.queue_redraw()
+	await hub.get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var picture = hub.get_viewport().get_texture().get_image()
+	verify(picture.get_size() == resolution,"capture matches requested viewport")
+	picture.save_png("res://.godot/m1-readable-%s-%dx%d.png" % [label,resolution.x,resolution.y])
+	print("CAPTURE ",label," actual=",picture.get_size())

@@ -1,14 +1,14 @@
 extends RefCounted
 ## Logical placeholder geography; shared place IDs are not a real campus map.
 const PLACES = {
-	"gate":"校门〔占位〕", "walk":"步道〔占位〕", "court":"球场〔占位〕",
-	"hall":"走廊〔占位〕", "library":"图书馆", "end_b":"终点乙〔待资料〕",
-	"end_c":"终点丙〔待资料〕"}
+	"gate":"校门", "walk":"步道", "court":"球场",
+	"hall":"走廊", "library":"图书馆", "end_b":"第二终端",
+	"end_c":"第三终端"}
 const MAPS = {
 	"library":[["gate"],["walk","court"],["hall"],["library"]],
 	"region_b":[["gate"],["hall","walk"],["court"],["end_b"]],
 	"region_c":[["gate"],["court","hall"],["walk"],["end_c"]]}
-const NAMES = {"library":"图书馆区域", "region_b":"区域乙〔占位〕", "region_c":"区域丙〔占位〕"}
+const NAMES = {"library":"图书馆区域", "region_b":"第二终端路线", "region_c":"第三终端路线"}
 
 static func map_for(region: String) -> Array:
 	return MAPS.get(region, []).duplicate(true)

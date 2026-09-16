@@ -73,3 +73,14 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 通过本地HTTP 127.0.0.1:8793、Codex应用内浏览器实测：Start→新档序章→真实拖动四人→开战后立即刷新→同场战前4/4恢复；首战胜利11.4秒→待选三奖励→刷新后同三奖励恢复。另在导出HTML副本`m1-check.html`把args设为`["--","--campaign-flow-check"]`，点击Start后独立`user://campaign-flow-test-profile.json`执行整条战役，浏览器控制台`CAMPAIGN_FLOW checks=124 failures=0`并展示结尾。标准Web模板不支持命令行覆盖场景路径，因此副本仍从真实菜单进入。HTML副本位于忽略的builds目录，不是正式入口。
 
 边界：Web全流程检查为程序驱动，真实鼠标只覆盖序章与刷新；不能代替陌生玩家。Android横屏真机、真实照片、正式美术批准和60～90分钟体验均未验收。既有证书/原图警告、导出编辑器缓存权限提示仍在，但本次构建产物与上述完成标记已实际核验。
+
+## M1 可理解性修复 E21
+
+2026-09-16；基线3fb297a，战场a2750bc，路线/热点/反馈为本文件所在提交。测试使用campaign-flow独立档。
+
+- Godot `--headless --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：124 checks / 0 failures。
+- Godot `--headless --path . res://game/run/location_check.tscn`：134 checks / 0 failures。
+- Godot `--path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check --exploration-capture`：102 checks / 0 failures。实际模拟经过图书馆四站，检查报告/奖励恢复，截图基地、路线、图书馆、出口开放与结算；新增断言核对真实像素尺寸1920×1080、2560×1440、1920×1200。缓存.godot/m1-readable-{home,route,library,rewards,opened,settlement}-*.png。
+- `--readability-capture`：已有静态idle首帧/头像、目标、战报去向截图，缓存m1-readable-battle/report-*.png；截图不代表人工视觉批准。
+- 标准版Godot `--headless --path . --export-release Web builds/web/index.html`导出成功。隔离HTML副本readable-preview.html args为["--","--campaign-flow-check","--exploration-preview"]，启动在教学完成后的测试基地，不覆盖正式玩家档。鼠标已检查图书馆入口、路线前往、热点选中只展开详情、读取保存、回到同地点标记已查看、出口禁用、战前整备、实际胜利、领取奖励后回到同地点并开放出口。
+- 校门/步道/球场/走廊采用不同原生几何示意，图书馆为书架与阅读区；真实校园资料、正式背景、Android与陌生玩家验收仍未完成。原图加载和证书警告仍为既有环境问题。

@@ -32,30 +32,7 @@ func _ready() -> void:
 func _home() -> void:
 	screen = "base"
 	campaign_panel.show()
-	campaign_panel.clear("2026 · 虚拟校园",progress.Campaign.objective(progress.campaign))
-	if progress.load_blocked:
-		campaign_panel.text(progress.error_message)
-		return
-	for region in Journey.Regions.NAMES:
-		campaign_panel.text(Journey.Regions.NAMES[region]+(" · 渐稳" if progress.campaign.terminals.has(region) else " · 待修复"),20)
-	if not progress.active_run.is_empty(): campaign_panel.button("继续探索","continue")
-	if not progress.campaign.prologue_done:
-		campaign_panel.button("开始序章","prologue")
-	elif not progress.campaign.routes_acquired:
-		campaign_panel.text("当前 AI：派档案员占位成员取回路线资料。这次教学立即完成，不扣资源，也不会占用普通派遣队。")
-		campaign_panel.button("教学派遣","tutorial")
-	else:
-		for region in Journey.Regions.NAMES:
-			campaign_panel.button(Journey.Regions.NAMES[region].split("〔")[0],"region:"+region)
-	if progress.campaign.terminals.size() == 3 and not progress.campaign.restored: campaign_panel.button("接入终端","finale")
-	if progress.campaign.restored: campaign_panel.button("重看结尾","ending")
-	campaign_panel.button("回忆档案","memories")
-	if progress.supply_unlocked:
-		campaign_panel.text("出发补给："+("携带厚笔记本" if chosen_supply else "未携带"),19)
-		campaign_panel.button("切换补给","supply")
-	campaign_panel.button("校园成长","growth")
-	campaign_panel.button("普通派遣","dispatch")
-	campaign_panel.button("主菜单","menu")
+	campaign_panel.home(progress,chosen_supply)
 
 func _new_run() -> void:
 	if not campaign_enabled:
@@ -158,16 +135,10 @@ func _show_journey() -> void:
 	if journey.data.finished:
 		_settle_campaign()
 	elif journey.data.screen == "reward":
-		campaign_panel.clear("选择奖励","只选一份，本局有效。胜利后全员恢复。")
-		for i in range(journey.data.offers.size()):
-			var offer = journey.data.offers[i]
-			campaign_panel.text(offer.title+"："+offer.description)
-			campaign_panel.button("选取奖励","reward:"+str(i))
+		campaign_panel.rewards(journey.data.offers)
 	elif journey.visit.data.is_empty(): campaign_panel.route(journey)
 	else:
-		campaign_panel.location(journey)
-		if campaign_mode == "prologue":
-			campaign_panel.text("当前 AI：这里是 2026 年的虚拟校园原型。你是管理员，我与你一起引导知情参与的毕业生人格。先挑战守卫，部署四人后开战。前代把我们新建的内容视作 Bug，持续回滚。")
+		campaign_panel.location(journey,campaign_mode == "prologue")
 
 func _guard() -> void:
 	if journey.visit.data.is_empty() or journey.visit.data.guard_won: return
@@ -213,13 +184,29 @@ func _victory() -> void:
 	if _save_campaign(): _show_journey()
 
 func _settle_campaign() -> void:
+	var first_clear = not progress.campaign.terminals.has(journey.data.region)
+	var recruits = journey.data.temporary.filter(func(id): return not progress.campaign.characters.has(id))
 	if progress.settle_region(journey.data.id,journey.data.region,journey.data.temporary,7):
 		if progress.save_checkpoint({}):
 			campaign_mode = ""
-			_home()
+			screen = "campaign"
+			campaign_panel.show()
+			campaign_panel.clear("终端已回收" if first_clear else "探索完成","已回到安全区域，所有收益已保存。")
+			campaign_panel.terminal_progress(progress.campaign.terminals)
+			campaign_panel.text("修复资源 +7。"+("发明家已永久加入，下一次出发可在队伍中选择。" if not recruits.is_empty() else ""))
+			var count = progress.campaign.terminals.size()
+			if first_clear: campaign_panel.text({1:"图书馆派遣现已开放。下一步：寻找第二台记忆终端。",2:"体育馆派遣现已开放。下一步：取回最后一台记忆终端。",3:"三台终端已齐备。下一步：返回基地，接入终端，修复核心。"}[count])
+			campaign_panel.button("返回基地","base")
 	else:
 		campaign_panel.clear("结算待重试",progress.error_message)
 		campaign_panel.button("重试结算","settle")
+
+func _memory_text(id: String) -> String:
+	var place = id.get_slice("_system_",0)
+	var title = Journey.Regions.PLACES.get(place,"校园")
+	if id.ends_with("_2"):
+		return title+" · 权限记录\n新建内容不断被旧系统回滚。当前 AI 建议保留记录，借助三台记忆终端重新解释旧系统的任务。\n——虚拟校园系统档案"
+	return title+" · 运行记录\n这里仍保留着校园的空间数据，但通路被守卫封锁。解除封锁后，管理员可以继续修复。\n——虚拟校园系统档案"
 
 func _campaign_action(id: String) -> void:
 	if paused or progress.load_blocked: return
@@ -250,6 +237,7 @@ func _campaign_action(id: String) -> void:
 				_home()
 		elif journey.leave():
 			journey.data.erase("offers")
+			journey.data.erase("last_reward")
 			if _save_campaign(): _show_journey()
 	elif id.begins_with("spot:"): _hotspot(id.trim_prefix("spot:"))
 	elif id.begins_with("reward:"):
@@ -257,6 +245,7 @@ func _campaign_action(id: String) -> void:
 		if journey.data.screen != "reward" or journey.visit.data.reward_taken: return
 		if index < 0 or index >= journey.data.offers.size(): return
 		if run.apply_reward(journey.data.offers[index]):
+			journey.data.last_reward = journey.data.offers[index].title+"："+journey.data.offers[index].description
 			journey.visit.data.reward_taken = true
 			journey.data.screen = "visit"
 			if _save_campaign(): _show_journey()
@@ -272,7 +261,7 @@ func _campaign_action(id: String) -> void:
 		campaign_panel.photograph(preload("res://resources/content/library_memory.tres"),id == "photo_zoom",detail_return)
 	elif id == "settle": _settle_campaign()
 	elif id == "memories":
-		campaign_panel.clear("回忆档案","系统记录为机制样本，尚无真实照片与共同经历。")
+		campaign_panel.clear("回忆档案","已保存的虚拟校园系统记录。随时重看，不影响主线进度。")
 		for place in Journey.Regions.PLACES:
 			var count = progress.campaign.memories.filter(func(memory): return memory.begins_with(place+"_")).size()
 			campaign_panel.text(Journey.Regions.PLACES[place]+" · 系统记录 %d / 2" % count)
@@ -286,7 +275,7 @@ func _campaign_action(id: String) -> void:
 			detail_return = "memories"
 			campaign_panel.photograph(memory,false,"memories")
 			return
-		campaign_panel.clear("系统记录〔占位〕",id.trim_prefix("memory:")+"\n2026 年虚拟校园记录。真实照片及共同经历尚待提供；此处不代表真实纪念内容。")
+		campaign_panel.clear("校园系统记录",_memory_text(id.trim_prefix("memory:")))
 		campaign_panel.button("返回档案","memories")
 	elif id == "replay_prologue":
 		campaign_panel.clear("序章 · 2026", "管理员与当前 AI 在虚拟校园原型中构建毕业生人格。大家知情参与修复；前代同源 AI 却把新开发当作 Bug 回滚。三台记忆终端将帮助我们重新解释它的任务。")
@@ -318,8 +307,8 @@ func _hotspot(id: String) -> void:
 				journey.data.temporary.append("inventor")
 		journey.visit.view(id)
 		if not _save_campaign(): return
-		campaign_panel.clear("调查记录",{"memory":"系统记录〔占位〕：这份虚拟校园记录已加入回忆档案。真实照片与说明待提供。",
-			"person":"毕业生人格〔占位：发明家〕：我知道自己是虚拟构建，也愿意帮助修复。本局暂时入队；成功完成区域后永久加入出发候选。",
+		campaign_panel.clear("调查记录",{"memory":_memory_text(id)+"\n\n已保存到回忆档案。",
+			"person":"发明家（虚拟伙伴）：我知道自己是虚拟构建，也愿意帮助修复。本局暂时入队；成功完成区域后永久加入出发候选。",
 			"system":"当前 AI：前代仍在执行早期目标。我们需要三台记忆终端，才能重新解释目标与限制它的权限。"}[spot.kind])
 		campaign_panel.button("返回地点","visit")
 
