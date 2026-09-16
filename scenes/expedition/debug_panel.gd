@@ -4,6 +4,7 @@ var hub
 var panel: PanelContainer
 var entry: Button
 var was_paused = false
+var backdrop: ColorRect
 
 func _ready() -> void:
 	layer = 20
@@ -34,10 +35,35 @@ func _ready() -> void:
 	entry.offset_bottom = 38
 	root.add_child(entry)
 	entry.pressed.connect(open)
+	backdrop = ColorRect.new()
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	backdrop.color = Color(0.04,0.08,0.12,0.48)
+	root.add_child(backdrop)
+	backdrop.gui_input.connect(func(event):
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			backdrop.accept_event()
+			close())
 	panel = preload("res://scenes/expedition/campaign_panel.gd").new()
 	root.add_child(panel)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	var frame = StyleBoxFlat.new()
+	frame.bg_color = Color(panel.palette.background)
+	frame.border_color = Color(panel.palette.accent_primary)
+	frame.set_border_width_all(2)
+	frame.set_corner_radius_all(14)
+	frame.shadow_color = Color(0,0,0,0.3)
+	frame.shadow_size = 18
+	panel.add_theme_stylebox_override("panel",frame)
+	panel.visibility_changed.connect(func(): backdrop.visible = panel.visible)
+	root.resized.connect(_layout_popup)
+	_layout_popup()
 	panel.hide()
 	panel.action.connect(_action)
+
+func _layout_popup() -> void:
+	var available: Vector2 = panel.get_parent().size
+	panel.size = Vector2(minf(800,available.x-64),minf(800,available.y-64))
+	panel.position = (available-panel.size)/2
 
 func open() -> void:
 	if panel.visible: return

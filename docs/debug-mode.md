@@ -12,6 +12,8 @@ pwsh.exe -File .\run-debug.ps1
 
 普通 `run-campus-demo.ps1`／F5 不启用这些能力。显式启动参数是 `-- --campus-debug`，不根据编辑器或引擎的 debug build 自动开启。
 
+调试界面使用居中弹窗：当前场景保留在半透明遮罩下，弹窗随窗口尺寸居中，内容溢出时可滚动。点击弹窗外的遮罩也可关闭，点击不会穿透到下方游戏按钮。
+
 ## 存档隔离
 
 - 调试使用 `user://campus_debug_progress.json`，首次进入从序章开始，后续启动可继续该调试进度。

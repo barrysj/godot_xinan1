@@ -112,6 +112,8 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 
 ## Debug 与重开存档 E23
 
+2026-09-17 弹窗修订（基线 `7160568`）：`pwsh.exe -File .\run-debug.ps1 -Capture` 为 71 checks / 0 failures，新增背景可见与遮罩点击不穿透；其余命令语义不变，下表 69 项为此前版本记录。当前截图 `debug-battle-panel.png`、`debug-reward-panel.png` 已更新为居中弹窗。
+
 2026-09-17，基线 main `10dfbcd`，正式重开 `77afbd3`，Debug 为其后的功能提交；使用 Godot 4.7.2 Compatibility、PowerShell 7。实现边界见 [DEV-01](dev-01.md) 与 [SAVE-02](save-02.md)。
 
 | 入口 | 结果与覆盖 |

@@ -80,6 +80,19 @@ func run_checks(hub) -> void:
 	hub._process(1.0)
 	verify(hub.elapsed == elapsed and hub.paused,"debug modal freezes simulation")
 	await capture(hub,"debug-battle-panel")
+	if DisplayServer.get_name() != "headless":
+		var popup: Rect2 = hub.debug_panel.panel.get_global_rect()
+		verify(popup.size.x < hub.size.x and popup.size.y < hub.size.y and popup.position.x > 0 and popup.position.y > 0,"popup leaves current scene visible around all edges")
+		var outside = InputEventMouseButton.new()
+		outside.button_index = MOUSE_BUTTON_LEFT
+		outside.position = hub.origin+Vector2(1187,46)*hub.scale_factor
+		outside.pressed = true
+		hub.get_viewport().push_input(outside,true)
+		outside = outside.duplicate()
+		outside.pressed = false
+		hub.get_viewport().push_input(outside,true)
+		verify(not hub.debug_panel.panel.visible and not hub.debug_panel.backdrop.visible and not hub.paused,"backdrop closes popup without clicking underlying menu")
+		hub.debug_panel.open()
 	hub.debug_panel._action("restart")
 	verify(hub.screen == "battle" and hub.phase == "prepare" and hub.elapsed == 0,"UI restart resets battle to deployment")
 	verify(hub.formation == formation and hub.run.to_dict() == build,"restart preserves whole build")
