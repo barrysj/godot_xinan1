@@ -36,4 +36,4 @@ variants:
       date: 2026-09-16
 integration:
   status: not_integrated
-  evidence: "独立预览已验证，主游戏未接入；docs/art/tasks/class-photo-holo-card.md"
+  evidence: "002 在 2587e92 的独立预览效果于 2026-09-16 获用户认可；主游戏未接入，非源资产或发布授权；docs/art/tasks/class-photo-holo-card.md"
