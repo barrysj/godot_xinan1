@@ -1,0 +1,26 @@
+schema_version: 3
+object:
+  id: m1_exploration_ui
+  display_name: "M1 探索 UI · 图书馆布局概念"
+  type: ui
+  subtype: exploration_layout
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/001
+    files:
+      concept: library-exploration-layout.svg
+    metadata:
+      asset_type: ui_layout_concept
+      resolution: [1600, 900]
+      usage: [campaign_location, concept_review]
+      scene_reference: pending_user_provided_library_material
+      hotspot_count: 4
+      expanded_detail_count: 1
+      implementation_note: native_components_or_vector_only
+integration:
+  status: not_integrated
+  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 001 等待人工审核，未获试接入授权。"

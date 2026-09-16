@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">M1 图书馆探索 UI 概念布局</title>
+  <desc id="desc">不含虚构地点背景的原生组件布局概念：四个热点、单个终端详情与短按钮。</desc>
+  <defs>
+    <linearGradient id="page" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7fafb"/><stop offset="1" stop-color="#e6f0f4"/></linearGradient>
+    <linearGradient id="slot" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dfeef3"/><stop offset="1" stop-color="#f8fafb"/></linearGradient>
+    <linearGradient id="button" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#22b8d6"/><stop offset="1" stop-color="#22e0f0"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#546b7a" flood-opacity=".16"/></filter>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#b9d5df" stroke-width="1" opacity=".55"/></pattern>
+    <style>
+      .display { font-family: 'Source Han Sans SC','Microsoft YaHei',sans-serif; fill:#17202b; font-weight:800; }
+      .body { font-family: 'Source Han Sans SC','Microsoft YaHei',sans-serif; fill:#516270; font-weight:500; }
+      .mono { font-family: Consolas,monospace; fill:#58849a; font-weight:700; letter-spacing:1.2px; }
+      .small { font-family: 'Source Han Sans SC','Microsoft YaHei',sans-serif; fill:#677482; font-weight:500; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#page)"/>
+  <rect x="28" y="24" width="1544" height="852" rx="18" fill="#f8fafb" stroke="#aec6d0" stroke-width="2"/>
+
+  <!-- Header: keeps the existing four-stop journey visible without turning it into a second page. -->
+  <path d="M28 24H1572V122H28Z" fill="#ffffff"/>
+  <path d="M28 122H1572" stroke="#cfe0e7" stroke-width="2"/>
+  <rect x="62" y="51" width="44" height="44" rx="10" fill="#e6f0f4" stroke="#22b8d6" stroke-width="2"/>
+  <path d="M72 78h24M76 73h16M79 68h10M84 62v20" stroke="#22b8d6" stroke-width="3" stroke-linecap="round"/>
+  <text class="mono" x="126" y="61" font-size="12">M1 / EXPLORE</text>
+  <text class="display" x="126" y="89" font-size="29">图书馆探索</text>
+  <text class="small" x="396" y="77" font-size="16">地点内调查 · 主线与可选信息分层显示</text>
+
+  <text class="mono" x="1105" y="59" font-size="12">ROUTE / 02 OF 04</text>
+  <text class="body" x="1105" y="84" font-size="16">当前地点 · 图书馆</text>
+  <path d="M1315 78H1504" stroke="#aec6d0" stroke-width="2"/>
+  <circle cx="1320" cy="78" r="9" fill="#22b8d6" stroke="#fff" stroke-width="3"/>
+  <circle cx="1382" cy="78" r="9" fill="#f8fafb" stroke="#4aafd0" stroke-width="3"/>
+  <circle cx="1444" cy="78" r="9" fill="#f8fafb" stroke="#aec6d0" stroke-width="3"/>
+  <circle cx="1504" cy="78" r="9" fill="#f8fafb" stroke="#aec6d0" stroke-width="3"/>
+
+  <!-- Scene slot deliberately contains no fabricated architecture or photographic claim. -->
+  <g filter="url(#shadow)">
+    <rect x="62" y="154" width="976" height="654" rx="14" fill="url(#slot)" stroke="#aec6d0" stroke-width="2"/>
+  </g>
+  <rect x="62" y="154" width="976" height="654" rx="14" fill="url(#grid)" opacity=".72"/>
+  <path d="M94 232H1006M94 730H1006" stroke="#b9d5df" stroke-width="2"/>
+  <path d="M164 322H936M164 646H936" stroke="#c9e0e8" stroke-width="1" stroke-dasharray="6 10"/>
+  <path d="M275 290h548l68 76v225l-68 76H275l-68-76V366z" fill="#f8fafb" fill-opacity=".75" stroke="#a7c7d4" stroke-width="2" stroke-dasharray="7 9"/>
+  <path d="M275 290h548" stroke="#22b8d6" stroke-width="4"/>
+  <text class="mono" x="95" y="192" font-size="12">LIBRARY / SCENE SLOT</text>
+  <text class="display" x="94" y="224" font-size="24">场景资料待补</text>
+  <text class="body" x="94" y="254" font-size="16">概念阶段只核对 UI 信息层级；不以虚构空间替代真实图书馆。</text>
+  <text class="small" x="496" y="455" text-anchor="middle" font-size="17">将来放入经确认的图书馆静态环境</text>
+  <text class="mono" x="496" y="482" text-anchor="middle" font-size="11">REAL REFERENCE REQUIRED BEFORE SCENE CONCEPT</text>
+
+  <!-- Hotspot 1: memory -->
+  <g transform="translate(205 578)" filter="url(#shadow)">
+    <circle r="48" fill="#ffffff" stroke="#4aafd0" stroke-width="3"/>
+    <rect x="-22" y="-25" width="44" height="35" rx="4" fill="#e6f0f4" stroke="#17202b" stroke-width="3"/>
+    <circle cx="-9" cy="-10" r="5" fill="#d5c94a"/><path d="M-20 5l13-12L3 4l7-8 12 9" fill="none" stroke="#4aafd0" stroke-width="3"/>
+    <rect x="-66" y="60" width="132" height="32" rx="16" fill="#17202b"/>
+    <text x="0" y="82" text-anchor="middle" font-size="15" fill="#fff" font-family="Source Han Sans SC,Microsoft YaHei,sans-serif" font-weight="700">校园记忆</text>
+    <text class="small" x="0" y="114" text-anchor="middle" font-size="13">可选调查</text>
+  </g>
+
+  <!-- Hotspot 2: person -->
+  <g transform="translate(430 392)" filter="url(#shadow)">
+    <circle r="48" fill="#ffffff" stroke="#4aafd0" stroke-width="3"/>
+    <circle cy="-13" r="12" fill="#17202b"/><path d="M-23 27c1-22 45-22 46 0" fill="#17202b"/>
+    <path d="M15-27h24l8 8-8 8H24l-9 8v-24z" fill="#f8fafb" stroke="#4aafd0" stroke-width="3"/>
+    <circle cx="25" cy="-19" r="2.5" fill="#4aafd0"/><circle cx="32" cy="-19" r="2.5" fill="#4aafd0"/><circle cx="39" cy="-19" r="2.5" fill="#4aafd0"/>
+    <rect x="-66" y="60" width="132" height="32" rx="16" fill="#17202b"/>
+    <text x="0" y="82" text-anchor="middle" font-size="15" fill="#fff" font-family="Source Han Sans SC,Microsoft YaHei,sans-serif" font-weight="700">人物事件</text>
+    <text class="small" x="0" y="114" text-anchor="middle" font-size="13">可选调查</text>
+  </g>
+
+  <!-- Hotspot 3: selected terminal -->
+  <g transform="translate(702 555)" filter="url(#shadow)">
+    <circle r="72" fill="none" stroke="#22e0f0" stroke-width="4" opacity=".55"/>
+    <circle r="57" fill="#fff" stroke="#22b8d6" stroke-width="5"/>
+    <rect x="-25" y="-30" width="50" height="38" rx="5" fill="#17202b" stroke="#22b8d6" stroke-width="3"/>
+    <path d="M-11 22h22M0 8v14" stroke="#17202b" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="39" cy="-39" r="12" fill="#d5c94a" stroke="#fff" stroke-width="3"/><path d="M39-45v12M33-39h12" stroke="#17202b" stroke-width="2"/>
+    <rect x="-74" y="76" width="148" height="34" rx="17" fill="#22b8d6"/>
+    <text x="0" y="99" text-anchor="middle" font-size="16" fill="#17202b" font-family="Source Han Sans SC,Microsoft YaHei,sans-serif" font-weight="800">借阅终端</text>
+    <text class="small" x="0" y="132" text-anchor="middle" font-size="13">已选中 · 查看详情</text>
+  </g>
+
+  <!-- Hotspot 4: guard -->
+  <g transform="translate(888 368)" filter="url(#shadow)">
+    <circle r="48" fill="#ffffff" stroke="#d96c9f" stroke-width="3"/>
+    <path d="M0-29l25 10v17c0 18-12 29-25 35C-13 27-25 16-25-2v-17z" fill="#d96c9f"/>
+    <path d="M0-18v41M-11 1h22" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <rect x="-66" y="60" width="132" height="32" rx="16" fill="#17202b"/>
+    <text x="0" y="82" text-anchor="middle" font-size="15" fill="#fff" font-family="Source Han Sans SC,Microsoft YaHei,sans-serif" font-weight="700">守卫战</text>
+    <text x="0" y="114" text-anchor="middle" font-size="13" fill="#d96c9f" font-family="Source Han Sans SC,Microsoft YaHei,sans-serif" font-weight="700">主线必经</text>
+  </g>
+  <path d="M702 630v78h86" fill="none" stroke="#22b8d6" stroke-width="2" stroke-dasharray="6 8"/>
+  <text class="mono" x="790" y="714" font-size="11">SELECTED</text>
+
+  <!-- One expanded detail panel. -->
+  <g filter="url(#shadow)">
+    <rect x="1072" y="154" width="462" height="654" rx="14" fill="#fff" stroke="#aec6d0" stroke-width="2"/>
+  </g>
+  <path d="M1072 154h462v9h-462z" fill="#22b8d6"/>
+  <text class="mono" x="1112" y="204" font-size="12">HOTSPOT / 03 · SYSTEM</text>
+  <text class="display" x="1112" y="250" font-size="34">借阅终端</text>
+  <rect x="1112" y="274" width="48" height="4" rx="2" fill="#22b8d6"/>
+  <text class="body" x="1112" y="321" font-size="18">地点内的系统线索入口。</text>
+  <text class="body" x="1112" y="350" font-size="18">具体设备与记录须由实际资料确认。</text>
+  <rect x="1112" y="390" width="382" height="166" rx="10" fill="#e6f0f4" stroke="#c7dde5" stroke-width="2"/>
+  <path d="M1143 440h30l-8 10 8 10h-30l-8-10z" fill="#22b8d6"/>
+  <text class="display" x="1193" y="448" font-size="20">详情只展开一项</text>
+  <text class="small" x="1143" y="489" font-size="16">其他热点保持图标状态，避免遮住场景与路线。</text>
+  <text class="small" x="1143" y="520" font-size="16">按钮保留单一操作；说明不塞进按钮。</text>
+  <rect x="1112" y="606" width="382" height="68" rx="9" fill="url(#button)"/>
+  <text class="display" x="1303" y="649" text-anchor="middle" font-size="25">查看</text>
+  <text class="small" x="1112" y="717" font-size="15">概念阶段 · 未接入 · 等待人工审核</text>
+  <path d="M1112 749h382" stroke="#d6e4e9" stroke-width="2"/>
+  <text class="mono" x="1112" y="779" font-size="11">NATIVE COMPONENT / VECTOR STUDY ONLY</text>
+
+  <text class="mono" x="63" y="844" font-size="12">M1 EXPLORATION UI · CONCEPT 001 · UNSELECTED / PENDING / NOT INTEGRATED</text>
+  <text class="small" x="1534" y="844" text-anchor="end" font-size="13">1600 × 900 · 审核用布局样板</text>
+</svg>
