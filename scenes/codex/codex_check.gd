@@ -5,6 +5,10 @@ func _ready() -> void:
 	menu.codex_button.pressed.emit()
 	var guide = menu.codex_panel
 	var count = 0
+	guide.tabs[5].pressed.emit()
+	guide.holo_page.grid.get_child(0).pressed.emit()
+	assert(is_instance_valid(guide.holo_page.active_card))
+	guide.holo_page.close_card()
 	for category in range(5):
 		guide.tabs[category].pressed.emit()
 		for index in range(guide.listing.get_child_count()):
@@ -36,6 +40,8 @@ func _ready() -> void:
 	for button in game.pause_actions.get_children():
 		if button.text == "图鉴": button.pressed.emit()
 	assert(is_instance_valid(game.codex_panel))
+	game.codex_panel.tabs[5].pressed.emit()
+	game.codex_panel.holo_page.grid.get_child(0).pressed.emit()
 	var snapshot = [game.elapsed,game.units.duplicate(true),game.run.to_dict()]
 	game._process(5.0)
 	assert(snapshot == [game.elapsed,game.units,game.run.to_dict()])
