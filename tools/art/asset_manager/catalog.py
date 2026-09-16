@@ -15,14 +15,14 @@ from pathlib import Path
 
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".svg"}
-RESOURCE_EXTENSIONS = {".tres", ".res"}
+RESOURCE_EXTENSIONS = {".tres", ".res", ".tscn"}
 CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "特效": 3, "未归类": 4}
 TYPE_CATEGORIES = {
     "character": "人物", "enemy": "人物", "background": "场景",
     "scene": "场景", "ui": "UI", "effect": "特效",
 }
 CLIP_LABELS = {
-    "idle": "待机", "move": "移动", "attack": "攻击", "cast": "施法",
+    "idle": "待机", "move": "移动", "attack": "攻击", "melee": "近战", "ranged": "远程", "cast": "施法",
     "hurt": "受击", "critical": "濒危", "death": "退场", "burst": "爆发",
 }
 ROLE_KINDS = {
@@ -30,6 +30,7 @@ ROLE_KINDS = {
     "image": ("image", "图片"), "source": ("source", "处理来源"),
     "frame_metadata": ("metadata", "帧元数据"),
     "animation_resource": ("animation", "动画资源"),
+    "animation_library": ("animation", "骨骼动作"),
     "effect_resource": ("effect_animation", "特效资源"),
     "projectile_resource": ("resource", "弹体资源"),
     "preview_gif": ("preview", "GIF 预览"), "dependency": ("resource", "依赖资源"),
@@ -153,7 +154,7 @@ def _uri_path(project_root, uri):
     return _registered_path(project_root, value[6:]) if value.startswith("res://") else None
 
 
-def godot_resource_info(path, trusted_project_root=None):
+def godot_resource_info(path, trusted_project_root=None, visited=None):
     text = _read_text(path)
     lower = text.lower()
     if "battle_animation_set.gd" in lower or 'script_class="battleanimationset"' in lower:
@@ -162,10 +163,14 @@ def godot_resource_info(path, trusted_project_root=None):
         resource_type = "BattleEffectSet"
     elif "battle_projectile_style.gd" in lower or 'script_class="battleprojectilestyle"' in lower:
         resource_type = "BattleProjectileStyle"
+    elif text.startswith('[gd_resource type="AnimationLibrary"'):
+        resource_type = "AnimationLibrary"
     else:
         resource_type = "GodotResource"
     project_root = Path(trusted_project_root).resolve() if trusted_project_root else find_project_root(path)
     references, missing_refs = [], []
+    visited = set() if visited is None else visited
+    visited.add(_path_key(path))
     if project_root:
         for reference in re.findall(r'path="res://([^"]+)"', text):
             uri = "res://" + reference
@@ -173,7 +178,16 @@ def godot_resource_info(path, trusted_project_root=None):
             target = (project_root / reference.replace("/", os.sep)).resolve()
             if not target.exists():
                 missing_refs.append(uri)
-    return {"resource_type": resource_type, "project_root": str(project_root) if project_root else None, "references": references, "missing_references": missing_refs}
+            elif target.suffix in (".tres", ".tscn") and _inside(target, project_root) and _path_key(target) not in visited:
+                nested = godot_resource_info(target, project_root, visited)
+                missing_refs.extend(nested["missing_references"])
+    skeletal_actions = []
+    if resource_type == "BattleAnimationSet" and project_root:
+        for uri in re.findall(r'\[ext_resource type="AnimationLibrary" path="(res://[^\"]+)"', text):
+            library = _uri_path(project_root, uri)
+            if library and library.is_file():
+                skeletal_actions.extend(re.findall(r'^&"([^\"]+)": SubResource', _read_text(library), re.M))
+    return {"resource_type": resource_type, "project_root": str(project_root) if project_root else None, "references": references, "missing_references": missing_refs, "skeletal_actions": skeletal_actions}
 
 
 def _role_for(file_id, path, stage="asset"):
@@ -186,7 +200,7 @@ def _role_for(file_id, path, stage="asset"):
         return "frame_metadata"
     if suffix in RESOURCE_EXTENSIONS:
         resource_type = godot_resource_info(path).get("resource_type") if Path(path).is_file() else ""
-        return {"BattleAnimationSet": "animation_resource", "BattleEffectSet": "effect_resource", "BattleProjectileStyle": "projectile_resource"}.get(resource_type, "dependency")
+        return {"BattleAnimationSet": "animation_resource", "AnimationLibrary": "animation_library", "BattleEffectSet": "effect_resource", "BattleProjectileStyle": "projectile_resource"}.get(resource_type, "dependency")
     if "source" in key:
         return "source"
     if stage == "concept":
@@ -220,6 +234,30 @@ def _load_frame_clips(path):
     elif isinstance(data.get("regions"), list):
         clips.append({"id": "burst", "name": "爆发", "frames": len(data["regions"]), "fps": data.get("fps"), "loop": False})
     return clips
+
+
+def _legacy_attack_modes(variant, project_root):
+    modes = variant.get("metadata", {}).get("attack_modes")
+    if modes:
+        return [mode for mode in ("melee", "ranged") if mode in modes]
+    unit = _uri_path(project_root, variant.get("previews", {}).get("godot", {}).get("unit"))
+    if unit is None or not unit.is_file():
+        return ["attack"]
+    text = _read_text(unit)
+    explicit = re.search(r'^attack_modes\s*=\s*(\d+)', text, re.M)
+    if explicit and int(explicit.group(1)):
+        mask = int(explicit.group(1))
+        return [mode for bit, mode in ((1, "melee"), (2, "ranged")) if mask & bit]
+    profile_id = re.search(r'^action_profile = ExtResource\("([^\"]+)"\)', text, re.M)
+    if profile_id:
+        for uri, resource_id in re.findall(r'\[ext_resource[^\]]*path="(res://[^\"]+)"[^\]]*id="([^\"]+)"', text):
+            if resource_id == profile_id.group(1):
+                profile = _uri_path(project_root, uri)
+                delivery = re.search(r'^delivery = "(melee|projectile)"', _read_text(profile), re.M)
+                if delivery:
+                    return ["ranged" if delivery.group(1) == "projectile" else "melee"]
+    reach = re.search(r'^attack_range\s*=\s*([\d.]+)', text, re.M)
+    return ["ranged" if reach and float(reach.group(1)) > 1.5 else "melee"]
 
 
 def _preview_target_info(config, project_root):
@@ -308,6 +346,13 @@ class AssetCatalog(object):
         if source_hash is None or target_hash is None:
             return {"id": file_id, "kind": "文件内容", "status": "missing", "label": "对比文件缺失"}
         if source_hash != target_hash:
+            source, target = Path(selected["path"]), Path(effective["path"])
+            if source.suffix in (".tres", ".tscn") and source.suffix == target.suffix:
+                def normalized(item):
+                    text = _read_text(item["path"]).replace("res://" + item["root"].replace("\\", "/") + "/", "res://__package/")
+                    return re.sub(r' uid="uid://[^\"]+"', '', text).replace("\r\n", "\n")
+                if normalized(selected) == normalized(effective):
+                    return {"id": file_id, "kind": "资源引用", "status": "matched", "label": "运行包引用映射一致"}
             return {"id": file_id, "kind": "文件内容", "status": "mismatch", "label": "选用与生效内容不同", "source_hash": source_hash, "target_hash": target_hash}
         return {"id": file_id, "kind": "文件内容", "status": "matched", "label": "选用与生效内容相同", "source_hash": source_hash, "target_hash": target_hash}
 
@@ -342,7 +387,9 @@ class AssetCatalog(object):
                 resource = raw_variant.get("resource")
                 if resource:
                     item = self._file_item(".", resource, variant_id, "resource", stage)
-                    files.append(item); file_lookup["resource"] = item; all_assets.append(item)
+                    if not any(existing["id"] == item["id"] for existing in files):
+                        files.append(item); all_assets.append(item)
+                    file_lookup["resource"] = item
                     if item["integrity"]["status"] == "missing":
                         warnings.append("%s/resource：文件缺失" % variant_id)
                     elif item.get("missing_references"):
@@ -350,12 +397,19 @@ class AssetCatalog(object):
                 animation_config = raw_variant.get("animation", {}) or {}
                 clip_source = file_lookup.get(animation_config.get("frames"))
                 clips = _load_frame_clips(clip_source["path"]) if clip_source else []
-                animation = {"label": "序列帧动画", "frames": animation_config.get("frames"), "clips": clips} if animation_config else None
+                modes = _legacy_attack_modes(raw_variant, self.project_root)
+                clips = [dict(clip, id=mode, name=CLIP_LABELS.get(mode, mode))
+                         for clip in clips for mode in (modes if clip["id"] == "attack" else [clip["id"]])]
+                skeletal_actions = file_lookup.get("resource", {}).get("skeletal_actions", [])
+                for clip in clips:
+                    clip["backend"] = "skeleton" if clip["id"] in skeletal_actions else "sprite_frames"
+                animation = {"label": "骨骼＋序列帧" if skeletal_actions else "序列帧动画", "frames": animation_config.get("frames"), "clips": clips} if animation_config else None
                 raw_previews = raw_variant.get("previews", {}) or {}
                 previews = []
                 for clip_id, file_id in (raw_previews.get("gifs", {}) or {}).items():
                     linked = file_lookup.get(file_id)
-                    previews.append({"id": clip_id, "type": "gif", "file_id": linked["id"] if linked else None, "supported": bool(linked and linked["exists"]), "reason": "可播放" if linked and linked["exists"] else "GIF 文件缺失"})
+                    for mode in (modes if clip_id == "attack" else [clip_id]):
+                        previews.append({"id": mode, "type": "gif", "file_id": linked["id"] if linked else None, "supported": bool(linked and linked["exists"]), "reason": "可播放" if linked and linked["exists"] else "GIF 文件缺失"})
                 godot = raw_previews.get("godot")
                 if isinstance(godot, dict):
                     supported, reason, resolved = _preview_target_info(godot, self.project_root)

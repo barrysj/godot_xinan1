@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PRESENTATION_COMPARISON max_errors={ "position": 0.141083791852, "rotation": 0.00110467791092, "scale": 0.00198461068794, "modulate": 0.00099931657314 } visibility_errors=0
+WORST { "modulate": ["hurt", 0.84722222222222, "HybridCutoutRig/IndependentDust/Dust02", (0.88, 0.91, 0.91, 0.1916), (0.88, 0.91, 0.91, 0.1926)], "position": ["move", 1.49305555555556, "HybridCutoutRig/Skeleton2D/RootBone/OrbiterTopBone", (-23.43328, -225.5778), (-23.55411, -225.5049)], "rotation": ["ranged", 1.60416666666667, "HybridCutoutRig/Skeleton2D/RootBone/LauncherBone", -0.00101927190553, -0.00212394981645], "scale": ["cast", 1.5, "HybridCutoutRig/LayeredCastSigil/MagentaDiamondCore", (2.119802, 2.119802), (2.121205, 2.121205)] }
+BOUNDARY_SAMPLES 4 window_seconds=0.0001
+PRESENTATION_COMPARISON PASS

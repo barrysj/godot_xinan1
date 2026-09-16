@@ -65,24 +65,30 @@ func _ready() -> void:
 	var hybrid_node: Node2D = battle.battle_presentations.get(hybrid_unit.id)
 	check(is_instance_valid(hybrid_node), "Runtime instantiates the presentation scene")
 	if is_instance_valid(hybrid_node):
-		check(hybrid_node.call("handles_presentation_state", &"attack"), "Rig handles authored actions")
+		check(hybrid_node.call("handles_presentation_state", &"ranged"), "Rig handles authored actions")
 		check(not hybrid_node.call("handles_presentation_state", &"death"), "Death falls back to SpriteFrames")
 		hybrid_unit.animation.state = &"death"
 		battle._update_battle_presentations()
 		check(not hybrid_node.visible, "Fallback hides the rig node")
 	var outcomes = []
+	var event_traces: Array = []
+	var trace: Array = []
+	battle.presentation_cue.connect(func(event): trace.append(event.duplicate(true)))
 	for rate in [30, 60, 144]:
-		for multiplier in [1, 2]:
+		for multiplier in [0.25, 1.0, 2.0]:
 			battle._start()
+			trace.clear()
 			battle.speed = multiplier
 			var budget = 0
-			while battle.phase == "battle" and budget < rate * 100:
+			while battle.phase == "battle" and budget < rate * 100 / multiplier:
 				battle._process(1.0 / rate)
 				budget += 1
 			var stats = []
 			for u in battle.units: stats.append([u.damage, u.healing])
 			outcomes.append([battle.result_won, battle.elapsed, stats])
-	for result in outcomes: check(result == outcomes[0], "30/60/144 fps and 1x/2x preserve outcome and statistics")
+			event_traces.append(trace.duplicate(true))
+	for result in outcomes: check(result == outcomes[0], "30/60/144 fps and 0.25x/1x/2x preserve outcome and statistics")
+	for events in event_traces: check(events == event_traces[0], "All action, release, impact and recovery events are identical")
 	battle._start()
 	for i in 150: battle._process(1.0 / 60)
 	battle.paused = true

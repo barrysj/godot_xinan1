@@ -49,7 +49,7 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - 日期：2026-09-15；基线：main `1a2948e`、粉笔 `b661bad` 与资源台 `c44a862` 的合并树（首个合并提交 `17f7136`，最终合并见 Git 历史）。
 - Python：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v`，11 tests PASS；八对象、71 文件，无缺失或哈希不一致。包含真实内容修改的哈希拒绝检查，不更新登记基准。
 - Godot：以本文件 `$engine` 命令运行 `game/combat/action_check.tscn`、`scenes/battle_demo/presentation_check.tscn`、`scenes/battle_demo/skill_vfx_check.tscn`、`scenes/battle_demo/deployment_check.tscn -- --deployment-check`；分别出现 ACTION_CHECK、PRESENTATION_CHECK、SKILL_VFX_CHECK、DEPLOYMENT_CHECK 的 `failures=0`。覆盖动作时序、表现同步、粉笔弹体/旧护盾回退及 main 的部署行为。
-- 动作：`pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Check -Unit res://resources/content/enemies/chalk.tres -Animation res://resources/content/animations/chalk.tres`，七种受支持模式 PASS，近战 SKIP，`MOTION_PREVIEW_CHECK failures=0`。
+- 动作：`pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Check -Unit res://resources/content/enemies/chalk.tres -Animation res://assets/art/characters/chalk_spirit/battle_animation.tres`，七种受支持模式 PASS，近战 SKIP，`MOTION_PREVIEW_CHECK failures=0`。
 - 渲染：将上述 `-Check` 替换为 `-Capture`，完成 1920×1080、2560×1440、1920×1200，日志有三个 `MOTION_PREVIEW_CAPTURE`；截图为 `.godot/motion-preview-3-<分辨率>.png`。
 - 页面：`pwsh.exe -NoProfile -File ./tools/art/asset_manager/run-server.ps1 -Port 8771 -NoOpen` 冷启动成功；8770 同项目验收页显示八对象/71文件/0不一致，实际点击弹体预览启动粉笔 Unit、005 Animation 与001 Projectile，未回退默认对象。截图 `.godot/art-merge-overview.png`、`.godot/art-merge-preview-launch.png` 为本机缓存，不是跨 checkout 唯一证据。
 - 修复范围：启动器 v2 健康标识、旧六对象测试假设、登记文本字节被 Git 换行转换的问题；详见 [ART-05](art-05.md)。没有重写哈希或改变资产批准状态。
@@ -76,7 +76,7 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 
 ## M1 可理解性修复 E21
 
-2026-09-16；基线3fb297a，战场a2750bc，路线/热点/反馈为本文件所在提交。测试使用campaign-flow独立档。
+2026-09-16；基线3fb297a，战场a2750bc，路线/热点/反馈为577ad8b。测试使用campaign-flow独立档。
 
 - Godot `--headless --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：124 checks / 0 failures。
 - Godot `--headless --path . res://game/run/location_check.tscn`：134 checks / 0 failures。
@@ -84,3 +84,28 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - `--readability-capture`：已有静态idle首帧/头像、目标、战报去向截图，缓存m1-readable-battle/report-*.png；截图不代表人工视觉批准。
 - 标准版Godot `--headless --path . --export-release Web builds/web/index.html`导出成功。隔离HTML副本readable-preview.html args为["--","--campaign-flow-check","--exploration-preview"]，启动在教学完成后的测试基地，不覆盖正式玩家档。鼠标已检查图书馆入口、路线前往、热点选中只展开详情、读取保存、回到同地点标记已查看、出口禁用、战前整备、实际胜利、领取奖励后回到同地点并开放出口。
 - 校门/步道/球场/走廊采用不同原生几何示意，图书馆为书架与阅读区；真实校园资料、正式背景、Android与陌生玩家验收仍未完成。原图加载和证书警告仍为既有环境问题。
+
+### 混合动画独立验证入口
+
+混合动画新增重跑入口：`res://scenes/battle_demo/hybrid_contract_check.tscn`、`py -3 tools/art/promotion/promote_animation.py chalk_spirit --check`；完整九组合与显式导出矩阵见 ART-03（2026-09-16，56dc3aa＋F 清理树）。
+
+## M1 与美术管线合并验证 E22
+
+2026-09-16；合并输入为M1 `577ad8b`与main `d595f07`，验证合并树为本章节所在提交。冲突仅在integration.md与本文件，保留两方有效内容；运行代码自动合并，没有重写美术资产或批准。
+
+沿用页首PowerShell 7和Godot命令，各项独立日志为`.godot/merge-<检查名>-output.log`：
+
+| 入口 | 本次结果 |
+| --- | --- |
+| `game/meta/campaign_check.tscn` | 103 checks / 0 failures |
+| `game/run/location_check.tscn` | 134 checks / 0 failures |
+| 探索场景 `-- --campaign-flow-check` | 124 checks / 0 failures，含三阶段终局 |
+| 探索场景 `-- --run-smoke` | RUN_INPUT、RUN_SMOKE通过，旧路线/存档/奖励/重试/暂停 |
+| `scenes/battle_demo/hybrid_contract_check.tscn` | failures=0 |
+| 同目录 `animation_check.tscn`、`presentation_check.tscn`、`skill_vfx_check.tscn` | 全部PASS或failures=0 |
+| `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 23 tests OK |
+| `py -3 -B tools/art/promotion/promote_animation.py chalk_spirit --check` | PASS，13文件 |
+| 图形探索 `-- --campaign-flow-check --exploration-capture` | 102 checks / 0 failures；三尺寸实际像素断言和完整图书馆路线通过，截图m1-readable-*.png |
+| 标准版Godot `--headless --path . --export-release Web builds/web/index.html` | 退出码0，合并树本地Web构建成功；本轮未重新执行浏览器全流程 |
+
+本轮未重新检验ART-03的120 Hz姿态等价边界，也未做Android/陌生玩家/时长验收；既有证书、原图及编辑器设置权限警告不作为脚本回归成功的替代证据。E20/E21的浏览器操作记录是此前版本证据。

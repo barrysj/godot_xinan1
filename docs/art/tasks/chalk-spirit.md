@@ -11,7 +11,7 @@
 
 ## 当前版本与方案
 
-- 当前使用版：`resources/content/enemies/chalk.tres` 已引用[正式动画资源](../../../resources/content/animations/chalk.tres)；头像取自正式待机／移动图集，远程弹道引用[正式弹体资源](../../../resources/content/animations/chalk_projectile.tres)。
+- 当前使用版：`resources/content/enemies/chalk.tres` 已引用[正式动画资源](../../../assets/art/characters/chalk_spirit/battle_animation.tres)；头像取自正式待机／移动图集，远程弹道引用[正式弹体资源](../../../resources/content/animations/chalk_projectile.tres)。
 - 已批准概念：[概念 001](../../../design/concepts/chalk-spirit/chalk-spirit/001/chalk_spirit_concept_001.png)，1254×1254 PNG；生成记录见[同目录 generation.md](../../../design/concepts/chalk-spirit/chalk-spirit/001/generation.md)。
 - 已退回资产候选：[图集 002](../../../design/concepts/chalk-spirit/chalk-spirit/002/battle_sheet.png)，1254×1254 RGBA PNG；因朝向和动画连续性问题保留追溯，不作为当前推荐版。
 - 已退回资产候选 003：[待机／移动](../../../design/concepts/chalk-spirit/chalk-spirit/003/locomotion_sheet.png)、[远程／施法](../../../design/concepts/chalk-spirit/chalk-spirit/003/combat_sheet.png)、[受击／濒危／退场](../../../design/concepts/chalk-spirit/chalk-spirit/003/reaction_sheet.png)三张 1254×1254 RGBA 图集；动作专属帧解决了 002 的复用抽动，但战斗图集主体比移动图集明显偏小，且旧 GIF 未展示返回待机的真实跳变。
@@ -72,3 +72,27 @@
 - 006 目录归一：早期试验曾用同一对象的临时别名；正式批准后已将最终候选归入 `design/concepts/chalk-spirit/chalk-spirit/006/`，移除全部别名目录，正式运行资产回归无版本号稳定路径。Git 历史保留被淘汰试验的追溯信息。
 - 未解决问题：混合动画 006 的正式接入效果仍待人工评审；后续若改变原图、运行尺寸、锚点、骨骼时序或尾迹节奏，按受影响阶段重新评审。
 - 本地提交：概念批准 `a26fb1c`；轻量弹体候选与通用接口 `bde0942`；角色动画 005 正式资产与接入 `6206374`；混合方案验证 `aaf67f7`；资产 006 批准 `bcdac72`；混合运行时接入 `0cac80a`；Manifest 预览修复 `8bd5411`。
+
+## 通用混合管线迁移验收（2026-09-16）
+
+实施起点 ee5b780，正式包基线 56dc3aa＋本记录同提交的 F 清理树。006 批准状态保持原记录，技术迁移不新增审美批准；接入效果仍待负责人评审。
+
+- 六骨骼动作进入 animations.tres，层级／枢轴／遮挡／Sprite2D／双环法阵与挂点进入 presentation.tscn。共享控制器手动定位；death 保留已批准 SpriteFrames，原图、主体尺寸与横纵比、脚底锚点不变。
+- 迁移前后比较覆盖 144 Hz 前两秒与连续状态至 89 秒；最大骨骼位置差 0.0204、旋转差 0.00049 弧度、缩放向量差 0.00119、颜色通道差 0.00049，显隐差异 0。见[七动作前后对照](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/hybrid-before-after.png)和[数值验证日志](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/hybrid-comparison.log)。
+- 候选在当前树直接加载通过后，删除候选与正式专用表现脚本／场景及旧资源入口。没有新增角色专用 PowerShell 或 Python 工具。
+- 13 文件确定性提升、九组帧率／倍速全事件与战斗结果、暂停／单步／重开／双朝向／序列帧回退均通过。Godot 运行日志无脚本错误和 Bone2D 警告；既有根证书与原图加载提示仍存在。
+- 预生成七动作 GIF 与[完整巡演](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/all-actions.gif)由同一通用导出生成。普通预览及资源台启动无资产写入。实际七动作资源台页和真实战斗截图见下方证据。
+- [七动作资源台页面](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/hybrid-resource-desk.png)、[真实战斗](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/hybrid-real-battle.png)。
+- 96 秒连续曲线覆盖当前战斗时限；关闭循环并超长观看的预览在 96 秒处重新循环。此限制与原始来源在 generation.md 明示。
+
+## 稀疏轨道修复（2026-09-16）
+
+替代上节 96 秒密集曲线方案。保留批准原图和动作设计，将常量还原为场景属性，周期分层短循环；当前库 281.37 KiB／4,824 keys，最长片段 3.4014 秒。主动作 2～54 轨，恢复列表 59 轨，所有循环层合计在内全库 257 轨。
+
+动作衔接、600 秒时间点姿态、九组模拟时钟、回退和 23 项 Python 测试通过；误差及性能完整数据见 ART-03。此前 96 秒整体循环限制已消除，接入视觉评审状态不变。
+
+2026-09-16 工具归档复核：旧 144 Hz 姿态采样通过；新增 120 Hz 在收招跳变附近发现差异，见 ART-03 已知边界及候选 review/codex-workflow/pose-* 证据。迁移缓存已清理，历史输入可由 Git 恢复，生产资源和人工批准未变。
+
+- [修复前后施法](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-cast-comparison.png)
+- [姿态对照日志](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-comparison.log)
+- [实际战斗](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-real-battle.png)

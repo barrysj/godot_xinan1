@@ -1,0 +1,389 @@
+{
+  "source": "res://.godot/animation-benchmark/old.tscn",
+  "library": "res://.godot/animation-benchmark/dense.tres",
+  "output": "res://.godot/animation-benchmark/compact.tres",
+  "lengths": {
+    "idle": 1.5,
+    "move": 0.48,
+    "critical": 1.8
+  },
+  "actions": {
+    "idle": [
+      {
+        "period": 1.9634954084936207,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:y",
+            "method": "_reset_rig",
+            "target": "HybridCutoutRig/Skeleton2D:position:y"
+          }
+        ]
+      },
+      {
+        "period": 1.5,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:y",
+            "subtract_method": "_reset_rig"
+          }
+        ]
+      },
+      {
+        "period": 3.0,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:rotation"
+          }
+        ]
+      },
+      {
+        "period": 2.855993321445266,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone/LauncherBone:rotation"
+          }
+        ]
+      },
+      {
+        "period": 2.6179938779914944,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone/OrbiterBackBone:position"
+          }
+        ]
+      },
+      {
+        "period": 3.141592653589793,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone/OrbiterTopBone:position"
+          }
+        ]
+      },
+      {
+        "period": 2.380952380952381,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust00:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust00:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust04:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust04:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust08:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust08:modulate"
+          }
+        ]
+      },
+      {
+        "period": 2.0833333333333335,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust01:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust01:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust05:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust05:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust09:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust09:modulate"
+          }
+        ]
+      },
+      {
+        "period": 1.8518518518518516,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust02:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust02:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust06:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust06:modulate"
+          }
+        ]
+      },
+      {
+        "period": 1.6666666666666667,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust03:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust03:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust07:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust07:modulate"
+          }
+        ]
+      }
+    ],
+    "move": [
+      {
+        "period": 1.9634954084936207,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:y",
+            "method": "_reset_rig",
+            "target": "HybridCutoutRig/Skeleton2D:position:y"
+          }
+        ]
+      },
+      {
+        "period": 0.48,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:x"
+          },
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:y",
+            "subtract_method": "_reset_rig"
+          },
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:rotation"
+          },
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone/LauncherBone:rotation"
+          },
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone/OrbiterBackBone:position"
+          },
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone/OrbiterTopBone:position"
+          }
+        ]
+      },
+      {
+        "period": 1.763668430335097,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust00:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust00:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust04:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust04:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust08:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust08:modulate"
+          }
+        ]
+      },
+      {
+        "period": 1.5432098765432098,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust01:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust01:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust05:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust05:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust09:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust09:modulate"
+          }
+        ]
+      },
+      {
+        "period": 1.371742112482853,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust02:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust02:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust06:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust06:modulate"
+          }
+        ]
+      },
+      {
+        "period": 1.2345679012345678,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust03:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust03:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust07:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust07:modulate"
+          }
+        ]
+      }
+    ],
+    "critical": [
+      {
+        "period": 1.9634954084936207,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:y",
+            "method": "_reset_rig",
+            "target": "HybridCutoutRig/Skeleton2D:position:y"
+          }
+        ]
+      },
+      {
+        "period": 0.36959913571644626,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:x"
+          },
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:rotation"
+          }
+        ]
+      },
+      {
+        "period": 0.7853981633974483,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/Skeleton2D/RootBone:position:y",
+            "subtract_method": "_reset_rig"
+          }
+        ]
+      },
+      {
+        "period": 3.4013605442176873,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust00:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust00:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust04:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust04:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust08:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust08:modulate"
+          }
+        ]
+      },
+      {
+        "period": 2.9761904761904767,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust01:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust01:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust05:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust05:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust09:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust09:modulate"
+          }
+        ]
+      },
+      {
+        "period": 2.6455026455026456,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust02:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust02:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust06:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust06:modulate"
+          }
+        ]
+      },
+      {
+        "period": 2.380952380952381,
+        "tracks": [
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust03:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust03:modulate"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust07:position"
+          },
+          {
+            "path": "HybridCutoutRig/IndependentDust/Dust07:modulate"
+          }
+        ]
+      }
+    ],
+    "ranged": [],
+    "cast": [],
+    "hurt": []
+  },
+  "reset": {
+    "HybridCutoutRig/Skeleton2D:position:y": 0.0
+  },
+  "scene_input": "res://assets/art/characters/chalk_spirit/presentation.tscn",
+  "scene_output": "res://.godot/animation-benchmark/compact-scene/presentation.tscn",
+  "canvas": [
+    288,
+    288
+  ],
+  "source_revision": "ee5b780",
+  "library_revision": "804bd51",
+  "max_keys": 6000,
+  "max_bytes": 524288
+}

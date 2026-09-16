@@ -11,7 +11,8 @@ var action: Dictionary = {}
 func consume(event: Dictionary) -> void:
 	if event.kind == "action_started":
 		action = {"age": 0.0, "windup": event.windup, "duration": event.duration,
-			"direction": (event.to - event.from).normalized(), "casts": event.casts}
+			"direction": (event.to - event.from).normalized(), "casts": event.casts,
+			"mode": event.get("mode", "attack")}
 	elif event.kind in ["action_cancelled", "action_finished"]:
 		action = {}
 	elif event.kind == "impact" and event.effect == "damage" and event.actual > 0:
@@ -27,7 +28,6 @@ func advance(delta: float, unit: Dictionary) -> void:
 	if not alive: death_age += delta
 	hurt_age += delta
 	motion_time += delta
-	if not action.is_empty(): action.age = minf(action.age + delta, action.duration)
 	var direction: Vector2 = unit.get("screen_facing", unit.get("facing", Vector2.ZERO))
 	if absf(direction.x) > 0.15: facing_right = direction.x > 0
 
