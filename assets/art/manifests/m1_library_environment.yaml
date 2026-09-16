@@ -34,6 +34,39 @@ variants:
       transparent: false
       state: daily
       source_identity: user_provided_library_atrium_references
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/003
+    files:
+      concept: concept.png
+    metadata:
+      view: "栏杆俯视中庭"
+      source_identity: user_photos_and_user_floorplan_description
+  concept_004:
+    stage: concept
+    version: "004"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/004
+    files:
+      concept: concept.png
+    metadata:
+      view: "外窗长桌走廊望书架"
+      source_identity: user_photos_and_user_floorplan_description
+  concept_005:
+    stage: concept
+    version: "005"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/005
+    files:
+      concept: concept.png
+    metadata:
+      view: "书架通道望内侧环廊"
+      source_identity: user_photos_and_user_floorplan_description
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-library-environment.md
