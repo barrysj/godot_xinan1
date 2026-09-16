@@ -50,6 +50,19 @@ variants:
     metadata:
       source_identity: user_photos_radial_layout_and_atrium_correction
       state: daily
+  concept_004:
+    stage: concept
+    version: "004"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/004
+    files:
+      atrium_down: atrium-down.png
+      window_corridor: window-corridor.png
+      shelf_to_atrium: shelf-to-atrium.png
+    metadata:
+      source_identity: user_detail_feedback_on_concept_003
+      state: daily
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-library-environment.md

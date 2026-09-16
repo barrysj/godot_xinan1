@@ -2,6 +2,23 @@
 
 状态：概念候选已生成，等待人工概念评审；尚未批准、未制作正式资产、未接入 Godot。
 
+## 当前修订：concept_004（2026-09-17）
+
+用户对 003 的反馈原意：“作为概念图还可以，颜色、光比、大结构都不错，但细节把握不佳”。此反馈记录为方向认可及细节修改要求，未推定整套概念批准。
+
+按上轮聊天展示顺序逐图记录：
+
+| 被评对象 | 用户意见 | 本轮处理与状态 |
+| --- | --- | --- |
+| 图 1：003/atrium-down.png | 左侧楼梯重绘；每个栏杆边短桌；楼层排列整齐 | 编辑为 004/atrium-down.png；楼层与梯段重绘、补桌，远景桌位对应仍待审 |
+| 图 2：003/window-corridor.png | 书架旋转 90°，从中庭径向向外 | 编辑为 004/window-corridor.png；方向变化可见，额外书架顶灯待修 |
+| 图 3：临时失败输出 exec-599b6570-40f6-42e3-8a8e-1cf08caef48a.png | 舍弃 | 未进入候选或 Manifest，不继续使用 |
+| 图 4：003/shelf-to-atrium.png | 保留，短桌紧贴栏杆，与书架间留过道 | 编辑为 004/shelf-to-atrium.png；桌架分离、过道可见，贴合程度待审 |
+
+四个版本是方案修订序列；004 含三个视角，不按视角另起版本。原图、输入与精确提示词见 design/concepts/m1-library-environment/m1_library_environment/004/generation.md。003 保留原文件供比较；所有新图待评审、未选用、未接入。
+
+验证基线 23e0c25，日期 2026-09-17：AssetCatalog.scan 核验 001/002/003/004 图片数 1/4/3/3、文件可读且无缺失，PNG 尺寸和 SHA-256 实测、git diff --check。未改游戏。待统筹：方向获正面反馈但细节审核尚未完成。
+
 ## 当前修订：concept_003（2026-09-17）
 
 用户反馈桌架应径向排布；底层中央画展，周边水吧与沙发。已按此生成三个修订视角，统一为 003：atrium-down.png、window-corridor.png、shelf-to-atrium.png，位于 design/concepts/m1-library-environment/m1_library_environment/003/，生成依据及偏差见同目录 generation.md。
