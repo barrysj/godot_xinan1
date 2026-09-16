@@ -1,6 +1,22 @@
-# 可复用照片卡
+# 可复用照片闪卡
 
 本能力不绑定某个里程碑。当前为独立预览原型，不改变主游戏流程；人工评审见[合照卡任务](tasks/class-photo-holo-card.md)。
+
+## 当前能力与实现
+
+实现基线 `dc8da12`。已完成原照保留、原生卡框、边框虹彩与照片镀膜、独立开关、四向倾斜修正、共享卡片组件、集合登记及可复用截图。普通运行游戏还看不到合照卡；现有入口只有独立预览与资产浏览工具。
+
+| 层次 | 实现入口 | 职责 |
+| --- | --- | --- |
+| 每卡内容 | `assets/art/holo_cards/<id>/card.tres`；`game/art/holo_card_visual.gd` | 引用原图、四项文案及效果强度；共享 Resource 文案默认值为空 |
+| 版式与交互 | `scenes/holo_card/card_art.gd`、`holo_card_view.gd/tscn` | 在静态 SubViewport 绘制卡框、文字与原照，管理尺寸、输入及每实例材质 |
+| GPU 效果 | `scenes/holo_card/holo_card.gdshader` | 对卡面做视角变换、边框虹彩和照片区域镀膜；随视角变化而非时间闪烁 |
+| 图片交付 | `tools/art/holo_card/render-review.ps1` → `scenes/holo_card/render_review.tscn` | 加载同份资源、固定正面、实际渲染并覆盖同目录 review.png，不带预览界面 |
+| 资产浏览 | `tools/art/asset_manager/catalog.py`、`server.py`、`static/app.js` | 在登记集合内发现资源，解析文案和引用，展示 review/原图，向 Godot 传递同一资源路径 |
+
+`card.tres → 共享组件 → 游戏效果／review.png`；资源台读取同份 `.tres` 和已生成 PNG，不维护另一份卡片文案，不在游戏内加载 YAML。
+
+**自动发现边界：**资产浏览工具会发现集合的直接子目录；Godot 编辑器会导入资源，但游戏运行时尚无卡片目录加载器，也没有卡册、展示入口、解锁或存档接入。导出包的资源包含规则及导出后发现能力尚未验收，不能从编辑器导入成功推断这些能力已完成。
 
 ## 换图与复用
 
@@ -8,7 +24,7 @@
 
 活动卡统一放在 `assets/art/holo_cards/<id>/`：`photo.jpg` 是原图，`card.tres` 是图片引用与文案的唯一事实源，`review.png` 是 Godot 实际正面流光截图。Godot 自动生成的 `.import` / `.uid` 元数据另行保留。无需 Blender，也无需每卡单独 Manifest 或 concept/asset 阶段。
 
-复制 `assets/art/holo_cards/class_photo/` 到新 ID，替换原图，修改 `card.tres` 的图片路径和四项文案，再执行：
+用户提供原图和文案即可由 Codex 制作。创建新 ID 目录，复制样本 `card.tres`（不要复制旧 `.import` 的资源身份），放入原图并修改图片路径及 `title`、`subtitle`、`caption`、`edition`；文字使用短句，缺少必要文案时询问或明确标为草案，不冒充用户原文。照片流光按样本的 `photo_foil_strength = 0.65` 起步；新建空 Resource 默认是 0，仅开边框光。然后执行：
 
 ```powershell
 ./tools/art/holo_card/render-review.ps1 -Card res://assets/art/holo_cards/class_photo/card.tres -Godot '你的 Godot 可执行文件'
@@ -27,9 +43,13 @@ objects:
 
 资源台仅发现该集合下一层的 `*/card.tres`，读取同份文案，以 `review.png` 作缩略图，保留原图查看与 Godot 预览。刷新扫描即可发现新卡；缺图、缺截图会提示。图片引用必须留在对应卡目录内。普通对象沿用原 Manifest 流程。
 
+完成后查看实际 review，核对文字、原照完整性、流光和默认角度；资源台刷新校验，确认以 review 为缩略图，预览传入同份资源。更换内容不需要修改共享 shader。修改已有卡时以 Git 追溯旧版，不额外建立每卡阶段文档；保留必要的原图来源和使用范围说明。
+
 下面的 001/002 与 Blender 路线是历史实验记录，不是新增卡片的必经步骤。活动默认预览已指向 `assets/art/holo_cards/class_photo/card.tres`。
 
-1. 复制 `design/concepts/class-photo-holo-card/card/002/card.tres` 为新卡资源，修改 `photo` 的纹理引用；可选修改 `title`、`subtitle`、`caption`、`edition`。001 是仅边框流光版本，002 新增照片镀膜扫光，原图共用、不重绘。
+### 在 Godot 中复用组件
+
+1. 使用最简流程制作的 `assets/art/holo_cards/<id>/card.tres`。历史 001 是仅边框流光版本，002 新增照片镀膜扫光；两者留存对照，不作为新的活动目录。
 2. 实例化 `scenes/holo_card/holo_card_view.tscn`，给根节点的 `visual` 指定该资源。容器使用 8:7 比例，例如 AspectRatioContainer；建议一次仅展示少量详情卡。
 3. 运行时使用 `set_visual(resource)` 换卡。虹彩、扫光、倾斜、指针／触摸／方向键输入均复用；不同实例独立材质，不串参数。
 
@@ -51,7 +71,7 @@ PowerShell 7，在项目根执行：
 ./tools/art/holo_card/build-blender.ps1 -Python 'C:/Users/SongJun/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'
 ```
 
-可通过 `-Godot`、`-Blender` 覆盖本机工具路径。Layers 目前专用于本次样本，输出到样本的 ruic/assets；它不是批量生产命令。Blender 脚本可通过 `-CardDirectory` 指定另一套已准备的四图层目录。候选被批准后需要修改时创建新编号，不覆盖获批版本。
+可通过 `-Godot`、`-Blender` 覆盖本机工具路径。Layers 目前专用于历史样本，输出到样本的 ruic/assets；它不是新卡生产命令。Blender 脚本可通过 `-CardDirectory` 指定另一套已准备的四图层目录。历史编号候选不覆盖；活动卡使用上述稳定目录与 Git 追溯。
 
 运行时只依赖项目 Godot、字体／Token 和原图，不加载 Blender、GLB、Three.js、浏览器或插件。每张活动卡使用一个 1600×1400 的静态 SubViewport 加一个 CanvasItem shader；大量列表应使用普通缩略图，点击详情才创建效果卡，未验证大量并发卡性能。
 
@@ -61,11 +81,15 @@ PowerShell 7，在项目根执行：
 
 ## 验证范围
 
+`dc8da12`：资源台 25 项测试通过，实际页面 9 对象／102 登记文件／0 不一致；截图脚本实际输出 1600×1400 PNG，重复生成 SHA256 一致，预览进程参数核对为活动卡资源。命令：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`。这是已记录的实现验证，不表示每次文档更新都重跑引擎。
+
+新增内容至少重建并查看 review、检查资源台引用与独立预览；修改共享效果还应运行 `run-holo-card.ps1 -Mode Check` 及 `scenes/holo_card/check_tilt_direction.tscn` 四向检查。后者尚未包含在 Mode Check 中；旧检查会写历史证据目录，应检查差异，不能无意覆盖归档证据。截图脚本失败要查看日志并核对输出，不将既有 PNG 当成本次成功结果。
+
 Windows Godot 4.7.2 Compatibility 实际渲染通过；四种窗口尺寸、两向倾斜、流光开关、静态、竖图替换、实例隔离和模拟触摸均有证据。实际手机触控、Web 导出、性能预算和正式主界面接入尚未验收。小屏卡内文字偏小，预览另提供标题与原图入口；正式列表不应把卡内小字作为唯一信息。
 
 ## 复用盘点与简化建议
 
-以下为 2026-09-16 对实现基线 2587e92 的代码盘点与建议，尚未实施通用化重构。按 codebase-design 的小 Interface / 深 Module 原则分析：调用方应只提供卡内容、可选样式和显示状态，不应知道 shader uniform、SubViewport 或制作目录。
+以下保留基线 2587e92 的盘点背景，不作为当前生产步骤。到 `dc8da12` 已移出共享默认文案、校验预览资源类型、建立活动卡目录、集合发现与独立 review 渲染脚本；统一回归入口、布局参数集中、生命周期测试和批量性能优化仍未实施。调用方应只提供卡内容和显示状态，不应承担 shader 与 SubViewport 内部管理。
 
 ### 已完成改动
 
@@ -79,7 +103,7 @@ Windows Godot 4.7.2 Compatibility 实际渲染通过；四种窗口尺寸、两�
 
 | 类别 | 当前文件／内容 | 判断 |
 | --- | --- | --- |
-| 通用运行 Module | game/art/holo_card_visual.gd；scenes/holo_card 下 view.gd/tscn、gdshader | 已支持换图，但默认文案、类型约束和生命周期仍需收口 |
+| 通用运行 Module | game/art/holo_card_visual.gd；scenes/holo_card 下 view.gd/tscn、gdshader | 已支持换图、默认文案清空和预览类型检查；生命周期仍需进一步测试 |
 | 项目共享样式 | card_art.gd、项目字体、颜色和动画 Token | 可复用到同一校园风格，不能宣称任意比例／主题即插即用 |
 | 待解耦的工具 | preview.gd/tscn、方向检查、run-holo-card.ps1 | 展示、测试、图层导出混合，存在合照样本和输出路径硬编码 |
 | 可选离线 Adapter | tools/art/holo_card 下包装器、固定上游源码和 LICENSE | 保留制作能力与许可，不作为每张 Godot 卡的必经步骤 |
@@ -100,9 +124,9 @@ Windows Godot 4.7.2 Compatibility 实际渲染通过；四种窗口尺寸、两�
 
 `提供原图与文案 → 生成一份卡 Resource → 共用 Godot Module 预览 → 检查＋保留关键证据 → 用户确认该版本`。
 
-只在确实需要离线渲染、可编辑三维源文件或几何参考时追加 Blender 支线；普通换图不做抠图，不重生成四图层，不要求 AI 生图，不重新做 GLB。用户确认后由工具提取 Resource 更新 Manifest 与任务引用，避免手填多份重复参数；Manifest 仍是管理记录，不引入运行时 YAML 加载。
+只在确实需要离线渲染、可编辑三维源文件或几何参考时追加 Blender 支线；普通换图不做抠图，不重生成四图层，不要求 AI 生图，不重新做 GLB。当前 Manifest 仅登记集合，新增卡无需逐张更新 Manifest 或任务文档；不引入运行时 YAML 加载。
 
-第一批建议只实施 1～3，再拿第二张内容完全不同的图片验收“无需改共享代码”；样式抽象与性能优化依据真实需求推进。建议验收还包括新环境从无缓存启动、失败日志判定、重新运行不覆盖归档证据，以及两个实例不同照片／开关不互相影响。
+后续按真实需求推进上述剩余事项，不把全部重构作为换图前提。第二张完整卡内容、导出包和批量性能尚待验证；当前不承诺任意主题即插即用。
 
 发布前需另行核查导出范围：当前 export_presets 使用 all_resources 且未配置排除；虽然 ruic 和 review 被 .gdignore 隔离，合照 source.jpg 与 .tres 仍可被 Godot 导入，不能把“主流程没引用”当作“不会进包”。默认发布包应只包含批准且授权公开的卡资源，候选与测试场景应排除。
 

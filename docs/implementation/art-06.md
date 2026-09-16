@@ -6,6 +6,8 @@
 
 ## 验证
 
+- 2026-09-16 文档与技能整理，核对基线 `dc8da12`：`docs/art/holo-cards.md` 集中维护已完成功能、实现职责、最简制作与自动发现边界；现有 `.agents/skills/art-implementation/SKILL.md` 增加闪卡子流程，详细步骤引用主题文档，不新建独立技能或重复手册。仅静态检查技能格式、引用和 Git 差异，不重跑游戏、不改批准状态。待统筹：技能已纳入闪卡简化例外；运行时自动发现和主游戏展示仍未实施，总览与 Roadmap 本轮不改。
+
 - 2026-09-16（基线 b9daea3）：活动卡移至 `assets/art/holo_cards/class_photo/`，保留历史实验；默认预览加载活动资源，共享 Resource 不再携带合照默认文案。新增 `tools/art/holo_card/render-review.ps1` 与 `scenes/holo_card/render_review.tscn`，运行 `-Card res://assets/art/holo_cards/class_photo/card.tres -Godot <引擎路径>` 生成实际 1600×1400 默认角度流光 review.png。Godot 4.7.2 Compatibility 渲染通过，无渲染报错；重复渲染 SHA256 一致。首次导入仍有项目原有字体缓存、插件常量及 EditorSettings 提示，不算全项目无错误。待统筹：活动卡采用原图 + 单份资源 + 截图最简流程，截图需在内容或共享特效改动后手动重建；不增加 Blender 依赖，主游戏未接入。
 
 - 2026-09-16 归属盘点和清理，基线 `2587e92`：见[复用盘点与简化建议](../art/holo-cards.md#复用盘点与简化建议)。移除本工作树 304 个可重建缓存／临时文件，共 148.55 MiB；Git 忽略文件清单清空，保留全部源资产、评审证据和资源身份文件。本轮不改运行画面，不重启引擎；静态检查路径、Manifest、Git 差异。通用化建议未实施；待统筹项包含解耦样本、统一检查／导入和正式导出资源筛选，不改总览或 Roadmap。
