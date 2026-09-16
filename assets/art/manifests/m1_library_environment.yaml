@@ -80,6 +80,24 @@ variants:
     metadata:
       state: daily
       source_identity: user_feedback_open_stair_bay_aisle_octagonal_floors
+  asset_006:
+    stage: asset
+    version: "006"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/006
+    files:
+      atrium_down: atrium-down.png
+      window_corridor: window-corridor.png
+      shelf_to_atrium: shelf-to-atrium.png
+    metadata:
+      asset_type: campaign_environment_background_set
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      usage: [campaign_library]
+      source_variant: concept_005
+      derivation: exact_copy_no_visual_change
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-library-environment.md
