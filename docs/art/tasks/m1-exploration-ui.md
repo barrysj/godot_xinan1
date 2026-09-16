@@ -1,6 +1,18 @@
 # 美术任务：M1 探索 UI 视觉样板
 
-状态：概念 004 已获人工批准；正式组件、交互与多分辨率运行效果待后续验收，尚未接入。
+状态：概念 004 已获人工批准；原生组件候选 005 已完成独立运行验证，待人工资产评审，主游戏尚未接入。
+
+## 原生组件候选 005（2026-09-17）
+
+用户在概念批准后回复“继续吧”，据此制作正式组件候选，不扩展为主游戏接入授权。当前选定概念仍是 004；005 为 asset / unselected / pending。以下历史范围与未开始表述由本节更新。
+
+- 实现入口：`design/concepts/m1-exploration-ui/m1_exploration_ui/005/preview.tscn`，配套 preview.gd、hotspot.gd、detail_panel.gd；全是原生节点与绘制，未改 campaign_board/panel/hub。
+- 样式：紧凑蓝黑切角浮窗、侧边短光、实心短动作按钮，普通／聚焦／选中／已查看／守卫解除状态；保持四热点相对位置，不增加场景落点。
+- 验证基线：0643761；Godot 4.7.2 compatibility。运行命令：`Godot_v4.7.2-stable_win64_console.exe --path . --rendering-method gl_compatibility design/concepts/m1-exploration-ui/m1_exploration_ui/005/preview.tscn -- --ui-capture`。
+- 实际截图：`design/concepts/m1-exploration-ui/review/codex-workflow/asset-005/`，1920×1080、2560×1440、1920×1200 各 default/detail/complete。检查鼠标移动＋按下＋释放打开热点、Tab 弹窗焦点、Esc 关闭与恢复、空白关闭、读取完成、弹窗边界、胜利未领奖保持封锁以及领奖开放。
+- 结果：运行输出 `EXPLORATION_UI_CANDIDATE PASS`；截图真实来自 Godot 视口。导入阶段发现已有 addons/ggt-core/settings/settings_menu.gd 编辑器解析问题，未修改任务外插件，独立预览不受影响。
+- 边界：奖励与调查是本场景样例状态，不接存档或玩法；没有实体手柄测试、手机／超宽屏、动态信号特效验收。背景仍仅研究稿。人工通过 005 后方可提升正式资源并进入主游戏接入评审。
+
 
 ## 004 人工批准（2026-09-17）
 

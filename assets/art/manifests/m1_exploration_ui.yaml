@@ -81,6 +81,21 @@ variants:
       style_layer: anomaly
       detail_mode: click_popup
       implementation_note: static_state_studies_not_runtime
+  asset_005:
+    stage: asset
+    version: 005
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/005
+    files:
+      scene: preview.tscn
+      controller: preview.gd
+      hotspot: hotspot.gd
+      detail_panel: detail_panel.gd
+      source_notes: generation.md
+    metadata:
+      implementation_note: isolated_native_component_candidate_not_campaign_integration
+      concept_basis: concept_004
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 已批准，正式组件、交互与多分辨率运行效果未验收，尚未接入。"
