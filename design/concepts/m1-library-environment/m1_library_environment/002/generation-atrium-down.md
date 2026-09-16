@@ -1,4 +1,6 @@
-# concept_003 · 栏杆俯视中庭
+# concept_002 / atrium-down · 栏杆俯视中庭
+
+归档更正：以下 003/004/005 是旧聊天中的误编号，分别对应本版 atrium-down/window-corridor/shelf-to-atrium；实际图为本目录 atrium-down.png。它们是同版视角，不是后续版本。保留原生成记录供追溯。
 
 2026-09-16，内建 imagegen；参考输入为 concept_002 原图，空间依据为用户本轮环廊草图及文字。实际输出 concept.png 已原样保存和对话展示；unselected + pending，not_integrated。
 
