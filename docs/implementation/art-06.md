@@ -6,6 +6,8 @@
 
 ## 验证
 
+- 2026-09-16 倾斜方向修复，基线 `3023205`：屏幕 Y 向下而旋转矩阵 pitch 未反号，导致上下与左右方向相反。仅反转垂直角，不改输入、流光或照片位移。新增 `scenes/holo_card/check_tilt_direction.tscn`，通过实际组件鼠标事件入口驱动四向输入并测量 GPU 渲染透明轮廓：修复前左右通过、上下失败（指针侧跨度 602 > 对侧 578），修复后四向通过（上下 578 < 602，左右 504 < 524）。用 Godot `--path . --rendering-method gl_compatibility res://scenes/holo_card/check_tilt_direction.tscn` 重跑，failures=0；既有 `--card-check` 全部通过，覆盖四分辨率及独立流光开关。证据位于 review/codex-workflow/tilt-direction/，含 up-before.png 与 checks-before.json；最终场景测试无脚本／shader 报错。初次脚本型测试触发项目 autoload 对 current_scene 的空引用，已改为常规场景测试避免该无关启动问题。
+
 - 2026-09-16 照片流光增量，基线 `3f28db6`：002 新增照片虹彩和“照片光”独立按钮，原“流光”改称“框流光”；001 兼容保持无照片镀膜。使用 Godot console `--path . --rendering-method gl_compatibility res://scenes/holo_card/holo_card_preview.tscn -- --card-check` 直接运行（不经过有 EditorSettings 提示的导入步骤），结果 failures=0，无运行报错。检查覆盖四分辨率、新按钮信号连接、独立开关的照片区域像素、竖图留边不着色、静态稳定和既有交互。截图及 checks.json 位于原证据目录下 photo-foil-002/，旧证据保留。实际鼠标／手机触摸端到端和 Web 仍未验收。
 
 - 日期：2026-09-16；基线 main d01b03e，新分支 art/class-photo-holo-card 的本功能提交。

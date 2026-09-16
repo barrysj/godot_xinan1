@@ -10,7 +10,9 @@ uniform bool effects_enabled = true;
 uniform bool frame_effects_enabled = true;
 uniform bool photo_effects_enabled = true;
 void fragment() {
-    vec2 angles = tilt * 0.20944;
+    // Screen Y grows downward: invert pitch so every pointer-side edge recedes.
+    // Keep tilt itself unchanged for pointer-driven foil and photo displacement.
+    vec2 angles = tilt * vec2(0.20944, -0.20944);
     float cx = cos(angles.y), sx = sin(angles.y);
     float cy = cos(angles.x), sy = sin(angles.x);
     mat3 rot = mat3(vec3(cy,0.0,-sy), vec3(sy*sx,cx,cy*sx), vec3(sy*cx,-sx,cy*cx));

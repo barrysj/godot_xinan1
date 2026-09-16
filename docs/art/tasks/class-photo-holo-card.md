@@ -2,6 +2,8 @@
 
 ## 当前候选 002：照片流光与独立开关
 
+接入修正（2026-09-16，基线 3023205）：用户反馈上下倾斜反向并要求修复。现仅反转 shader 垂直角度，使上下与左右均为指针所在一侧后倾；原照片及流光参数不变。四向实际渲染测量和原有检查通过，对照证据位于 `design/concepts/class-photo-holo-card/review/codex-workflow/tilt-direction/`；接入效果仍待用户评审，不据此升级资产批准。
+
 2026-09-16 用户要求“还有能否给原图也加上流光效果？而不只有边框”，随后要求“新增一种开关”。本次授权范围为照片表面柔和虹彩扫光及独立控制，不是对最终视觉的批准。
 
 002 资源：`design/concepts/class-photo-holo-card/card/002/card.tres`，共用 001 原始 JPEG。默认预览已切至 002；001 资源仍保持照片流光强度 0。按工作流保留旧证据，新增实际渲染和 checks.json 位于 `design/concepts/class-photo-holo-card/review/codex-workflow/photo-foil-002/`。对照 photo-before / photo-after；photo-switch-off 仅关闭照片光；photo-only 仅开启照片光。
