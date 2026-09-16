@@ -2,7 +2,7 @@
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/locomotion_sheet.png" id="atlas"]
-[ext_resource type="Resource" path="res://resources/content/animations/chalk.tres" id="animation"]
+[ext_resource type="Resource" path="res://assets/art/characters/chalk_spirit/battle_animation.tres" id="animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
 region = Rect2(70, 110, 250, 250)

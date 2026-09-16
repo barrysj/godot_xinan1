@@ -17,5 +17,6 @@ if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) { throw "Controlle
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
 & $compiler /nologo /target:winexe /optimize+ /out:$outputPath /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll /reference:System.Web.Extensions.dll $sourcePath
 if ($LASTEXITCODE -ne 0) { throw "Controller build failed with exit code $LASTEXITCODE." }
+((Get-FileHash -LiteralPath $sourcePath,$PSCommandPath -Algorithm SHA256).Hash -join ':') | Set-Content -LiteralPath "$outputPath.sources"
 
 Write-Host "Built controller: $outputPath"

@@ -233,7 +233,7 @@ class CatalogTests(unittest.TestCase):
         chalk = next(obj for obj in result["objects"] if obj["id"] == "chalk_spirit")
         asset_006 = next(variant for variant in chalk["variants"] if variant["id"] == "asset_006")
         gif_previews = [preview for preview in asset_006["previews"] if preview["type"] == "gif"]
-        self.assertEqual(["idle", "move", "attack", "cast", "hurt", "critical", "death"], [preview["id"] for preview in gif_previews])
+        self.assertEqual(["idle", "move", "ranged", "cast", "hurt", "critical", "death"], [preview["id"] for preview in gif_previews])
         self.assertTrue(all(preview["supported"] for preview in gif_previews))
         self.assertEqual(0, result["summary"]["mismatches"])
         self.assertEqual(0, result["summary"]["missing"])

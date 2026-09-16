@@ -166,6 +166,9 @@ function animationBrowser(variant) {
     const asset = preview && variant.files.find(item => item.id === preview.file_id);
     const heading = document.createElement("strong"); heading.className = "animation-preview-name"; heading.textContent = clip.name || clip.id;
     stage.append(heading);
+    const description = document.createElement("p");
+    description.textContent = clip.backend === "skeleton" ? "骨骼动作 · 序列帧回退" : `序列帧 · ${clip.frames} 帧 · ${clip.fps} FPS${clip.loop ? " · 循环" : ""}`;
+    stage.append(description);
     if (asset && preview.supported) {
       const image = document.createElement("img"); image.src = fileUrl(asset); image.alt = `${clip.name || clip.id} GIF`; image.loading = "lazy"; stage.append(image);
     } else {
@@ -175,12 +178,9 @@ function animationBrowser(variant) {
   clips.forEach(clip => {
     const button = document.createElement("button"); button.type = "button"; button.className = "animation-action"; button.dataset.clipId = clip.id;
     const name = document.createElement("strong"); name.textContent = clip.name || clip.id;
-    const facts = [];
-    if (clip.frames !== undefined && clip.frames !== null) facts.push(`${clip.frames}帧`);
-    if (clip.fps !== undefined && clip.fps !== null) facts.push(`${clip.fps} FPS`);
-    if (clip.loop === true) facts.push("循环");
-    const meta = document.createElement("span"); meta.textContent = facts.join(" · ") || "帧信息未记录";
-    button.append(name, meta); button.addEventListener("click", () => showClip(clip)); buttons.push(button); list.append(button);
+    const backend = document.createElement("span");
+    backend.textContent = clip.backend === "skeleton" ? "骨骼动画" : "序列帧";
+    button.append(name, backend); button.addEventListener("click", () => showClip(clip)); buttons.push(button); list.append(button);
   });
   browser.append(list, stage);
   showClip(clips.find(clip => gifPreviews.get(clip.id)?.supported) || clips[0]);
@@ -202,7 +202,7 @@ function variantDetails(variant) {
   }
 
   const visibleFiles = variant.files.filter(item => item.role !== "preview_gif");
-  const animationRoles = new Set(["animation_resource", "effect_resource", "projectile_resource"]);
+  const animationRoles = new Set(["animation_resource", "animation_library", "effect_resource", "projectile_resource"]);
   const pages = {
     atlas: visibleFiles.filter(item => item.role === "atlas"),
     animation: visibleFiles.filter(item => animationRoles.has(item.role)),

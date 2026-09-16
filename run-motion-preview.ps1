@@ -12,10 +12,27 @@ param(
     [switch]$EnsureImport,
     [switch]$Check,
     [switch]$Capture,
+    [switch]$ExportPreviews,
+    [string]$PythonPath = '',
     [switch]$Tour
 )
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
 if (-not (Test-Path -LiteralPath $EnginePath)) { throw 'Godot not found. Set -EnginePath.' }
+if ($ExportPreviews -and ($Check -or $Capture -or $Tour)) { throw '-ExportPreviews cannot be combined with -Check, -Capture or -Tour.' }
+$pythonArgs = @()
+if ($ExportPreviews) {
+    if (-not $PythonPath) { $PythonPath = (Get-Command py.exe -ErrorAction Stop).Source; $pythonArgs = @('-3') }
+    & $PythonPath @pythonArgs -c 'import PIL'
+    if ($LASTEXITCODE -ne 0) { throw 'Preview export needs Python with Pillow. Set -PythonPath.' }
+    $producer = Join-Path $PSScriptRoot 'tools/art/animation/motion_previews.py'
+    $captureManifest = & $PythonPath @pythonArgs $producer prepare --unit $Unit --animation $Animation --action $Action
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to resolve export candidate.' }
+    $job = Get-Content -LiteralPath $captureManifest -Raw | ConvertFrom-Json
+    $Unit = $job.unit
+    $Animation = $job.animation
+    $Projectile = $job.projectile
+    $EnsureImport = $true
+}
 if ($EnsureImport) {
     $importLog = Join-Path $PSScriptRoot '.godot/art-manager-import.log'
     $importArgs = @('--headless', '--editor', '--path', ('"{0}"' -f $PSScriptRoot), '--quit', '--log-file', ('"{0}"' -f $importLog))
@@ -33,6 +50,14 @@ if ($Unit) { $previewArgs += "--preview-unit=$Unit" }
 if ($Projectile) { $previewArgs += "--preview-projectile=$Projectile" }
 if ($Presentation) { $previewArgs += "--preview-presentation=$Presentation" }
 if ($Action) { $previewArgs += "--preview-action=$($Action.ToLowerInvariant())" }
+if ($ExportPreviews) { $previewArgs += "--capture-manifest=$captureManifest" }
 $previewArgs += "--preview-speed=$($Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture))"
-& $EnginePath @previewArgs
-exit $LASTEXITCODE
+# The Windows GUI executable otherwise returns before capture/check completion.
+$quotedArgs = $previewArgs | ForEach-Object { '"{0}"' -f $_ }
+$process = Start-Process -FilePath $EnginePath -ArgumentList $quotedArgs -WorkingDirectory $PSScriptRoot -WindowStyle Hidden -Wait -PassThru
+if ($process.ExitCode -ne 0) { exit $process.ExitCode }
+if ($ExportPreviews) {
+    & $PythonPath @pythonArgs $producer encode --manifest $captureManifest
+    exit $LASTEXITCODE
+}
+exit 0

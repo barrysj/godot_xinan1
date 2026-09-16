@@ -140,7 +140,7 @@ func _inspection_unit(role: int) -> Dictionary:
 	for unit in units:
 		if unit.side == 0 and unit.role == role: return unit
 	var unit = _ally_unit(role, 0)
-	unit.animation = BattleAnimation.new(unit.battle_animation)
+	unit.animation = BattleAnimation.new(unit.battle_animation, unit.get("attack_modes", 1))
 	unit.presentation = UnitPresentation.new()
 	return unit
 
@@ -157,7 +157,7 @@ func _build_units() -> void:
 	background_canvas.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	queue_redraw()
 	for u in units:
-		u.animation = BattleAnimation.new(u.battle_animation)
+		u.animation = BattleAnimation.new(u.battle_animation, u.get("attack_modes", 1))
 		u.presentation = UnitPresentation.new()
 	_create_battle_presentations()
 	_update_battle_presentations()
@@ -184,7 +184,10 @@ func _process(delta: float) -> void:
 		skill_effects = skill_effects.filter(func(fx): return fx.age < fx.resource.duration())
 	super._process(delta)
 	for u in units:
-		if not u.get("action", {}).is_empty() and not u.presentation.action.is_empty():
+		var direction: Vector2 = u.presentation.action.get("direction", Vector2.ZERO)
+		u.presentation.action = u.get("action", {}).duplicate()
+		if not u.presentation.action.is_empty():
+			u.presentation.action.direction = direction
 			u.presentation.action.age = minf(u.action.age + accumulator, u.action.duration)
 		u.animation.sync_motion(u.moving and not simulation.closing, u.presentation.action)
 	_update_battle_presentations()
@@ -260,7 +263,7 @@ func _finish_delay() -> float:
 	return remaining
 
 func _present_action(actor: Dictionary, casts_skill: bool) -> void:
-	actor.animation.play(&"cast" if casts_skill else &"attack")
+	actor.animation.play(&"cast" if casts_skill else StringName(actor.action.get("mode", "attack")))
 
 func _present_simulation_event(event: Dictionary) -> void:
 	var visual_event = event.duplicate(true)

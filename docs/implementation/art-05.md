@@ -6,7 +6,7 @@
 ## 当前状态
 
 - 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
-- 功能入口：首次或源码更新后运行 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1`；日常用 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器。直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
+- 功能入口：运行 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1`，首次或源码更新时自动补建控制器；直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
 - 范围：只处理当前项目登记对象；不兼容任意目录，不提供跨项目预览，不承担审批、编辑、生图或运行时内容加载。
 
@@ -22,7 +22,7 @@
 8. 概念与资产页可独立筛选选用和批准状态；生效版本及关联对象支持带返回入口的详情跳转。
 9. 校验状态只描述版本文件和 Godot 引用的实时完整性，由管理器计算而非 Manifest 字段，并以颜色标签显示；不从校验结果推断 `selection` 或 `approval`。
 10. Windows 桌面控制器只包含“启动服务”“打开页面”“停止服务”三个动作按钮，并显示实时服务状态、PID 和当前工作目录。健康接口返回服务 PID 与项目根；控制器核对应用 ID 和项目根后才允许停止，避免误杀同端口程序或其他工作树服务。
-11. 资源台只消费 Manifest 已登记的预生成 GIF，并可启动无写入的统一动作预览；点击动作、展开版本或启动 Godot 均不得隐式生成预览文件。通用 GIF 导出属于 [ART-03](art-03.md#推荐改造骨骼序列帧通用生产与预览仅设计待实施) 的显式生产入口，尚待实施。
+11. 资源台只消费 Manifest 已登记的预生成 GIF，并可启动无写入的统一动作预览；点击动作、展开版本或启动 Godot 均不得隐式生成预览文件。通用 GIF 导出属于 [ART-03](art-03.md#骨骼序列帧通用生产与预览) 的显式生产入口，已完成并通过单动作及七动作导出验证。
 
 ## 验证入口
 
@@ -64,3 +64,19 @@
 - v2 曾以逐文件 SHA-256、显式 role／representation 与三类 binding 保存完整迁移基线；该方案在 2026-09-15 通过 8 对象、71 文件与 Godot 组合验收。
 - v3 根据负责人反馈删除可从文件和 `.tres` 推导的字段。原有选择、批准、评审依据、接入状态、预览参数和有效视觉元数据保持不变；六项旧资产仍为 `approval: review`、`selection: unknown`，没有借迁移升级批准状态。
 - Godot 仍读取 `.tres`，不读取 YAML。Manifest 只负责生产对象、版本和路径语义。
+
+## 通用动画运行包校验（2026-09-16）
+
+资源台递归检查 .tres／.tscn 依赖；候选与正式场景／动画资源按已登记包根归一引用后比较，图片与 JSON 仍逐字节比较。不新增 Manifest 哈希字段。新增 melee／ranged 中文标签。22 项单测通过，8 个对象／101 个文件无缺失或不一致；候选 GIF 仍只读消费。
+
+2026-09-16 F 清理树（父基线 56dc3aa）：删除旧专用脚本登记后，扫描为 8 对象／101 文件、0 缺失／不一致；历史 attack 按角色元数据展示近战或远程，双能力可映射两个入口。006 七动作页面和点击 GIF 已实际检查，资源台启动及预览无候选生产写入。待统筹：递归依赖与资源路径归一比较已替代仅顶层 .tres 校验。
+
+## 控制器缓存修复（2026-09-16）
+
+基线 dc938ab。旧入口在新工作树缺少 EXE 时直接报错；现根据源码和构建脚本 SHA-256 自动补建或重建，无需先运行构建命令。
+
+验证：`pwsh.exe -File tools/art/asset_manager/control/test-launcher.ps1`，缺失缓存、缓存复用、过期签名三种真实窗口启动通过；截图 `.godot/art-manager-control-fixed.png`。待统筹：日常启动入口已自包含，仍依赖 Windows .NET Framework 编译器。
+
+## 动作列表后端标记（2026-09-16）
+
+基线 09dccf7。版本的动画子页在每项动作名下显示“骨骼动画”或“序列帧”，复用 catalog 的 backend 数据；不只在选中后的详情中说明。node --check 通过，实际浏览器核对 006 六骨骼动作＋退场序列帧，并点击退场验证 GIF 切换。截图：`.godot/art-manager-action-backends.png`。

@@ -36,6 +36,12 @@ var scale_factor = 1.0
 var origin = Vector2.ZERO
 
 func _ready() -> void:
+	var capture_at := 6.0
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--demo-encounter="):
+			encounter_id = argument.trim_prefix("--demo-encounter=")
+		elif argument.begins_with("--demo-capture-at="):
+			capture_at = clampf(argument.trim_prefix("--demo-capture-at=").to_float(), 0.1, 90.0)
 	font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	_build_units()
 	_note("点击卡片后选择空格预览，或直接拖动部署。")
@@ -47,7 +53,7 @@ func _ready() -> void:
 		get_viewport().get_texture().get_image().save_png("res://.godot/battle_demo.png")
 		formation = [0, -1, 3, 2, 1, -1]
 		_start()
-		await get_tree().create_timer(6.0).timeout
+		await get_tree().create_timer(capture_at).timeout
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("res://.godot/battle_demo_combat.png")
 		get_tree().quit()
@@ -342,6 +348,7 @@ func _smoke() -> void:
 func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary:
 	var unit = _unit(definition.display_name, role, side, slot, definition.health, definition.attack, definition.interval, definition.defense)
 	unit.attack_range = definition.attack_range
+	unit.attack_modes = definition.resolved_attack_modes()
 	unit.move_speed = definition.move_speed
 	unit.content_id = definition.id
 	unit.skill = definition.skill
