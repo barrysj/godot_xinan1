@@ -2,9 +2,8 @@
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
 $ErrorActionPreference = 'Stop'
 
-$projectRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../../..'))
 $sourcePath = Join-Path $PSScriptRoot 'ArtManagerControl.cs'
-$outputDirectory = Join-Path $projectRoot '.godot/art-manager-control'
+$outputDirectory = $PSScriptRoot
 $outputPath = Join-Path $outputDirectory 'ArtManagerControl.exe'
 $frameworkRoot = Join-Path $env:WINDIR 'Microsoft.NET'
 $compiler = @(

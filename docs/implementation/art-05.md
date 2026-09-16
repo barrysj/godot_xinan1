@@ -5,6 +5,8 @@
 
 ## 当前状态
 
+- 2026-09-16（基线32387d4）：按用户要求，控制器构建输出改为与 ArtManagerControl.cs 同目录的 `tools/art/asset_manager/control/ArtManagerControl.exe`，根启动入口同步，EXE 加入精确 Git 忽略项；不再受 .godot 清理影响。旧路径的记录仅作历史验证。待统筹：控制器构建位置变化，不改资源台协议或功能。
+
 - 2026-09-16（基线 fad0254）启动恢复：复现清除 .godot/art-manager-control/ArtManagerControl.exe 后根入口抛出 Controller is not built。run-art-manager-control.ps1 现会在 EXE 缺失或 C#／构建脚本较新时自动编译，构建错误终止启动并提示关闭占用窗口；无需清缓存后另跑构建。直接运行的 EXE 仍须先构建并保留项目内位置，以便向上定位项目根。
 
 - 页面实测：9 个对象、102 个登记文件、0 处不一致；卡片详情显示真实 review.png 与原图、同份文案，没有阶段审批页。点击预览后已核对 Godot 进程参数为 `--card=res://assets/art/holo_cards/class_photo/card.tres`，运行日志无错误。卡片列表标签使用“校验通过”，不暗示主游戏已接入。浏览器实际截图已在对话展示。
@@ -31,6 +33,8 @@
 11. 资源台只消费 Manifest 已登记的预生成 GIF，并可启动无写入的统一动作预览；点击动作、展开版本或启动 Godot 均不得隐式生成预览文件。通用 GIF 导出属于 [ART-03](art-03.md#推荐改造骨骼序列帧通用生产与预览仅设计待实施) 的显式生产入口，尚待实施。
 
 ## 验证入口
+
+- 同目录构建验证（2026-09-16）：根启动脚本自动生成源码旁 EXE 并打开窗口；从临时目录直接运行该 EXE 的 --screenshot 模式退出码0，工作目录识别正确，截图 .godot/control-source-dir.png 已展示。git check-ignore 确认二进制不入库，git diff --check 通过；仅改构建路径，未改服务实现。
 
 - 2026-09-16 启动恢复实测：临时移开确切 EXE 后，旧入口报 Controller is not built；修复入口自动构建并创建控制器进程。再次启动文件时间戳不变（不重复编译）。从项目外直接运行 EXE `--self-test <报告路径>`：initial=未启动、started=True、open_enabled=True、stopped=True，退出码0。实际截图 `.godot/art-manager-control-fixed.png` 已展示。服务健康检查 project_root 指向卡片工作树。未复现当前已有 EXE 状态下的启动失败，确认修复的是缓存清理/首次工作树缺构建产物的可靠复现路径。
 

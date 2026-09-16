@@ -12,6 +12,7 @@ __pycache__/
 *.py[cod]
 
 # Builds/export directory
+tools/art/asset_manager/control/ArtManagerControl.exe
 builds/**/*
 !builds/.gdignore
 
