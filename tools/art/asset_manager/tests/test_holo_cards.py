@@ -93,3 +93,20 @@ class HoloCardsTests(unittest.TestCase):
             self.assertEqual(resolved["card_uri"], args[args.index("-Card")+1])
             self.assertNotIn("-Mode", args)
             self.assertFalse(spawn.call_args[1]["shell"])
+
+    def test_preview_status_reports_process_failure_and_allows_retry(self):
+        obj = self.catalog.scan()["objects"][0]
+        resolved = self.catalog.resolve_animation(obj["variants"][0]["previews"][0]["asset_id"])
+        engine = self.fixture.file("godot.exe", b"fixture")
+        manager = PreviewManager(self.root)
+        with mock.patch("server.shutil.which", return_value="pwsh.exe"), mock.patch("server.subprocess.Popen") as spawn:
+            spawn.return_value.poll.return_value = None
+            self.assertTrue(manager.start(resolved, str(engine))[0])
+            self.assertEqual("running", manager.status()["state"])
+            self.assertFalse(manager.start(resolved, str(engine))[0])
+            spawn.return_value.poll.return_value = 1
+            self.assertEqual("failed", manager.status()["state"])
+            self.assertEqual(1, manager.status()["exit_code"])
+            self.assertTrue(manager.start(resolved, str(engine))[0])
+            spawn.return_value.poll.return_value = 0
+            self.assertEqual("finished", manager.status()["state"])

@@ -111,4 +111,4 @@ py -3 -m unittest discover -s tools/art/asset_manager/tests -v
 
 资源台启动动作预览前会先让 Godot 增量导入当前项目资源；这是为了修复切换分支后 `.godot/imported` 目录存在但内部缓存不完整时出现的灰屏。
 
-服务只监听 `127.0.0.1`。文件和预览由本次启动令牌保护；预览入口固定为当前项目的 `run-motion-preview.ps1`。
+服务只监听 `127.0.0.1`。文件和预览由本次启动令牌保护；预览入口限定为当前项目的 `run-motion-preview.ps1` 或闪卡的 `run-holo-card.ps1`。预览按钮旁跟踪进程运行、结束和失败；运行包含导入阶段，不代表画面已经就绪。闪卡导入最多等待 120 秒，导入失败可查 `.godot/holo-import.log`，运行失败可查 `.godot/holo-card.log`。原图按钮统一位于文件信息下面，弹窗可点空白区域或“关闭”退出。

@@ -97,7 +97,7 @@ class PreviewManager(object):
                 code = self._process.poll()
                 if code is None:
                     self._last["state"] = "running"
-                    self._last["message"] = "预览窗口正在运行"
+                    self._last["message"] = "预览进程运行中（含资源导入）；请查看 Godot 窗口"
                 else:
                     self._last["exit_code"] = code
                     self._last["state"] = "finished" if code == 0 else "failed"

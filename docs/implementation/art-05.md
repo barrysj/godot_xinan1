@@ -34,6 +34,8 @@
 
 ## 验证入口
 
+- 预览启动与原图交互修复（2026-09-16，基线 `43c91ab`）：浏览器默认图形版 Godot 经 PowerShell `&` 启动不可靠等待，导致闪卡脚本过早检查退出码而失败；网页只保留初始提示，未跟踪退出结果。`run-holo-card.ps1` 改为 Start-Process 显式等待导入及预览，导入超时 120 秒；网页轮询已有状态接口，在详情按钮旁显示运行/结束/失败，请求超时 10 秒。运行状态仅代表进程存活（包含导入），不冒充画面就绪。原图按钮复用文件信息下的动作栏样式；弹窗空白区域点击关闭，图片本体点击不关闭。验证：26 项 Python 测试通过；`pwsh.exe -NoProfile -File tools/art/asset_manager/tests/check-holo-launch.ps1 -Godot '<图形版Godot.exe>'` 修复前 exit1，修复后 HOLO_LAUNCH_CHECK PASS；该集成检查沿用 Check 模式，会刷新历史验证截图。浏览器真实点击启动卡片进程，日志无错误；关闭窗口后页面显示结束、按钮恢复。DOM/截图验证按钮位置、按需加载、点击图片保持打开、遮罩关闭并清空 src。截图已在对话展示。JavaScript 语法与 Git 差异检查通过。
+
 - 闪卡独立分类与按需原图（2026-09-16，基线 `5a01a53`）：`catalog.py` 将 holo_card 归入“闪卡”，缩略图仅允许有效 review；`static/app.js` 详情仅显示 review，点击“原图”才加载原照并打开现有模态子窗口，关闭清空图片。缺 review 不回退原照，缺原照禁用按钮；Godot 预览和游戏资源加载不变。25 项 Python 测试通过，新增分类计数与缺 review 无缩略图断言；JavaScript 语法、Git 差异检查通过。8876 独立测试服务实测分类计数闪卡1/UI0，详情 DOM 只有 review 图片与无 src 弹窗，点击后原照显示、关闭后 src 清空；实际截图已在对话展示。边界：按需加载约束针对浏览器图片请求，后端完整性校验仍读取源文件。
 
 - 同目录构建验证（2026-09-16）：根启动脚本自动生成源码旁 EXE 并打开窗口；从临时目录直接运行该 EXE 的 --screenshot 模式退出码0，工作目录识别正确，截图 .godot/control-source-dir.png 已展示。git check-ignore 确认二进制不入库，git diff --check 通过；仅改构建路径，未改服务实现。

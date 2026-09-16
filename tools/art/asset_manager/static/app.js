@@ -398,7 +398,9 @@ function openDetail(object, options = {}) {
     original.disabled = !source || source.integrity.status === "missing";
     original.addEventListener("click", () => showOriginal(source));
     const actions = document.createElement("div"); actions.className = "asset-actions"; actions.append(original);
-    detailContent.append(actions, list);
+    const info = list.querySelector(".asset-info");
+    if (info) info.append(actions); else list.append(actions);
+    detailContent.append(list);
     state.detailView = { objectId: object.id };
     detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
     detail.querySelector(".detail-sheet").scrollTop = 0;
@@ -431,12 +433,28 @@ function showOriginal(asset) { lightboxImage.src = fileUrl(asset); lightboxCapti
 
 async function startPreview(preview, button) {
   button.disabled = true; setNotice("正在导入资源并准备预览…");
+  const reason = button.parentElement.querySelector(".reason");
+  if (reason) { reason.textContent = "正在导入资源并准备预览…"; reason.classList.remove("bad"); }
   try {
-    const payload = await api("/api/preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ asset_id: preview.asset_id, engine_path: engine.value.trim() }) });
+    const payload = await api("/api/preview", { method: "POST", signal: AbortSignal.timeout(10000), headers: { "Content-Type": "application/json" }, body: JSON.stringify({ asset_id: preview.asset_id, engine_path: engine.value.trim() }) });
     const target = payload.status.card || payload.status.unit || payload.status.animation || "已登记目标";
     setNotice(`${payload.message} · ${target}`, "success");
-  } catch (error) { setNotice(error.message, "error"); }
+    await trackPreview(target, button);
+  } catch (error) { setNotice(error.message, "error"); if (reason) { reason.textContent = error.message; reason.classList.add("bad"); } }
   finally { button.disabled = !preview.supported; }
+}
+
+async function trackPreview(target, button) {
+  for (;;) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const status = await api("/api/preview/status", { signal: AbortSignal.timeout(10000) });
+    const message = `${status.message} · ${target}`;
+    setNotice(message, status.state === "failed" ? "error" : "success");
+    button.title = status.message;
+    const reason = button.parentElement.querySelector(".reason");
+    if (reason) { reason.textContent = status.message; reason.classList.toggle("bad", status.state === "failed"); }
+    if (status.state !== "running") return;
+  }
 }
 
 async function chooseManifest() {
@@ -472,5 +490,8 @@ detailBack.addEventListener("click", returnDetail);
 detail.querySelectorAll("[data-close]").forEach(node => node.addEventListener("click", closeDetail));
 document.getElementById("lightbox-close").addEventListener("click", () => lightbox.close());
 lightbox.addEventListener("close", () => { lightboxImage.removeAttribute("src"); lightboxCaption.textContent = ""; });
+lightbox.addEventListener("click", event => {
+  if (event.target === lightbox) lightbox.close();
+});
 document.addEventListener("keydown", event => { if (event.key === "Escape" && detail.classList.contains("open") && !lightbox.open) closeDetail(); });
 renderFilters(); scan();
