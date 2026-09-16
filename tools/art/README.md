@@ -25,7 +25,7 @@ pwsh.exe -File run-motion-preview.ps1 -EnsureImport -Check
 py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 ```
 
-完整导出命令和运行包契约见 [战斗动画](../../docs/battle-animation.md#共享混合动画运行包2026-09-16)，验证结果见 [ART-03](../../docs/implementation/art-03.md)。
+完整导出命令和运行包契约见 [战斗动画](../../docs/battle-animation.md#hybrid-animation-package)，验证结果见 [ART-03](../../docs/implementation/art-03.md)。
 
 ### 姿态对比
 

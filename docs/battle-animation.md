@@ -106,6 +106,8 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 验证：Godot `--headless --path . res://scenes/battle_demo/authored_assets_check.tscn` 检查插画路径、统一画布、七类动作、不同动作画稿、出手帧和死亡末帧。完成两名角色后追加 `-- --require-two-models` 强制检查人数，避免以单一角色或空资源通过。
 
+<a id="hybrid-animation-package"></a>
+
 ## 共享混合动画运行包（2026-09-16）
 
 - BattleAnimationSet.animation_library 指定骨骼轨道；presentation_scene 指向包内 presentation.tscn。其 AnimationPlayer 引用同一 animations.tres，手动定位而不自动播放。共享 hybrid_presentation.gd 只消费状态、age／duration、motion_time、尺寸、中心、朝向与色调；未处理状态由共享 SpriteFrames 渲染器回退。
@@ -116,3 +118,17 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - 用 `py -3 tools/art/promotion/promote_animation.py chalk_spirit` 提升已批准候选，`--check` 检查确定性内容与依赖；正式包只包含允许列表及 Godot 导入元数据。角色直接引用正式包，不引用候选目录。
 - 验证前先增量导入；新增 hybrid_contract_check.tscn 覆盖候选直接加载、尺寸／锚点、左右朝向及死亡回退。真实战斗截图可用 `--demo-capture --demo-encounter=encounter_classroom --demo-capture-at=1.5`，同一实际战斗场景输出 .godot/battle_demo_combat.png。
 - 006 使用误差受控的独立短周期：AnimationLibrary 的 cycle_layers 元数据声明各状态使用的私有循环片段，混合控制器用手动 AnimationPlayer 按 motion_time 分别定位。主动作和循环共用 context，不积累播放时间；RESET 仅在切换时恢复被动画修改的属性。静态属性保留在场景。最长片段 3.4014 秒，不再有 96 秒整体重置。正式接入视觉评审状态不变。
+
+### 制作、导出与提升
+
+新角色直接在 `presentation.tscn` 制作层级、枢轴、遮挡与挂点，在 AnimationLibrary 制作骨骼动作，在 SpriteFrames 制作序列帧。静态属性留在场景；动态曲线只记录变化，某动作必需的固定姿态可用单键。周期动作只保存独立周期，不展开成整场战斗长度。`RESET` 和 `_cycle_*` 是内部片段，不作为公共动作；周期层使用库的 `cycle_layers` 映射，时间仍来自模拟 context。
+
+候选和正式运行核心同构：`presentation.tscn`、`animations.tres`、`battle_animation.tres`、`battle_animation.frames.json`、`rig_manifest.json`、图集和 `parts/`。候选另保留 `generation.md`、review GIF 和必要证据；正式包仅含允许的运行文件及 Godot 导入设置，不包含版本号、review 或专用工具。
+
+- `rig_manifest.animation_budget` 为角色明确体积、关键帧数和片段时长预算；超限先分析结构。具体样本预算及实测维护于 ART-03，不作为所有角色的固定门槛。
+- `-ExportPreviews` 从 Manifest 精确解析候选；可用 `-Animation` 指定历史版本，否则取角色当前接入候选。输出仅写该候选 `review/`，普通预览不写资产；`-Capture` 是另一个显式截图入口，仅写 `.godot`。
+- 当前导出为每动作 30 FPS、3 秒。捕获清单记录对象、版本、后端、帧率、时长、前后状态、循环、事件与路径；后处理器不含角色公式。临时帧仅写经过路径校验的 `.godot/motion-capture/<作业>/frames`，编码后删除；清单与抽样图可清理。导出后登记逐动作 GIF 映射。
+- 后处理需要 Pillow；`-PythonPath` 指定 Python，缺省用 `py -3`。全量导出使用一个动作捕获进程，增量导入是之前的独立步骤。
+- 提升先检查批准／选用状态、允许列表、动作集合、依赖、扩展登记和引用入口，再复制并改写引用；拒绝候选路径泄漏和非运行文件。重复提升内容相同，`--check` 校验正式包与确定性提升结果一致。
+
+优化或迁移后的验收同时检查姿态、动作切换、周期接缝、跳变点与加载／更新开销。通用姿态对比的配置、命令及边界见[工具说明](../tools/art/README.md#姿态对比)；旧代码采样和转换已归档，不是上述制作流程的必要步骤。当前样本的已知误差与实测结果见 [ART-03](implementation/art-03.md)。

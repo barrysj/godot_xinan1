@@ -91,6 +91,8 @@
 
 动作衔接、600 秒时间点姿态、九组模拟时钟、回退和 23 项 Python 测试通过；误差及性能完整数据见 ART-03。此前 96 秒整体循环限制已消除，接入视觉评审状态不变。
 
+2026-09-16 工具归档复核：旧 144 Hz 姿态采样通过；新增 120 Hz 在收招跳变附近发现差异，见 ART-03 已知边界及候选 review/codex-workflow/pose-* 证据。迁移缓存已清理，历史输入可由 Git 恢复，生产资源和人工批准未变。
+
 - [修复前后施法](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-cast-comparison.png)
 - [姿态对照日志](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-comparison.log)
 - [实际战斗](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-real-battle.png)

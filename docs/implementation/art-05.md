@@ -6,7 +6,7 @@
 ## 当前状态
 
 - 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
-- 功能入口：首次或源码更新后运行 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1`；日常用 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1` 打开桌面控制器。直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
+- 功能入口：运行 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1`，首次或源码更新时自动补建控制器；直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
 - 范围：只处理当前项目登记对象；不兼容任意目录，不提供跨项目预览，不承担审批、编辑、生图或运行时内容加载。
 

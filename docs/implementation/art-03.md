@@ -2,38 +2,13 @@
 
 > 持续功能档案；整体统筹见 [总览](../implementation-status.md)，规则见 [战斗动画](../battle-animation.md)。
 
-- 功能 ID：ART-03；状态：已验证（Windows 桌面与当前测试角色范围）。
-- 验证日期：2026-09-16；起点 `ee5b780`；实现基线 `56dc3aa`＋本档案同提交的 F 清理树。
+- 功能 ID：ART-03；状态：生产入口已验证；姿态等价存在已记录的 120 Hz 跳变边界。
+- 验证日期：2026-09-16；起点 `ee5b780`；运行修复基线 `76c8406`；工具归档基线 `7be8ffe`。
 - 实现入口：[预览器](../../scenes/battle_demo/motion_preview.tscn)、[共享控制器](../../scenes/battle_demo/presentations/hybrid_presentation.gd)、[捕获器](../../tools/art/animation/motion_capture.gd)、[GIF 后处理](../../tools/art/animation/motion_previews.py)、[确定性提升](../../tools/art/promotion/promote_animation.py)。
 
 ## 骨骼＋序列帧通用生产与预览
 
-战斗模拟决定动作方式、阶段、出手、命中、收招和朝向。共享表现只定位 context；AnimationPlayer 使用手动模式，不自行推进战斗时间。普通角色提供场景、AnimationLibrary、SpriteFrames 和元数据；特殊扩展须在 BattleAnimationSet 与 rig_manifest 显式登记脚本及理由。
-
-动作契约为 idle、move、melee、ranged、cast、hurt、critical、death。旧 attack 根据角色 attack_modes 映射；双能力角色能提供独立 melee／ranged，共用同一模拟时钟。预览禁用不支持的攻击入口。粉笔精灵 006 的前六种可用状态走骨骼，death 保留批准的序列帧。
-
-### 显式导出
-
-```powershell
-pwsh.exe -File ./run-motion-preview.ps1 -EnsureImport -Check -Unit res://resources/content/enemies/chalk.tres
-pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'
-pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -Action Ranged -PythonPath '<含 Pillow 的 python.exe>'
-py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
-```
-
-- 默认预览、-Action、-Tour、-Check 和资源台启动不生成 PNG／GIF，不写候选或正式包。-Capture 是单独的显式截图入口，仅写 .godot。
-- -ExportPreviews 从 Manifest 精确解析候选，可显式传 -Animation 选择历史版本；未指定动画时取角色当前接入候选。输出仅写该候选 review/。
-- 一个 Godot 进程连续导出全部支持动作；隔离 352×352 SubViewport 直接捕获角色，不落盘全屏中间帧。
-- 每动作 30 FPS、3 秒，涵盖待机→动作→收招→待机；移动与濒危在尾段回待机，死亡停末帧且 GIF 不循环。全量导出同时生成 all-actions.gif。
-- 捕获清单包含对象、版本、动作、后端、帧率、持续时间、循环、前后状态、事件与输出路径。后处理器不含角色 ID、骨骼名或动作公式。
-- 临时帧限于已校验的 .godot/motion-capture/<作业>/frames；编码后删除，JSON 与抽样 PNG 保留为本地验证缓存。GIF 映射写入 Manifest，资源台只消费预生成文件。
-- Python 后处理依赖 Pillow；-PythonPath 可指定环境，未指定则使用系统 py -3。当前系统 Python 可运行资源台单测，导出使用 Codex bundled Python。
-
-### 运行包与提升
-
-候选和正式运行核心同构：presentation.tscn、animations.tres、battle_animation.tres、battle_animation.frames.json、rig_manifest.json、图集和 parts/。正式目录只保留运行文件及 Godot PNG 导入设置；generation.md、GIF、截图与旧实现追溯留在候选或 Git。
-
-提升工具先验证批准／选用状态、允许列表、动作集合、外部依赖、特殊扩展登记和 owner，再复制并改写包内引用及 owner。拒绝候选路径泄漏、丢失依赖、未批准版本和正式包中的非运行文件。重复提升内容相同；--check 校验正式包等于确定性提升结果。角色不再保留专用播放脚本。
+制作契约、动作命名、运行包结构、显式导出与提升规则统一维护于[战斗动画](../battle-animation.md#hybrid-animation-package)。本档案只记录实现、验证及已知边界；通用工具与归档入口见[工具说明](../../tools/art/README.md)。
 
 ## 验证结果
 
@@ -63,47 +38,11 @@ py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 
 验证：22 项 Python 测试、13 文件提升 --check、增量导入后 run-motion-preview -Check 通过；单动作 Cast 显式导出验证新路径的捕获和编码链。本次仅目录整理，不改角色画面与批准状态。待统筹：工具内部路径已迁移，外部保存的旧命令需使用新路径。
 
-## 迁移前后体积与效率测量（2026-09-16）
+## 密集迁移版本历史对照（已替代）
 
-对照 ee5b780 的旧专用表现脚本与 09dccf7 的正式 AnimationLibrary；同一台 Windows、Godot 4.7.2 Mono Debug 引擎，使用相同图片与 context。此次为只读分析，未修改动画曲线。资产统计取 Git 对象字节，不等于压缩发布包或显存占用。
+`ee5b780` 旧公式脚本 → `09dccf7` 密集库的测量曾暴露严重回退：动画库 8,982,734 B、200,717 keys、每动作 180 轨，连续动作展开 96 秒；正式粉笔相关文件从 5.881 MiB 增至 14.439 MiB。历史完整测量见 Git `804bd51` 的本档案；原测量临时脚本和 JSON 已清理，不再作为可用工具入口。
 
-### 资产数据量
-
-| 范围 | 迁移前 | 迁移后 |
-| --- | ---: | ---: |
-| 正式粉笔相关文件（含原分散的脚本／场景／资源入口） | 6,167,150 B / 5.881 MiB | 15,140,759 B / 14.439 MiB |
-| 其中 PNG | 6,100,917 B / 5.818 MiB | 相同 |
-| 候选 006 全目录 | 21.944 MiB | 48.971 MiB |
-| 其中 review 证据 | 16.065 MiB | 34.529 MiB |
-
-新增 animations.tres 为 8,982,734 B（8.567 MiB），正式和候选各保存一份。六动作各 180 轨，总计 200,717 个 key；idle／move／critical 的 96 秒轨道分别含 49,768／109,476／32,958 个 key。候选增长还含新巡演与迁移对照截图，不应全部归为游戏运行资源增长。正式统计包含导入描述和元数据，旧版还含 generation.md；不含两版共用工程代码。
-
-### 运行 CPU 与内存
-
-独立进程每版本 3 次；每动作预热 200 次，计时 5 组 × 6,000 次 apply_presentation，取全部样本中位数。CPU 使用 headless，包含相同 context 更新循环，未测 GPU、真实战斗整帧或手机。加载是进程内首次加载，未清空操作系统磁盘缓存。原始 JSON 与脚本在本地 `.godot/animation-benchmark/`；可用 `Godot.exe --headless --path . --script res://.godot/animation-benchmark/bench.gd -- old res://.godot/animation-benchmark/repeat-old.json` 重跑，new 参数切换正式资源。旧实现由 `git show ee5b780:scenes/battle_demo/presentations/chalk_spirit_presentation.gd` 提取；本地场景只替换脚本位置，不改算法。
-
-| 指标 | 迁移前 | 迁移后 |
-| --- | ---: | ---: |
-| 表现场景首次加载 | 41.24 ms | 1,044.96 ms |
-| 资源＋首实例 Godot 静态内存增量 | 3.320 MiB | 11.181 MiB |
-| 额外 19 实例静态内存增量 | 1.889 MiB | 1.934 MiB |
-| 首次实例化＋加入场景 | 0.485 ms | 0.338 ms |
-| 待机单次更新 | 22.35 µs | 276.27 µs |
-| 移动单次更新 | 21.81 µs | 263.04 µs |
-| 远程单次更新 | 24.18 µs | 265.29 µs |
-| 施法单次更新 | 37.07 µs | 267.37 µs |
-| 受击单次更新 | 21.34 µs | 253.30 µs |
-| 濒危单次更新 | 21.66 µs | 258.50 µs |
-
-内存为 OS.get_static_memory_usage 差值，不是进程 RSS 或显存；同种角色共享曲线库，所以新增实例没有复制整份约 8 MiB 增量。节点由 37 增为 38；图像未变，不能据此声称 GPU 更快。此微基准的自定义 SceneTree 没有主场景，既有 ggt 自动加载报告 current_scene 为空；两版都出现，计时循环及 JSON 输出完成。桌面后台进程及导出会引入噪声，结果用于识别数量级回退，不作正式性能预算。
-
-### 生产与维护效率
-
-新链完整七动作＋巡演一次实测 47.93 秒（含 PowerShell、增量导入、一个捕获进程和 GIF 编码）；一轮 630 张 352×352 临时帧。该耗时不是人工开发时间，也不是稳定性能指标。旧基线没有等价、可直接复跑的通用 GIF 导出入口，不能报告加速倍数。相同帧数下 352×352 相对 1920×1080 的原始像素量少 94.0%，不等于 PNG 字节或耗时同比下降。
-
-维护收益是普通角色无需专用播放脚本、动作资源可在编辑器查看修改、统一批量导出、正式提升自动校验；近远程与回退共用时钟。代价是当前采样结果过密，长曲线人工编辑也不便利。不能把流程通用化等同于运行性能优化。
-
-**待统筹／优化建议**：当前版姿态更新约慢 7–12 倍、加载约慢 25 倍。保留共享控制器和动作契约，后续优先验证无变化轨道裁剪、关键帧减量、连续动作短周期／分层表达，以及避免每次 apply 重复 play／pause；每项需重跑新旧姿态误差和战斗时钟测试。二进制／压缩资源只解决体积与解析的一部分，不能代替轨道求值优化。未在此次对比中实施优化。
+下表保留密集版测量用于识别数量级，当前能力以稀疏版和最新验证边界为准。首次测量使用无主场景的 SceneTree，有既有插件初始化噪声，不宜与后续正常场景的微小差值直接比较。
 
 ## 稀疏曲线与独立短周期修复（2026-09-16）
 
@@ -125,20 +64,22 @@ py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 
 ### 性能复测
 
-同机 Godot 4.7.2 Debug headless，三组独立进程，每动作预热 200 次、5×6,000 次更新，中位数。此次使用正常主场景，避免上一轮自定义 SceneTree 的插件初始化噪声；不与 GPU、发布包或手机性能混同。本地可复跑入口 `.godot/animation-benchmark/bench-final.tscn`，参数 `-- old/new res://.godot/animation-benchmark/result.json`。
+同机 Godot 4.7.2 Debug headless，三组独立进程，每动作预热 200 次、5×6,000 次更新，中位数。此次使用正常主场景，避免上一轮自定义 SceneTree 的插件初始化噪声；不与 GPU、发布包或手机性能混同。旧基准脚本是本地实验产物，已随迁移缓存清理；此处保留测量方法与结果，不把缓存路径当作长期入口。以下原版与稀疏版为 `76c8406` 的最新复测中位数。
 
 | 指标 | 原专用脚本（本轮） | 密集版（上轮） | 稀疏分层版（本轮） |
 | --- | ---: | ---: | ---: |
-| 首次加载 | 38.57 ms | 1,044.96 ms | 65.93 ms |
+| 首次加载 | 39.25 ms | 1,044.96 ms | 60.71 ms |
 | 首资源＋实例静态内存增量 | 3.320 MiB | 11.181 MiB | 3.634 MiB |
-| 待机更新 | 21.45 µs | 276.27 µs | 39.76 µs |
-| 移动更新 | 21.94 µs | 263.04 µs | 31.31 µs |
-| 远程更新 | 21.71 µs | 265.29 µs | 18.01 µs |
-| 施法更新 | 36.41 µs | 267.37 µs | 30.78 µs |
-| 受击更新 | 20.65 µs | 253.30 µs | 16.22 µs |
-| 濒危更新 | 20.94 µs | 258.50 µs | 31.30 µs |
+| 待机更新 | 20.78 µs | 276.27 µs | 44.18 µs |
+| 移动更新 | 20.44 µs | 263.04 µs | 33.19 µs |
+| 远程更新 | 21.38 µs | 265.29 µs | 19.37 µs |
+| 施法更新 | 35.87 µs | 267.37 µs | 33.64 µs |
+| 受击更新 | 21.11 µs | 253.30 µs | 18.45 µs |
+| 濒危更新 | 20.91 µs | 258.50 µs | 32.70 µs |
 
 周期层使用最多 10 个附加 AnimationPlayer，节点为 48；额外 19 实例静态内存约 3.103 MiB，原专用脚本约 1.889 MiB。共享资源与无角色脚本的收益仍有实例开销，不能宣称全面快于原脚本；关键的数量级回退已消除。本轮不改美术审批状态。
+
+最新 Git 文件统计：原版正式相关资源 6,167,150 B，当前 6,445,311 B（增加 4.5%），PNG 均为 6,100,917 B；统计不含 `.godot`，候选评审资料另计。七动作与巡演一次完整导出实测 53.63 秒，包含增量导入、捕获和编码；旧版没有等价导出基准，不宣称生产加速倍数。
 
 **待统筹**：撤销“96 秒曲线为合理交付边界”的旧判断；采用资源预算、短周期、轨道稀疏性、状态切换一致性和性能复测作为生产验收。
 
@@ -151,3 +92,9 @@ py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 清理 `.godot` 中旧迁移输入、重复运行包、性能临时脚本、捕获帧及重复截图／日志，共 200 文件、96,174,025 B（91.72 MiB）；保留 Godot 导入缓存、控制器和已登记候选／评审证据。清理后 `run-motion-preview -Check` 与提升 `--check`（13 文件）通过，日常入口不依赖已删除缓存。
 
 **已知边界／待统筹**：旧对比工具硬编码 144 Hz，忽略 JSON 的 fps。配置生效后补测 120 Hz，ranged 1.65 秒收招跳变附近出现最大约 5.0001 源像素偏差（阈值 0.3），未通过；不能将原 144 Hz 通过扩展为任意采样点精确等价。本次整理保留失败证据，不改变已批准资产。复现配置与两份日志位于候选 `review/codex-workflow/pose-comparison.json`、`pose-120hz-boundary.log`、`pose-144hz.log`；旧输入恢复方式见候选 generation.md。该姿态误差不等于模拟事件或战斗结果改变。
+
+### 工作流与 skill 精简
+
+基线 `7be8ffe`；WORKFLOW 保留制作、评审与清理流程，字段和资源台界面细节引用工具说明／ART-05；动画契约与命令集中到 battle-animation.md。项目 art-implementation skill 只提供按任务读取的入口与关键决策，不复制字段表和样本预算。删除过期 96 秒生产边界、临时基准脚本命令及手动预构建控制器要求；密集版完整历史由 Git 保存，不在当前档案重复整份报告。未修改高层总览、Roadmap、人工批准或运行资产。
+
+验证：受影响 Markdown 的 128 个相对文件链接存在；旧 migration 路径引用清零，通用验证无归档依赖；23 项资源台单测、JS 语法与 Python 编译、Git 差异检查通过。skill 的 name／description 未变，字段格式、引用和占位符静态检查通过；skill-creator 的 quick_validate 因本机缺 PyYAML 未运行成功，不将替代静态核对冒充该脚本通过。工作流正文约缩短 21%，档案合并重复历史后约缩短 35%；本轮只改说明，不重复截图。
