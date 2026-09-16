@@ -14,6 +14,8 @@
 
 启动：在项目目录执行 `pwsh.exe -File .\run-campus-demo.ps1`；或 Godot 按 F5 → Play。旧的 `run-battle-demo.ps1` 仍可进入独立战斗实验室。
 
+调试启动：`pwsh.exe -File .\run-debug.ps1`，右上角“调试”或 F8 打开面板，可跳过／重开战斗、重抽事件与奖励；使用独立调试档。详见 [Debug 模式](debug-mode.md)。
+
 ## 已实现的完整流程
 
 安全教室 → 选择出发补给 → 5 个路线节点 → 首战部署／后续沿用阵位 → 自动战斗 → 贡献统计 → 三选一奖励 → Boss → 结算 → 永久解锁 → 再次出发。

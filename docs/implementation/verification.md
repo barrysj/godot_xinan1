@@ -109,3 +109,17 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | 标准版Godot `--headless --path . --export-release Web builds/web/index.html` | 退出码0，合并树本地Web构建成功；本轮未重新执行浏览器全流程 |
 
 本轮未重新检验ART-03的120 Hz姿态等价边界，也未做Android/陌生玩家/时长验收；既有证书、原图及编辑器设置权限警告不作为脚本回归成功的替代证据。E20/E21的浏览器操作记录是此前版本证据。
+
+## Debug 与重开存档 E23
+
+2026-09-17，基线 main `10dfbcd`，正式重开 `77afbd3`，Debug 为其后的功能提交；使用 Godot 4.7.2 Compatibility、PowerShell 7。实现边界见 [DEV-01](dev-01.md) 与 [SAVE-02](save-02.md)。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| `pwsh.exe -File .\run-debug.ps1 -Check` | 59 checks / 0 failures，独立 `.godot` 测试档，主线／旧活动局命令和失败回滚 |
+| `pwsh.exe -File .\run-debug.ps1 -Capture` | 69 checks / 0 failures，真实鼠标点击角落入口、暂停恢复、三尺寸截图与原菜单不相交 |
+| Godot 探索场景 `-- --debug-check`，不带启用参数 | 5 checks / 0 failures，面板不存在且命令拒绝 |
+| Godot 探索场景 `-- --profile-reset-check` | 14 checks / 0 failures，取消／清空／备份／坏档恢复／写入失败保留 |
+| Godot 探索场景 `-- --campaign-flow-check` | 124 checks / 0 failures，主线正常战斗与结算回归 |
+
+探索场景为 `res://scenes/expedition/expedition.tscn`。日志 `.godot/debug-mode.log`、`debug-disabled.log`、`profile-reset-check.log`、`debug-campaign-regression.log`；实际截图 `.godot/debug-corner-*.png`、`debug-battle-panel.png`、`debug-reward-panel.png`、`debug-home.png`、`profile-reset-confirm.png`。未做 Web／Android 与断电验证；证书和既有像素图导入警告仍存在。

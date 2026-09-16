@@ -8,12 +8,17 @@ var campaign_panel: PanelContainer
 var campaign_enabled = false
 var detail_return = "visit"
 var reset_pending = false
+var debug_enabled = false
+var debug_panel: CanvasLayer
 const OPERATIONS = ["修正目标","撤销越权","限制写入"]
 const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当前 AI：目标是维护一个容纳变化的校园，而不是永远保持初始版本。",
 	"前代：我将撤销对管理员新开发的自动覆盖权限。\n管理员：保留你的记忆，停止替我们决定什么应该存在。",
 	"记录者：我已理解。对虚拟世界只读，只在记录用途下追加进程日志。\n当前 AI：校园的日常，交还给参与其中的人。"]
 
 func _ready() -> void:
+	debug_enabled = "--campus-debug" in OS.get_cmdline_user_args()
+	if debug_enabled: progress.path = "user://campus_debug_progress.json"
+	if "--debug-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/debug-check-profile.json"
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		progress.path = "res://.godot/profile-reset-ui.json"
 	theme = preload("res://resources/theme/theme-main.tres").duplicate()
@@ -28,6 +33,13 @@ func _ready() -> void:
 	move_child(pause_overlay,get_child_count()-1)
 	campaign_panel.action.connect(_campaign_action)
 	_home()
+	if debug_enabled:
+		debug_panel = preload("res://scenes/expedition/debug_panel.gd").new()
+		debug_panel.hub = self
+		add_child(debug_panel)
+	if "--debug-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/debug_check.gd").new()
+		test_runner.run_checks(self)
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/profile_reset_check.gd").new()
 		test_runner.run_checks(self)
@@ -40,7 +52,20 @@ func _home() -> void:
 	screen = "base"
 	campaign_panel.show()
 	campaign_panel.home(progress,chosen_supply)
+	if debug_enabled: campaign_panel.text("DEBUG · 当前使用独立调试存档",18)
 	campaign_panel.button("重开存档","reset_profile")
+
+func _input(event: InputEvent) -> void:
+	if is_instance_valid(debug_panel):
+		if debug_panel.handle_input(event):
+			get_viewport().set_input_as_handled()
+			return
+		if debug_panel.panel.visible: return
+	super._input(event)
+
+func _request_exit(destination: String) -> void:
+	if is_instance_valid(debug_panel) and debug_panel.panel.visible: debug_panel.close()
+	super._request_exit(destination)
 
 func _profile_action(id: String) -> bool:
 	if id == "reset_profile" and screen == "base":
