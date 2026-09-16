@@ -178,7 +178,9 @@ function animationBrowser(variant) {
   clips.forEach(clip => {
     const button = document.createElement("button"); button.type = "button"; button.className = "animation-action"; button.dataset.clipId = clip.id;
     const name = document.createElement("strong"); name.textContent = clip.name || clip.id;
-    button.append(name); button.addEventListener("click", () => showClip(clip)); buttons.push(button); list.append(button);
+    const backend = document.createElement("span");
+    backend.textContent = clip.backend === "skeleton" ? "骨骼动画" : "序列帧";
+    button.append(name, backend); button.addEventListener("click", () => showClip(clip)); buttons.push(button); list.append(button);
   });
   browser.append(list, stage);
   showClip(clips.find(clip => gifPreviews.get(clip.id)?.supported) || clips[0]);

@@ -76,3 +76,7 @@
 基线 dc938ab。旧入口在新工作树缺少 EXE 时直接报错；现根据源码和构建脚本 SHA-256 自动补建或重建，无需先运行构建命令。
 
 验证：`pwsh.exe -File tools/art/asset_manager/control/test-launcher.ps1`，缺失缓存、缓存复用、过期签名三种真实窗口启动通过；截图 `.godot/art-manager-control-fixed.png`。待统筹：日常启动入口已自包含，仍依赖 Windows .NET Framework 编译器。
+
+## 动作列表后端标记（2026-09-16）
+
+基线 09dccf7。版本的动画子页在每项动作名下显示“骨骼动画”或“序列帧”，复用 catalog 的 backend 数据；不只在选中后的详情中说明。node --check 通过，实际浏览器核对 006 六骨骼动作＋退场序列帧，并点击退场验证 GIF 切换。截图：`.godot/art-manager-action-backends.png`。
