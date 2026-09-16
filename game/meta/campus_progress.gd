@@ -8,7 +8,9 @@ var upgrades: Dictionary = {}
 var active_run: Dictionary = {}
 var dispatches: Array = []
 var last_settled_run = ""
-var path = "user://campus_progress.json"
+const DEFAULT_PATH = "user://campus_progress_v3.json"
+var path = DEFAULT_PATH
+var legacy_path = "user://campus_progress.json"
 var error_message = ""
 var load_blocked = false
 
@@ -28,13 +30,20 @@ func _apply(data: Dictionary) -> void:
 	last_settled_run = str(data.get("last_settled_run",""))
 
 func read_save() -> bool:
-	if not FileAccess.file_exists(path): return true
-	var file = FileAccess.open(path,FileAccess.READ)
+	var source = path
+	var legacy = path == DEFAULT_PATH and not FileAccess.file_exists(path) and FileAccess.file_exists(legacy_path)
+	if legacy: source = legacy_path
+	if not FileAccess.file_exists(source): return true
+	var file = FileAccess.open(source,FileAccess.READ)
 	if file == null: return _invalid_save()
 	var parser = JSON.new()
 	if parser.parse(file.get_as_text()) != OK: return _invalid_save()
 	var data = parser.data
 	if not data is Dictionary: return _invalid_save()
+	if legacy and (data.get("version",0) is float or data.get("version",0) is int) and data.version > 3:
+		load_blocked = false
+		error_message = "检测到新版存档，已保留；此版本使用独立 v3 进度。"
+		return true
 	if data.get("version",0) != 1 and data.get("version",0) != 2 and data.get("version",0) != 3: return _invalid_save()
 	if not data.get("upgrades",{}) is Dictionary or not data.get("active_run",{}) is Dictionary or not data.get("dispatches",[]) is Array: return _invalid_save()
 	for key in ["points","completions"]:

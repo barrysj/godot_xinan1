@@ -1,5 +1,15 @@
 # 校园短局 Demo
 
+## 存档位置与版本隔离
+
+本 v3 短局版本使用 `user://campus_progress_v3.json`。当前 Windows 用户的实际目录为 `%APPDATA%/Godot/app_userdata/godot-game-template/`（本机 `C:/Users/SongJun/AppData/Roaming/Godot/app_userdata/godot-game-template/`），不是项目或 Git 工作树目录。相同应用名与文件名的编辑器运行、工作树和 Windows 导出程序共享进度；Git 分支不会隔离存档，勿同时运行多个实例写同一档。Web 是浏览器站点的本地存储，不与 Windows 文件共享，没有云同步。
+
+首次没有 v3 专用档时只读旧 `campus_progress.json`：v1～v3 可沿用，后续保存写入新文件，旧文件保留；检测到大于 v3 的版本时保留新版档并使用独立初始进度，不尝试降级战役数据。当前发现的旧文件为 v4，含战役数据，须由支持该格式的版本继续。坏 JSON 或非法结构仍禁止覆盖，不自动删除或重置。
+
+档内包含修复资源、通关数、升级、当前探索检查点、派遣任务和结算标识；闪卡内容来自项目资源，不存入此档，也没有闪卡解锁存档。保存先写同目录 `.tmp`，再替换目标文件；这不是历史备份。备份请在游戏关闭后复制完整 JSON，恢复前核对版本，勿手动将 v4 改成 v3。
+
+保存失败时退出弹窗保留取消／重试，同时提供“不保存退出”（返回菜单为“不保存返回”），说明未保存进度将丢失；只有明确选择该按钮才跳过保存。正常保存成功仍按原流程退出。
+
 启动：在项目目录执行 `pwsh.exe -File .\run-campus-demo.ps1`；或 Godot 按 F5 → Play。旧的 `run-battle-demo.ps1` 仍可进入独立战斗实验室。
 
 ## 已实现的完整流程

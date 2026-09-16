@@ -25,6 +25,8 @@
 
 ## 已知边界与未完成项
 
+2026-09-16（基线996cee4）修复共享未来档阻塞：本短局版本写 campus_progress_v3.json，旧 campus_progress.json 仅做兼容读取，不覆盖。保存失败退出新增显式不保存选项。存放位置、共享范围、字段及备份规则集中见 campus-demo.md“存档位置与版本隔离”；回归证据见 SAVE-02。待统筹：其他工作树与发布版须协调版本命名，不将新版战役档降级为短局档。
+
 profile v3／checkpoint schema 1／run schema 5；Web 写后显式同步；半场不恢复 HP
 
 ## 交接给统筹
