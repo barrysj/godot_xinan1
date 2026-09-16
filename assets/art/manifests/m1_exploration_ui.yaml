@@ -96,6 +96,23 @@ variants:
     metadata:
       implementation_note: isolated_native_component_candidate_not_campaign_integration
       concept_basis: concept_004
+  asset_006:
+    stage: asset
+    version: 006
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/006
+    files:
+      panel: panel.png
+      button: button.png
+      memory: memory.png
+      character: character.png
+      terminal: terminal.png
+      guardian: guardian.png
+      source_notes: generation.md
+    metadata:
+      implementation_note: imagegen_rgba_base_skins_pending_runtime_and_state_validation
+      concept_basis: concept_004
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 已批准，正式组件、交互与多分辨率运行效果未验收，尚未接入。"
