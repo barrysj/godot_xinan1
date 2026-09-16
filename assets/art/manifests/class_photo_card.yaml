@@ -4,6 +4,19 @@ object:
   display_name: "校园合照全息卡"
   type: ui
 variants:
+  asset_002:
+    stage: asset
+    version: 002
+    selection: unselected
+    approval: review
+    root: design/concepts/class-photo-holo-card/card/002
+    files:
+      build_metadata: generation.md
+    resource: design/concepts/class-photo-holo-card/card/002/card.tres
+    integration_authorization:
+      source: docs/art/tasks/class-photo-holo-card.md
+      scope: "照片表面流光和独立开关，仅独立预览"
+      date: 2026-09-16
   asset_001:
     stage: asset
     version: 001

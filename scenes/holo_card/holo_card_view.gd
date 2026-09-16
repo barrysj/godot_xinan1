@@ -10,6 +10,8 @@ var current_tilt := Vector2.ZERO
 var target_tilt := Vector2.ZERO
 var reduced_motion := false
 var effects_enabled := true
+var frame_effects_enabled := true
+var photo_effects_enabled := true
 var touch_index := -1
 var response_seconds := 0.12
 func _ready() -> void:
@@ -50,6 +52,7 @@ func set_visual(value: Resource) -> void:
     material_instance.set_shader_parameter("photo",visual.photo)
     material_instance.set_shader_parameter("photo_size",visual.photo.get_size())
     material_instance.set_shader_parameter("foil_strength",visual.foil_strength)
+    material_instance.set_shader_parameter("photo_foil_strength",visual.photo_foil_strength)
     material_instance.set_shader_parameter("photo_depth",visual.photo_depth)
     reset_view()
 func set_reduced_motion(value: bool) -> void:
@@ -59,6 +62,12 @@ func set_reduced_motion(value: bool) -> void:
 func set_effects_enabled(value: bool) -> void:
     effects_enabled = value
     material_instance.set_shader_parameter("effects_enabled",value)
+func set_frame_effects_enabled(value: bool) -> void:
+    frame_effects_enabled = value
+    material_instance.set_shader_parameter("frame_effects_enabled",value)
+func set_photo_effects_enabled(value: bool) -> void:
+    photo_effects_enabled = value
+    material_instance.set_shader_parameter("photo_effects_enabled",value)
 func set_tilt(value: Vector2,immediate := false) -> void:
     target_tilt = Vector2.ZERO if reduced_motion else value.clamp(Vector2(-1,-1),Vector2.ONE)
     if immediate:

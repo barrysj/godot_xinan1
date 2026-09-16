@@ -1,15 +1,17 @@
 extends Control
 const Card = preload("res://scenes/holo_card/holo_card_view.gd")
 const Visual = preload("res://game/art/holo_card_visual.gd")
-const SAMPLE = "res://design/concepts/class-photo-holo-card/card/001/card.tres"
-const EVIDENCE = "res://design/concepts/class-photo-holo-card/review/codex-workflow"
+const SAMPLE = "res://design/concepts/class-photo-holo-card/card/002/card.tres"
+const EVIDENCE = "res://design/concepts/class-photo-holo-card/review/codex-workflow/photo-foil-002"
 const FONT = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 var card: Control
 var layout: HBoxContainer
 var holder: CenterContainer
 var details: VBoxContainer
 var heading: Label
-var controls: HBoxContainer
+var controls: GridContainer
+var frame_button: Button
+var photo_button: Button
 var failures := 0
 var checks: Array[String] = []
 var checking := false
@@ -45,15 +47,21 @@ func _ready() -> void:
     var line = HSeparator.new()
     details.add_child(line)
     _label("移动指针或轻拖卡片\n让光沿着记忆的边缘流动。",17,Color("8498b0"))
-    controls = HBoxContainer.new()
-    controls.add_theme_constant_override("separation",10)
+    controls = GridContainer.new()
+    controls.columns = 3
+    controls.add_theme_constant_override("h_separation",10)
+    controls.add_theme_constant_override("v_separation",8)
     details.add_child(controls)
     _button("复位",func(): card.set_tilt(Vector2.ZERO,true))
     var motion = _button("静态",func(): card.set_reduced_motion(not card.reduced_motion))
     motion.toggle_mode = true
-    var foil = _button("流光",func(): card.set_effects_enabled(not card.effects_enabled))
-    foil.toggle_mode = true
-    foil.button_pressed = true
+    frame_button = _button("框流光",func(): card.set_frame_effects_enabled(not card.frame_effects_enabled))
+    frame_button.toggle_mode = true
+    frame_button.button_pressed = true
+    photo_button = _button("照片光",func(): card.set_photo_effects_enabled(not card.photo_effects_enabled))
+    photo_button.toggle_mode = true
+    photo_button.button_pressed = true
+    photo_button.tooltip_text = "单独开关照片表面的虹彩扫光"
     _button("原图",_show_original)
     _label("PHOTO ARCHIVE\n原照保留 · 全图呈现",14,Color("71869e"))
     full_photo = TextureRect.new()
@@ -143,6 +151,33 @@ func _check() -> void:
         _expect(Rect2(Vector2.ZERO,size).encloses(controls.get_global_rect()),"controls fit "+str(resolution))
     get_window().size = Vector2i(1920,1080)
     await get_tree().create_timer(0.2).timeout
+    card.set_tilt(Vector2.ZERO,true)
+    var strength: float = card.visual.photo_foil_strength
+    var photo_region = Rect2i(card.global_position+card.size*Vector2(0.18,0.22),card.size*Vector2(0.64,0.52))
+    card.material_instance.set_shader_parameter("photo_foil_strength",0.0)
+    var before = await _snapshot("photo-before")
+    card.material_instance.set_shader_parameter("photo_foil_strength",strength)
+    var after = await _snapshot("photo-after")
+    photo_button.button_pressed = false
+    photo_button.pressed.emit()
+    var photo_switch_off = await _snapshot("photo-switch-off")
+    _expect(not card.photo_effects_enabled and card.frame_effects_enabled,"photo button changes only photo switch")
+    _expect(_difference(before.get_region(photo_region),photo_switch_off.get_region(photo_region))<0.01,"photo switch restores source appearance")
+    photo_button.button_pressed = true
+    photo_button.pressed.emit()
+    frame_button.button_pressed = false
+    frame_button.pressed.emit()
+    var frame_switch_off = await _snapshot("photo-only")
+    _expect(card.photo_effects_enabled and not card.frame_effects_enabled,"frame button changes only frame switch")
+    _expect(_difference(after.get_region(photo_region),frame_switch_off.get_region(photo_region))<0.01,"frame switch preserves photo coating")
+    frame_button.button_pressed = true
+    frame_button.pressed.emit()
+    var photo_delta = _difference(before.get_region(photo_region),after.get_region(photo_region))
+    _expect(photo_delta>1.0 if strength>0.0 else photo_delta<0.01,"photo coating changes photo pixels only when enabled")
+    card.set_effects_enabled(false)
+    var disabled = await _snapshot("photo-disabled")
+    _expect(_difference(before.get_region(photo_region),disabled.get_region(photo_region))<0.01,"global toggle restores photo pixels")
+    card.set_effects_enabled(true)
     card.set_tilt(Vector2(-0.85,0.4),true)
     var left = await _snapshot("tilt-left")
     card.set_tilt(Vector2(0.85,-0.4),true)
@@ -168,9 +203,15 @@ func _check() -> void:
     var swapped = Visual.new()
     swapped.photo = ImageTexture.create_from_image(portrait)
     swapped.title = "换图测试 · 竖图"
+    swapped.photo_foil_strength = strength
     card.set_visual(swapped)
     card.set_tilt(Vector2.ZERO,true)
-    await _snapshot("reuse-portrait")
+    var portrait_on = await _snapshot("reuse-portrait")
+    card.material_instance.set_shader_parameter("photo_foil_strength",0.0)
+    var portrait_off = await _snapshot("reuse-portrait-off")
+    var margin_region = Rect2i(card.global_position+card.size*Vector2(0.18,0.25),card.size*Vector2(0.1,0.45))
+    _expect(_difference(portrait_on.get_region(margin_region),portrait_off.get_region(margin_region))<0.01,"portrait contain margins exclude photo coating")
+    card.material_instance.set_shader_parameter("photo_foil_strength",strength)
     var second = Card.new()
     second.visual = source
     second.position = Vector2(-2000,-2000)

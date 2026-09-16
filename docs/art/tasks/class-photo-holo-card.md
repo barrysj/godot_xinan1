@@ -1,4 +1,14 @@
-# 合照全息卡 · 001
+# 合照全息卡 · 001 / 002
+
+## 当前候选 002：照片流光与独立开关
+
+2026-09-16 用户要求“还有能否给原图也加上流光效果？而不只有边框”，随后要求“新增一种开关”。本次授权范围为照片表面柔和虹彩扫光及独立控制，不是对最终视觉的批准。
+
+002 资源：`design/concepts/class-photo-holo-card/card/002/card.tres`，共用 001 原始 JPEG。默认预览已切至 002；001 资源仍保持照片流光强度 0。按工作流保留旧证据，新增实际渲染和 checks.json 位于 `design/concepts/class-photo-holo-card/review/codex-workflow/photo-foil-002/`。对照 photo-before / photo-after；photo-switch-off 仅关闭照片光；photo-only 仅开启照片光。
+
+“照片光”和“框流光”独立开关，“静态”固定角度且不自动播放，“原图”不附加效果。新功能只改 Godot shader，不更新旧 Blender 渲染；旧 blend 不代表 002 效果。002 资产及接入效果均为 review，未接入主游戏。
+
+## 初版 001 记录
 
 状态：候选待人工评审；用户已授权独立 Godot 试制，概念／正式资产／接入效果均未批准。版本根目录：`design/concepts/class-photo-holo-card/card/001`。
 

@@ -6,6 +6,8 @@
 
 ## 验证
 
+- 2026-09-16 照片流光增量，基线 `3f28db6`：002 新增照片虹彩和“照片光”独立按钮，原“流光”改称“框流光”；001 兼容保持无照片镀膜。使用 Godot console `--path . --rendering-method gl_compatibility res://scenes/holo_card/holo_card_preview.tscn -- --card-check` 直接运行（不经过有 EditorSettings 提示的导入步骤），结果 failures=0，无运行报错。检查覆盖四分辨率、新按钮信号连接、独立开关的照片区域像素、竖图留边不着色、静态稳定和既有交互。截图及 checks.json 位于原证据目录下 photo-foil-002/，旧证据保留。实际鼠标／手机触摸端到端和 Web 仍未验收。
+
 - 日期：2026-09-16；基线 main d01b03e，新分支 art/class-photo-holo-card 的本功能提交。
 - `./run-holo-card.ps1 -Mode Check`：Godot 4.7.2 Compatibility，全部检查通过、failures=0。截图覆盖 1920×1080、2560×1440、1920×1200、844×390；倾斜／流光变化检查实际渲染像素，静态稳定，竖图替换、多实例材质隔离、空图回退和模拟触摸通过。
 - `./run-holo-card.ps1 -Mode Layers`：输出四张 1600×1400 PNG。
