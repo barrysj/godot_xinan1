@@ -1,6 +1,7 @@
 extends Node
 ## Generic legacy-to-resource sampler. Settings describe a source scene and action durations.
 ## No character IDs, bone names or authored motion formulas belong in this tool.
+const Pose = preload("res://tools/art/verification/presentation_math.gd")
 const PROPERTIES := [&"position", &"rotation", &"scale", &"modulate", &"visible"]
 var sampling_root: Node2D
 var sampling_context: Dictionary
@@ -30,11 +31,7 @@ func _ready() -> void:
 	call_deferred("run")
 
 func descendants(node: Node) -> Array[Node2D]:
-	var result: Array[Node2D] = []
-	for child in node.get_children():
-		if child is Node2D: result.append(child)
-		result.append_array(descendants(child))
-	return result
+	return Pose.descendants(node)
 
 func ownership(node: Node, owner_root: Node) -> void:
 	for child in node.get_children():
@@ -42,9 +39,7 @@ func ownership(node: Node, owner_root: Node) -> void:
 		ownership(child, owner_root)
 
 func distance(a: Variant, b: Variant) -> float:
-	if a is Vector2: return a.distance_to(b)
-	if a is Color: return maxf(maxf(absf(a.r-b.r), absf(a.g-b.g)), maxf(absf(a.b-b.b), absf(a.a-b.a)))
-	return absf(float(a)-float(b))
+	return Pose.distance(a,b)
 
 func simplify(values: Array, first: int, last: int, tolerance: float, kept: Dictionary) -> void:
 	if last - first <= 1: return

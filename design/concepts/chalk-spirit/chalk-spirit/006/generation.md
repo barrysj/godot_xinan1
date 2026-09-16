@@ -27,7 +27,7 @@
 
 ## 数据化迁移（2026-09-16）
 
-源实现为 5b65315 的已批准 006；原图、枢轴、遮挡、后坐方向、双环法阵和 005 死亡帧保留。通用 tools/art/migration/bake_presentation.tscn 从输入 JSON 的 source、output、canvas、fps 与 actions 采样；此次 canvas 为 [288,288]、120 Hz，ranged／cast／hurt 分别为 2／2／1.4 秒，idle／move／critical 保存 96 秒复合曲线，覆盖当前 90 秒战斗上限与收尾。常规预览每轮重置时钟；关闭预览循环并连续观看超过 96 秒会从曲线起点循环。资源是交付事实源，不依赖旧脚本执行。
+源实现为 5b65315 的已批准 006；原图、枢轴、遮挡、后坐方向、双环法阵和 005 死亡帧保留。通用 tools/art/archive/legacy-animation/bake_presentation.tscn 从输入 JSON 的 source、output、canvas、fps 与 actions 采样；此次 canvas 为 [288,288]、120 Hz，ranged／cast／hurt 分别为 2／2／1.4 秒，idle／move／critical 保存 96 秒复合曲线，覆盖当前 90 秒战斗上限与收尾。常规预览每轮重置时钟；关闭预览循环并连续观看超过 96 秒会从曲线起点循环。资源是交付事实源，不依赖旧脚本执行。
 
 关键帧采用误差压缩、显隐边界保留和跳变细分；序列化时间向左偏置 0.00001 秒，避免 float32 把恰好位于帧边界的重生延迟到下一帧。比对覆盖前两秒 144 Hz 采样及持续动作到 89 秒；位置最大误差 0.0204、旋转 0.00049、缩放向量 0.00119、颜色通道 0.00049，显隐差异 0。对照截图与日志位于 review/codex-workflow/hybrid-before-after.png、hybrid-comparison.log。此为技术迁移，正式接入效果仍待原流程人工评审。
 
@@ -35,8 +35,10 @@
 
 上方 96 秒密集烘焙方案已替代，不作为后续生产范例。当前运行库 288,124 B、4,824 keys，最长片段 3.401360544 秒。静态布局留在 presentation.tscn；只有动态属性入轨，必要固定姿态单键保存。独立周期通过 AnimationLibrary 的 cycle_layers 元数据组合，不新增角色播放脚本。
 
-制作配置为 compact_authoring.json。通用执行入口 tools/art/migration/compact_cycles.tscn；参数指定此 JSON。source_revision=ee5b780 的专用脚本／场景及 library_revision=804bd51 的 animations.tres 是离线迁移输入，可从 Git 提取到配置指明的 .godot/animation-benchmark/old.gd、old.tscn、dense.tres；old.tscn 的脚本引用需指向上述缓存 old.gd。输出先落本地缓存，再核验场景引用、复制运行核心到候选，通过通用提升进入正式包。运行时仅依赖当前包，离线来源不随正式包发布。
+制作配置为 compact_authoring.json。历史重建入口 tools/art/archive/legacy-animation/compact_cycles.tscn；参数指定此 JSON。source_revision=ee5b780 的专用脚本／场景及 library_revision=804bd51 的 animations.tres 是离线迁移输入，可从 Git 提取到配置指明的 .godot/animation-benchmark/old.gd、old.tscn、dense.tres；old.tscn 的脚本引用需指向上述缓存 old.gd。输出先落本地缓存，再核验场景引用、复制运行核心到候选，通过通用提升进入正式包。运行时仅依赖当前包，离线来源不随正式包发布。
 
 对照包括一次性动作与 600 秒以内多周期，最大全局位置误差 0.1411 源画布像素；显隐差异 0。粒子重生处四个属性采样按 ±0.0001 秒的单侧极限验证，细节与性能见 docs/implementation/art-03.md 的稀疏曲线修复。七 GIF 和 all-actions.gif 已重新生成；图片、死亡帧、尺寸、锚点、后坐方向与双环法阵保留。
 
 证据：review/codex-workflow/compact-cast-comparison.png、compact-comparison.log、compact-real-battle.png。当前修复是技术优化，未新增视觉批准。
+
+迁移缓存已清理；需要历史复现时先创建配置中的缓存及输出父目录，再从 Git 恢复输入。姿态对比改用 tools/art/verification/compare_presentation.tscn，读取 review/codex-workflow/pose-comparison.json；fps=120 的新增采样在收招跳变附近未通过，改为 144 可复现原通过结果。两份日志均保留，已知边界见 ART-03；不能把历史采样结果视作任意时间点完全相同。

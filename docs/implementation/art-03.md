@@ -52,7 +52,7 @@ py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 
 ## 边界与统筹
 
-- 通用转换器 bake_presentation.tscn 从 JSON 设置采样旧实现，不含角色公式；compare_presentation.tscn 对照相同 context。交付运行不依赖转换器或旧脚本。
+- 通用姿态对比入口为 `tools/art/verification/compare_presentation.tscn`；一次性采样与曲线转换已归档到 `tools/art/archive/legacy-animation/`。交付运行及日常生产不依赖归档。
 - 006 已使用独立短周期分层，最长周期 3.4014 秒；无 96 秒整体重置限制。原密集版本的测量保留在下方历史对照，当前数据以稀疏曲线修复章节为准。
 - 当前骨骼样本是刚性分层动画；未引入 AnimationTree、商业骨骼格式或手机端验收。正式接入视觉评审仍单独保留。
 - **待统筹**：共享动画所有权、正式包路径、Pillow 导出依赖及资源台只读／生产写入边界已改变；高层总览和 Roadmap 未改。
@@ -111,7 +111,7 @@ py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 
 - 周期运动按独立周期拆层，仅存一周期；不求巨大的公共周期，不按整场战斗长度烘焙。库元数据 cycle_layers 是状态到私有片段的映射，私有片段不进入动作入口。各播放器手动 seek，时间来自 context；不重复 play／pause。
 - 静态属性放在场景；某动作的固定姿态只用必要的单键。共享 RESET 包含 59 条确实被动画修改的属性，仅切换时应用。主动作轨道 idle／move／critical 为 2／2／6，ranged／cast／hurt 为 29／54／28；周期层各 1～8 条；把主动作与其循环层一起计算，待机／移动／濒危／远程／施法／受击实际为 28／29／30／29／54／28 轨。全部库合计 257 条（包括 RESET），不再是每动作 180 条。
-- 通用 compact_cycles 工具读取源属性、周期、可选基准分量相减的 JSON 配置；无角色公式。bake_presentation 限于 .godot 原始中间产物，并拒绝超过 8 秒的粗采样。生产需经稀疏化、对照和提升校验。
+- 本次历史转换使用 compact_cycles 的属性与周期配置；相关入口现已归档。新角色直接制作动画资源，不先写角色公式再采样迁移。
 - 库 288,124 B（281.37 KiB），4,824 keys，最长片段 3.401360544 秒；较密集版本的 8,982,734 B／200,717 keys 分别减少 96.79%／97.60%。候选与正式运行包一致。
 - 006 门槛写入 rig_manifest：512 KiB、6,000 keys、4 秒片段；提升前拒绝超限。Godot 契约检查还约束每片段不超过 64 轨，禁止多键恒定轨道。多种复杂角色可单独制定预算，不自动沿用当前样本数值。
 
@@ -141,3 +141,13 @@ py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 周期层使用最多 10 个附加 AnimationPlayer，节点为 48；额外 19 实例静态内存约 3.103 MiB，原专用脚本约 1.889 MiB。共享资源与无角色脚本的收益仍有实例开销，不能宣称全面快于原脚本；关键的数量级回退已消除。本轮不改美术审批状态。
 
 **待统筹**：撤销“96 秒曲线为合理交付边界”的旧判断；采用资源预算、短周期、轨道稀疏性、状态切换一致性和性能复测作为生产验收。
+
+## 通用验证与迁移归档（2026-09-16）
+
+基线 `76c8406`。姿态对比移入 `tools/art/verification/`，共享 `presentation_math.gd` 为无场景生命周期的辅助函数；日常验证不再加载采样器。JSON 显式指定两个场景，采样覆盖配置的动作时长，附加长时点由配置提供；缺失节点、空动作表返回失败。配置格式只维护在[工具目录](../../tools/art/README.md#姿态对比)。旧采样、稀疏转换及入口归入 `archive/legacy-animation/`，保留 UID 和历史重建说明。
+
+验证：Godot 增量导入后，等价场景通过；仅在 2 秒后产生差异的 3 秒动作、缺失节点和空动作配置均正确失败。归档 compact_cycles 重跑得到 4,824 keys。对照旧脚本的 144 Hz 结果与原验证一致；此次未改运行画面，无需重新截图。
+
+清理 `.godot` 中旧迁移输入、重复运行包、性能临时脚本、捕获帧及重复截图／日志，共 200 文件、96,174,025 B（91.72 MiB）；保留 Godot 导入缓存、控制器和已登记候选／评审证据。清理后 `run-motion-preview -Check` 与提升 `--check`（13 文件）通过，日常入口不依赖已删除缓存。
+
+**已知边界／待统筹**：旧对比工具硬编码 144 Hz，忽略 JSON 的 fps。配置生效后补测 120 Hz，ranged 1.65 秒收招跳变附近出现最大约 5.0001 源像素偏差（阈值 0.3），未通过；不能将原 144 Hz 通过扩展为任意采样点精确等价。本次整理保留失败证据，不改变已批准资产。复现配置与两份日志位于候选 `review/codex-workflow/pose-comparison.json`、`pose-120hz-boundary.log`、`pose-144hz.log`；旧输入恢复方式见候选 generation.md。该姿态误差不等于模拟事件或战斗结果改变。

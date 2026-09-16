@@ -1,4 +1,4 @@
-extends "res://tools/art/migration/bake_presentation.gd"
+extends "res://tools/art/archive/legacy-animation/bake_presentation.gd"
 ## Offline composition of independent periodic channels. Settings select source
 ## properties, periods and optional reference subtraction; no character formulas.
 
