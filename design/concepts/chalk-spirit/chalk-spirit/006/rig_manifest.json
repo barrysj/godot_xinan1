@@ -86,7 +86,6 @@
     288,
     288
   ],
-  "continuous_track_horizon": 96,
   "runtime_files": [
     "presentation.tscn",
     "animations.tres",
@@ -105,5 +104,11 @@
   "sockets": {
     "muzzle": "HybridCutoutRig/MuzzleFlash",
     "cast": "HybridCutoutRig/LayeredCastSigil"
-  }
+  },
+  "animation_budget": {
+    "max_bytes": 524288,
+    "max_keys": 6000,
+    "max_cycle_seconds": 4
+  },
+  "cycle_mode": "independent_periods"
 }

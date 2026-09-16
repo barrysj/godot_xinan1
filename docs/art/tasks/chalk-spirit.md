@@ -84,3 +84,13 @@
 - 预生成七动作 GIF 与[完整巡演](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/all-actions.gif)由同一通用导出生成。普通预览及资源台启动无资产写入。实际七动作资源台页和真实战斗截图见下方证据。
 - [七动作资源台页面](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/hybrid-resource-desk.png)、[真实战斗](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/hybrid-real-battle.png)。
 - 96 秒连续曲线覆盖当前战斗时限；关闭循环并超长观看的预览在 96 秒处重新循环。此限制与原始来源在 generation.md 明示。
+
+## 稀疏轨道修复（2026-09-16）
+
+替代上节 96 秒密集曲线方案。保留批准原图和动作设计，将常量还原为场景属性，周期分层短循环；当前库 281.37 KiB／4,824 keys，最长片段 3.4014 秒。主动作 2～54 轨，恢复列表 59 轨，所有循环层合计在内全库 257 轨。
+
+动作衔接、600 秒时间点姿态、九组模拟时钟、回退和 23 项 Python 测试通过；误差及性能完整数据见 ART-03。此前 96 秒整体循环限制已消除，接入视觉评审状态不变。
+
+- [修复前后施法](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-cast-comparison.png)
+- [姿态对照日志](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-comparison.log)
+- [实际战斗](../../../design/concepts/chalk-spirit/chalk-spirit/006/review/codex-workflow/compact-real-battle.png)

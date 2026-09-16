@@ -69,6 +69,17 @@ func run() -> void:
 		get_tree().quit(1)
 		return
 	var settings: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(args[0]))
+	# Raw sampling is an intermediate only. Long cyclic motions must be split
+	# into independent periods by compact_cycles before becoming runtime assets.
+	if not str(settings.output).begins_with("res://.godot/"):
+		push_error("Raw bake output must be below res://.godot; use compact_cycles for runtime assets")
+		get_tree().quit(1)
+		return
+	for spec in settings.actions.values():
+		if float(spec.length) > 8.0:
+			push_error("Raw sample horizon exceeds 8 seconds; describe independent cycles instead")
+			get_tree().quit(1)
+			return
 	var source: PackedScene = load(settings.source)
 	var canvas := Vector2(settings.canvas[0], settings.canvas[1])
 	var library := AnimationLibrary.new()

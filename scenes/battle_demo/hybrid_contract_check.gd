@@ -13,6 +13,7 @@ func check(ok: bool, label: String) -> void:
 func _ready() -> void:
 	_check_shared_controller()
 	for config in [Candidate, Chalk.battle_animation]:
+		_check_animation_budget(config.animation_library)
 		var rig: Node2D = config.presentation_scene.instantiate()
 		add_child(rig)
 		var clock = Animator.new(config, Chalk.resolved_attack_modes())
@@ -33,12 +34,47 @@ func _ready() -> void:
 					var before := rig.transform
 					rig.apply_presentation(context)
 					check(rig.transform == before, "Repeated context does not advance playback")
+		# Switching from every previous action must produce the same visible pose
+		# as a fresh instance, including late cycle phases and restart to time zero.
+		for previous in [&"cast", &"hurt", &"critical", &"death", &"ranged"]:
+			for next in [&"idle", &"move", &"critical", &"cast", &"ranged"]:
+				for time in [0.0, 0.81, 97.13, 600.123]:
+					rig.apply_presentation({"state":previous,"age":0.8,"duration":2.0,"motion_time":0.8})
+					var fresh: Node2D = config.presentation_scene.instantiate()
+					add_child(fresh)
+					var context := {"state":next,"age":fmod(time,2.0),"duration":2.0,"motion_time":time}
+					rig.apply_presentation(context)
+					fresh.apply_presentation(context)
+					for node in fresh.find_children("*", "Node2D",true,false):
+						var actual: Node2D = rig.get_node(fresh.get_path_to(node))
+						check(node.visible == actual.visible and node.transform.is_equal_approx(actual.transform) and node.modulate.is_equal_approx(actual.modulate), "No stale pose after %s to %s: %s" % [previous,next,node.name])
+					fresh.free()
 		clock.sync_health(0, 100)
 		clock.advance(10)
 		check(clock.texture() == config.frames.get_frame_texture(&"death", 7), "Approved death final frame")
 		rig.free()
 	print("HYBRID_CONTRACT_CHECK failures=", failures)
 	get_tree().quit(failures)
+
+func _check_animation_budget(library: AnimationLibrary) -> void:
+	var keys := 0
+	for name in library.get_animation_list():
+		var clip := library.get_animation(name)
+		check(clip.length <= 4.0, "No battle-length animation: " + name)
+		check(clip.get_track_count() <= 64, "Sparse channels per clip: " + name)
+		for track in clip.get_track_count():
+			keys += clip.track_get_key_count(track)
+			if clip.track_get_key_count(track) > 1:
+				var changed := false
+				for index in range(1,clip.track_get_key_count(track)):
+					if clip.track_get_key_value(track,index) != clip.track_get_key_value(track,0): changed = true
+				check(changed,"Constant tracks must use one key: " + name)
+	check(keys <= 6000, "Key budget <= 6000, actual " + str(keys))
+	check(FileAccess.get_file_as_bytes(library.resource_path).size() <= 524288, "Library byte budget <= 512 KiB")
+	check(library.get_animation(&"RESET").get_track_count() < 70, "Reset only animated properties")
+	for state in library.get_meta(&"cycle_layers", {}):
+		for layer in library.get_meta(&"cycle_layers")[state]:
+			check(library.has_animation(layer), "Every declared cycle resolves")
 
 func _check_shared_controller() -> void:
 	var root := Node2D.new()

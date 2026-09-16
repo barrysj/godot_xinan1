@@ -74,6 +74,23 @@ class PromotionTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 plan('sample', root=root)
 
+    def test_over_budget_animation_fails_before_promotion(self):
+        for text, budget in [('x' * 128, {'max_bytes': 64, 'max_keys': 8, 'max_cycle_seconds': 4}),
+                             ('"times": PackedFloat32Array(0, 1, 2)', {'max_bytes': 1024, 'max_keys': 2, 'max_cycle_seconds': 4}),
+                             ('length = 96', {'max_bytes': 1024, 'max_keys': 8, 'max_cycle_seconds': 4})]:
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                candidate = self.fixture(root)
+                rig_path = candidate / 'rig_manifest.json'
+                rig = json.loads(rig_path.read_text())
+                rig['animation_budget'] = budget
+                rig_path.write_text(json.dumps(rig))
+                with (candidate / 'animations.tres').open('a') as output:
+                    output.write('\n' + text)
+                with self.assertRaisesRegex(ValueError, 'budget'):
+                    promote('sample', root=root)
+                self.assertFalse((root / 'assets/art/sample').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

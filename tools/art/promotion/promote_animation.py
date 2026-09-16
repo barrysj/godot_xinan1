@@ -74,7 +74,16 @@ def plan(object_id, variant_id=None, root=ROOT):
     if not frame_actions.issubset(ACTIONS) or not {'idle', 'death'}.issubset(frame_actions):
         raise ValueError('Invalid canonical action contract')
     library = (candidate / 'animations.tres').read_text(encoding='utf-8')
-    library_actions = set(re.findall(r'^&"([^"]+)": SubResource', library, re.M))
+    budget = rig.get('animation_budget', {})
+    key_count = sum(len(values.split(',')) for values in
+                    re.findall(r'"times": PackedFloat32Array\(([^)]*)\)', library) if values.strip())
+    if budget and (len(library.encode('utf-8')) > budget['max_bytes'] or key_count > budget['max_keys']):
+        raise ValueError('Animation resource exceeds registered byte/key budget')
+    lengths = [float(value) for value in re.findall(r'^length = ([\d.eE+-]+)', library, re.M)]
+    if budget and any(value > budget['max_cycle_seconds'] for value in lengths):
+        raise ValueError('Animation resource exceeds registered duration budget')
+    library_actions = {name for name in re.findall(r'^&"([^"]+)": SubResource', library, re.M)
+                       if name != 'RESET' and not name.startswith('_cycle_')}
     if library_actions != skeleton_actions:
         raise ValueError('AnimationLibrary action set disagrees with rig manifest')
     battle = (candidate / 'battle_animation.tres').read_text(encoding='utf-8')

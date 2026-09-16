@@ -7,7 +7,8 @@
 | `animation/` | `motion_capture.gd` | Godot 隔离视口捕获动作，输出捕获清单和临时帧 |
 | `animation/` | `motion_previews.py` | 准备捕获任务、按清单编码 GIF、登记 Manifest |
 | `animation/` | `build_battle_frames.py`、`build_skill_frames.py` | 既有角色图集／护盾样本的构建工具；布局假设固定，不是任意图集自动识别器 |
-| `migration/` | `bake_presentation.gd`＋`.tscn` | 将旧代码动画采样为场景与 AnimationLibrary；迁移时使用 |
+| `migration/` | `bake_presentation.gd`＋`.tscn` | 仅输出 .godot 原始中间采样；最长 8 秒，不能直接作为正式资产 |
+| `migration/` | `compact_cycles.gd`＋`.tscn` | 按属性与独立周期配置生成稀疏轨道、静态场景和分层元数据，验证资源预算 |
 | `migration/` | `compare_presentation.gd`＋`.tscn` | 用同一 context 比较迁移前后姿态；迁移验证时使用 |
 | `promotion/` | `promote_animation.py` | 校验批准候选、复制允许运行文件、改写正式引用；`--check` 只校验 |
 | `asset_manager/` | `catalog.py`、`server.py`、`static/` | Manifest 校验、HTTP 服务、资源台网页 |

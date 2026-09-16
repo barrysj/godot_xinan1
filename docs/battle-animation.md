@@ -115,4 +115,4 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - 显式导出在同一 Godot 进程中用 352×352 隔离视口连续捕获；通用后处理仅读取清单。GIF 覆盖待机→动作→收招→待机，死亡停末帧；全量导出含巡演。缓存位于 .godot，输出限于 Manifest 解析出的候选 review/。
 - 用 `py -3 tools/art/promotion/promote_animation.py chalk_spirit` 提升已批准候选，`--check` 检查确定性内容与依赖；正式包只包含允许列表及 Godot 导入元数据。角色直接引用正式包，不引用候选目录。
 - 验证前先增量导入；新增 hybrid_contract_check.tscn 覆盖候选直接加载、尺寸／锚点、左右朝向及死亡回退。真实战斗截图可用 `--demo-capture --demo-encounter=encounter_classroom --demo-capture-at=1.5`，同一实际战斗场景输出 .godot/battle_demo_combat.png。
-- 006 是误差受控的数据化迁移：连续曲线存储 96 秒，覆盖 90 秒战斗；超长预览会重新循环，关键帧压缩误差与生成来源见候选 generation.md。正式接入效果仍待人工评审。
+- 006 使用误差受控的独立短周期：AnimationLibrary 的 cycle_layers 元数据声明各状态使用的私有循环片段，混合控制器用手动 AnimationPlayer 按 motion_time 分别定位。主动作和循环共用 context，不积累播放时间；RESET 仅在切换时恢复被动画修改的属性。静态属性保留在场景。最长片段 3.4014 秒，不再有 96 秒整体重置。正式接入视觉评审状态不变。
