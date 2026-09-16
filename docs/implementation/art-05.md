@@ -5,6 +5,8 @@
 
 ## 当前状态
 
+- 2026-09-16（基线 fad0254）启动恢复：复现清除 .godot/art-manager-control/ArtManagerControl.exe 后根入口抛出 Controller is not built。run-art-manager-control.ps1 现会在 EXE 缺失或 C#／构建脚本较新时自动编译，构建错误终止启动并提示关闭占用窗口；无需清缓存后另跑构建。直接运行的 EXE 仍须先构建并保留项目内位置，以便向上定位项目根。
+
 - 页面实测：9 个对象、102 个登记文件、0 处不一致；卡片详情显示真实 review.png 与原图、同份文案，没有阶段审批页。点击预览后已核对 Godot 进程参数为 `--card=res://assets/art/holo_cards/class_photo/card.tres`，运行日志无错误。卡片列表标签使用“校验通过”，不暗示主游戏已接入。浏览器实际截图已在对话展示。
 
 - 2026-09-16（基线 b9daea3）：新增 `holo_card` 集合目录登记，自动发现直接子目录的卡资源；详情读取同份 `.tres` 文案，展示 review/原图并将同份资源传入 Godot 预览。入口为 catalog.py、server.py、static/app.js；普通对象规则不变。验证：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`，25 项通过（含 9 项卡片测试）；JavaScript 语法检查通过。目录约束、缺图、缺截图、恶意路径、文案刷新和启动参数均覆盖。待统筹：Manifest 允许显式卡片集合扫描，卡片不走阶段审批。
@@ -29,6 +31,8 @@
 11. 资源台只消费 Manifest 已登记的预生成 GIF，并可启动无写入的统一动作预览；点击动作、展开版本或启动 Godot 均不得隐式生成预览文件。通用 GIF 导出属于 [ART-03](art-03.md#推荐改造骨骼序列帧通用生产与预览仅设计待实施) 的显式生产入口，尚待实施。
 
 ## 验证入口
+
+- 2026-09-16 启动恢复实测：临时移开确切 EXE 后，旧入口报 Controller is not built；修复入口自动构建并创建控制器进程。再次启动文件时间戳不变（不重复编译）。从项目外直接运行 EXE `--self-test <报告路径>`：initial=未启动、started=True、open_enabled=True、stopped=True，退出码0。实际截图 `.godot/art-manager-control-fixed.png` 已展示。服务健康检查 project_root 指向卡片工作树。未复现当前已有 EXE 状态下的启动失败，确认修复的是缓存清理/首次工作树缺构建产物的可靠复现路径。
 
 - `py -3 -m unittest discover -s tools/art/asset_manager/tests -v`
 - `node --check tools/art/asset_manager/static/app.js`
