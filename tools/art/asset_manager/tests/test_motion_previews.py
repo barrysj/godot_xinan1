@@ -7,7 +7,7 @@ import unittest
 
 ART = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ART))
-from motion_previews import inside, write_yaml
+from animation.motion_previews import inside, write_yaml
 from asset_manager.catalog import parse_simple_yaml
 
 

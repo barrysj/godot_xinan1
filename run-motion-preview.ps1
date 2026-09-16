@@ -24,7 +24,7 @@ if ($ExportPreviews) {
     if (-not $PythonPath) { $PythonPath = (Get-Command py.exe -ErrorAction Stop).Source; $pythonArgs = @('-3') }
     & $PythonPath @pythonArgs -c 'import PIL'
     if ($LASTEXITCODE -ne 0) { throw 'Preview export needs Python with Pillow. Set -PythonPath.' }
-    $producer = Join-Path $PSScriptRoot 'tools/art/motion_previews.py'
+    $producer = Join-Path $PSScriptRoot 'tools/art/animation/motion_previews.py'
     $captureManifest = & $PythonPath @pythonArgs $producer prepare --unit $Unit --animation $Animation --action $Action
     if ($LASTEXITCODE -ne 0) { throw 'Unable to resolve export candidate.' }
     $job = Get-Content -LiteralPath $captureManifest -Raw | ConvertFrom-Json

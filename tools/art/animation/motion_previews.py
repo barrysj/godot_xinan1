@@ -4,10 +4,13 @@ import json
 from pathlib import Path
 import shutil
 import uuid
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from asset_manager.catalog import parse_simple_yaml
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 ACTIONS = ('idle', 'move', 'melee', 'ranged', 'cast', 'hurt', 'critical', 'death')
 
 

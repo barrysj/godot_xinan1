@@ -55,4 +55,4 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - 修复范围：启动器 v2 健康标识、旧六对象测试假设、登记文本字节被 Git 换行转换的问题；详见 [ART-05](art-05.md)。没有重写哈希或改变资产批准状态。
 - 边界：既有原图加载警告及无头环境证书警告仍存在；未重导出 Web、未重新验收全套 M0/手机/真人体验。美术批准继续以任务与 Manifest 为准。
 
-混合动画新增重跑入口：`res://scenes/battle_demo/hybrid_contract_check.tscn`、`py -3 tools/art/promote_animation.py chalk_spirit --check`；完整九组合与显式导出矩阵见 ART-03（2026-09-16，56dc3aa＋F 清理树）。
+混合动画新增重跑入口：`res://scenes/battle_demo/hybrid_contract_check.tscn`、`py -3 tools/art/promotion/promote_animation.py chalk_spirit --check`；完整九组合与显式导出矩阵见 ART-03（2026-09-16，56dc3aa＋F 清理树）。

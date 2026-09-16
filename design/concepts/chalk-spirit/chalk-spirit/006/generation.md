@@ -27,6 +27,6 @@
 
 ## 数据化迁移（2026-09-16）
 
-源实现为 5b65315 的已批准 006；原图、枢轴、遮挡、后坐方向、双环法阵和 005 死亡帧保留。通用 tools/art/bake_presentation.tscn 从输入 JSON 的 source、output、canvas、fps 与 actions 采样；此次 canvas 为 [288,288]、120 Hz，ranged／cast／hurt 分别为 2／2／1.4 秒，idle／move／critical 保存 96 秒复合曲线，覆盖当前 90 秒战斗上限与收尾。常规预览每轮重置时钟；关闭预览循环并连续观看超过 96 秒会从曲线起点循环。资源是交付事实源，不依赖旧脚本执行。
+源实现为 5b65315 的已批准 006；原图、枢轴、遮挡、后坐方向、双环法阵和 005 死亡帧保留。通用 tools/art/migration/bake_presentation.tscn 从输入 JSON 的 source、output、canvas、fps 与 actions 采样；此次 canvas 为 [288,288]、120 Hz，ranged／cast／hurt 分别为 2／2／1.4 秒，idle／move／critical 保存 96 秒复合曲线，覆盖当前 90 秒战斗上限与收尾。常规预览每轮重置时钟；关闭预览循环并连续观看超过 96 秒会从曲线起点循环。资源是交付事实源，不依赖旧脚本执行。
 
 关键帧采用误差压缩、显隐边界保留和跳变细分；序列化时间向左偏置 0.00001 秒，避免 float32 把恰好位于帧边界的重生延迟到下一帧。比对覆盖前两秒 144 Hz 采样及持续动作到 89 秒；位置最大误差 0.0204、旋转 0.00049、缩放向量 0.00119、颜色通道 0.00049，显隐差异 0。对照截图与日志位于 review/codex-workflow/hybrid-before-after.png、hybrid-comparison.log。此为技术迁移，正式接入效果仍待原流程人工评审。

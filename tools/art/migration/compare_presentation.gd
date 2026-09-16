@@ -1,6 +1,6 @@
 extends Node
 ## Compare two presentation resources at identical contexts, including all dynamic child properties.
-const Baker = preload("res://tools/art/bake_presentation.gd")
+const Baker = preload("res://tools/art/migration/bake_presentation.gd")
 
 func _ready() -> void:
 	call_deferred("run")

@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 from PIL import Image
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 source = ROOT / "assets/art/effects/guard_shield/burst_sheet.png"
 image = Image.open(source)
 assert image.mode == "RGBA" and image.getchannel("A").histogram()[0] > image.width * image.height * 0.3

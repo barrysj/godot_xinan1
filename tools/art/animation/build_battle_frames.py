@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 CANVAS = 384
 BASELINE = 336
 CLIPS = {

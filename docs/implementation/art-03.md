@@ -4,7 +4,7 @@
 
 - 功能 ID：ART-03；状态：已验证（Windows 桌面与当前测试角色范围）。
 - 验证日期：2026-09-16；起点 `ee5b780`；实现基线 `56dc3aa`＋本档案同提交的 F 清理树。
-- 实现入口：[预览器](../../scenes/battle_demo/motion_preview.tscn)、[共享控制器](../../scenes/battle_demo/presentations/hybrid_presentation.gd)、[捕获器](../../tools/art/motion_capture.gd)、[GIF 后处理](../../tools/art/motion_previews.py)、[确定性提升](../../tools/art/promote_animation.py)。
+- 实现入口：[预览器](../../scenes/battle_demo/motion_preview.tscn)、[共享控制器](../../scenes/battle_demo/presentations/hybrid_presentation.gd)、[捕获器](../../tools/art/animation/motion_capture.gd)、[GIF 后处理](../../tools/art/animation/motion_previews.py)、[确定性提升](../../tools/art/promotion/promote_animation.py)。
 
 ## 骨骼＋序列帧通用生产与预览
 
@@ -18,7 +18,7 @@
 pwsh.exe -File ./run-motion-preview.ps1 -EnsureImport -Check -Unit res://resources/content/enemies/chalk.tres
 pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'
 pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -Action Ranged -PythonPath '<含 Pillow 的 python.exe>'
-py -3 tools/art/promote_animation.py chalk_spirit --check
+py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 ```
 
 - 默认预览、-Action、-Tour、-Check 和资源台启动不生成 PNG／GIF，不写候选或正式包。-Capture 是单独的显式截图入口，仅写 .godot。
@@ -56,3 +56,9 @@ py -3 tools/art/promote_animation.py chalk_spirit --check
 - 006 连续曲线保存 96 秒，覆盖当前 90 秒战斗与收尾；普通预览会每轮重置。关闭循环并持续观看超过 96 秒时，曲线从起点循环。采样误差与迁移证据见候选 generation.md。
 - 当前骨骼样本是刚性分层动画；未引入 AnimationTree、商业骨骼格式或手机端验收。正式接入视觉评审仍单独保留。
 - **待统筹**：共享动画所有权、正式包路径、Pillow 导出依赖及资源台只读／生产写入边界已改变；高层总览和 Roadmap 未改。
+
+## 工具目录归类（2026-09-16）
+
+基线 164c475。工具按职责归入 animation/（捕获、GIF 与既有图集构建）、migration/（采样迁移与对照）、promotion/（确定性提升）；资源台保留 asset_manager/。完整说明见 [工具目录](../../tools/art/README.md)。同步更新 Godot 场景／脚本引用、Python 导入、项目根定位、测试和文档命令；根目录日常入口不变。
+
+验证：22 项 Python 测试、13 文件提升 --check、增量导入后 run-motion-preview -Check 通过；单动作 Cast 显式导出验证新路径的捕获和编码链。本次仅目录整理，不改角色画面与批准状态。待统筹：工具内部路径已迁移，外部保存的旧命令需使用新路径。

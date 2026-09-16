@@ -6,8 +6,8 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from promote_animation import runtime_name, plan, promote
-from motion_previews import write_yaml
+from promotion.promote_animation import runtime_name, plan, promote
+from animation.motion_previews import write_yaml
 from asset_manager.catalog import parse_simple_yaml
 
 

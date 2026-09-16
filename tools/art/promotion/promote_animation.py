@@ -3,9 +3,12 @@ import argparse
 import json
 from pathlib import Path
 import re
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from asset_manager.catalog import parse_simple_yaml
-from motion_previews import inside, write_yaml, ROOT, ACTIONS
+from animation.motion_previews import inside, write_yaml, ROOT, ACTIONS
 
 CORE = {'presentation.tscn', 'animations.tres', 'battle_animation.tres',
         'battle_animation.frames.json', 'rig_manifest.json'}

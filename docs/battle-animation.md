@@ -102,7 +102,7 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 守护者新增 16 个独立绘制姿势：校园外套、深蓝短发、青蓝智能手表，约 4 头身。组织为 idle、move、attack、cast、hurt、critical、death 七种动画，部署头像也取自同一角色。攻击在出手点播放伸拳姿势，施法播放展掌姿势，死亡依次跪倒、侧倒和伏地。所有动作使用原始图集中的独立画稿，非静态占位图整体位移。
 
-`tools/art/build_battle_frames.py` 仅读取原始 RGBA 图集并生成 AtlasTexture/SpriteFrames 元数据，不修改原图像素。每格经透明边缘检查、裁切与 margin 补齐到 384×384，脚底统一为 (192,336)，战斗显示 128×128；动作源与每帧参数记录在旁边的 `.frames.json`。攻击/施法出手对应片段第 3 帧，归一化位置 0.4。左右朝向使用脚底局部变换镜像，避免负宽度绘制导致位移；侧栏按有限展示空间缩放。
+`tools/art/animation/build_battle_frames.py` 仅读取原始 RGBA 图集并生成 AtlasTexture/SpriteFrames 元数据，不修改原图像素。每格经透明边缘检查、裁切与 margin 补齐到 384×384，脚底统一为 (192,336)，战斗显示 128×128；动作源与每帧参数记录在旁边的 `.frames.json`。攻击/施法出手对应片段第 3 帧，归一化位置 0.4。左右朝向使用脚底局部变换镜像，避免负宽度绘制导致位移；侧栏按有限展示空间缩放。
 
 验证：Godot `--headless --path . res://scenes/battle_demo/authored_assets_check.tscn` 检查插画路径、统一画布、七类动作、不同动作画稿、出手帧和死亡末帧。完成两名角色后追加 `-- --require-two-models` 强制检查人数，避免以单一角色或空资源通过。
 
@@ -113,6 +113,6 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - 普通角色仅提供资源；特殊脚本同时在 BattleAnimationSet.presentation_extension／extension_reason 与 rig_manifest.extension 登记，提升工具拒绝未登记脚本。
 - 用 `pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'` 导出全部动作；增加 `-Action Ranged` 只导出远程。普通预览、-Action、-Tour、-Check 和资源台均不写资产。
 - 显式导出在同一 Godot 进程中用 352×352 隔离视口连续捕获；通用后处理仅读取清单。GIF 覆盖待机→动作→收招→待机，死亡停末帧；全量导出含巡演。缓存位于 .godot，输出限于 Manifest 解析出的候选 review/。
-- 用 `py -3 tools/art/promote_animation.py chalk_spirit` 提升已批准候选，`--check` 检查确定性内容与依赖；正式包只包含允许列表及 Godot 导入元数据。角色直接引用正式包，不引用候选目录。
+- 用 `py -3 tools/art/promotion/promote_animation.py chalk_spirit` 提升已批准候选，`--check` 检查确定性内容与依赖；正式包只包含允许列表及 Godot 导入元数据。角色直接引用正式包，不引用候选目录。
 - 验证前先增量导入；新增 hybrid_contract_check.tscn 覆盖候选直接加载、尺寸／锚点、左右朝向及死亡回退。真实战斗截图可用 `--demo-capture --demo-encounter=encounter_classroom --demo-capture-at=1.5`，同一实际战斗场景输出 .godot/battle_demo_combat.png。
 - 006 是误差受控的数据化迁移：连续曲线存储 96 秒，覆盖 90 秒战斗；超长预览会重新循环，关键帧压缩误差与生成来源见候选 generation.md。正式接入效果仍待人工评审。
