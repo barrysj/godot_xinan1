@@ -12,3 +12,4 @@ objects:
   chalk_spirit: manifests/chalk_spirit.yaml
   chalk_projectile: manifests/chalk_projectile.yaml
   m1_exploration_ui: manifests/m1_exploration_ui.yaml
+  m1_library_environment: manifests/m1_library_environment.yaml
