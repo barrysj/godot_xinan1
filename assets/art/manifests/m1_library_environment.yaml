@@ -1,7 +1,7 @@
 schema_version: 3
 object:
   id: m1_library_environment
-  display_name: "M1 图书馆日常环境"
+  display_name: "M1 图书馆环境"
   type: background
   subtype: campaign_location
 variants:
@@ -83,8 +83,12 @@ variants:
   concept_005_night:
     stage: concept
     version: "005-night"
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-library-environment.md
+      date: 2026-09-18
+      decision: approved_as_formal_asset_source
     root: design/concepts/m1-library-environment/m1_library_environment/005
     files:
       atrium_down: atrium-down-night.png
@@ -125,8 +129,12 @@ variants:
   concept_005_anomaly_v3:
     stage: concept
     version: "005-anomaly-v3"
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-library-environment.md
+      date: 2026-09-18
+      decision: approved_as_formal_asset_source
     root: design/concepts/m1-library-environment/m1_library_environment/005
     files:
       atrium_down: atrium-down-anomaly-v2.png
@@ -136,6 +144,34 @@ variants:
       state: anomaly
       source_variant: concept_005_anomaly_v2
       edit_scope: cross_view_atrium_continuity
+  asset_005_environment_set:
+    stage: asset
+    version: "005-environment-set"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-library-environment.md
+      date: 2026-09-18
+      decision: approved
+    root: assets/art/backgrounds/m1_library
+    files:
+      daily_atrium_down: daily/atrium-down.png
+      daily_window_corridor: daily/window-corridor.png
+      daily_shelf_to_atrium: daily/shelf-to-atrium.png
+      night_atrium_down: night/atrium-down.png
+      night_window_corridor: night/window-corridor.png
+      night_shelf_to_atrium: night/shelf-to-atrium.png
+      anomaly_atrium_down: anomaly/atrium-down.png
+      anomaly_window_corridor: anomaly/window-corridor.png
+      anomaly_shelf_to_atrium: anomaly/shelf-to-atrium.png
+    metadata:
+      asset_type: campaign_environment_background_set
+      resolution: [1672, 941]
+      transparent: false
+      states: [daily, night, anomaly]
+      viewpoints: [atrium_down, window_corridor, shelf_to_atrium]
+      source_variants: [concept_005, concept_005_night, concept_005_anomaly_v3]
+      usage: [campaign_library]
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-library-environment.md

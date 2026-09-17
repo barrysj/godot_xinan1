@@ -1,6 +1,22 @@
 # 美术任务：M1 图书馆静态环境
 
-状态：concept_005 日常三视角概念已获人工批准并选用；005 夜间与异变 v3 三视角候选待评审；未制作正式资产、未接入 Godot。下方历轮待审状态为当时记录，以本节最新决定为准。
+状态：005 日常、夜间、异变 v3 共九张已获正式资产批准并提升至 `assets/art/`；尚未接入 Godot，接入效果待后续评审。下方历轮待审状态为当时记录，以本节最新决定为准。
+
+## 正式资产批准与提升：asset_005_environment_set（2026-09-18）
+
+负责人在检查完三组共九张图后明确决定“接受这9张为正式资产”。批准范围为 005 日常三视角、005 夜间三视角及最新 `concept_005_anomaly_v3` 三视角；这同时批准夜间与异常概念来源及具体正式文件，不代表 Godot 接入效果已经批准。
+
+正式包位于 `assets/art/backgrounds/m1_library/`，按 `daily/`、`night/`、`anomaly/` 分组，每组固定 `atrium-down.png`、`window-corridor.png`、`shelf-to-atrium.png`。Manifest 登记为 `asset_005_environment_set`，状态 `selected + approved`；对象整体仍为 `not_integrated`。
+
+| 状态 | 中庭俯视 SHA-256 | 窗边走廊 SHA-256 | 书架望中庭 SHA-256 |
+| --- | --- | --- | --- |
+| 日常 | `899cf22547c661346acef848640f3a8b7f0cdde54f72bfed398fe8df7d320bca` | `66acb9fc0eafcc5ea0611d7b0b050afc6d67053d466473c4ddfdab714d74215e` | `2ca0eb9bc4c4a1f6f9ad7504cfe1267fbc82773352a58cf56bc4b5384ae35b0c` |
+| 夜间 | `970a9a5a334c59cec8550239266fa8aeaf1a7a9c32517cf9c1c67b0b2daea9ac` | `a13d0849d2e360d7af0bcfd53dcf0b63902daeaa1cf36f4ba8c5f97e34a6e062` | `229aa3b1597c0f1d7519190c51b7a081144ba359d5e7dacbba53033c14f29f74` |
+| 异常 | `3acab37883928e9ddcf4354948f8bde4a25814a1604d89baa9faabd1f6cf9060` | `185067ccb12e0f325fe153d4d5bddf79e2b8455d8d87b48750d905ba455ad1e2` | `4f78764e7d846eb65d0f684fde8e1f79afd8b7bdbd03cb83bf3f429dd28935ac` |
+
+九张正式文件均为 1672 × 941、RGB、不透明 PNG，并与各自获批候选逐文件 SHA-256 一致。生成工具、提示词、输入参考和修订历史继续保存在 005 候选目录的 `generation*.md` 与本任务记录中；正式包不复制生产过程文件。
+
+验证日期 2026-09-18、提升前基线 `084a291`：System.Drawing 解码与尺寸检查、九组候选／正式 SHA-256 对照、AssetCatalog 实际扫描（10 对象、10 个图书馆版本、35 个登记文件、零警告／错误）、资源台 33 项单元测试及 `git diff --check` 均通过。没有修改 Godot 场景或运行时引用，故本阶段不生成游戏截图；接入时仍须补三分辨率实际画面评审。
 
 ## 异变状态跨机位连续性修订：concept_005_anomaly_v3（2026-09-18）
 
