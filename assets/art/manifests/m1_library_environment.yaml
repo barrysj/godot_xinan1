@@ -80,6 +80,20 @@ variants:
     metadata:
       state: daily
       source_identity: user_feedback_open_stair_bay_aisle_octagonal_floors
+  concept_005_night:
+    stage: concept
+    version: "005-night"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-library-environment/m1_library_environment/005
+    files:
+      atrium_down: atrium-down-night.png
+      window_corridor: window-corridor-night.png
+      shelf_to_atrium: shelf-to-atrium-night.png
+    metadata:
+      state: night
+      source_variant: concept_005
+      edit_scope: lighting_weather
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-library-environment.md
