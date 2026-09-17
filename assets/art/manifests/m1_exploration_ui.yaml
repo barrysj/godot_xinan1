@@ -150,6 +150,7 @@ variants:
       source: docs/art/tasks/m1-exploration-ui.md
       date: 2026-09-17
       decision: approved
+      commit: 1777315
       quote: "‘校园记忆’我更喜欢这一张，提升为资产。之后在游戏内预览"
     root: design/concepts/m1-exploration-ui/m1_exploration_ui/010
     files:
@@ -158,7 +159,28 @@ variants:
     metadata:
       implementation_note: approved_memory_hotspot_only_other_009_icons_remain_pending
       concept_basis: concept_004
-      sha256: f0ba02597736f247beb3fd2ddc6549972854e8389e95a80dbc3207570e5c61e8
+  asset_011:
+    stage: asset
+    version: 011
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/011
+    files:
+      scene: preview.tscn
+      controller: preview.gd
+      hotspot: hotspot.gd
+      source_notes: generation.md
+    previews:
+      godot:
+        scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/011/preview.tscn
+    metadata:
+      implementation_note: isolated_runtime_review_assembly_approved_memory_with_pending_companion_icons
+      approved_asset: asset_010_memory
+      companion_candidates: asset_009_character_terminal_guardian
+    integration_authorization:
+      source: docs/art/tasks/m1-exploration-ui.md
+      scope: "仅独立 Godot 运行预览，不接入正式探索页"
+      date: 2026-09-17
 integration:
   status: not_integrated
   active_variant: asset_010

@@ -30,6 +30,12 @@
 
 010 状态为 selected / approved；009 的人物事件、借阅终端和敌对守卫仍是 unselected / pending，不能由本次决定推定批准。正式文件当前尚未接入正式游戏场景；用户同时授权下一步做 Godot 运行预览，预览授权不等于最终接入验收。
 
+011 是上述授权对应的独立 Godot 运行评审装配：校园记忆从正式路径读取，另三枚热点仅用 009 候选陪衬；入口为 `design/concepts/m1-exploration-ui/m1_exploration_ui/011/preview.tscn`。该装配不修改 campaign_board、campaign_panel 或 campaign_hub，也不改变 `integration: not_integrated`。
+
+运行验证：2026-09-17，以正式资产提交 `1777315` 为基线，Godot 4.7.2 compatibility 执行 `preview.tscn -- --ui-capture`，输出 `EXPLORATION_UI_CANDIDATE PASS three sizes; details, cancel, focus, read, reward gate`。实际截图保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-011/`，包含 1920×1080、2560×1440、1920×1200 的 default/detail/complete 共九张；已看图检查 1080p 默认／详情和 16:10 默认状态。
+
+画面结论：自由轮廓与不规则碎片消除了统一方形图标的 PPT 感；校园记忆在当前 106px 绘制尺寸仍能读成破碎照片，并保留用户偏好的校园细节。弹窗在三尺寸内未越界，热点之间无重叠。统一黑色名称底条仍略偏规整，可作为后续接入效果优化项；011 保持 unselected / pending，等待用户对运行效果单独验收。
+
 内置 imagegen 分别编辑006两张原图，保存到 `design/concepts/m1-exploration-ui/m1_exploration_ui/007/`，完整提示词见 generation.md。人物去除头发服饰与轨道，敌人去除盾牌和感叹号，保留原系列色彩与玻璃底座。仅修改两个图标，不生成新人物身份或战斗单位设计；007 是局部候选，不是整套资产替换。
 
 看图确认语义修改已呈现；技术检查确认两图为有真实透明像素的RGBA。边光仍偏强，人物底座尺寸略有漂移；需后续缩小、视觉重量及游戏适配验证。本轮无运行画面变更，未借用005截图证明新图标效果。asset_007 保持 unselected/pending/not_integrated。
