@@ -19,6 +19,8 @@
 
 ## 验证与证据
 
+- 2026-09-17，基线 `10dfbcd` 后本功能提交：新增正式“重开存档”，入口 `campaign_hub.gd::_profile_action`、原子重置 `campus_progress.gd::restart_profile`。确认后备份原始字节，支持坏档恢复，写入失败恢复内存与禁止覆盖状态；按钮与范围说明见 campus-demo.md。Godot expedition.tscn `-- --profile-reset-check` 图形运行：14 checks / 0 failures，覆盖取消、未确认调用、全字段清空、磁盘重读、唯一备份、坏档与故障回滚。实际截图 `.godot/profile-reset-confirm.png`。仅用 `.godot` 隔离档；未模拟断电与磁盘满，Web 未实测。待统筹：基地新增正式重开入口，备份保留策略由玩家管理。
+
 - 2026-09-16 main 合并（`48acc51` / `f32fa4f`）：存档实现与合并前 main 完全一致，保留 v4 与 campus_progress.json，不把 v4 写入旧分支的 v3 专用档；下述 v3 隔离记录仅适用于历史闪卡分支。退出失败显式放弃功能保留。测试改为 `.godot` 隔离档，覆盖 v1～v4 可读、v5 拒绝且不可覆盖，以及取消/显式退出；SAVE_COMPAT_CHECK PASS。CAMPAIGN_CHECK 103/0、完整 CAMPAIGN_FLOW 124/0 通过，未写入玩家存档。待统筹：默认路径说明已同步 campus-demo.md。
 
 - 2026-09-16，基线 996cee4：只读实际档复现 loaded=false/blocked=true，确认是共享 user:// 中 v4 战役档被仅支持 v1～v3 的读取器拒绝，并非文件不可读或 JSON 损坏。v3 默认改用 campus_progress_v3.json，旧兼容档只读沿用，新版档保留并提示独立进度；不降级、不覆盖玩家档。scenes/expedition/save_compat_check.tscn 图形运行加 `-- --codex-check` PASS，覆盖实际只读复现、隔离版本1～4、未来档禁止写入、退出失败取消及实际显式不保存退出；截图 .godot/save-compat-exit.png。meta-smoke 67 checks / 0 failures，原玩家档 SHA256 前后一致。项目原像素图警告仍存在。待统筹：按schema隔离写入，非按工作树隔离；未新增进程锁，禁止并发写同档。

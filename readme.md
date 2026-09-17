@@ -6,6 +6,7 @@ Godot 2D 理工校园游戏。Codex 负责开发与美术生产，人类负责�
 
 - [整体游戏设计](docs/game-design.md)
 - [校园演示](docs/campus-demo.md)与[校园地图](docs/campus-map.md)
+- [Debug 模式](docs/debug-mode.md)：`pwsh.exe -File .\run-debug.ps1`，右上角调试入口与独立存档。
 - [战斗与部署](docs/battle-demo.md)、[战斗动画与预览](docs/battle-animation.md)
 - [内容编辑](docs/content-authoring.md)、[Web 发布](docs/web-publishing.md)
 - [项目协作与目录职责](AGENTS.md)

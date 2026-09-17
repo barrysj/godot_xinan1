@@ -13,6 +13,26 @@ var last_settled_run = ""
 var path = "user://campus_progress.json"
 var error_message = ""
 var load_blocked = false
+var last_backup_path = ""
+
+func restart_profile() -> bool:
+	# Copy the original bytes, including unreadable saves, before replacing anything.
+	last_backup_path = ""
+	if FileAccess.file_exists(path):
+		var suffix = "%d-%s" % [int(Time.get_unix_time_from_system()), Crypto.new().generate_random_bytes(8).hex_encode()]
+		var backup = path + ".backup-" + suffix
+		if DirAccess.copy_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup)) != OK:
+			error_message = "旧档备份失败，未重开存档"
+			return false
+		last_backup_path = backup
+	var before = to_dict()
+	var was_blocked = load_blocked
+	_apply(get_script().new().to_dict())
+	load_blocked = false
+	if write_save(): return true
+	_apply(before)
+	load_blocked = was_blocked
+	return false
 
 func to_dict() -> Dictionary:
 	return {"version":4, "campaign":campaign.duplicate(true), "points":points, "completions":completions, "supply_unlocked":supply_unlocked,

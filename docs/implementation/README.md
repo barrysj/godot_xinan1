@@ -60,3 +60,4 @@
 | RELEASE-01 | 发布 | [Web 构建与 Pages 自动发布配置](release-01.md) |
 | RELEASE-02 | 发布 | [当前版本桌面／浏览器／手机可用性](release-02.md) |
 | CORE-04 | 兼容 | [旧固定站桩与固定内容主路径](core-04.md) |
+| DEV-01 | 开发工具 | [Debug 模式与独立启动入口](dev-01.md) |
