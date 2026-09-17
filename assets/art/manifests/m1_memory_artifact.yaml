@@ -115,7 +115,12 @@ variants:
     stage: concept
     version: 006
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected_perspective_not_visible
+      quote: "看起来没有调整透视啊"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/006
     files:
       concept: m1_memory_terminal_concept_006.png
@@ -126,6 +131,23 @@ variants:
       usage: [concept_review, family_design_master, active_state_direction]
       style_layer: anomaly
       concept_language: "镜核文字终端透视修正；上壳后退；下壳前移；共同球形包络"
+      symmetry: bilateral
+      shell_segments: 4
+  concept_007:
+    stage: concept
+    version: 007
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/007
+    files:
+      concept: m1_memory_terminal_concept_007.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master, active_state_direction]
+      style_layer: anomaly
+      concept_language: "镜核文字终端透视重做；后壳被核心遮挡；前壳遮挡核心；共同球形包络"
       symmetry: bilateral
       shell_segments: 4
 integration:
