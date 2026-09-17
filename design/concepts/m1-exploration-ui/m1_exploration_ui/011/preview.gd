@@ -6,10 +6,18 @@ func _ready() -> void:
 	super._ready()
 	var sources := [
 		"res://assets/art/ui/m1_exploration_ui/memory.png",
-		"res://design/concepts/m1-exploration-ui/m1_exploration_ui/009/character.png",
-		"res://design/concepts/m1-exploration-ui/m1_exploration_ui/009/terminal.png",
-		"res://design/concepts/m1-exploration-ui/m1_exploration_ui/009/guardian.png",
+		"res://assets/art/ui/m1_exploration_ui/character.png",
+		"res://assets/art/ui/m1_exploration_ui/terminal.png",
+		"res://assets/art/ui/m1_exploration_ui/guardian.png",
 	]
+	popup.artwork = UISkin.texture("res://assets/art/ui/m1_exploration_ui/panel.png")
+	var formal_button := UISkin.texture("res://assets/art/ui/m1_exploration_ui/button.png")
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		var box := StyleBoxTexture.new()
+		box.texture = formal_button
+		box.set_content_margin_all(8)
+		box.modulate_color = Color(0.65, 0.75, 0.8) if state == "pressed" else Color.WHITE
+		primary.add_theme_stylebox_override(state, box)
 	for i in range(buttons.size()):
 		buttons[i].set_script(PreviewHotspot)
 		buttons[i].kind = i

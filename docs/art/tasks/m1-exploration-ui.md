@@ -1,5 +1,15 @@
 # 美术任务：M1 探索 UI 视觉样板
 
+## 正式资产包 012（2026-09-17）
+
+用户查看 011 Godot 实际运行预览后回复“好，纳入正式资产吧”。该决定批准 011 所展示的浮窗、按钮、校园记忆、人物事件、借阅终端和敌对守卫六张图片，并批准其在 011 中的运行缩放效果。asset_011 记为 approved 运行评审证据；为避免把评审脚本与图片混成一个正式版本，六张图片另整理为 asset_012，状态为 selected / approved。
+
+012 逐文件原样复制到 `assets/art/ui/m1_exploration_ui/`；来源与 SHA-256 见 `design/concepts/m1-exploration-ui/m1_exploration_ui/012/generation.md`。资源台以动态哈希核对候选与正式文件，不在 Manifest 重复存储哈希。010 校园记忆仍保留 approved 历史决定，但由完整包 012 取代为当前 selected 资产。
+
+提升后将 011 的六张图片加载路径全部切换到正式目录，并以 Godot 4.7.2 compatibility 重跑三尺寸 default/detail/complete 与交互断言，结果仍为 `EXPLORATION_UI_CANDIDATE PASS`；已查看 1920×1080 默认截图，画面与批准版一致。截图继续保存在 `review/codex-workflow/preview-011/`，现为正式副本的实际运行证据。
+
+本次仅提升稳定正式图片，不修改 campaign_board、campaign_panel、campaign_hub 或存档逻辑。`integration` 仍为 `not_integrated`；正式战役探索页的组件接入与三尺寸运行效果需要另行实施、截图和人工验收。
+
 ## 当前：009 异变事件热点候选（2026-09-17）
 
 用户针对008运行截图指出热点图标“过于中规中矩、像PPT”，并确认按“事件正在发生”的不规则轮廓思路重新生成。008保留为被要求修改的引擎预览证据；004概念批准仍有效，但不覆盖新资产评审。
