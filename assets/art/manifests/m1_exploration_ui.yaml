@@ -141,6 +141,28 @@ variants:
     metadata:
       implementation_note: asymmetric_free_silhouette_hotspots_pending_runtime_validation
       concept_basis: concept_004
+  asset_010:
+    stage: asset
+    version: 010
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-exploration-ui.md
+      date: 2026-09-17
+      decision: approved
+      quote: "‘校园记忆’我更喜欢这一张，提升为资产。之后在游戏内预览"
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/010
+    files:
+      memory: memory.png
+      source_notes: generation.md
+    metadata:
+      implementation_note: approved_memory_hotspot_only_other_009_icons_remain_pending
+      concept_basis: concept_004
+      sha256: f0ba02597736f247beb3fd2ddc6549972854e8389e95a80dbc3207570e5c61e8
 integration:
   status: not_integrated
-  evidence: "docs/art/tasks/m1-exploration-ui.md；概念 004 已批准，正式组件、交互与多分辨率运行效果未验收，尚未接入。"
+  active_variant: asset_010
+  root: assets/art/ui/m1_exploration_ui
+  files:
+    memory: memory.png
+  evidence: "docs/art/tasks/m1-exploration-ui.md；校园记忆 asset_010 已提升为正式文件，但尚未接入正式游戏场景；其余热点资产仍待批准。"
