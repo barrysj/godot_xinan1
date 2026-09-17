@@ -8,8 +8,13 @@ variants:
   concept_001:
     stage: concept
     version: 001
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: approved_with_formal_asset_constraints
+      quote: "方向通过，需要图形化简化，降低写实材质与微细节，并加强记忆分层／存储切片的身份"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/001
     files:
       concept: m1_memory_artifact_concept_001.png
@@ -20,5 +25,21 @@ variants:
       usage: [concept_review, family_design_master]
       style_layer: anomaly
       concept_language: "悬浮记忆棱核；断开通信环；全息记忆层"
+  asset_002:
+    stage: asset
+    version: 002
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/002
+    files:
+      asset: m1_memory_artifact_asset_002.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_seed]
+      style_layer: anomaly
+      symmetry: bilateral_and_central
+      memory_layers: 3
 integration:
   status: not_integrated
