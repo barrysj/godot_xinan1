@@ -1,0 +1,24 @@
+schema_version: 3
+object:
+  id: m1_memory_artifact
+  display_name: "关键记忆载体"
+  type: item
+  subtype: memory_artifact
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/001
+    files:
+      concept: m1_memory_artifact_concept_001.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: false
+      usage: [concept_review, family_design_master]
+      style_layer: anomaly
+      concept_language: "悬浮记忆棱核；断开通信环；全息记忆层"
+integration:
+  status: not_integrated
