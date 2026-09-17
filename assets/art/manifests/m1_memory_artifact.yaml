@@ -72,7 +72,12 @@ variants:
     stage: concept
     version: 004
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected
+      quote: "有点丑陋；配色没有特色；球体太像精灵球；显示屏实体感太强"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/004
     files:
       concept: m1_memory_terminal_concept_004.png
@@ -84,5 +89,22 @@ variants:
       style_layer: anomaly
       concept_language: "全息回响终端；完整球形核心；弧形全息屏；内部数字珍珠"
       symmetry: bilateral
+  concept_005:
+    stage: concept
+    version: 005
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/005
+    files:
+      concept: m1_memory_terminal_concept_005.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master, active_state_direction]
+      style_layer: anomaly
+      concept_language: "镜核文字终端；珍珠核心；四片游离镜面壳；无框透明文字场"
+      symmetry: bilateral
+      shell_segments: 4
 integration:
   status: not_integrated
