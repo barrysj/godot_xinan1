@@ -162,7 +162,7 @@ variants:
   asset_011:
     stage: asset
     version: 011
-    selection: unselected
+    selection: selected
     approval: approved
     approval_evidence:
       source: docs/art/tasks/m1-exploration-ui.md
@@ -172,6 +172,12 @@ variants:
       quote: "好，纳入正式资产吧"
     root: design/concepts/m1-exploration-ui/m1_exploration_ui/011
     files:
+      panel: panel.png
+      button: button.png
+      memory: memory.png
+      character: character.png
+      terminal: terminal.png
+      guardian: guardian.png
       scene: preview.tscn
       controller: preview.gd
       hotspot: hotspot.gd
@@ -180,40 +186,15 @@ variants:
       godot:
         scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/011/preview.tscn
     metadata:
-      implementation_note: isolated_runtime_review_assembly_approved_memory_with_pending_companion_icons
-      approved_asset: asset_010_memory
-      companion_candidates: asset_009_character_terminal_guardian
+      implementation_note: approved_six_image_ui_asset_package_with_runtime_review
+      concept_basis: concept_004
     integration_authorization:
       source: docs/art/tasks/m1-exploration-ui.md
       scope: "仅独立 Godot 运行预览，不接入正式探索页"
       date: 2026-09-17
-  asset_012:
-    stage: asset
-    version: 012
-    selection: selected
-    approval: approved
-    approval_evidence:
-      source: docs/art/tasks/m1-exploration-ui.md
-      date: 2026-09-17
-      decision: approved
-      commit: 9bef750
-      quote: "好，纳入正式资产吧"
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/012
-    files:
-      panel: panel.png
-      button: button.png
-      memory: memory.png
-      character: character.png
-      terminal: terminal.png
-      guardian: guardian.png
-      source_notes: generation.md
-    metadata:
-      implementation_note: approved_six_image_ui_asset_package_promoted_after_runtime_review
-      runtime_review: asset_011
-      concept_basis: concept_004
 integration:
   status: not_integrated
-  active_variant: asset_012
+  active_variant: asset_011
   root: assets/art/ui/m1_exploration_ui
   files:
     panel: panel.png
@@ -222,4 +203,4 @@ integration:
     character: character.png
     terminal: terminal.png
     guardian: guardian.png
-  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_012 六张 UI 图片已按 011 运行预览获得人工批准并提升到正式目录；尚未接入正式战役探索页。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_011 六张 UI 图片及独立运行预览获得人工批准并提升到正式目录；尚未接入正式战役探索页。"

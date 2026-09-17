@@ -1,10 +1,12 @@
 # 美术任务：M1 探索 UI 视觉样板
 
-## 正式资产包 012（2026-09-17）
+## 正式资产 011（2026-09-17）
 
-用户查看 011 Godot 实际运行预览后回复“好，纳入正式资产吧”。该决定批准 011 所展示的浮窗、按钮、校园记忆、人物事件、借阅终端和敌对守卫六张图片，并批准其在 011 中的运行缩放效果。asset_011 记为 approved 运行评审证据；为避免把评审脚本与图片混成一个正式版本，六张图片另整理为 asset_012，状态为 selected / approved。
+用户查看 011 Godot 实际运行预览后回复“好，纳入正式资产吧”。该决定批准 011 所展示的浮窗、按钮、校园记忆、人物事件、借阅终端和敌对守卫六张图片，并批准其在 011 中的运行缩放效果。asset_011 状态为 selected / approved。
 
-012 逐文件原样复制到 `assets/art/ui/m1_exploration_ui/`；来源与 SHA-256 见 `design/concepts/m1-exploration-ui/m1_exploration_ui/012/generation.md`。资源台以动态哈希核对候选与正式文件，不在 Manifest 重复存储哈希。010 校园记忆仍保留 approved 历史决定，但由完整包 012 取代为当前 selected 资产。
+011 的六张获批图片逐文件原样复制到 `assets/art/ui/m1_exploration_ui/`；来源与 SHA-256 见 `design/concepts/m1-exploration-ui/m1_exploration_ui/011/generation.md`。资源台以动态哈希核对候选与正式文件，不在 Manifest 重复存储哈希。010 校园记忆仍保留 approved 历史决定，但由完整组合 011 取代为当前 selected 资产。
+
+版本整理更正：正式提升没有改变任何视觉内容，不应另增版本号。先前仅为归档复制而建立的 012 已移除，图片归入用户实际评审的 011；正式目录与运行画面均不变。
 
 提升后将 011 的六张图片加载路径全部切换到正式目录，并以 Godot 4.7.2 compatibility 重跑三尺寸 default/detail/complete 与交互断言，结果仍为 `EXPLORATION_UI_CANDIDATE PASS`；已查看 1920×1080 默认截图，画面与批准版一致。截图继续保存在 `review/codex-workflow/preview-011/`，现为正式副本的实际运行证据。
 
@@ -44,7 +46,7 @@
 
 运行验证：2026-09-17，以正式资产提交 `1777315` 为基线，Godot 4.7.2 compatibility 执行 `preview.tscn -- --ui-capture`，输出 `EXPLORATION_UI_CANDIDATE PASS three sizes; details, cancel, focus, read, reward gate`。实际截图保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-011/`，包含 1920×1080、2560×1440、1920×1200 的 default/detail/complete 共九张；已看图检查 1080p 默认／详情和 16:10 默认状态。
 
-画面结论：自由轮廓与不规则碎片消除了统一方形图标的 PPT 感；校园记忆在当前 106px 绘制尺寸仍能读成破碎照片，并保留用户偏好的校园细节。弹窗在三尺寸内未越界，热点之间无重叠。统一黑色名称底条仍略偏规整，可作为后续接入效果优化项；011 保持 unselected / pending，等待用户对运行效果单独验收。
+画面结论：自由轮廓与不规则碎片消除了统一方形图标的 PPT 感；校园记忆在当前 106px 绘制尺寸仍能读成破碎照片，并保留用户偏好的校园细节。弹窗在三尺寸内未越界，热点之间无重叠。统一黑色名称底条仍略偏规整，可作为后续接入效果优化项；011 已获用户批准并提升为正式资产，正式战役接入仍待实施。
 
 内置 imagegen 分别编辑006两张原图，保存到 `design/concepts/m1-exploration-ui/m1_exploration_ui/007/`，完整提示词见 generation.md。人物去除头发服饰与轨道，敌人去除盾牌和感叹号，保留原系列色彩与玻璃底座。仅修改两个图标，不生成新人物身份或战斗单位设计；007 是局部候选，不是整套资产替换。
 

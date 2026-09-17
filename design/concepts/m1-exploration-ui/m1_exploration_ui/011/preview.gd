@@ -52,3 +52,7 @@ func _snap(_output: String, dimensions: Vector2i, state: String) -> void:
 	assert(image.get_size() == dimensions)
 	assert(image.save_png(output + "/%s-%dx%d.png" % [state, dimensions.x, dimensions.y]) == OK)
 	await get_tree().process_frame
+
+func _click(point: Vector2) -> void:
+	await super._click(point)
+	await get_tree().process_frame
