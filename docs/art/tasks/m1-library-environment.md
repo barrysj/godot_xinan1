@@ -10,9 +10,11 @@
 | --- | --- | --- |
 | `atrium-down-night.png` | `970a9a5a334c59cec8550239266fa8aeaf1a7a9c32517cf9c1c67b0b2daea9ac` | 夜间概念待评审 |
 | `window-corridor-night.png` | `a13d0849d2e360d7af0bcfd53dcf0b63902daeaa1cf36f4ba8c5f97e34a6e062` | 夜间概念待评审 |
-| `shelf-to-atrium-night.png` | `45208c298bce73adc486c32cd6597a77195689a4b09b2d70d936f5b6c77b748f` | 夜间概念待评审 |
+| `shelf-to-atrium-night.png` | `229aa3b1597c0f1d7519190c51b7a081144ba359d5e7dacbba53033c14f29f74` | 按反馈提亮远处楼层；夜间概念待评审 |
 
 Manifest 以 `concept_005_night` 单独承载 `unselected + pending`，避免把日常状态的既有批准扩张到夜间新图。三图均为 1672 × 941、RGB、不透明；内建 imagegen 的精确提示词与输出映射见 005 目录 `generation-night.md`。夜间仍是现实校园，只改变时间、照明、反射和数字导视强度；异变需在本轮夜景审核后另行生成。
+
+2026-09-17 反馈修订：负责人指出 `shelf-to-atrium-night.png` 的远处楼层偏暗。本轮仅提高中央远处多层环廊的暖色顶灯与局部反射补光，保持夜空、前景书架／短桌曝光及空间结构；修订图继续待评审。
 
 ## 概念批准：concept_005（2026-09-17）
 

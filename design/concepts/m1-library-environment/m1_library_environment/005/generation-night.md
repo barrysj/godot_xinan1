@@ -35,7 +35,12 @@ Avoid: anomaly effects, glitch, data streams, floating HUD, structural warping, 
 补充：保留书架间居中通道、栏杆边两张短桌、书架至栏杆过道、对称八角楼层、书籍和采光顶；暖色桌灯与书架灯对比冷蓝环境光。
 
 - 内建输出：`exec-6e11311c-990c-4abf-8f18-b36d48906ce8.png`
-- SHA-256：`45208c298bce73adc486c32cd6597a77195689a4b09b2d70d936f5b6c77b748f`
+- 初版 SHA-256：`45208c298bce73adc486c32cd6597a77195689a4b09b2d70d936f5b6c77b748f`
+
+2026-09-17 按反馈修订远处楼层亮度。使用初版夜景作为 edit target，只提高中央远处多层环廊的暖色顶灯和局部反射补光，保持前景曝光、夜空、结构与物件不变；避免变成白天、过曝或引入异变效果。
+
+- 修订内建输出：`exec-0147850e-ef1c-47dd-8133-6beece692750.png`
+- 当前 SHA-256：`229aa3b1597c0f1d7519190c51b7a081144ba359d5e7dacbba53033c14f29f74`
 
 ## 自检边界
 
