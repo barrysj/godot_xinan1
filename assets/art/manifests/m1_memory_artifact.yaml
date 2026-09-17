@@ -29,7 +29,12 @@ variants:
     stage: asset
     version: 002
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected
+      quote: "这一版我不喜欢"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/002
     files:
       asset: m1_memory_artifact_asset_002.png
