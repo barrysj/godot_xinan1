@@ -50,7 +50,12 @@ variants:
     stage: concept
     version: 003
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected
+      quote: "太像服务器了，应该淡化存储，强化终端、核心、珍贵"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/003
     files:
       concept: m1_memory_terminal_concept_003.png
@@ -63,5 +68,21 @@ variants:
       concept_language: "分层记忆匣；三片受保护存储晶片；圆角六边形封闭匣体"
       symmetry: bilateral
       memory_layers: 3
+  concept_004:
+    stage: concept
+    version: 004
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/004
+    files:
+      concept: m1_memory_terminal_concept_004.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master]
+      style_layer: anomaly
+      concept_language: "全息回响终端；完整球形核心；弧形全息屏；内部数字珍珠"
+      symmetry: bilateral
 integration:
   status: not_integrated
