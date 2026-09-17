@@ -1,5 +1,13 @@
 # 美术任务：M1 探索 UI 视觉样板
 
+## 当前状态：011 正式资产已接入真实 M1 图书馆页（2026-09-18）
+
+011 的六张正式图片已接入 `scenes/expedition/campaign_panel.gd` 的真实图书馆地点流程；四热点由 `exploration_board.gd` 和 `exploration_hotspot.gd` 呈现，面板与动作按钮加载正式 `panel.png` / `button.png`。点击热点打开紧凑弹窗，不常驻右侧信息台；读取、人物事件、借阅终端、守卫战、领奖开放出口及返回／续玩均继续调用原战役状态与存档逻辑。
+
+接入只使用已批准的六张 UI 图片。图书馆环境仍沿用主游戏原生抽象示意，没有把研究参考图或其他对话生成的背景纳入资产。技术接入状态为 `authorized_active`，本次运行效果仍待用户人工验收，不由脚本通过代替视觉批准。
+
+Godot 4.7.2 Compatibility 于 2026-09-18 执行真实战役 `--campaign-flow-check --exploration-capture`，结果 `132 checks / 0 failures`。检查覆盖真实鼠标打开弹窗、Esc 关闭与焦点恢复、四热点、人物事件写入、守卫战与领奖门槛、离场以及检查点恢复；实际截图保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/integration-011/`，包含 1920×1080、2560×1440、1920×1200 默认态及 1080p 详情／出口开放态。
+
 ## 正式资产 011（2026-09-17）
 
 用户查看 011 Godot 实际运行预览后回复“好，纳入正式资产吧”。该决定批准 011 所展示的浮窗、按钮、校园记忆、人物事件、借阅终端和敌对守卫六张图片，并批准其在 011 中的运行缩放效果。asset_011 状态为 selected / approved。
@@ -10,9 +18,9 @@
 
 提升后将 011 的六张图片加载路径全部切换到正式目录，并以 Godot 4.7.2 compatibility 重跑三尺寸 default/detail/complete 与交互断言，结果仍为 `EXPLORATION_UI_CANDIDATE PASS`；已查看 1920×1080 默认截图，画面与批准版一致。截图继续保存在 `review/codex-workflow/preview-011/`，现为正式副本的实际运行证据。
 
-本次仅提升稳定正式图片，不修改 campaign_board、campaign_panel、campaign_hub 或存档逻辑。`integration` 仍为 `not_integrated`；正式战役探索页的组件接入与三尺寸运行效果需要另行实施、截图和人工验收。
+本段记录 2026-09-17 的资产提升边界：当时仅提升稳定正式图片，尚未修改 campaign_board、campaign_panel、campaign_hub 或存档逻辑。正式战役接入已于 2026-09-18 完成技术实现，以上方当前状态为准。
 
-## 当前：009 异变事件热点候选（2026-09-17）
+## 历史：009 异变事件热点候选（2026-09-17）
 
 用户针对008运行截图指出热点图标“过于中规中矩、像PPT”，并确认按“事件正在发生”的不规则轮廓思路重新生成。008保留为被要求修改的引擎预览证据；004概念批准仍有效，但不覆盖新资产评审。
 
@@ -22,7 +30,7 @@
 
 交付目录：`design/concepts/m1-exploration-ui/m1_exploration_ui/009/`。四张均为1254×1254 RGBA，Alpha范围0–255；提示词和选择记录见generation.md。当前asset_009为unselected/pending，不接入游戏；尚未以56px运行验证清晰度、焦点、完成状态与多分辨率布局。
 
-## 当前：008 游戏引擎内预览（2026-09-17）
+## 历史：008 游戏引擎内预览（2026-09-17）
 
 用户在007展示后回复“可以了，尝试在游戏内预览”，确认007两张图标方向并授权运行预览；不推导其余006资产或最终战役接入验收通过。008 复用005交互验证场景，加载006浮窗／按钮／记忆／终端及007人物／敌人图片；原始图片未修改，仅运行时去透明空边并生成 mipmaps，使用线性缩小采样。文字、点击区与焦点仍是原生控件。
 
@@ -40,13 +48,13 @@
 
 用户在 009 的首轮结果中重新选定细节较丰富的“校园记忆”图标，并明确要求“提升为资产。之后在游戏内预览”。批准仅绑定 `design/concepts/m1-exploration-ui/m1_exploration_ui/010/memory.png`，SHA-256 为 `f0ba02597736f247beb3fd2ddc6549972854e8389e95a80dbc3207570e5c61e8`。该文件已原样复制到 `assets/art/ui/m1_exploration_ui/memory.png`，未裁切、未重绘、未压缩。
 
-010 状态为 selected / approved；009 的人物事件、借阅终端和敌对守卫仍是 unselected / pending，不能由本次决定推定批准。正式文件当前尚未接入正式游戏场景；用户同时授权下一步做 Godot 运行预览，预览授权不等于最终接入验收。
+010 在当时状态为 selected / approved；009 的人物事件、借阅终端和敌对守卫仍是 unselected / pending，不能由该次决定推定批准。当时正式文件尚未接入正式游戏场景；用户同时授权下一步做 Godot 运行预览，预览授权不等于最终接入验收。后续整套批准与接入状态以上方 011 当前状态为准。
 
 011 是上述授权对应的独立 Godot 运行评审装配：校园记忆从正式路径读取，另三枚热点仅用 009 候选陪衬；入口为 `design/concepts/m1-exploration-ui/m1_exploration_ui/011/preview.tscn`。该装配不修改 campaign_board、campaign_panel 或 campaign_hub，也不改变 `integration: not_integrated`。
 
 运行验证：2026-09-17，以正式资产提交 `1777315` 为基线，Godot 4.7.2 compatibility 执行 `preview.tscn -- --ui-capture`，输出 `EXPLORATION_UI_CANDIDATE PASS three sizes; details, cancel, focus, read, reward gate`。实际截图保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-011/`，包含 1920×1080、2560×1440、1920×1200 的 default/detail/complete 共九张；已看图检查 1080p 默认／详情和 16:10 默认状态。
 
-画面结论：自由轮廓与不规则碎片消除了统一方形图标的 PPT 感；校园记忆在当前 106px 绘制尺寸仍能读成破碎照片，并保留用户偏好的校园细节。弹窗在三尺寸内未越界，热点之间无重叠。统一黑色名称底条仍略偏规整，可作为后续接入效果优化项；011 已获用户批准并提升为正式资产，正式战役接入仍待实施。
+画面结论：自由轮廓与不规则碎片消除了统一方形图标的 PPT 感；校园记忆在当前 106px 绘制尺寸仍能读成破碎照片，并保留用户偏好的校园细节。弹窗在三尺寸内未越界，热点之间无重叠。统一黑色名称底条仍略偏规整，可作为后续效果优化项；本段“待实施”是 2026-09-17 的历史状态，正式战役技术接入已于次日完成。
 
 内置 imagegen 分别编辑006两张原图，保存到 `design/concepts/m1-exploration-ui/m1_exploration_ui/007/`，完整提示词见 generation.md。人物去除头发服饰与轨道，敌人去除盾牌和感叹号，保留原系列色彩与玻璃底座。仅修改两个图标，不生成新人物身份或战斗单位设计；007 是局部候选，不是整套资产替换。
 

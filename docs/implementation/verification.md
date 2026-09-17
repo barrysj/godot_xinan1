@@ -125,3 +125,15 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | Godot 探索场景 `-- --campaign-flow-check` | 124 checks / 0 failures，主线正常战斗与结算回归 |
 
 探索场景为 `res://scenes/expedition/expedition.tscn`。日志 `.godot/debug-mode.log`、`debug-disabled.log`、`profile-reset-check.log`、`debug-campaign-regression.log`；实际截图 `.godot/debug-corner-*.png`、`debug-battle-panel.png`、`debug-reward-panel.png`、`debug-home.png`、`profile-reset-confirm.png`。未做 Web／Android 与断电验证；证书和既有像素图导入警告仍存在。
+
+## M1 探索 UI 011 接入验证 E24
+
+2026-09-18；基线为已合并 main `7abef2e` 的 `art/m1-exploration-ui` 工作树，验证提交为本章节所在提交。仅图书馆地点启用 011 正式 UI 资产；其他地点、战斗和永久状态规则未改。全部命令使用 PowerShell 7 与 Godot 4.7.2 Compatibility。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| 探索场景 `-- --campaign-flow-check --exploration-capture` | 132 checks / 0 failures；三尺寸真实视口、四热点、鼠标打开详情、Esc 关闭与焦点恢复、人物事件、守卫领奖、离场和检查点恢复 |
+| 探索场景 `--headless -- --campaign-flow-check --order=<六顺序>` | 012/021/102/120/201/210 各 124 checks / 0 failures；真实完整战斗、奖励、地点恢复与三阶段终局无回归 |
+| `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台测试通过；011 候选与正式六图动态哈希一致，Manifest 生效状态可核验 |
+
+实际接入截图位于 `design/concepts/m1-exploration-ui/review/codex-workflow/integration-011/`：三尺寸默认态，以及 1920×1080 详情／出口开放态。已看图确认弹窗未越界、热点不重叠、完成态和离开按钮同步。背景仍为主游戏原生抽象示意；研究参考图、其他对话背景和现实地点身份未纳入资产。技术验证不代替本次接入效果的人工视觉验收。

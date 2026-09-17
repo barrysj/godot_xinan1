@@ -190,10 +190,10 @@ variants:
       concept_basis: concept_004
     integration_authorization:
       source: docs/art/tasks/m1-exploration-ui.md
-      scope: "仅独立 Godot 运行预览，不接入正式探索页"
-      date: 2026-09-17
+      scope: "正式 M1 图书馆探索页技术接入；运行效果待人工验收"
+      date: 2026-09-18
 integration:
-  status: not_integrated
+  status: authorized_active
   active_variant: asset_011
   root: assets/art/ui/m1_exploration_ui
   files:
@@ -203,4 +203,4 @@ integration:
     character: character.png
     terminal: terminal.png
     guardian: guardian.png
-  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_011 六张 UI 图片及独立运行预览获得人工批准并提升到正式目录；尚未接入正式战役探索页。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_011 六张正式图片已接入真实 M1 图书馆探索页；2026-09-18 三尺寸与完整流程技术验证通过，接入效果待人工验收。"

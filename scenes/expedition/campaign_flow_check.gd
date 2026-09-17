@@ -160,12 +160,33 @@ func capture_exploration(hub) -> void:
 			hub._campaign_action("leave")
 		hub._campaign_action("enter:0")
 		await capture_page(hub,"library",resolution)
+		verify(is_instance_valid(hub.campaign_panel.exploration_board),"library uses approved exploration board")
+		verify(hub.campaign_panel.exploration_board.buttons.size() == 4,"library exposes four real hotspots")
+		var memory_index := -1
+		for i in range(hub.journey.visit.data.hotspots.size()):
+			if hub.journey.visit.data.hotspots[i].kind == "memory": memory_index = i
+		verify(memory_index >= 0,"library memory hotspot available")
+		await click_control(hub,hub.campaign_panel.exploration_board.hotspot_button(memory_index))
+		verify(hub.campaign_panel.exploration_popup.visible,"hotspot click state opens compact detail")
+		await capture_page(hub,"library-detail",resolution)
+		var cancel := InputEventAction.new()
+		cancel.action = "ui_cancel"
+		cancel.pressed = true
+		Input.parse_input_event(cancel)
+		await hub.get_tree().process_frame
+		verify(not hub.campaign_panel.exploration_popup.visible,"escape closes hotspot detail")
+		verify(hub.campaign_panel.exploration_board.hotspot_button(memory_index).has_focus(),"detail close restores hotspot focus")
 		hub._hotspot("person")
+		verify(hub.journey.visit.data.viewed.has("person"),"person event uses real visit state")
+		await capture_page(hub,"person",resolution)
 		hub._show_journey()
 		fight(hub,false)
 		await capture_page(hub,"rewards",resolution)
 		hub._campaign_action("reward:0")
 		verify(hub.journey.visit.can_leave(),"reward and guard gate")
+		var saved_opened: Dictionary = hub.progress.active_run.duplicate(true)
+		hub._continue_run()
+		verify(hub.progress.active_run == saved_opened and hub.journey.visit.can_leave(),"opened location restores from checkpoint")
 		await capture_page(hub,"opened",resolution)
 		hub._campaign_action("leave")
 		await capture_page(hub,"settlement",resolution)
@@ -180,3 +201,17 @@ func capture_page(hub, label: String, resolution: Vector2i) -> void:
 	verify(picture.get_size() == resolution,"capture matches requested viewport")
 	picture.save_png("res://.godot/m1-readable-%s-%dx%d.png" % [label,resolution.x,resolution.y])
 	print("CAPTURE ",label," actual=",picture.get_size())
+
+func click_control(hub, control: Control) -> void:
+	var point := control.get_global_rect().get_center()
+	var motion := InputEventMouseMotion.new()
+	motion.position = point
+	hub.get_viewport().push_input(motion,true)
+	await hub.get_tree().process_frame
+	for pressed in [true,false]:
+		var event := InputEventMouseButton.new()
+		event.position = point
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = pressed
+		hub.get_viewport().push_input(event,true)
+		await hub.get_tree().process_frame

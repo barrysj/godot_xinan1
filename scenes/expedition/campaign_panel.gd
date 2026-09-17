@@ -1,8 +1,16 @@
 extends PanelContainer
 ## Shared native controls for route, visits, narrative and memory pages.
 signal action(id: String)
+const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
+const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 var column: VBoxContainer
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
+var anomaly: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).anomaly
+var exploration_stage: Control
+var exploration_board: Control
+var exploration_popup: PanelContainer
+var exploration_popup_box: VBoxContainer
+var exploration_detail_index := -1
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -22,11 +30,19 @@ func _ready() -> void:
 	scroll.add_child(column)
 
 func clear(title: String, detail: String) -> void:
+	_clear_column()
+	text(title,32)
+	text(detail,21)
+
+func _clear_column() -> void:
 	for child in column.get_children():
 		column.remove_child(child)
 		child.queue_free()
-	text(title,32)
-	text(detail,21)
+	exploration_stage = null
+	exploration_board = null
+	exploration_popup = null
+	exploration_popup_box = null
+	exploration_detail_index = -1
 
 func text(value: String, font_size: int = 22, parent: Control = null) -> void:
 	var label = Label.new()
@@ -175,6 +191,9 @@ func _route_detail(journey, index: int, detail: Control) -> void:
 
 func location(journey, prologue: bool = false) -> void:
 	var visit: Dictionary = journey.visit.data
+	if visit.place == "library":
+		_library_location(journey,prologue)
+		return
 	var goal = "出口已开放：继续调查，或离开前往下一站。" if journey.visit.can_leave() else "当前目标：挑战守卫，领取奖励，解除出口封锁。"
 	if journey.visit.can_leave() and journey.data.step == 3: goal = "终端已可回收：离开地点，将终端与同行伙伴带回基地。"
 	clear(journey.Regions.PLACES[visit.place],goal)
@@ -187,6 +206,176 @@ func location(journey, prologue: bool = false) -> void:
 	var actions = row()
 	button("离开地点","leave",journey.visit.can_leave(),actions)
 	button("返回基地","base",true,actions)
+
+func _library_location(journey, prologue: bool) -> void:
+	_clear_column()
+	exploration_stage = Control.new()
+	exploration_stage.custom_minimum_size = Vector2(820, maxf(size.y - 72.0, 680.0))
+	exploration_stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_child(exploration_stage)
+	exploration_board = ExplorationBoard.new()
+	exploration_board.journey = journey
+	exploration_board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	exploration_stage.add_child(exploration_board)
+	exploration_board.picked.connect(func(index): _open_library_detail(journey,index))
+	exploration_board.layout_changed.connect(_place_exploration_popup)
+	if prologue:
+		var prologue_hint := _exploration_label("当前 AI：先突破封锁，胜利并领奖后出口才会开放。",17)
+		prologue_hint.position = Vector2(24,96)
+		prologue_hint.size = Vector2(560,32)
+		exploration_stage.add_child(prologue_hint)
+	if journey.data.has("last_reward"):
+		var reward_hint := _exploration_label("已获得 · " + str(journey.data.last_reward),17)
+		reward_hint.position = Vector2(24,96)
+		reward_hint.size = Vector2(720,32)
+		exploration_stage.add_child(reward_hint)
+	_build_exploration_popup()
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation",12)
+	actions.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	actions.offset_left = -444
+	actions.offset_top = -70
+	actions.offset_right = -20
+	actions.offset_bottom = -14
+	exploration_stage.add_child(actions)
+	_exploration_button("离开地点","leave",journey.visit.can_leave(),actions,198)
+	_exploration_button("返回基地","base",true,actions,198)
+	exploration_stage.resized.connect(_place_exploration_popup)
+
+func _build_exploration_popup() -> void:
+	exploration_popup = PanelContainer.new()
+	exploration_popup.custom_minimum_size = Vector2(410,230)
+	var panel_style := StyleBoxTexture.new()
+	panel_style.texture = ExplorationSkin.texture("res://assets/art/ui/m1_exploration_ui/panel.png")
+	panel_style.set_content_margin_all(28)
+	panel_style.content_margin_top = 42
+	panel_style.content_margin_bottom = 42
+	exploration_popup.add_theme_stylebox_override("panel",panel_style)
+	exploration_stage.add_child(exploration_popup)
+	exploration_popup_box = VBoxContainer.new()
+	exploration_popup_box.add_theme_constant_override("separation",12)
+	exploration_popup.add_child(exploration_popup_box)
+	exploration_popup.hide()
+
+func _open_library_detail(journey, index: int) -> void:
+	if index < 0 or index >= journey.visit.data.hotspots.size():
+		return
+	exploration_detail_index = index
+	exploration_board.set_selected(index)
+	_empty(exploration_popup_box)
+	var visit: Dictionary = journey.visit.data
+	var spot: Dictionary = visit.hotspots[index]
+	var titles = {"battle":"封锁守卫","memory":"校园记忆","person":"人物事件","system":"借阅终端"}
+	var lines = {
+		"battle":"守卫阻止我们继续前进。进入整备后开战；胜利并领取奖励，出口才会开放。",
+		"memory":"读取这处地点的系统记录，保存到回忆档案。属于虚拟校园故事，可以跳过。",
+		"person":"发明家愿意协助修复。交谈后本区域临时加入，成功完成区域后永久解锁。",
+		"system":"调查前代系统仍在执行的早期目标，了解三台记忆终端的作用。"}
+	var header := HBoxContainer.new()
+	exploration_popup_box.add_child(header)
+	var heading := _exploration_label(titles[spot.kind],25)
+	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(heading)
+	var close := Button.new()
+	close.text = "×"
+	close.flat = true
+	close.custom_minimum_size = Vector2(44,44)
+	close.tooltip_text = "关闭"
+	close.add_theme_font_size_override("font_size",24)
+	close.add_theme_color_override("font_color",Color(anomaly.text_primary))
+	close.add_theme_color_override("font_hover_color",Color(anomaly.cyan))
+	close.pressed.connect(_close_library_detail)
+	header.add_child(close)
+	var description: String = "封锁已经解除，奖励已领取。现在可以离开，其他调查不会阻挡出口。" if spot.kind == "battle" and visit.reward_taken else str(lines[spot.kind])
+	exploration_popup_box.add_child(_exploration_label(description,19,true))
+	var hint: String = "必经战斗 · 胜利后需领取奖励" if spot.kind == "battle" else "可选调查 · 不影响离场条件"
+	var hint_label := _exploration_label(hint,16)
+	hint_label.add_theme_color_override("font_color",Color("b7c9d7"))
+	exploration_popup_box.add_child(hint_label)
+	var labels = {"battle":"挑战","memory":"读取","person":"交谈","system":"调查"}
+	var is_photo: bool = spot.kind == "memory" and preload("res://resources/content/library_memory.tres").photograph != null
+	var action_id: String = "photo" if is_photo else "spot:" + spot.id
+	var primary := _exploration_button("查看" if is_photo else labels[spot.kind],action_id,not (spot.kind == "battle" and visit.guard_won),exploration_popup_box,128)
+	primary.size_flags_horizontal = Control.SIZE_SHRINK_END
+	primary.focus_neighbor_top = close.get_path()
+	close.focus_neighbor_bottom = primary.get_path()
+	exploration_popup.show()
+	exploration_popup.reset_size()
+	_place_exploration_popup()
+	primary.grab_focus()
+
+func _place_exploration_popup() -> void:
+	if not is_instance_valid(exploration_popup) or not exploration_popup.visible or not is_instance_valid(exploration_board):
+		return
+	var source: Rect2 = exploration_board.hotspot_rect(exploration_detail_index)
+	if source.size == Vector2.ZERO:
+		return
+	var required: Vector2 = exploration_popup.get_combined_minimum_size()
+	exploration_popup.size = Vector2(maxf(required.x,410),maxf(required.y,230))
+	var target: Vector2 = source.position + Vector2(source.size.x + 26,-44)
+	if source.get_center().x > exploration_stage.size.x * 0.64:
+		target.x = source.position.x - exploration_popup.size.x - 26
+	target = target.clamp(Vector2(24,96),exploration_stage.size - exploration_popup.size - Vector2(24,86))
+	exploration_popup.position = target
+
+func _close_library_detail() -> void:
+	var previous := exploration_detail_index
+	exploration_detail_index = -1
+	if is_instance_valid(exploration_popup):
+		exploration_popup.hide()
+	if is_instance_valid(exploration_board):
+		exploration_board.set_selected(-1)
+		var previous_button: Button = exploration_board.hotspot_button(previous)
+		if previous_button != null:
+			previous_button.grab_focus()
+
+func _input(event: InputEvent) -> void:
+	if not is_instance_valid(exploration_popup) or not exploration_popup.visible:
+		return
+	if event.is_action_pressed("ui_cancel"):
+		_close_library_detail()
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if not exploration_popup.get_global_rect().has_point(event.position):
+			_close_library_detail()
+
+func _exploration_label(value: String, font_size: int, wrap: bool = false) -> Label:
+	var label := Label.new()
+	label.text = value
+	label.add_theme_font_size_override("font_size",font_size)
+	label.add_theme_color_override("font_color",Color(anomaly.text_primary))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if wrap:
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.custom_minimum_size.x = 340
+	return label
+
+func _exploration_button(label: String, id: String, enabled: bool, parent: Control, width: float) -> Button:
+	var item := Button.new()
+	item.text = label
+	item.disabled = not enabled
+	item.custom_minimum_size = Vector2(width,50)
+	item.add_theme_font_size_override("font_size",20)
+	var texture := ExplorationSkin.texture("res://assets/art/ui/m1_exploration_ui/button.png")
+	for state in ["normal","hover","pressed","disabled"]:
+		var box := StyleBoxTexture.new()
+		box.texture = texture
+		box.set_content_margin_all(8)
+		if state == "pressed": box.modulate_color = Color(0.65,0.75,0.8)
+		elif state == "disabled": box.modulate_color = Color(0.35,0.43,0.48,0.55)
+		item.add_theme_stylebox_override(state,box)
+	var focus := StyleBoxFlat.new()
+	focus.bg_color = Color.TRANSPARENT
+	focus.border_color = Color("d0faff")
+	focus.set_border_width_all(2)
+	focus.set_corner_radius_all(5)
+	item.add_theme_stylebox_override("focus",focus)
+	for color_name in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		item.add_theme_color_override(color_name,Color("102333"))
+	item.add_theme_color_override("font_disabled_color",Color("8999a3"))
+	item.pressed.connect(func(): action.emit(id))
+	parent.add_child(item)
+	return item
 
 func _spot_detail(journey, index: int, detail: Control) -> void:
 	_empty(detail)
