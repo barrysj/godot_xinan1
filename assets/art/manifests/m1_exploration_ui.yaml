@@ -226,6 +226,24 @@ variants:
       source: docs/art/tasks/m1-exploration-ui.md
       scope: "替换正式浮窗与按钮；四枚热点图标继续使用 011；使用 NinePatch 并移除规则白色焦点框"
       date: 2026-09-18
+  asset_013:
+    stage: asset
+    version: 013
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/013
+    files:
+      interaction_strip: interaction-strip.png
+      interaction_strip_source: interaction-strip-source.png
+      scene: preview.tscn
+      controller: preview.gd
+      source_notes: generation.md
+    previews:
+      godot:
+        scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/013/preview.tscn
+    metadata:
+      implementation_note: reusable_textless_hotspot_affordance_candidate_with_focus_reveal
+      concept_basis: concept_004
 integration:
   status: authorized_active
   active_variant: asset_012
