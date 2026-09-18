@@ -1,9 +1,9 @@
-# ART-02 · 角色、粉笔精灵与配套特效及背景
+# ART-02 · 美术正式包与运行接入
 
 > 持续功能档案；全项目判断由统筹维护[总览](../implementation-status.md)。
 
 - 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review）。
-- 验证日期：2026-09-16；混合动画实现基线 `56dc3aa`＋本档案同提交的 F 清理树。
+- 验证日期：2026-09-18；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`。
 
 ## 玩家能力与接入范围
 
@@ -13,8 +13,8 @@ M1 三款记忆终端静态图标已作为同一个 `asset_011` 家族批准并�
 
 ## 实现与规则入口
 
-- [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[角色定义](../../resources/content/enemies/chalk.tres)。
-- 规则事实源：[战斗动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)、[粉笔精灵任务](../art/tasks/chalk-spirit.md)。
+- [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[记忆终端正式包](../../assets/art/icons/m1_memory_artifact/)、[角色定义](../../resources/content/enemies/chalk.tres)。
+- 规则事实源：[战斗动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)、[粉笔精灵任务](../art/tasks/chalk-spirit.md)、[记忆终端任务](../art/tasks/m1-memory-artifact.md)。
 - 工具与完整验证矩阵见 [ART-03](art-03.md#骨骼序列帧通用生产与预览)，资源台见 [ART-05](art-05.md)。
 
 ## 混合动画资产包归一（已实装）
@@ -24,6 +24,12 @@ M1 三款记忆终端静态图标已作为同一个 `asset_011` 家族批准并�
 普通角色不附带专用播放脚本，共享控制器位于稳定工程路径。旧候选与正式专用脚本、旧场景和旧动画入口已删除。特殊扩展只有在 BattleAnimationSet 与 rig_manifest 同时登记脚本和原因后才允许提升。
 
 正式 assets/art/characters/chalk_spirit/ 为批准候选的干净运行子集，不含版本目录、review、截图、生成记录、临时帧或专用工具。生成来源与评审证据留在候选和 Git。提升入口为 `py -3 tools/art/promotion/promote_animation.py chalk_spirit`，只校验时加 `--check`。
+
+## M1 记忆终端正式包（已提升，未接入）
+
+`asset_011` 以一个版本登记青品红、绿青、红紫三款颜色方案；三款共享结构、透视和环绕文字场，只以颜色区分。正式目录仅保留 3 张透明运行 PNG，不复制评审图、生成记录或冗余 012／013 版本。
+
+Manifest 状态为 `selected + approved`、`promoted_not_integrated`，三项正式文件绑定均与候选哈希一致。当前没有 Godot owner、资源引用或三区域配色映射，因此正式提升不等于接入完成，也不构成接入效果批准。
 
 ## 验证与证据
 

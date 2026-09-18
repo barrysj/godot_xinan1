@@ -73,4 +73,4 @@
 - 一致性检查：Manifest 候选 `root` 仅指向 011；三款颜色文件与一份 `generation.md` 共同登记。正式包只含三张运行 PNG，不复制生成记录和评审缩略图。
 - 实际截图／动作预览证据：无 Godot 运行截图；`asset_011` 三款原图、`thumbnail-{96,48}.png`、`contrast-preview.png` 与 `review/codex-workflow/family-contact-sheet.png` 已查看。候选展示与正式提升不等于接入效果验收。
 - 未解决问题：三区域名称与终点身份未定，三款配色尚未绑定区域；环绕文字场若在 Godot 中拆层或动画化，仍需重新做接入截图评审；最终显示尺寸和接入位置尚未决定。
-- 本地提交：`concept_001` 提交 `42c45c2`；`concept_007` 提交 `65fe340`；`asset_008` 提交 `d0def0e`；其余历史版本以对应任务记录所在提交为准。不 push、不 merge main。
+- 本地提交：`concept_001` 提交 `42c45c2`；`concept_007` 提交 `65fe340`；`asset_008` 提交 `d0def0e`；`asset_011` 三配色正式提升提交 `58f0291`；其余历史版本以对应任务记录所在提交为准。
