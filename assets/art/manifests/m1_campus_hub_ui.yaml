@@ -1,0 +1,31 @@
+schema_version: 3
+object:
+  id: m1_campus_hub_ui
+  display_name: "M1 校园修复站与日常 UI 视觉样板"
+  type: ui
+  subtype: campus_hub_home_hero
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/001
+    files:
+      concept: campus_hub_hero_concept_001.png
+      source_notes: generation.md
+    metadata:
+      asset_type: ui_visual_language_concept
+      resolution: [1672, 941]
+      transparent: false
+      usage: [home_hero, concept_review]
+      style_layer: daily
+      scene_reference: virtual_management_workbench_only
+      implementation_note: native_layout_vector_or_ninepatch_for_production
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "概念板可读；装饰性短条与状态点不可作为正式文字或按钮；后续必须拆分实现。"
+      source_tool: codex_builtin_imagegen
+      source_id: exec-8104b894-563d-46e6-a39a-37899f1d91aa
+integration:
+  status: not_integrated
+  evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"

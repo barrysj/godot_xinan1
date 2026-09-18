@@ -14,3 +14,4 @@ objects:
   m1_exploration_ui: manifests/m1_exploration_ui.yaml
   m1_library_environment: manifests/m1_library_environment.yaml
   m1_memory_artifact: manifests/m1_memory_artifact.yaml
+  m1_campus_hub_ui: manifests/m1_campus_hub_ui.yaml
