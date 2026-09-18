@@ -3,6 +3,9 @@ extends PanelContainer
 signal action(id: String)
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
+const Journey = preload("res://game/run/campaign_journey.gd")
+const LIBRARY_ENVIRONMENT_STATE := "anomaly"
+const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
 var column: VBoxContainer
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
 var anomaly: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).anomaly
@@ -11,6 +14,12 @@ var exploration_board: Control
 var exploration_popup: PanelContainer
 var exploration_popup_box: VBoxContainer
 var exploration_detail_index := -1
+var environment_preview_board: Control
+var environment_preview_status: Label
+var environment_preview_state := "anomaly"
+var environment_preview_viewpoint := "atrium-down"
+var environment_preview_state_buttons: Array[Button] = []
+var environment_preview_viewpoint_buttons: Array[Button] = []
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -43,6 +52,10 @@ func _clear_column() -> void:
 	exploration_popup = null
 	exploration_popup_box = null
 	exploration_detail_index = -1
+	environment_preview_board = null
+	environment_preview_status = null
+	environment_preview_state_buttons.clear()
+	environment_preview_viewpoint_buttons.clear()
 
 func text(value: String, font_size: int = 22, parent: Control = null) -> void:
 	var label = Label.new()
@@ -207,6 +220,86 @@ func location(journey, prologue: bool = false) -> void:
 	button("离开地点","leave",journey.visit.can_leave(),actions)
 	button("返回基地","base",true,actions)
 
+func library_environment_preview() -> void:
+	_clear_column()
+	environment_preview_state = "anomaly"
+	environment_preview_viewpoint = "atrium-down"
+	text("图书馆环境预览",32)
+	text("只读预览，不写入存档。切换状态与视角，检查九张正式背景在探索界面中的实际效果。",19)
+	var state_row := row()
+	state_row.custom_minimum_size.y = 56
+	_preview_group_label("状态",state_row)
+	for state in ExplorationSkin.LIBRARY_ENVIRONMENT_STATES:
+		var label: String = {"daily":"日常","night":"夜间","anomaly":"异变"}[state]
+		environment_preview_state_buttons.append(_preview_button(label,"state:"+state,state_row))
+	var viewpoint_row := row()
+	viewpoint_row.custom_minimum_size.y = 56
+	_preview_group_label("视角",viewpoint_row)
+	for viewpoint in ExplorationSkin.LIBRARY_ENVIRONMENT_VIEWPOINTS:
+		var label: String = {"atrium-down":"中庭","window-corridor":"窗边","shelf-to-atrium":"书架"}[viewpoint]
+		environment_preview_viewpoint_buttons.append(_preview_button(label,"viewpoint:"+viewpoint,viewpoint_row))
+	environment_preview_status = _exploration_label("",17)
+	environment_preview_status.custom_minimum_size.y = 30
+	environment_preview_status.add_theme_color_override("font_color",Color(palette.text_primary))
+	column.add_child(environment_preview_status)
+	var preview_journey := Journey.new()
+	preview_journey.begin("library",3)
+	preview_journey.enter(0,[])
+	var stage := Control.new()
+	stage.custom_minimum_size = Vector2(820,680)
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_child(stage)
+	environment_preview_board = ExplorationBoard.new()
+	environment_preview_board.journey = preview_journey
+	environment_preview_board.set_environment_variant(environment_preview_state,environment_preview_viewpoint)
+	environment_preview_board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stage.add_child(environment_preview_board)
+	_update_environment_preview()
+	button("返回基地","base")
+
+func _preview_group_label(label: String, parent: Control) -> void:
+	var item := _exploration_label(label,18)
+	item.add_theme_color_override("font_color",Color(palette.text_primary))
+	item.custom_minimum_size = Vector2(64,48)
+	item.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	item.autowrap_mode = TextServer.AUTOWRAP_OFF
+	parent.add_child(item)
+
+func _preview_button(label: String, id: String, parent: Control) -> Button:
+	var item := Button.new()
+	item.text = label
+	item.custom_minimum_size = Vector2(132,48)
+	item.add_theme_font_size_override("font_size",18)
+	for state in ["normal","hover","pressed","focus"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(anomaly.background if state in ["hover","pressed"] else anomaly.surface)
+		style.border_color = Color(anomaly.cyan)
+		style.set_border_width_all(1)
+		style.set_corner_radius_all(6)
+		item.add_theme_stylebox_override(state,style)
+	for color_name in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		item.add_theme_color_override(color_name,Color(anomaly.text_primary))
+	item.pressed.connect(func(): _preview_action(id))
+	parent.add_child(item)
+	return item
+
+func _preview_action(id: String) -> void:
+	var parts := id.split(":",false,1)
+	if parts.size() != 2 or not is_instance_valid(environment_preview_board):
+		return
+	if parts[0] == "state": environment_preview_state = parts[1]
+	elif parts[0] == "viewpoint": environment_preview_viewpoint = parts[1]
+	else: return
+	if environment_preview_board.set_environment_variant(environment_preview_state,environment_preview_viewpoint):
+		_update_environment_preview()
+
+func _update_environment_preview() -> void:
+	if not is_instance_valid(environment_preview_status):
+		return
+	var state_label: String = {"daily":"日常","night":"夜间","anomaly":"异变"}[environment_preview_state]
+	var viewpoint_label: String = {"atrium-down":"中庭俯视","window-corridor":"窗边走廊","shelf-to-atrium":"书架望中庭"}[environment_preview_viewpoint]
+	environment_preview_status.text = "当前：" + state_label + " · " + viewpoint_label
+
 func _library_location(journey, prologue: bool) -> void:
 	_clear_column()
 	exploration_stage = Control.new()
@@ -215,6 +308,7 @@ func _library_location(journey, prologue: bool) -> void:
 	column.add_child(exploration_stage)
 	exploration_board = ExplorationBoard.new()
 	exploration_board.journey = journey
+	assert(exploration_board.set_environment_variant(LIBRARY_ENVIRONMENT_STATE,LIBRARY_ENVIRONMENT_VIEWPOINT))
 	exploration_board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	exploration_stage.add_child(exploration_board)
 	exploration_board.picked.connect(func(index): _open_library_detail(journey,index))

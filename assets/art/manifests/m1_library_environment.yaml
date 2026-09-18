@@ -173,5 +173,13 @@ variants:
       source_variants: [concept_005, concept_005_night, concept_005_anomaly_v3]
       usage: [campaign_library]
 integration:
-  status: not_integrated
+  status: authorized_active
+  active_variant: asset_005_environment_set
+  root: assets/art/backgrounds/m1_library
+  mapping:
+    default_state: anomaly
+    default_viewpoint: atrium_down
+    states: [daily, night, anomaly]
+    viewpoints: [atrium_down, window_corridor, shelf_to_atrium]
+  visual_review: pending
   evidence: docs/art/tasks/m1-library-environment.md

@@ -83,6 +83,8 @@ func _refresh(message: String = "") -> void:
 		var blocked = Commands.reason(hub,item[0])
 		panel.button(item[1],item[0],blocked.is_empty())
 		panel.text(item[2] if blocked.is_empty() else blocked,18)
+	panel.button("图书馆预览","library_preview")
+	panel.text("查看九张正式环境图；只读，不写入正式存档。",18)
 	panel.button("返回游戏","close")
 	panel.text("重开整个进度：返回基地 → 重开存档。Debug 下只重开调试存档。",18)
 
@@ -95,6 +97,10 @@ func close() -> void:
 func _action(id: String) -> void:
 	if id == "close":
 		close()
+		return
+	if id == "library_preview":
+		close()
+		hub._show_library_environment_preview()
 		return
 	if not Commands.reason(hub,id).is_empty(): return
 	panel.hide()

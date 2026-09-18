@@ -2,7 +2,7 @@
 
 - 功能 ID：CORE-02
 - 当前状态：部分实装（战役机制已验证，纪念内容与发布验收未完成）
-- 验证日期：2026-09-18；起点 `7f92ba8`，实现与加固至 `3fb297a`，可理解性修复至 `577ad8b`；与 main 美术管线合并回归见 [E22](verification.md#m1-与美术管线合并验证-e22)，011 探索 UI 正式接入见 [E24](verification.md#m1-探索-ui-011-接入验证-e24)。
+- 验证日期：2026-09-18；起点 `7f92ba8`，实现与加固至 `3fb297a`，可理解性修复至 `577ad8b`；与 main 美术管线合并回归见 [E22](verification.md#m1-与美术管线合并验证-e22)，011 探索 UI 正式接入见 [E24](verification.md#m1-探索-ui-011-接入验证-e24)，M1 图书馆环境接入见 [E25](verification.md#m1-图书馆环境接入验证-e25)。
 
 ## 玩家能力与接入范围
 
@@ -17,11 +17,12 @@
 - `game/run/campus_region.gd`、`location_visit.gd`、`campaign_journey.gd`：固定区域、访问热点、离场与快照。
 - `game/run/campaign_checkpoint.gd`：M1检查点；构筑复用ShortRun编解码，旧随机局仍走原schema恢复。
 - `scenes/expedition/campaign_hub.gd`：基地、序章、区域与终局接入；`campaign_panel.gd`：地点页与 011 面板／按钮接入。
-- `scenes/expedition/exploration_board.gd`、`exploration_hotspot.gd`、`exploration_skin.gd`：图书馆四热点响应式布局、正式图片裁边缩放与交互状态；其他地点保持原面板路径。
+- `scenes/expedition/exploration_board.gd`、`exploration_hotspot.gd`、`exploration_skin.gd`：图书馆四热点响应式布局、正式环境按状态／视角映射与 Cover 缩放、交互状态；其他地点保持原面板路径。
+- `scenes/expedition/campaign_panel.gd`、`campaign_hub.gd`、`debug_panel.gd`：图书馆环境游戏内只读预览入口；启动参数或调试面板均可打开，状态／视角按钮不触碰正式存档。
 
 ## 验证与证据
 
-入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)与[E24](verification.md#m1-探索-ui-011-接入验证-e24)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；011 接入后的主流程每顺序 124 项、图形捕获 132 项均为 0 失败，覆盖战报／奖励／访问恢复、暂停、人物兑现、真实鼠标热点交互、Esc 焦点恢复及终局阶段边界。接入证据保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/integration-011/`。
+入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)、[E25](verification.md#m1-图书馆环境接入验证-e25)与[E26](verification.md#m1-图书馆环境游戏内预览验证-e26)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；011、环境接入和游戏内预览后的主流程与预览矩阵均为 0 失败，覆盖战报／奖励／访问恢复、暂停、人物兑现、真实鼠标热点交互、Esc 焦点恢复及预览存档隔离。接入证据保存于 `.godot/` 捕获文件及图书馆任务记录。
 
 ## 当前玩家引导与结果反馈
 
@@ -32,7 +33,7 @@
 ## 已知边界
 
 - 当前是可运行战役骨架，不能宣布60～90分钟目标达成。浏览器序章首战样本11.4秒；完整时长、叙事节奏和陌生玩家体验待真实记录。
-- 图书馆已具备四热点、原照资源入口与大图查看；2026-09-17 批准的 M1 探索 UI 六图正式资产 011 已于 2026-09-18 接入真实战役页，三尺寸与完整流程技术验证通过。接入视觉效果待人工验收；正式静态环境和真实原照仍未到位，不能称环境精制完成。
+- 图书馆已具备四热点、原照资源入口与大图查看；2026-09-17 批准的 M1 探索 UI 六图正式资产 011 与 2026-09-18 批准的环境九图均已接入真实战役页。环境默认使用异常／中庭俯视，日常／夜间仅为可配置或预览变体；三尺寸与完整流程技术验证通过。接入视觉效果待人工验收，真实原照仍未到位，不能称最终环境精制完成。
 - 恢复以永久状态与文字呈现；非图书馆地点为逻辑占位，未核对真实空间。
 - Windows与桌面Web证据见E20；Android横屏真机、照片及美术阶段批准仍未验收。
 - 普通派遣在M1按终端数量开放，仍使用旧计时与费用；人物样本只有占位发明家。
