@@ -20,4 +20,6 @@
 
 013 为 `unselected / pending` 资产候选，不替换 `assets/art/`，也不修改真实战役接入。Godot 独立预览复用 012/011 的已批准资产与正式图书馆背景，验证 default/detail/complete、鼠标、焦点、Esc、读取和奖励门槛。负责人批准具体条带及预览效果后，才提升到正式路径并改造真实 `exploration_board.gd`。
 
-Godot 4.7.2 Compatibility 实际输出 `EXPLORATION_UI_CANDIDATE PASS three sizes; details, cancel, focus, read, reward gate`，九张截图保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-013/`。已查看 1920×1080 默认／详情和 1920×1200 完成态：常态条带不显示文字，首个键盘焦点显示名称，打开弹窗后热点名称自动隐藏，完成态条带降亮且勾号保留。两张 PNG 均为 RGBA，Alpha 0–255；资源台 33 项测试通过，目录扫描 0 mismatch / 0 missing / 0 errors。
+Godot 4.7.2 Compatibility 实际输出 `EXPLORATION_UI_CANDIDATE PASS three sizes; details, cancel, focus, read, reward gate`，九张截图保存于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-013/`。两张 PNG 均为 RGBA，Alpha 0–255；资源台 33 项测试通过，目录扫描 0 mismatch / 0 missing / 0 errors。
+
+负责人后续评审认为条带本身突兀，并明确要求热点周围不出现任何名称文字，名称只存在于点击后的面板。013 因此不采用、不提升、不接入；文件保留为已评审的历史候选。替代实现不增加美术版本，直接对已批准的四枚正式图标加入无文字、错相的轻浮动与呼吸动效。

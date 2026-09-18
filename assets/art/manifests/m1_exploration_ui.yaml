@@ -244,6 +244,7 @@ variants:
     metadata:
       implementation_note: reusable_textless_hotspot_affordance_candidate_with_focus_reveal
       concept_basis: concept_004
+      review_outcome: requires_revision_do_not_promote
 integration:
   status: authorized_active
   active_variant: asset_012
@@ -255,4 +256,4 @@ integration:
     character: character.png
     terminal: terminal.png
     guardian: guardian.png
-  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_012 面板与按钮、asset_011 四枚热点图标组成当前正式套件；NinePatch 与轮廓焦点状态已接入真实 M1 图书馆探索页。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_012 面板与按钮、asset_011 四枚热点图标组成当前正式套件；013 条带不采用；热点已接入无文字、错相轻浮动和呼吸聚焦反馈。"

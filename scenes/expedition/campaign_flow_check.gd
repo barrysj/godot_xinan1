@@ -171,6 +171,20 @@ func capture_exploration(hub) -> void:
 		await capture_page(hub,"library",resolution)
 		verify(is_instance_valid(hub.campaign_panel.exploration_board),"library uses approved exploration board")
 		verify(hub.campaign_panel.exploration_board.buttons.size() == 4,"library exposes four real hotspots")
+		verify(hub.campaign_panel.exploration_board.find_children("*","Label",true,false).is_empty(),"hotspots keep names inside click detail only")
+		var motion_button = hub.campaign_panel.exploration_board.buttons[0]
+		verify(motion_button.tooltip_text.is_empty(),"hotspots do not reveal names through visual tooltips")
+		var motion_a: Dictionary = motion_button.motion_sample(0.0)
+		var motion_b: Dictionary = motion_button.motion_sample(0.55)
+		verify(absf(float(motion_a.offset_y) - float(motion_b.offset_y)) > 0.5,"idle hotspot visibly floats over time")
+		verify(absf(float(motion_a.scale) - float(motion_b.scale)) > 0.005,"idle hotspot visibly breathes over time")
+		verify(hub.campaign_panel.exploration_board.buttons[0].motion_phase != hub.campaign_panel.exploration_board.buttons[1].motion_phase,"hotspot idle motion uses staggered phases")
+		if resolution == Vector2i(1920,1080):
+			var stable_hit_rect: Rect2 = motion_button.get_global_rect()
+			await capture_page(hub,"library-motion-a",resolution)
+			await hub.get_tree().create_timer(0.55).timeout
+			await capture_page(hub,"library-motion-b",resolution)
+			verify(motion_button.get_global_rect().is_equal_approx(stable_hit_rect),"hotspot animation leaves the click target stationary")
 		var memory_index := -1
 		for i in range(hub.journey.visit.data.hotspots.size()):
 			if hub.journey.visit.data.hotspots[i].kind == "memory": memory_index = i

@@ -1,5 +1,13 @@
 # 美术任务：M1 探索 UI 视觉样板
 
+## 热点无文字动效接入（2026-09-18，接入效果待评审）
+
+负责人评审 013 后指出条带本身仍然突兀，并明确要求热点周围不出现任何名称文字，无论是否带条带；对象名称只存在于点击后的详情面板。013 因此不采用、不提升，正式资产组合仍为 012 面板／按钮加 011 四枚图标。本轮不增加资产版本，仅调整真实战役中的热点呈现和动效。
+
+使用 game-ui-ux 与 game-feel 形成并实装以下参数：透明命中区固定为 118×118，图标绘制层常态上下浮动 `±4px`、缩放 `1.00–1.05`、周期 `2.2s`；四热点以四分之一周期错相。鼠标悬停／键盘或手柄聚焦时，用 `120ms` Back ease 增加最高约 `0.06` 的缩放和局部轮廓辉光，退出时以 `180ms` 缓出恢复。点击打开弹窗后，选中热点停止漂浮并保持轻强调；完成态停止呼吸缩放，只保留 `±1.5px` 轻浮动、降亮和勾号。动画只改变图标绘制，不移动按钮节点和命中区。
+
+`exploration_board.gd` 已移除四个名称 Label 和热点可见 Tooltip，名称只由 `campaign_panel.gd` 的点击详情标题显示；焦点链、鼠标点击、Esc 关闭与焦点恢复保持。Godot 4.7.2 Compatibility 真实战役三尺寸运行结果为 `150 checks / 0 failures`，新增断言覆盖无名称／无 Tooltip、呼吸缩放、上下浮动、错相和命中区固定。实际截图及相隔 0.55 秒的运动相位证据位于 `design/concepts/m1-exploration-ui/review/codex-workflow/interaction-motion/`。技术接入完成，当前等待负责人评审动效观感。
+
 ## 013 热点交互条带候选（2026-09-18）
 
 负责人要求推进已记录的热点标签优化：用倾斜、不规则的深色底图提示可交互，移除常驻“校园记忆”“人物事件”等文字，点击后在弹窗显示名称。该回复批准概念方向与候选制作，不预先批准尚未看过的具体生成资产或真实接入效果。
@@ -8,7 +16,7 @@
 
 候选目录为 `design/concepts/m1-exploration-ui/m1_exploration_ui/013/`，生成与规范化记录见 `generation.md`。当前登记为 `unselected / pending`，只进入独立 Godot 预览，不覆盖正式资源或真实战役；待负责人看图批准后再提升和接入。
 
-Godot 4.7.2 Compatibility 三尺寸 default/detail/complete 与鼠标、焦点、Esc、读取和奖励门槛断言通过，输出 `EXPLORATION_UI_CANDIDATE PASS`。九张截图位于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-013/`；已看图确认旧规则标签底板已移除、名称仅在焦点／悬停出现、弹窗打开后热点名称隐藏、完成态仍可辨。资源台 33 项测试及目录扫描通过，013 仍等待负责人资产评审。
+Godot 4.7.2 Compatibility 三尺寸 default/detail/complete 与鼠标、焦点、Esc、读取和奖励门槛断言通过，输出 `EXPLORATION_UI_CANDIDATE PASS`。九张截图位于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-013/`。随后负责人认为条带突兀，并要求所有名称文字只存在于点击后的面板；013 保留为要求修改的历史候选，不批准、不提升、不接入。现行实现以上方“热点无文字动效接入”为准。
 
 ## 012 浮窗／按钮正式资产与接入（2026-09-18）
 

@@ -17,12 +17,6 @@ const POSITIONS = {
 	"system":Vector2(0.61, 0.68),
 	"battle":Vector2(0.82, 0.34),
 }
-const TITLES = {
-	"memory":"校园记忆",
-	"person":"人物事件",
-	"system":"借阅终端",
-	"battle":"守卫战",
-}
 const ART = {
 	"memory":"res://assets/art/ui/m1_exploration_ui/memory.png",
 	"person":"res://assets/art/ui/m1_exploration_ui/character.png",
@@ -36,7 +30,6 @@ var environment_state: String = DEFAULT_ENVIRONMENT_STATE
 var environment_viewpoint: String = DEFAULT_ENVIRONMENT_VIEWPOINT
 var environment_texture: Texture2D
 var buttons: Array[Button] = []
-var captions: Array[Label] = []
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(820, 680)
@@ -80,20 +73,10 @@ func _build() -> void:
 		item.kind = spot.kind
 		item.artwork = ExplorationSkin.texture(ART[spot.kind])
 		item.completed = _completed(spot)
-		item.tooltip_text = TITLES[spot.kind] + "；点击查看详情"
+		item.set_motion_index(i)
 		item.pressed.connect(_pick.bind(i))
 		add_child(item)
 		buttons.append(item)
-		var caption := Label.new()
-		caption.text = _caption(spot)
-		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		caption.add_theme_font_size_override("font_size", 18)
-		caption.add_theme_color_override("font_color", INK)
-		caption.add_theme_stylebox_override("normal", _caption_style())
-		add_child(caption)
-		captions.append(caption)
 	for i in range(buttons.size()):
 		buttons[i].focus_next = buttons[(i + 1) % buttons.size()].get_path()
 		buttons[i].focus_previous = buttons[(i + buttons.size() - 1) % buttons.size()].get_path()
@@ -119,7 +102,6 @@ func refresh() -> void:
 		var spot: Dictionary = journey.visit.data.hotspots[i]
 		buttons[i].completed = _completed(spot)
 		buttons[i].queue_redraw()
-		captions[i].text = _caption(spot)
 	queue_redraw()
 
 func hotspot_rect(index: int) -> Rect2:
@@ -138,29 +120,11 @@ func _layout() -> void:
 		var center: Vector2 = size * Vector2(POSITIONS[spot.kind])
 		buttons[i].size = Vector2(118, 118)
 		buttons[i].position = center - buttons[i].size / 2.0
-		captions[i].size = Vector2(190, 34)
-		captions[i].position = center + Vector2(-95, 61)
 	queue_redraw()
 	layout_changed.emit()
 
 func _completed(spot: Dictionary) -> bool:
 	return journey.visit.data.guard_won if spot.kind == "battle" else journey.visit.data.viewed.has(spot.id)
-
-func _caption(spot: Dictionary) -> String:
-	if spot.kind == "battle" and journey.visit.data.guard_won:
-		return "守卫已解除"
-	if spot.kind != "battle" and journey.visit.data.viewed.has(spot.id):
-		return TITLES[spot.kind] + " · 已查看"
-	return TITLES[spot.kind]
-
-func _caption_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.025, 0.04, 0.08, 0.90)
-	style.border_color = Color(0.16, 0.34, 0.45, 0.45)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(5)
-	return style
 
 func _draw() -> void:
 	if environment_texture == null:
