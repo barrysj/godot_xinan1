@@ -235,8 +235,13 @@ variants:
   asset_011:
     stage: asset
     version: 011
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: approved_as_family_master
+      quote: "这版可以，批准了"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/011
     files:
       asset: m1_memory_terminal_asset_011.png
@@ -250,6 +255,54 @@ variants:
       camera: three_quarter_front_right
       structural_symmetry: spherical
       screen_space_symmetry: false
+      shell_segments: 4
+      memory_layers: 3
+      text_field_panels: 4
+      discontinuous_borders: true
+      review_sizes: [96, 48]
+  asset_012:
+    stage: asset
+    version: 012
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/012
+    files:
+      asset: m1_memory_terminal_asset_012.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_color_variant, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "镜核空间终端绿青配色；四片环绕透明文字场；断续边框"
+      family_master: asset_011
+      colorway: glitch_green_cyan
+      region_assignment: pending
+      camera: three_quarter_front_right
+      shell_segments: 4
+      memory_layers: 3
+      text_field_panels: 4
+      discontinuous_borders: true
+      review_sizes: [96, 48]
+  asset_013:
+    stage: asset
+    version: 013
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/013
+    files:
+      asset: m1_memory_terminal_asset_013.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_color_variant, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "镜核空间终端红紫配色；四片环绕透明文字场；断续边框"
+      family_master: asset_011
+      colorway: error_violet
+      region_assignment: pending
+      camera: three_quarter_front_right
       shell_segments: 4
       memory_layers: 3
       text_field_panels: 4
