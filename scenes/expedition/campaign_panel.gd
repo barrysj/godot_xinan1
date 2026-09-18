@@ -3,6 +3,8 @@ extends PanelContainer
 signal action(id: String)
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
+const LIBRARY_ENVIRONMENT_STATE := "anomaly"
+const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
 var column: VBoxContainer
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
 var anomaly: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).anomaly
@@ -215,6 +217,7 @@ func _library_location(journey, prologue: bool) -> void:
 	column.add_child(exploration_stage)
 	exploration_board = ExplorationBoard.new()
 	exploration_board.journey = journey
+	assert(exploration_board.set_environment_variant(LIBRARY_ENVIRONMENT_STATE,LIBRARY_ENVIRONMENT_VIEWPOINT))
 	exploration_board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	exploration_stage.add_child(exploration_board)
 	exploration_board.picked.connect(func(index): _open_library_detail(journey,index))

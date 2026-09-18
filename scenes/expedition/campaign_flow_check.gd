@@ -1,4 +1,5 @@
 extends RefCounted
+const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 var failures = 0
 var checks = 0
 
@@ -51,6 +52,10 @@ func run_checks(hub) -> void:
 		return
 	if "--exploration-capture" in OS.get_cmdline_user_args():
 		await capture_exploration(hub)
+		hub.get_tree().quit()
+		return
+	if "--library-environment-capture" in OS.get_cmdline_user_args():
+		await capture_library_environment(hub)
 		hub.get_tree().quit()
 		return
 	hub._begin_region("library","prologue")
@@ -191,6 +196,38 @@ func capture_exploration(hub) -> void:
 		hub._campaign_action("leave")
 		await capture_page(hub,"settlement",resolution)
 	print("EXPLORATION_CAPTURE checks=%d failures=%d" % [checks,failures])
+
+func capture_library_environment(hub) -> void:
+	hub.get_window().mode = Window.MODE_WINDOWED
+	await hub.get_tree().process_frame
+	hub.progress.complete_prologue()
+	hub.progress.complete_tutorial_dispatch()
+	hub._begin_region("library")
+	for step in range(3):
+		hub._campaign_action("enter:0")
+		fight(hub)
+		hub._campaign_action("leave")
+	hub._campaign_action("enter:0")
+	await hub.get_tree().process_frame
+	var board = hub.campaign_panel.exploration_board
+	verify(is_instance_valid(board),"environment capture uses real library board")
+	verify(board.buttons.size() == 4,"environment capture retains four real hotspots")
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		hub.get_window().size = resolution
+		await hub.get_tree().process_frame
+		await hub.get_tree().process_frame
+		for state in ExplorationSkin.LIBRARY_ENVIRONMENT_STATES:
+			for viewpoint in ExplorationSkin.LIBRARY_ENVIRONMENT_VIEWPOINTS:
+				verify(board.set_environment_variant(state,viewpoint),"environment variant loads %s/%s" % [state,viewpoint])
+				var variant: Dictionary = board.environment_variant()
+				verify(variant.get("state") == state and variant.get("viewpoint") == viewpoint,"environment variant reports %s/%s" % [state,viewpoint])
+				await RenderingServer.frame_post_draw
+				await RenderingServer.frame_post_draw
+				var picture = hub.get_viewport().get_texture().get_image()
+				verify(picture.get_size() == resolution,"environment capture matches requested viewport")
+				picture.save_png("res://.godot/m1-library-environment-%s-%s-%dx%d.png" % [state,viewpoint,resolution.x,resolution.y])
+		board.set_environment_variant("anomaly","atrium-down")
+	print("LIBRARY_ENVIRONMENT_CAPTURE checks=%d failures=%d" % [checks,failures])
 
 func capture_page(hub, label: String, resolution: Vector2i) -> void:
 	hub.queue_redraw()

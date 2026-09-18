@@ -1,12 +1,12 @@
 # 美术任务：M1 图书馆静态环境
 
-状态：005 日常、夜间、异变 v3 共九张已获正式资产批准并提升至 `assets/art/`；尚未接入 Godot，接入效果待后续评审。下方历轮待审状态为当时记录，以本节最新决定为准。
+状态：005 日常、夜间、异变 v3 共九张已获正式资产批准并提升至 `assets/art/`，已技术接入 Godot 真实 M1 图书馆页；主流程默认异变／中庭俯视，三状态与三视角保持可配置验证，接入效果待人工视觉评审。下方历轮待审状态为当时记录，以本节最新决定为准。
 
 ## 正式资产批准与提升：asset_005_environment_set（2026-09-18）
 
 负责人在检查完三组共九张图后明确决定“接受这9张为正式资产”。批准范围为 005 日常三视角、005 夜间三视角及最新 `concept_005_anomaly_v3` 三视角；这同时批准夜间与异常概念来源及具体正式文件，不代表 Godot 接入效果已经批准。
 
-正式包位于 `assets/art/backgrounds/m1_library/`，按 `daily/`、`night/`、`anomaly/` 分组，每组固定 `atrium-down.png`、`window-corridor.png`、`shelf-to-atrium.png`。Manifest 登记为 `asset_005_environment_set`，状态 `selected + approved`；对象整体仍为 `not_integrated`。
+正式包位于 `assets/art/backgrounds/m1_library/`，按 `daily/`、`night/`、`anomaly/` 分组，每组固定 `atrium-down.png`、`window-corridor.png`、`shelf-to-atrium.png`。Manifest 登记为 `asset_005_environment_set`，状态 `selected + approved`；Godot 集成状态为 `authorized_active`，视觉效果仍待人工评审。
 
 | 状态 | 中庭俯视 SHA-256 | 窗边走廊 SHA-256 | 书架望中庭 SHA-256 |
 | --- | --- | --- | --- |
@@ -17,6 +17,14 @@
 九张正式文件均为 1672 × 941、RGB、不透明 PNG，并与各自获批候选逐文件 SHA-256 一致。生成工具、提示词、输入参考和修订历史继续保存在 005 候选目录的 `generation*.md` 与本任务记录中；正式包不复制生产过程文件。
 
 验证日期 2026-09-18、提升前基线 `084a291`：System.Drawing 解码与尺寸检查、九组候选／正式 SHA-256 对照、AssetCatalog 实际扫描（10 对象、10 个图书馆版本、35 个登记文件、零警告／错误）、资源台 33 项单元测试及 `git diff --check` 均通过。没有修改 Godot 场景或运行时引用，故本阶段不生成游戏截图；接入时仍须补三分辨率实际画面评审。
+
+## Godot 接入：正式环境映射（2026-09-18）
+
+本轮在 `art/m1-asset-integration` 分支接入现有 M1 探索流程，不新增昼夜循环、奖励或访问规则。`ExplorationSkin` 维护九张正式图的状态／视角映射；`ExplorationBoard` 负责按 Cover 方式铺满响应式视口，并保留原有四热点、信号干扰层、详情弹窗和完成态；`campaign_panel.gd` 将真实主流程的默认变体明确设为 `anomaly / atrium-down`。日常与夜间只作为可配置／预览变体，当前没有虚构自然触发条件。
+
+实现入口：`scenes/expedition/exploration_skin.gd`、`scenes/expedition/exploration_board.gd`、`scenes/expedition/campaign_panel.gd`。验证入口：`scenes/expedition/campaign_flow_check.gd --library-environment-capture`。
+
+验证基线为 main `4389c1f` 加本接入工作树：真实图书馆路线只运行一次后覆盖 3 状态 × 3 视角 × 1920×1080、2560×1440、1920×1200，共 27 张截图，`LIBRARY_ENVIRONMENT_CAPTURE checks=104 failures=0`；既有完整探索流程再跑 `EXPLORATION_CAPTURE checks=132 failures=0`，覆盖四热点、详情、人物、守卫领奖、离开、暂停／恢复和三种桌面尺寸。视觉接入仍标记为 `visual_review: pending`，技术检查不替代负责人对画面效果的人工批准。
 
 ## 异变状态跨机位连续性修订：concept_005_anomaly_v3（2026-09-18）
 

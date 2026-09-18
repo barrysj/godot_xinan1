@@ -137,3 +137,16 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台测试通过；011 候选与正式六图动态哈希一致，Manifest 生效状态可核验 |
 
 实际接入截图位于 `design/concepts/m1-exploration-ui/review/codex-workflow/integration-011/`：三尺寸默认态，以及 1920×1080 详情／出口开放态。已看图确认弹窗未越界、热点不重叠、完成态和离开按钮同步。背景仍为主游戏原生抽象示意；研究参考图、其他对话背景和现实地点身份未纳入资产。技术验证不代替本次接入效果的人工视觉验收。
+
+## M1 图书馆环境接入验证 E25
+
+2026-09-18；基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树。仅替换图书馆探索页的环境绘制层，不新增昼夜循环、奖励、热点或访问规则；主流程默认 `anomaly / atrium-down`，日常／夜间与其他机位仅作为配置和预览变体。全部命令使用 PowerShell 7 与 Godot 4.7.2 Compatibility。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| 探索场景 `-- --campaign-flow-check --library-environment-capture` | 104 checks / 0 failures；真实 M1 图书馆路线、四热点保留，3 状态 × 3 视角 × 1920×1080、2560×1440、1920×1200，共 27 张实际运行截图，逐张断言分辨率 |
+| 探索场景 `-- --campaign-flow-check --exploration-capture` | 132 checks / 0 failures；四热点、详情弹窗、人物事件、守卫领奖、出口开放、离开地点、返回基地与三尺寸完整流程 |
+| `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台回归入口；正式九图、Manifest 映射和登记状态可核验 |
+| `git diff --check` | 通过 |
+
+实际截图写入 `.godot/m1-library-environment-*.png`，按状态／视角／分辨率生成 27 张；默认异变流程另由 `.godot/m1-readable-library*.png`、`m1-readable-library-detail*.png`、`m1-readable-opened*.png` 复核。技术检查通过不代替负责人对接入效果的人工视觉验收。运行环境仍有既有 `user://logs`、系统根证书和像素图 `Image.load_from_file` 警告，不影响本轮检查结果。
