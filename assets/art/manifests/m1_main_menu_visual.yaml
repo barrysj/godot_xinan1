@@ -1,0 +1,30 @@
+schema_version: 3
+object:
+  id: m1_main_menu_visual
+  display_name: "M1 主菜单视觉样板"
+  type: ui
+  subtype: main_menu_hero
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/001
+    files:
+      concept: hero.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, title_direction, menu_layout_study]
+      style_layer: evening
+      source_identity: fictional_abstract_digital_campus_no_real_site_reference
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_right_title]
+      title_mark_direction: cyan_magenta_wave_node_emblem
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+integration:
+  status: not_integrated
+  evidence: docs/art/tasks/m1-main-menu.md
