@@ -1,17 +1,17 @@
 # 美术任务：M1 关键记忆载体
 
-状态：结构性透视版 `concept_007` 已获概念批准；`asset_011` 的青品红、绿青、红紫三款同版颜色方案已获正式资产批准并提升到 `assets/art/icons/m1_memory_artifact/`。三款共同属于 011，不保留冗余的 012／013 版本。尚未接入 Godot。内部规则 ID 沿用 `m1_memory_artifact`；“关键记忆载体”是本任务工作称呼，不修改全局术语、存档或玩法规则。
+状态：结构性透视版 `concept_007` 已获概念批准；`asset_011` 的青品红、绿青、红紫三款同版颜色方案已获正式资产批准并提升到 `assets/art/icons/m1_memory_artifact/`。三款共同属于 011，不保留冗余的 012／013 版本。已完成 Godot 技术接入，接入效果待负责人评审。内部规则 ID 沿用 `m1_memory_artifact`；“关键记忆载体”是本任务工作称呼，不修改全局术语、存档或玩法规则。
 
 ## 目标与范围
 
 - 用途、数量与本次要求：为三个区域首次通关获得、终局使用的三件同源永久记忆载体制作统一图标家族；三件共同属于已批准 `asset_011`，只改变颜色，不改变结构。区域名称与终点身份尚未确定，本轮不绑定具体区域。
 - 对应规范、已有身份参考：`docs/art/STYLE_BIBLE.md` 的异常层与局部赛博强化；`docs/art/ART_CONTRACT.md`；`docs/art/WORKFLOW.md`；`docs/art/m1-static-assets.md`；`data/visual/colors.json` 的 anomaly 色组；`docs/art/specs/UI_SPEC.md` 的图标简洁、图形化和避免复杂拟物要求。
-- 目标 Godot 场景、入口与依赖：本轮完成正式资产提升但不接入 Godot；具体展示区域、区域配色映射、裁切与缩放结合三台记忆终端入口另行确定。
+- 目标 Godot 场景、入口与依赖：接入 `scenes/expedition/campaign_hub.gd` 与 `campaign_panel.gd`；专用展示组件为 `scenes/expedition/memory_terminal_view.gd`。基地、区域结算和终局共用三款正式 PNG；不读取 Manifest，不新增存档字段。
 - 不在本次范围内的内容：不画日常校园背景；不制作普通调查兴趣点、终端 UI、触摸设备、落地机柜或屏幕；不添加量子物理剧情、道具名称、终局文本、新玩法、动画或主游戏接入。
 
 ## 当前版本与方案
 
-- 当前正式资产：`asset_011` 三款颜色文件已提升；未接入 Godot，无运行时生效版本。
+- 当前正式资产：`asset_011` 三款颜色文件已提升并接入 Godot；运行时默认映射为 `library → cyan_magenta`、`region_b → green_cyan`、`region_c → red_violet`。
 - 历史批准方向：对象 `m1_memory_artifact`，概念版本 `concept_001`；2026-09-18 负责人明确回复“方向通过”，同时要求完整核心保持对称或中心对称，并在正式资产阶段图形化简化、降低写实材质与微细节、加强“记忆分层／存储切片”身份。该版本不再是当前选用概念，但其有效约束继续保留。
 - 已否决正式资产候选：`asset_002`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/002/`，阶段为资产，`unselected + rejected + not_integrated`。2026-09-18 负责人明确反馈“这一版我不喜欢”，该版本不用于后续生产种子。
 - 已否决重新设计：`concept_003`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/003/`，阶段为概念，`unselected + rejected + not_integrated`。负责人指出它太像服务器，要求淡化存储，强化终端、核心与珍贵感。
@@ -51,7 +51,7 @@
 | 三分之四资产候选 | `design/concepts/m1-memory-artifact/m1_memory_artifact/009/m1_memory_terminal_asset_009.png`；`d2546a7070d36f5431e86287b6f0861d720257607ead2f1061e59d88abf61874` | 待修改 | “核心非常好，但文字场稍显不足”；锁定核心与四壳，只增强文字覆盖范围、段落节奏和纵深 | 用户在当前 Codex 对话明确反馈；2026-09-18 |
 | 文字场修正版 | `design/concepts/m1-memory-artifact/m1_memory_artifact/010/m1_memory_terminal_asset_010.png`；`c26576da3418eb0175121c79d45254824f972fbbc34c0974a1b543f046833a65` | 待修改 | “这个还是不太能看出来终端”；改用多个透明、环绕且边框不连续的文字场 | 用户在当前 Codex 对话明确反馈；2026-09-18 |
 | 环绕文字场资产家族 | `asset_011`：青品红 `cc551dea786639f5fb63c77b8c9dd7bc394d9895f2c5c11347ed15d0b3927dad`；绿青 `1b9c2b1281b1c04a70116f96c0914d7b8e67ea118dc980d4d462d1c6a74fd0e3`；红紫 `4334398e15d2e8dc511bf943ba721f387daa805418592f7a46b75d8041b417c5` | 已批准并提升 | “提升为正式资产，但是他们都应该属于011这个版本，不要冗余”；三款合并到 011，正式包只保留三张运行 PNG | 用户在当前 Codex 对话明确决定；2026-09-18 |
-| 接入效果 | 尚未开始 | 待评审 | 需先取得资产批准和明确接入授权 | |
+| 接入效果 | `MemoryTerminalView`：基地三卡、区域首次回收大图、终局三枚阵列 | 待评审 | 技术接入已完成；需查看三种桌面尺寸运行截图后确认显示比例、间距与剧情强调是否合适 | 2026-09-18 |
 
 ## 验证与结果
 
@@ -69,8 +69,8 @@
 - `asset_011` 图片质量闸门：`PASS_WITH_NOTES`，可进入人工资产评审。技术完整性 PASS（1254×1254，PNG，1,980,204 bytes，`Format32bppArgb`，四角 Alpha `0,0,1,0`）；完整珠核、四片分离球壳、右近左远透视和遮挡关系保持稳定；四片界面具有不同角度、深度和局部遮挡，终端身份显著强于单一背景文字场；浅色／深色底均能看出界面透明，四片之间保留真实透明间隔；96×96 下仍可识别多屏环绕核心，48×48 下主要保留核心、四壳和青品红界面轮廓。备注：青色局部辉光在黑底较明显；正式接入若制作界面动画，宜与静态主体拆层并降低动态亮度。
 - `asset_011` 三款颜色文件统一质量结论：`PASS_WITH_NOTES`。三款均为1254×1254透明 PNG，结构轮廓、四壳透视、四片文字场、断续边框和遮挡关系保持一致；青品红、绿青、红紫在96×96和48×48下均可区分；浅色／深色底未见实体屏板、黑边、水印或新增符号。两款变体为生成式颜色映射，不记为逐像素 LUT 输出。
 - 复现检查命令：`Add-Type -AssemblyName System.Drawing` 后读取 `Image.FromFile()` 检查尺寸与像素格式；`Get-FileHash -Algorithm SHA256` 检查文件摘要。
-- Manifest 回写：`asset_011` 为 `selected + approved`，同一版本登记三款颜色文件；原冗余颜色变体记录与目录已移除。`integration.status: promoted_not_integrated`，正式根目录为 `assets/art/icons/m1_memory_artifact/`，三张正式文件与候选逐文件哈希匹配；尚无 Godot owner 或资源绑定。
+- Manifest 回写：`asset_011` 为 `selected + approved`，同一版本登记三款颜色文件；原冗余颜色变体记录与目录已移除。`integration.status: authorized_active`，正式根目录为 `assets/art/icons/m1_memory_artifact/`，三张正式文件与候选逐文件哈希匹配；区域映射与三个展示入口已登记，视觉评审仍为 pending。
 - 一致性检查：Manifest 候选 `root` 仅指向 011；三款颜色文件与一份 `generation.md` 共同登记。正式包只含三张运行 PNG，不复制生成记录和评审缩略图。
-- 实际截图／动作预览证据：无 Godot 运行截图；`asset_011` 三款原图、`thumbnail-{96,48}.png`、`contrast-preview.png` 与 `review/codex-workflow/family-contact-sheet.png` 已查看。候选展示与正式提升不等于接入效果验收。
-- 未解决问题：三区域名称与终点身份未定，三款配色尚未绑定区域；环绕文字场若在 Godot 中拆层或动画化，仍需重新做接入截图评审；最终显示尺寸和接入位置尚未决定。
+- 实际截图／动作预览证据：`asset_011` 三款原图、`thumbnail-{96,48}.png`、`contrast-preview.png` 与 `review/codex-workflow/family-contact-sheet.png` 已查看；Godot 接入截图待生成。候选展示、正式提升和技术接入不等于接入效果验收。
+- 未解决问题：三区域仍使用稳定 ID，未来更换正式地名时只需调整标题；需通过三种桌面尺寸截图评审三卡、回收大图和终局阵列的显示比例、留白与视觉强调；不制作额外动态文字层。
 - 本地提交：`concept_001` 提交 `42c45c2`；`concept_007` 提交 `65fe340`；`asset_008` 提交 `d0def0e`；`asset_011` 三配色正式提升提交 `58f0291`；其余历史版本以对应任务记录所在提交为准。

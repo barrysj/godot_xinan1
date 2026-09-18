@@ -4,7 +4,7 @@
 
 ## 生产边界
 
-- M1 运行画面仍只使用静态资源或占位；记忆终端已新增 3 张同版配色 PNG 并获正式资产批准，但尚未接入运行时。
+- M1 运行画面仍只使用静态资源或占位；记忆终端已新增 3 张同版配色 PNG，完成技术接入但接入效果待人工评审。
 - 没有新制骨骼、动作图集、序列帧、动画特效、GIF或视频，没有修改动画生产工具链。既有动画文件保留，M1战场复用已有idle首帧或固定头像；模拟层时序与伤害保持原实现。
 - 既有角色图集只复用其中固定头像裁切及idle首帧，不在M1播放图集。旧随机局仍按旧流程运行。
 - 综合开发分支为 `codex/m1-campus-campaign`；后续独立美术生产使用 `art/<小写主题>`。
@@ -13,7 +13,7 @@
 
 | 内容／数量 | 正式路径与版本 | 批准与验证 | 接入边界 |
 | --- | --- | --- | --- |
-| 记忆终端图标／3款 | `assets/art/icons/m1_memory_artifact/{cyan_magenta,green_cyan,red_violet}.png`；`asset_011` | 三款同属 011，已获正式资产批准；候选与正式文件逐项哈希一致，正式包仅含 3 张运行 PNG | `promoted_not_integrated`；三区域配色映射、实际显示尺寸与 Godot owner 尚未确定 |
+| 记忆终端图标／3款 | `assets/art/icons/m1_memory_artifact/{cyan_magenta,green_cyan,red_violet}.png`；`asset_011` | 三款同属 011，已获正式资产批准；候选与正式文件逐项哈希一致，正式包仅含 3 张运行 PNG | `authorized_active`；已接入基地状态卡、首次回收展示和终局阵列，接入效果待评审 |
 
 未生成项不预填 Manifest。占位背景、文字或程序检查不计为正式美术验收；完整批准证据见[记忆终端任务](tasks/m1-memory-artifact.md)。
 

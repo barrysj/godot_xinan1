@@ -1,6 +1,7 @@
 extends PanelContainer
 ## Shared native controls for route, visits, narrative and memory pages.
 signal action(id: String)
+const MEMORY_TERMINAL_VIEW = preload("res://scenes/expedition/memory_terminal_view.gd")
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
@@ -131,16 +132,22 @@ func home(progress, chosen_supply: bool) -> void:
 func terminal_progress(terminals: Array) -> void:
 	var strip = row()
 	for region in ["library","region_b","region_c"]:
-		var panel = PanelContainer.new()
-		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var style = StyleBoxFlat.new()
-		style.bg_color = Color("DCEFEA") if terminals.has(region) else Color(palette.surface_blue)
-		style.border_color = Color("3D8F78") if terminals.has(region) else Color("AEC6D0")
-		style.set_border_width_all(2)
-		style.set_content_margin_all(18)
-		panel.add_theme_stylebox_override("panel",style)
-		strip.add_child(panel)
-		text({"library":"图书馆终端","region_b":"第二终端","region_c":"第三终端"}[region]+("\n已回收 · 区域稳定" if terminals.has(region) else "\n未回收 · 通路受阻"),22,panel)
+		var view = MEMORY_TERMINAL_VIEW.new()
+		view.setup(region, terminals.has(region), "compact")
+		strip.add_child(view)
+
+func terminal_reveal(region: String) -> void:
+	var view = MEMORY_TERMINAL_VIEW.new()
+	view.setup(region, true, "reveal")
+	column.add_child(view)
+
+func terminal_finale(terminals: Array, stage: int) -> void:
+	text("终端阵列", 24)
+	var strip = row()
+	for region in ["library","region_b","region_c"]:
+		var view = MEMORY_TERMINAL_VIEW.new()
+		view.setup(region, terminals.has(region), "finale", stage)
+		strip.add_child(view)
 
 func _board(journey, mode: String) -> Control:
 	var board = preload("res://scenes/expedition/campaign_board.gd").new()

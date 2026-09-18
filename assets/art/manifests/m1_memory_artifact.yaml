@@ -262,14 +262,28 @@ variants:
       text_field_panels: 4
       discontinuous_borders: true
       colorways: [cyan_magenta, green_cyan, red_violet]
-      region_assignment: pending
+      region_assignment:
+        library: cyan_magenta
+        region_b: green_cyan
+        region_c: red_violet
       review_sizes: [96, 48]
+    integration_authorization:
+      source: docs/art/tasks/m1-memory-artifact.md
+      scope: "基地终端状态卡、区域首次回收展示与三阶段终局陈列；接入效果待人工评审"
+      date: 2026-09-18
 integration:
-  status: promoted_not_integrated
+  status: authorized_active
   active_variant: asset_011
   root: assets/art/icons/m1_memory_artifact
   files:
     colorway_cyan_magenta: cyan_magenta.png
     colorway_green_cyan: green_cyan.png
     colorway_red_violet: red_violet.png
+  mapping:
+    colorways:
+      library: cyan_magenta
+      region_b: green_cyan
+      region_c: red_violet
+    presentations: [home_progress, settlement_reveal, finale_array]
+  visual_review: pending
   evidence: docs/art/tasks/m1-memory-artifact.md
