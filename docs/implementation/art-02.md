@@ -2,8 +2,8 @@
 
 > 持续功能档案；全项目判断由统筹维护[总览](../implementation-status.md)。
 
-- 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已正式提升但未接入）。
-- 验证日期：2026-09-18；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`。
+- 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已完成技术接入，效果待人工评审）。
+- 验证日期：2026-09-18；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`，接入实现基线待本次提交写入。
 
 ## 玩家能力与接入范围
 
@@ -27,11 +27,13 @@ M1 三款记忆终端静态图标已作为同一个 `asset_011` 家族批准并�
 
 正式 assets/art/characters/chalk_spirit/ 为批准候选的干净运行子集，不含版本目录、review、截图、生成记录、临时帧或专用工具。生成来源与评审证据留在候选和 Git。提升入口为 `py -3 tools/art/promotion/promote_animation.py chalk_spirit`，只校验时加 `--check`。
 
-## M1 记忆终端正式包（已提升，未接入）
+## M1 记忆终端正式包（已接入，待效果评审）
 
 `asset_011` 以一个版本登记青品红、绿青、红紫三款颜色方案；三款共享结构、透视和环绕文字场，只以颜色区分。正式目录仅保留 3 张透明运行 PNG，不复制评审图、生成记录或冗余 012／013 版本。
 
-Manifest 状态为 `selected + approved`、`promoted_not_integrated`，三项正式文件绑定均与候选哈希一致。当前没有 Godot owner、资源引用或三区域配色映射，因此正式提升不等于接入完成，也不构成接入效果批准。
+Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文件绑定均与候选哈希一致。三区域默认映射为图书馆青品红、第二终端绿青、第三终端红紫；代码通过专用 `MemoryTerminalView` 复用同一资产家族，接入效果仍待人工评审。
+
+接入入口为 `scenes/expedition/memory_terminal_view.gd`、`campaign_panel.gd` 与 `campaign_hub.gd`：基地三卡显示回收状态，首次区域结算显示单枚大图，三阶段终局显示三枚终端阵列。接入不修改 `CampusProgress`、存档 schema 或终端领取规则。
 
 ## 验证与证据
 
@@ -43,6 +45,7 @@ Manifest 状态为 `selected + approved`、`promoted_not_integrated`，三项正
 - 13 文件重复提升内容一致；正式依赖不引用 design/concepts；资源台 8 对象、101 登记文件，缺失 0、不一致 0。
 - 继承历史证据 E10–E12、E19，重跑入口见[验证目录](verification.md)。技术通过不替代人工或手机端验收。
 - 2026-09-18：记忆终端 `asset_011` 的青品红、绿青、红紫三款候选与正式文件逐项一致，资源台扫描无缺失／不一致；三款为同一版本，不保留 012／013 冗余记录。视觉批准与提升证据见[任务记录](../art/tasks/m1-memory-artifact.md)。
+- 2026-09-18：`MemoryTerminalView` 已接入基地状态卡、区域首次回收结算和三阶段终局阵列；三处均复用正式 PNG，未引入新的存档字段或运行时 Manifest 读取。Godot 图形截图与负责人接入效果评审仍待完成。
 
 ## 已知边界与统筹
 

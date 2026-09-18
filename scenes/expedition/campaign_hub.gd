@@ -201,6 +201,7 @@ func _show_journey() -> void:
 			campaign_panel.button(OPERATIONS[journey.data.finale_phase],"operation")
 		else:
 			campaign_panel.clear("终局 · 三台记忆终端", "当前 AI：我们争取修改核心存储的机会。每击破一个节点，就执行一次系统操作。前代无需删除，但必须停止回滚校园。")
+			campaign_panel.terminal_finale(progress.campaign.terminals, progress.campaign.finale_stage)
 			for i in range(3): campaign_panel.text(OPERATIONS[i]+(" · 已提交" if i < progress.campaign.finale_stage else " · 待执行"))
 			campaign_panel.button("节点整备","finale_battle")
 			campaign_panel.button("返回基地","base")
@@ -265,7 +266,8 @@ func _settle_campaign() -> void:
 			screen = "campaign"
 			campaign_panel.show()
 			campaign_panel.clear("终端已回收" if first_clear else "探索完成","已回到安全区域，所有收益已保存。")
-			campaign_panel.terminal_progress(progress.campaign.terminals)
+			if first_clear: campaign_panel.terminal_reveal(journey.data.region)
+			else: campaign_panel.terminal_progress(progress.campaign.terminals)
 			campaign_panel.text("修复资源 +7。"+("发明家已永久加入，下一次出发可在队伍中选择。" if not recruits.is_empty() else ""))
 			var count = progress.campaign.terminals.size()
 			if first_clear: campaign_panel.text({1:"图书馆派遣现已开放。下一步：寻找第二台记忆终端。",2:"体育馆派遣现已开放。下一步：取回最后一台记忆终端。",3:"三台终端已齐备。下一步：返回基地，接入终端，修复核心。"}[count])

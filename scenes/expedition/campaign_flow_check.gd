@@ -58,6 +58,10 @@ func run_checks(hub) -> void:
 		await capture_exploration(hub)
 		hub.get_tree().quit()
 		return
+	if "--memory-terminal-capture" in OS.get_cmdline_user_args():
+		await capture_memory_terminals(hub)
+		hub.get_tree().quit()
+		return
 	if "--library-environment-capture" in OS.get_cmdline_user_args():
 		await capture_library_environment(hub)
 		hub.get_tree().quit()
@@ -200,6 +204,31 @@ func capture_exploration(hub) -> void:
 		hub._campaign_action("leave")
 		await capture_page(hub,"settlement",resolution)
 	print("EXPLORATION_CAPTURE checks=%d failures=%d" % [checks,failures])
+
+func capture_memory_terminals(hub) -> void:
+	hub.get_window().mode = Window.MODE_WINDOWED
+	await hub.get_tree().process_frame
+	hub.progress.complete_prologue()
+	hub.progress.complete_tutorial_dispatch()
+	hub.progress.campaign.terminals = ["library","region_b","region_c"]
+	hub.progress.campaign.finale_stage = 0
+	hub.progress.campaign.restored = false
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		hub.get_window().size = resolution
+		await hub.get_tree().process_frame
+		hub._home()
+		await capture_page(hub,"memory-terminal-home",resolution)
+		hub._begin_region("library","finale")
+		verify(hub.campaign_mode == "finale","finale terminal display enters finale mode")
+		verify(count_memory_terminal_views(hub.campaign_panel) == 3,"finale terminal display has three terminal views")
+		await capture_page(hub,"memory-terminal-finale",resolution)
+	print("MEMORY_TERMINAL_CAPTURE checks=%d failures=%d" % [checks,failures])
+
+func count_memory_terminal_views(node: Node) -> int:
+	var result := 1 if node is MemoryTerminalView else 0
+	for child in node.get_children():
+		result += count_memory_terminal_views(child)
+	return result
 
 func capture_library_environment(hub) -> void:
 	hub.get_window().mode = Window.MODE_WINDOWED
