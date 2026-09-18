@@ -18,10 +18,11 @@
 - `game/run/campaign_checkpoint.gd`：M1检查点；构筑复用ShortRun编解码，旧随机局仍走原schema恢复。
 - `scenes/expedition/campaign_hub.gd`：基地、序章、区域与终局接入；`campaign_panel.gd`：地点页与 011 面板／按钮接入。
 - `scenes/expedition/exploration_board.gd`、`exploration_hotspot.gd`、`exploration_skin.gd`：图书馆四热点响应式布局、正式环境按状态／视角映射与 Cover 缩放、交互状态；其他地点保持原面板路径。
+- `scenes/expedition/campaign_panel.gd`、`campaign_hub.gd`、`debug_panel.gd`：图书馆环境游戏内只读预览入口；启动参数或调试面板均可打开，状态／视角按钮不触碰正式存档。
 
 ## 验证与证据
 
-入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)与[E25](verification.md#m1-图书馆环境接入验证-e25)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；011 与环境接入后的主流程每顺序 124 项、图形捕获 132 项、环境矩阵 104 项均为 0 失败，覆盖战报／奖励／访问恢复、暂停、人物兑现、真实鼠标热点交互、Esc 焦点恢复及终局阶段边界。接入证据保存于 `.godot/` 捕获文件及图书馆任务记录。
+入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)、[E25](verification.md#m1-图书馆环境接入验证-e25)与[E26](verification.md#m1-图书馆环境游戏内预览验证-e26)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；011、环境接入和游戏内预览后的主流程与预览矩阵均为 0 失败，覆盖战报／奖励／访问恢复、暂停、人物兑现、真实鼠标热点交互、Esc 焦点恢复及预览存档隔离。接入证据保存于 `.godot/` 捕获文件及图书馆任务记录。
 
 ## 当前玩家引导与结果反馈
 

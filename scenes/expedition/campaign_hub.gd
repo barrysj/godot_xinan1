@@ -33,6 +33,8 @@ func _ready() -> void:
 	move_child(pause_overlay,get_child_count()-1)
 	campaign_panel.action.connect(_campaign_action)
 	_home()
+	if "--library-environment-preview" in OS.get_cmdline_user_args() or "--library-environment-preview-capture" in OS.get_cmdline_user_args():
+		_show_library_environment_preview()
 	if debug_enabled:
 		debug_panel = preload("res://scenes/expedition/debug_panel.gd").new()
 		debug_panel.hub = self
@@ -46,6 +48,15 @@ func _ready() -> void:
 	if "--campaign-flow-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/campaign_flow_check.gd").new()
 		test_runner.run_checks(self)
+
+func _show_library_environment_preview() -> void:
+	if not campaign_enabled or not is_instance_valid(campaign_panel):
+		return
+	paused = false
+	pause_overlay.hide()
+	screen = "campaign"
+	campaign_panel.show()
+	campaign_panel.library_environment_preview()
 
 func _home() -> void:
 	reset_pending = false

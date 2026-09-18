@@ -13,6 +13,7 @@
 
 - [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[图书馆正式背景](../../assets/art/backgrounds/m1_library/)、[角色定义](../../resources/content/enemies/chalk.tres)。
 - 图书馆运行映射：`scenes/expedition/exploration_skin.gd`、`exploration_board.gd`、`campaign_panel.gd`；环境接入不改变 `game/run/` 的访问、奖励或离场规则。
+- 游戏内预览入口：启动参数 `--library-environment-preview`，或 `--campus-debug` 后按 F8 选择“图书馆预览”；预览页可分别切换三种状态与三张视角，使用临时 Journey 且不写入存档。
 - 规则事实源：[战斗动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)、[粉笔精灵任务](../art/tasks/chalk-spirit.md)。
 - 工具与完整验证矩阵见 [ART-03](art-03.md#骨骼序列帧通用生产与预览)，资源台见 [ART-05](art-05.md)。
 
@@ -28,6 +29,7 @@
 
 - 图书馆九张正式 PNG 均为 1672 × 941、RGB、不透明，与批准候选逐文件 SHA-256 一致；批准来源、状态组合和文件清单见图书馆任务。Manifest 登记 `asset_005_environment_set` 为 `selected + approved`，集成状态为 `authorized_active`，默认 `anomaly / atrium_down`，视觉评审仍为 pending。
 - `--library-environment-capture` 真实运行通过 104 checks / 0 failures，覆盖九张正式图、三种状态、三种视角和三种桌面分辨率；既有 `--exploration-capture` 通过 132 checks / 0 failures，确认热点、详情、奖励、离开与恢复流程不受遮挡。
+- 游戏内预览捕获通过 31 checks / 0 failures，确认 3 个状态按钮 × 3 个视角按钮实际驱动环境切换，并保持 active run 不变；截图见验证 E26。
 - Godot 增量导入后，候选直接复现、正式七动作、四个 Godot 专项均通过；九组帧率／倍速的事件与结算一致。
 - 新旧逐节点对照、七动作 GIF、完整巡演、三分辨率预览与真实战斗截图通过；证据见粉笔精灵任务。
 - 13 文件重复提升内容一致；正式依赖不引用 design/concepts；资源台 8 对象、101 登记文件，缺失 0、不一致 0。

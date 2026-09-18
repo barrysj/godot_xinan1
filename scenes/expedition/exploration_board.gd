@@ -42,6 +42,7 @@ func _ready() -> void:
 	custom_minimum_size = Vector2(820, 680)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	clip_contents = true
 	resized.connect(_layout)
 	if environment_texture == null:
 		_load_environment_texture()
@@ -183,12 +184,11 @@ func _draw() -> void:
 		draw_rect(desk, Color(0.18, 0.24, 0.33, 0.78))
 		draw_rect(desk.grow(-7), Color(0.0, 0.94, 1.0, 0.18), false, 2)
 	else:
-		var background_rect := _cover_rect(environment_texture.get_size())
-		draw_texture_rect(environment_texture, background_rect, false)
+		draw_texture_rect_region(environment_texture, Rect2(Vector2.ZERO, size), _cover_source_rect(environment_texture.get_size()))
 		var tint := Color(0.02, 0.04, 0.08, 0.20)
 		if environment_state == "anomaly":
 			tint = Color(0.035, 0.02, 0.10, 0.16)
-		draw_rect(background_rect, tint, true)
+		draw_rect(Rect2(Vector2.ZERO, size), tint, true)
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.94, 1.0, 0.25), false, 1.0)
 	# Restrained signal interference inherited from the approved concept.
 	for segment in [Rect2(size.x * 0.02, size.y * 0.22, 86, 4), Rect2(size.x * 0.88, size.y * 0.25, 110, 4), Rect2(size.x * 0.04, size.y * 0.84, 72, 3)]:
@@ -210,12 +210,12 @@ func _draw() -> void:
 	draw_circle(Vector2(34, size.y - 39), 4, Color("95e6b1") if journey.visit.can_leave() else MAGENTA)
 	draw_string(FONT, Vector2(48, size.y - 31), footer, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, INK)
 
-func _cover_rect(texture_size: Vector2) -> Rect2:
+func _cover_source_rect(texture_size: Vector2) -> Rect2:
 	if texture_size.x <= 0.0 or texture_size.y <= 0.0:
-		return Rect2(Vector2.ZERO, size)
+		return Rect2(Vector2.ZERO, texture_size)
 	var scale := maxf(size.x / texture_size.x, size.y / texture_size.y)
-	var draw_size := texture_size * scale
-	return Rect2((size - draw_size) * 0.5, draw_size)
+	var source_size := size / scale
+	return Rect2((texture_size - source_size) * 0.5, source_size)
 
 func _surface() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

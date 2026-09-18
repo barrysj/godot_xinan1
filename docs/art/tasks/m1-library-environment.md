@@ -26,6 +26,12 @@
 
 验证基线为 main `4389c1f` 加本接入工作树：真实图书馆路线只运行一次后覆盖 3 状态 × 3 视角 × 1920×1080、2560×1440、1920×1200，共 27 张截图，`LIBRARY_ENVIRONMENT_CAPTURE checks=104 failures=0`；既有完整探索流程再跑 `EXPLORATION_CAPTURE checks=132 failures=0`，覆盖四热点、详情、人物、守卫领奖、离开、暂停／恢复和三种桌面尺寸。视觉接入仍标记为 `visual_review: pending`，技术检查不替代负责人对画面效果的人工批准。
 
+## 游戏内预览入口（2026-09-18）
+
+直接预览：使用 Godot 启动 `res://scenes/expedition/expedition.tscn`，附加用户参数 `--library-environment-preview`。进入“图书馆环境预览”后，点击“日常／夜间／异变”切换状态，点击“中庭／窗边／书架”切换三张视角；页面标记“只读预览，不写入存档”，底部“返回基地”回到普通基地页。
+
+调试模式也提供同一入口：附加 `--campus-debug` 启动，进入游戏后按 F8，点击“图书馆预览”。预览使用独立的临时 Journey，不改变正式主线的地点、奖励或检查点；真实 M1 主流程仍固定默认 `anomaly / atrium-down`。
+
 ## 异变状态跨机位连续性修订：concept_005_anomaly_v3（2026-09-18）
 
 负责人指出窗边视角能够看见中庭，因此远处中庭也应显示与中庭俯视图相同的异常。以 `window-corridor-anomaly-v2.png` 为唯一编辑目标、`atrium-down-anomaly-v2.png` 为效果参考，仅在画面右下方远处画展加入缩小并衰减的记忆环与垂直展板回声；窗户时间切片仍是前景主异常，书桌、书架、通道和建筑结构保持不变。

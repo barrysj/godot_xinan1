@@ -150,3 +150,15 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `git diff --check` | 通过 |
 
 实际截图写入 `.godot/m1-library-environment-*.png`，按状态／视角／分辨率生成 27 张；默认异变流程另由 `.godot/m1-readable-library*.png`、`m1-readable-library-detail*.png`、`m1-readable-opened*.png` 复核。技术检查通过不代替负责人对接入效果的人工视觉验收。运行环境仍有既有 `user://logs`、系统根证书和像素图 `Image.load_from_file` 警告，不影响本轮检查结果。
+
+## M1 图书馆环境游戏内预览验证 E26
+
+2026-09-18；基线为 `db10e7f` 加本轮预览工作树。预览使用临时 Journey，仅验证视觉切换，不写入 `active_run`；状态按钮为日常／夜间／异变，视角按钮为中庭／窗边／书架。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| 探索场景 `-- --campaign-flow-check --library-environment-preview --library-environment-preview-capture` | 31 checks / 0 failures；预览页实际创建、3 个状态按钮和 3 个视角按钮实际驱动九种组合、1920×1080 截图尺寸、active run 保持不变 |
+| 直接启动 `--library-environment-preview` | 游戏内打开只读“图书馆环境预览”页；“返回基地”回到普通基地页 |
+| 调试模式 `--campus-debug` → F8 → “图书馆预览” | 复用同一预览入口；只读、不修改正式主线规则 |
+
+实际截图写入 `.godot/m1-library-preview-*.png`，共九张 1920×1080 组合截图。预览页的按钮文案保持短动作名，当前状态显示在按钮组下方；没有把预览状态伪装成游戏内昼夜系统。
