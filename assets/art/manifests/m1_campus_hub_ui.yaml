@@ -52,6 +52,29 @@ variants:
         - assets/art/ui/m1_exploration_ui/panel.png
         - assets/art/ui/m1_exploration_ui/button.png
         - assets/art/ui/m1_exploration_ui/memory.png
+  concept_003:
+    stage: concept
+    version: 003
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/003
+    files:
+      concept: campus_hub_hero_concept_003.png
+      source_notes: generation.md
+    metadata:
+      asset_type: ui_visual_language_concept
+      resolution: [1672, 941]
+      transparent: false
+      usage: [home_hero, concept_review, foreground_revision]
+      style_layer: daily_with_exploration_ui_surface_language
+      scene_reference: virtual_management_workbench_only
+      implementation_note: native_layout_vector_or_ninepatch_for_production
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "仅替换底部生活方式前景为低对比工程工作台；中后景 UI 架构保持 002。"
+      source_tool: codex_builtin_imagegen_edit
+      source_id: exec-e0ded6b3-0206-47a6-9ae3-80ffc7584326
+      edit_target: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/002/campus_hub_hero_concept_002.png
+      quality_basis: image-quality-check-002
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"
