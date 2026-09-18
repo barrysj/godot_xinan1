@@ -2,10 +2,10 @@ extends PanelContainer
 class_name MemoryTerminalView
 ## Dedicated diegetic presentation for the three permanent memory terminals.
 
-const TEXTURES: Dictionary = {
-	"library": preload("res://assets/art/icons/m1_memory_artifact/cyan_magenta.png"),
-	"region_b": preload("res://assets/art/icons/m1_memory_artifact/green_cyan.png"),
-	"region_c": preload("res://assets/art/icons/m1_memory_artifact/red_violet.png"),
+const TEXTURE_PATHS: Dictionary = {
+	"library": "res://assets/art/icons/m1_memory_artifact/cyan_magenta.png",
+	"region_b": "res://assets/art/icons/m1_memory_artifact/green_cyan.png",
+	"region_c": "res://assets/art/icons/m1_memory_artifact/red_violet.png",
 }
 const REGION_NAMES: Dictionary = {
 	"library": "图书馆终端",
@@ -18,6 +18,7 @@ var acquired: bool = false
 var view_mode: String = "compact"
 var finale_stage: int = 0
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
+var textures: Dictionary = {}
 
 func setup(id: String, is_acquired: bool, mode: String = "compact", stage: int = 0) -> MemoryTerminalView:
 	region_id = id
@@ -50,7 +51,7 @@ func _rebuild() -> void:
 	add_child(box)
 
 	var picture := TextureRect.new()
-	picture.texture = TEXTURES.get(region_id)
+	picture.texture = _texture_for(region_id)
 	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	picture.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -72,6 +73,19 @@ func _rebuild() -> void:
 	status.add_theme_font_size_override("font_size", 17 if view_mode == "compact" else 19)
 	status.add_theme_color_override("font_color", Color(palette.accent_secondary if acquired else palette.text_secondary))
 	box.add_child(status)
+
+func _texture_for(id: String) -> Texture2D:
+	if textures.has(id): return textures[id]
+	var path: String = TEXTURE_PATHS.get(id, "")
+	if path.is_empty(): return null
+	var bytes := FileAccess.get_file_as_bytes(path)
+	var image := Image.new()
+	if bytes.is_empty() or image.load_png_from_buffer(bytes) != OK:
+		push_warning("记忆终端纹理读取失败：" + path)
+		return null
+	var texture: Texture2D = ImageTexture.create_from_image(image)
+	textures[id] = texture
+	return texture
 
 func _image_height() -> float:
 	match view_mode:
