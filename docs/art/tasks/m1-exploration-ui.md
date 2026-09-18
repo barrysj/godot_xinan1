@@ -1,5 +1,15 @@
 # 美术任务：M1 探索 UI 视觉样板
 
+## 012 浮窗／按钮资产候选（2026-09-18）
+
+用户评审最新正式图书馆背景中的实际运行效果，指出浮窗与按钮融入度一般，尤其按钮的风格、形状和配色无法融入。使用 game-ui-ux 与 create-game-assets 复核后，问题拆为资产与接入两层：011 按钮的亮青玻璃胶囊、厚辉光和通用 CTA 形态与自由轮廓热点、图书馆异变背景不一致；同一 3:1 位图被用于不同比例控件且未设置 NinePatch，进一步拉伸切角和边线。浮窗方向可辨但视觉重量偏高，厚双框与机械 HUD 感压住场景。
+
+按钮截图中的外层规则白色圆角框来自 Godot `focus` StyleBox，属于接入问题；素材内部另有亮色描边。012 只重做浮窗与按钮，并在独立预览中以 NinePatch 保持切角比例、以同轮廓增亮表达焦点。四枚 011 图标及正式图书馆背景不修改。
+
+候选目录：`design/concepts/m1-exploration-ui/m1_exploration_ui/012/`。012 是具有实际视觉差异的新候选，因此版本递增有效；状态为 `unselected / pending`，正式生效版本仍是 011。具体生成、规范化与预览说明见同目录 `generation.md`。
+
+012 独立 Godot 预览使用最新正式图书馆异变中庭，三尺寸 default/detail/complete 与鼠标、焦点、Esc、读取、奖励门槛断言通过，输出 `EXPLORATION_UI_CANDIDATE PASS`。已看图确认按钮在游戏尺度不再整块亮青，焦点沿自身轮廓增亮且无白色外框；浮窗比 011 更轻、更透，NinePatch 在 16:9／16:10 未破坏切角。截图位于 `design/concepts/m1-exploration-ui/review/codex-workflow/preview-012/`，等待负责人评审两张候选资产。
+
 ## 当前状态：011 正式资产已接入真实 M1 图书馆页（2026-09-18）
 
 011 的六张正式图片已接入 `scenes/expedition/campaign_panel.gd` 的真实图书馆地点流程；四热点由 `exploration_board.gd` 和 `exploration_hotspot.gd` 呈现，面板与动作按钮加载正式 `panel.png` / `button.png`。点击热点打开紧凑弹窗，不常驻右侧信息台；读取、人物事件、借阅终端、守卫战、领奖开放出口及返回／续玩均继续调用原战役状态与存档逻辑。

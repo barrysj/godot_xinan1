@@ -192,6 +192,26 @@ variants:
       source: docs/art/tasks/m1-exploration-ui.md
       scope: "正式 M1 图书馆探索页技术接入；运行效果待人工验收"
       date: 2026-09-18
+  asset_012:
+    stage: asset
+    version: 012
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui/012
+    files:
+      panel: panel.png
+      button: button.png
+      panel_source: panel-source.png
+      button_source: button-source.png
+      scene: preview.tscn
+      controller: preview.gd
+      source_notes: generation.md
+    previews:
+      godot:
+        scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/012/preview.tscn
+    metadata:
+      implementation_note: panel_and_button_visual_revision_pending_asset_review
+      concept_basis: concept_004
 integration:
   status: authorized_active
   active_variant: asset_011
