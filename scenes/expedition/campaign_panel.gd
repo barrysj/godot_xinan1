@@ -341,6 +341,10 @@ func _build_exploration_popup() -> void:
 	exploration_popup.custom_minimum_size = Vector2(410,230)
 	var panel_style := StyleBoxTexture.new()
 	panel_style.texture = ExplorationSkin.texture("res://assets/art/ui/m1_exploration_ui/panel.png")
+	panel_style.texture_margin_left = 42
+	panel_style.texture_margin_right = 42
+	panel_style.texture_margin_top = 28
+	panel_style.texture_margin_bottom = 28
 	panel_style.set_content_margin_all(28)
 	panel_style.content_margin_top = 42
 	panel_style.content_margin_bottom = 42
@@ -451,21 +455,20 @@ func _exploration_button(label: String, id: String, enabled: bool, parent: Contr
 	item.custom_minimum_size = Vector2(width,50)
 	item.add_theme_font_size_override("font_size",20)
 	var texture := ExplorationSkin.texture("res://assets/art/ui/m1_exploration_ui/button.png")
-	for state in ["normal","hover","pressed","disabled"]:
+	for state in ["normal","hover","pressed","disabled","focus"]:
 		var box := StyleBoxTexture.new()
 		box.texture = texture
+		box.texture_margin_left = 28
+		box.texture_margin_right = 28
+		box.texture_margin_top = 12
+		box.texture_margin_bottom = 12
 		box.set_content_margin_all(8)
 		if state == "pressed": box.modulate_color = Color(0.65,0.75,0.8)
 		elif state == "disabled": box.modulate_color = Color(0.35,0.43,0.48,0.55)
+		elif state in ["hover","focus"]: box.modulate_color = Color(1.08,1.08,1.08)
 		item.add_theme_stylebox_override(state,box)
-	var focus := StyleBoxFlat.new()
-	focus.bg_color = Color.TRANSPARENT
-	focus.border_color = Color("d0faff")
-	focus.set_border_width_all(2)
-	focus.set_corner_radius_all(5)
-	item.add_theme_stylebox_override("focus",focus)
 	for color_name in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
-		item.add_theme_color_override(color_name,Color("102333"))
+		item.add_theme_color_override(color_name,Color("f7fbff"))
 	item.add_theme_color_override("font_disabled_color",Color("8999a3"))
 	item.pressed.connect(func(): action.emit(id))
 	parent.add_child(item)

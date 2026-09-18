@@ -162,7 +162,7 @@ variants:
   asset_011:
     stage: asset
     version: 011
-    selection: selected
+    selection: unselected
     approval: approved
     approval_evidence:
       source: docs/art/tasks/m1-exploration-ui.md
@@ -195,26 +195,40 @@ variants:
   asset_012:
     stage: asset
     version: 012
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/012
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-exploration-ui.md
+      date: 2026-09-18
+      decision: approved
+      commit: acc731d
+      quote: "这版可以。提升为正式资产。"
+    root: design/concepts/m1-exploration-ui/m1_exploration_ui
     files:
-      panel: panel.png
-      button: button.png
-      panel_source: panel-source.png
-      button_source: button-source.png
-      scene: preview.tscn
-      controller: preview.gd
-      source_notes: generation.md
+      panel: 012/panel.png
+      button: 012/button.png
+      panel_source: 012/panel-source.png
+      button_source: 012/button-source.png
+      memory: 011/memory.png
+      character: 011/character.png
+      terminal: 011/terminal.png
+      guardian: 011/guardian.png
+      scene: 012/preview.tscn
+      controller: 012/preview.gd
+      source_notes: 012/generation.md
     previews:
       godot:
         scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/012/preview.tscn
     metadata:
-      implementation_note: panel_and_button_visual_revision_pending_asset_review
+      implementation_note: approved_panel_and_button_revision_with_approved_011_hotspot_icons
       concept_basis: concept_004
+    integration_authorization:
+      source: docs/art/tasks/m1-exploration-ui.md
+      scope: "替换正式浮窗与按钮；四枚热点图标继续使用 011；使用 NinePatch 并移除规则白色焦点框"
+      date: 2026-09-18
 integration:
   status: authorized_active
-  active_variant: asset_011
+  active_variant: asset_012
   root: assets/art/ui/m1_exploration_ui
   files:
     panel: panel.png
@@ -223,4 +237,4 @@ integration:
     character: character.png
     terminal: terminal.png
     guardian: guardian.png
-  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_011 六张正式图片已接入真实 M1 图书馆探索页；2026-09-18 三尺寸与完整流程技术验证通过，接入效果待人工验收。"
+  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_012 面板与按钮、asset_011 四枚热点图标组成当前正式套件；NinePatch 与轮廓焦点状态已接入真实 M1 图书馆探索页。"
