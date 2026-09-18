@@ -1,0 +1,275 @@
+schema_version: 3
+object:
+  id: m1_memory_artifact
+  display_name: "关键记忆载体"
+  type: item
+  subtype: memory_artifact
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: approved_with_formal_asset_constraints
+      quote: "方向通过，需要图形化简化，降低写实材质与微细节，并加强记忆分层／存储切片的身份"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/001
+    files:
+      concept: m1_memory_artifact_concept_001.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: false
+      usage: [concept_review, family_design_master]
+      style_layer: anomaly
+      concept_language: "悬浮记忆棱核；断开通信环；全息记忆层"
+  asset_002:
+    stage: asset
+    version: 002
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected
+      quote: "这一版我不喜欢"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/002
+    files:
+      asset: m1_memory_artifact_asset_002.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_seed]
+      style_layer: anomaly
+      symmetry: bilateral_and_central
+      memory_layers: 3
+  concept_003:
+    stage: concept
+    version: 003
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected
+      quote: "太像服务器了，应该淡化存储，强化终端、核心、珍贵"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/003
+    files:
+      concept: m1_memory_terminal_concept_003.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master]
+      style_layer: anomaly
+      concept_language: "分层记忆匣；三片受保护存储晶片；圆角六边形封闭匣体"
+      symmetry: bilateral
+      memory_layers: 3
+  concept_004:
+    stage: concept
+    version: 004
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected
+      quote: "有点丑陋；配色没有特色；球体太像精灵球；显示屏实体感太强"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/004
+    files:
+      concept: m1_memory_terminal_concept_004.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master]
+      style_layer: anomaly
+      concept_language: "全息回响终端；完整球形核心；弧形全息屏；内部数字珍珠"
+      symmetry: bilateral
+  concept_005:
+    stage: concept
+    version: 005
+    selection: unselected
+    approval: review
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: revise_perspective
+      quote: "这些外壳造型要变换下透视角度，否则看不出来是个球形的外壳"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/005
+    files:
+      concept: m1_memory_terminal_concept_005.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master, active_state_direction]
+      style_layer: anomaly
+      concept_language: "镜核文字终端；珍珠核心；四片游离镜面壳；无框透明文字场"
+      symmetry: bilateral
+      shell_segments: 4
+  concept_006:
+    stage: concept
+    version: 006
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected_perspective_not_visible
+      quote: "看起来没有调整透视啊"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/006
+    files:
+      concept: m1_memory_terminal_concept_006.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master, active_state_direction]
+      style_layer: anomaly
+      concept_language: "镜核文字终端透视修正；上壳后退；下壳前移；共同球形包络"
+      symmetry: bilateral
+      shell_segments: 4
+  concept_007:
+    stage: concept
+    version: 007
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: approved_for_asset_production_with_minor_refinement
+      quote: "方向可以。尝试生成资产吧（带微调）"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/007
+    files:
+      concept: m1_memory_terminal_concept_007.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [concept_review, family_design_master, active_state_direction]
+      style_layer: anomaly
+      concept_language: "镜核文字终端透视重做；后壳被核心遮挡；前壳遮挡核心；共同球形包络"
+      symmetry: bilateral
+      shell_segments: 4
+  asset_008:
+    stage: asset
+    version: 008
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected_shell_perspective
+      quote: "我感觉金属壳的透视依然不太好"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/008
+    files:
+      asset: m1_memory_terminal_asset_008.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "图形化镜核文字终端；圆钝四壳；三层记忆薄片；无框透明文字场"
+      symmetry: bilateral
+      shell_segments: 4
+      memory_layers: 3
+      review_sizes: [96, 48]
+  asset_009:
+    stage: asset
+    version: 009
+    selection: unselected
+    approval: review
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: revise_text_field
+      quote: "核心非常好，但文字场稍显不足"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/009
+    files:
+      asset: m1_memory_terminal_asset_009.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "三分之四镜核文字终端；右近左远四壳；三层记忆薄片；无框透视文字场"
+      camera: three_quarter_front_right
+      structural_symmetry: spherical
+      screen_space_symmetry: false
+      shell_segments: 4
+      memory_layers: 3
+      review_sizes: [96, 48]
+  asset_010:
+    stage: asset
+    version: 010
+    selection: unselected
+    approval: review
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: revise_terminal_identity_with_surrounding_fields
+      quote: "这个还是不太能看出来终端，尝试用多个透明的、环绕的、边框不连续的文字场"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/010
+    files:
+      asset: m1_memory_terminal_asset_010.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "三分之四镜核文字终端；扩展三层透视段落文字场；中心压暗；无框透明显示"
+      camera: three_quarter_front_right
+      structural_symmetry: spherical
+      screen_space_symmetry: false
+      shell_segments: 4
+      memory_layers: 3
+      text_depth_layers: 3
+      review_sizes: [96, 48]
+  asset_011:
+    stage: asset
+    version: 011
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: approved_and_promoted_as_three_colorway_family
+      quote: "提升为正式资产，但是他们都应该属于011这个版本，不要冗余"
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/011
+    files:
+      colorway_cyan_magenta: m1_memory_terminal_asset_011.png
+      colorway_green_cyan: m1_memory_terminal_asset_011_green.png
+      colorway_red_violet: m1_memory_terminal_asset_011_red_violet.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, family_colorways, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "三分之四镜核空间终端；四片环绕透明文字场；断续边框；多深度工作面"
+      camera: three_quarter_front_right
+      structural_symmetry: spherical
+      screen_space_symmetry: false
+      shell_segments: 4
+      memory_layers: 3
+      text_field_panels: 4
+      discontinuous_borders: true
+      colorways: [cyan_magenta, green_cyan, red_violet]
+      region_assignment: pending
+      review_sizes: [96, 48]
+integration:
+  status: promoted_not_integrated
+  active_variant: asset_011
+  root: assets/art/icons/m1_memory_artifact
+  files:
+    colorway_cyan_magenta: cyan_magenta.png
+    colorway_green_cyan: green_cyan.png
+    colorway_red_violet: red_violet.png
+  evidence: docs/art/tasks/m1-memory-artifact.md

@@ -1,20 +1,22 @@
-# ART-02 · 角色、粉笔精灵与配套特效及背景
+# ART-02 · 美术正式包与运行接入
 
 > 持续功能档案；全项目判断由统筹维护[总览](../implementation-status.md)。
 
-- 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审）。
-- 验证日期：2026-09-18；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树，混合动画实现基线仍为 `56dc3aa`＋本档案同提交的 F 清理树。
+- 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已正式提升但未接入）。
+- 验证日期：2026-09-18；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`。
 
 ## 玩家能力与接入范围
 
 两名绘制角色、护盾特效、三张战斗背景，以及粉笔精灵七动作与粉笔弹体。M1 图书馆另有日常、夜间、异常三状态 × 三机位共九张正式背景，已通过正式路径接入现有探索页；主流程默认异常／中庭俯视，其他状态与机位保留为配置和预览入口。原六项保留已授权试接入；粉笔精灵 006 资产批准沿用任务记录，接入效果仍待人工评审。
 
+M1 三款记忆终端静态图标已作为同一个 `asset_011` 家族批准并提升到 `assets/art/icons/m1_memory_artifact/`；当前只有干净正式 PNG 和 Manifest 登记，尚未绑定区域或接入 Godot，因此不计入玩家当前可见能力。
+
 ## 实现与规则入口
 
-- [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[图书馆正式背景](../../assets/art/backgrounds/m1_library/)、[角色定义](../../resources/content/enemies/chalk.tres)。
+- [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[图书馆正式背景](../../assets/art/backgrounds/m1_library/)、[记忆终端正式包](../../assets/art/icons/m1_memory_artifact/)、[角色定义](../../resources/content/enemies/chalk.tres)。
 - 图书馆运行映射：`scenes/expedition/exploration_skin.gd`、`exploration_board.gd`、`campaign_panel.gd`；环境接入不改变 `game/run/` 的访问、奖励或离场规则。
 - 游戏内预览入口：启动参数 `--library-environment-preview`，或 `--campus-debug` 后按 F8 选择“图书馆预览”；预览页可分别切换三种状态与三张视角，使用临时 Journey 且不写入存档。
-- 规则事实源：[战斗动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)、[粉笔精灵任务](../art/tasks/chalk-spirit.md)。
+- 规则事实源：[战斗动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)、[粉笔精灵任务](../art/tasks/chalk-spirit.md)、[记忆终端任务](../art/tasks/m1-memory-artifact.md)。
 - 工具与完整验证矩阵见 [ART-03](art-03.md#骨骼序列帧通用生产与预览)，资源台见 [ART-05](art-05.md)。
 
 ## 混合动画资产包归一（已实装）
@@ -25,6 +27,12 @@
 
 正式 assets/art/characters/chalk_spirit/ 为批准候选的干净运行子集，不含版本目录、review、截图、生成记录、临时帧或专用工具。生成来源与评审证据留在候选和 Git。提升入口为 `py -3 tools/art/promotion/promote_animation.py chalk_spirit`，只校验时加 `--check`。
 
+## M1 记忆终端正式包（已提升，未接入）
+
+`asset_011` 以一个版本登记青品红、绿青、红紫三款颜色方案；三款共享结构、透视和环绕文字场，只以颜色区分。正式目录仅保留 3 张透明运行 PNG，不复制评审图、生成记录或冗余 012／013 版本。
+
+Manifest 状态为 `selected + approved`、`promoted_not_integrated`，三项正式文件绑定均与候选哈希一致。当前没有 Godot owner、资源引用或三区域配色映射，因此正式提升不等于接入完成，也不构成接入效果批准。
+
 ## 验证与证据
 
 - 图书馆九张正式 PNG 均为 1672 × 941、RGB、不透明，与批准候选逐文件 SHA-256 一致；批准来源、状态组合和文件清单见图书馆任务。Manifest 登记 `asset_005_environment_set` 为 `selected + approved`，集成状态为 `authorized_active`，默认 `anomaly / atrium_down`，视觉评审仍为 pending。
@@ -34,6 +42,7 @@
 - 新旧逐节点对照、七动作 GIF、完整巡演、三分辨率预览与真实战斗截图通过；证据见粉笔精灵任务。
 - 13 文件重复提升内容一致；正式依赖不引用 design/concepts；资源台 8 对象、101 登记文件，缺失 0、不一致 0。
 - 继承历史证据 E10–E12、E19，重跑入口见[验证目录](verification.md)。技术通过不替代人工或手机端验收。
+- 2026-09-18：记忆终端 `asset_011` 的青品红、绿青、红紫三款候选与正式文件逐项一致，资源台扫描无缺失／不一致；三款为同一版本，不保留 012／013 冗余记录。视觉批准与提升证据见[任务记录](../art/tasks/m1-memory-artifact.md)。
 
 ## 已知边界与统筹
 
