@@ -159,7 +159,12 @@ variants:
     stage: asset
     version: 008
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: rejected_shell_perspective
+      quote: "我感觉金属壳的透视依然不太好"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/008
     files:
       asset: m1_memory_terminal_asset_008.png
@@ -171,6 +176,27 @@ variants:
       style_layer: anomaly
       concept_language: "图形化镜核文字终端；圆钝四壳；三层记忆薄片；无框透明文字场"
       symmetry: bilateral
+      shell_segments: 4
+      memory_layers: 3
+      review_sizes: [96, 48]
+  asset_009:
+    stage: asset
+    version: 009
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/009
+    files:
+      asset: m1_memory_terminal_asset_009.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "三分之四镜核文字终端；右近左远四壳；三层记忆薄片；无框透视文字场"
+      camera: three_quarter_front_right
+      structural_symmetry: spherical
+      screen_space_symmetry: false
       shell_segments: 4
       memory_layers: 3
       review_sizes: [96, 48]
