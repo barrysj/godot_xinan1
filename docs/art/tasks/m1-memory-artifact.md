@@ -1,6 +1,6 @@
 # 美术任务：M1 关键记忆载体
 
-状态：结构性透视版 `concept_007` 已获概念批准；`asset_009` 的核心和四壳方向获肯定，但文字场需要增强；文字场修正版 `asset_010` 待人工资产评审。`asset_002`、`concept_003`、`concept_004`、`concept_006` 与 `asset_008` 已否决。内部规则 ID 沿用 `m1_memory_artifact`；“关键记忆载体”是本任务工作称呼，不修改全局术语、存档或玩法规则。
+状态：结构性透视版 `concept_007` 已获概念批准；`asset_009` 的核心和四壳方向获肯定，单一文字场增强版 `asset_010` 仍缺少终端识别；四片环绕透明文字场版 `asset_011` 待人工资产评审。`asset_002`、`concept_003`、`concept_004`、`concept_006` 与 `asset_008` 已否决。内部规则 ID 沿用 `m1_memory_artifact`；“关键记忆载体”是本任务工作称呼，不修改全局术语、存档或玩法规则。
 
 ## 目标与范围
 
@@ -21,7 +21,8 @@
 - 已批准结构性透视版：`concept_007`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/007/`，阶段为概念，`selected + approved + not_integrated`。负责人明确回复“方向可以。尝试生成资产吧（带微调）”。
 - 已否决正式资产：`asset_008`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/008/`，阶段为资产，`unselected + rejected + not_integrated`。负责人指出金属壳仍以近似正面展示，无法可靠读出同一球面。
 - 待修改正式资产：`asset_009`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/009/`，阶段为资产，`unselected + review + not_integrated`。负责人肯定核心与四壳，但指出文字场稍显不足。
-- 待评审正式资产：`asset_010`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/010/`，阶段为资产，`unselected + pending + not_integrated`。该版锁定 `asset_009` 的核心与球壳，只扩展并重构三层透视文字场。
+- 待修改正式资产：`asset_010`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/010/`，阶段为资产，`unselected + review + not_integrated`。该版增强了单一文字场，但负责人指出仍不够像终端。
+- 待评审正式资产：`asset_011`，文件位于 `design/concepts/m1-memory-artifact/m1_memory_artifact/011/`，阶段为资产，`unselected + pending + not_integrated`。该版锁定核心与球壳，将单一文字墙替换为四片不同角度和深度的环绕透明文字场。
 - 推荐方案：**镜核文字终端**。中央为一枚暴露的珍珠光核心，四片互不接触的烟银虹彩镜面弧壳分居四角，只暗示保护球面而不闭合成球；面积远大于核心的无框透明信息场从后方穿过整个结构，以大量模糊文字行、段落和逐渐消失的换行作为主体内容。第一识别是文字型终端，第二识别是珍贵镜核，存储不再物化。
 - 设计诊断：`concept_004` 用完整圆球、水平接缝和中央珠核组合出精灵球联想，厚弧屏又像实体三联显示器；青黑高亮虽符合基线，却与既有科幻物件趋同。新方案拆掉完整球体和实体屏幕，用四片游离壳制造虚拟结构，以烟银镜面和紫／品红／暖金薄膜虹彩建立专属材质；项目电青只保留为激活光。
 - 视觉系统：核心本体保持完整球形与结构对称，外壳保持三维球面对称，但采用右前上方三分之四视角，不强求画面镜像。右侧近壳较大、切边较厚并遮挡珠核，左侧远壳缩短、切边较薄并被珠核遮挡；近壳看外凸面，远壳看内凹面，四片外缘共同还原以珠核为中心的假想球面。文字场没有边框、分栏、按钮或图像内容，文字不可读且按同一视角向远侧收缩；金属壳不形成完整圆环、赤道、容器或飞行器。禁止精灵球式完整球体、服务器、存储架、宝石、魔法符文、眼球、摄像头、无人机、反应堆和实体显示器。
@@ -31,6 +32,7 @@
 - 复用的批准方向／资产及原评审记录：复用项目现行 `Cyber Pop Campus` 总方向和 anomaly 色组；无现有关键记忆载体资产可复用；无历史批准记录。
 - 资产微调：`asset_009` 继承 `asset_008` 的圆钝四壳、烟银虹彩材质、三片开放记忆薄层和分组文字身份，但重建摄像机与四壳空间关系。结构先在无文字场条件下通过，再单独叠回无框、低透明文字组，避免光效替几何制造假深度。
 - 文字场微调：`asset_010` 完全锁定 `asset_009` 的核心、四壳、镜头、材质、灯光和遮挡，只把文字场扩展到主体约 1.6 倍，并以变化行长、缩进、空行、主副远三层和左远侧透视压缩强化终端身份。
+- 终端身份微调：`asset_011` 保留同一核心与四壳，把文字内容分配到左后、右后、上远和下近四片非共面工作区；每片仅由不可读段落、角部短线和断续边缘定义，界面之间保留透明间隔，不闭合成环或完整矩形。
 - 技术依据：正式候选源图 1254×1254、透明 PNG；以 96×96 与 48×48 检查图标可读性，并在浅色／深色底检查透明边缘。具体运行时尺寸、锚点、裁切、过滤和 mipmap 设置仍须等接入位置确认。
 - 接入要求：本轮只推进资产评审，不接入 Godot；资产批准后再确定三款区域变体、正式路径和接入截图。
 
@@ -47,7 +49,8 @@
 | 结构性透视版 | `design/concepts/m1-memory-artifact/m1_memory_artifact/007/m1_memory_terminal_concept_007.png`；`0d7f0585c7c0442bd7fa6b094e706e8eb34b39e906aff829794ae95078d198e3` | 方向通过 | “方向可以。尝试生成资产吧（带微调）”；保留球壳透视，正式资产收圆翼尖、降低写实材质和微细节 | 用户在当前 Codex 对话明确决定；2026-09-18 |
 | 正式资产候选 | `design/concepts/m1-memory-artifact/m1_memory_artifact/008/m1_memory_terminal_asset_008.png`；`fd0aa629875c52a0ec2ae13a376867786f2d22c7130e5037e3f93019b09838b0` | 未通过 | “金属壳的透视依然不太好”；四壳仍以近似正面展示，法线、边缘厚度和遮挡不足，缩小时读成四瓣徽标 | 用户在当前 Codex 对话明确决定；2026-09-18 |
 | 三分之四资产候选 | `design/concepts/m1-memory-artifact/m1_memory_artifact/009/m1_memory_terminal_asset_009.png`；`d2546a7070d36f5431e86287b6f0861d720257607ead2f1061e59d88abf61874` | 待修改 | “核心非常好，但文字场稍显不足”；锁定核心与四壳，只增强文字覆盖范围、段落节奏和纵深 | 用户在当前 Codex 对话明确反馈；2026-09-18 |
-| 文字场修正版 | `design/concepts/m1-memory-artifact/m1_memory_artifact/010/m1_memory_terminal_asset_010.png`；`c26576da3418eb0175121c79d45254824f972fbbc34c0974a1b543f046833a65` | 待评审 | 核心与四壳保持不变；文字场扩大到主体约 1.6 倍，增加变化行长、段落分组、三层透视纵深和外围消散 | Codex 根据负责人反馈定向生成；2026-09-18 |
+| 文字场修正版 | `design/concepts/m1-memory-artifact/m1_memory_artifact/010/m1_memory_terminal_asset_010.png`；`c26576da3418eb0175121c79d45254824f972fbbc34c0974a1b543f046833a65` | 待修改 | “这个还是不太能看出来终端”；改用多个透明、环绕且边框不连续的文字场 | 用户在当前 Codex 对话明确反馈；2026-09-18 |
+| 环绕文字场版 | `design/concepts/m1-memory-artifact/m1_memory_artifact/011/m1_memory_terminal_asset_011.png`；`cc551dea786639f5fb63c77b8c9dd7bc394d9895f2c5c11347ed15d0b3927dad` | 待评审 | 锁定核心与四壳；用左后、右后、上远和下近四片非共面透明文字场建立空间终端，边框仅保留断续角线和短边 | Codex 根据负责人反馈定向生成；2026-09-18 |
 | 接入效果 | 尚未开始 | 待评审 | 需先取得资产批准和明确接入授权 | |
 
 ## 验证与结果
@@ -63,9 +66,10 @@
 - `asset_008` 图片质量闸门复核：`REGENERATE_MAJOR`，不得作为后续结构输入。技术文件可读，终端身份仍在，但四片金属壳都以近似正面展示；表面法线、边缘厚度和遮挡过于相似，96×96 与 48×48 下主要读成四瓣圆形徽标，核心球壳任务失败。此前 `PASS_WITH_NOTES` 结论撤销，以本次复核为准。
 - `asset_009` 图片质量闸门：`PASS_WITH_NOTES`，可进入人工资产评审。技术完整性 PASS（1254×1254，PNG，1,527,798 bytes，`Format32bppArgb`，四角 Alpha `0,0,1,0`）；完整珠核、四片分离球壳、右近左远、近厚远薄、内外曲面、双向遮挡、三层记忆薄片和透视文字场 PASS；96×96 与 48×48 下球壳空间关系仍可辨，浅色／深色底未见黑边或明显透明污染。备注：右侧近壳刻意占比更大；文字雾整体仍略带矩形分布，接入时应拆为独立层。
 - `asset_010` 图片质量闸门：`PASS_WITH_NOTES`，可进入人工资产评审。技术完整性 PASS（1254×1254，PNG，1,753,189 bytes，`Format32bppArgb`，四角 Alpha `0,0,1,0`）；完整珠核、四片分离球壳、右近左远透视和遮挡关系保持稳定；文字场覆盖范围、行长变化、段落分组、远近收束和青／品红层级均强于 `asset_009`；96×96 下仍可识别终端文字身份，48×48 下退化为辅助色带；浅色／深色底未见实体矩形屏幕、黑边或明显透明污染。备注：外围辉光仍较丰富，正式接入时宜将动态文字拆为独立层。
+- `asset_011` 图片质量闸门：`PASS_WITH_NOTES`，可进入人工资产评审。技术完整性 PASS（1254×1254，PNG，1,980,204 bytes，`Format32bppArgb`，四角 Alpha `0,0,1,0`）；完整珠核、四片分离球壳、右近左远透视和遮挡关系保持稳定；四片界面具有不同角度、深度和局部遮挡，终端身份显著强于单一背景文字场；浅色／深色底均能看出界面透明，四片之间保留真实透明间隔；96×96 下仍可识别多屏环绕核心，48×48 下主要保留核心、四壳和青品红界面轮廓。备注：青色局部辉光在黑底较明显；正式接入若制作界面动画，宜与静态主体拆层并降低动态亮度。
 - 复现检查命令：`Add-Type -AssemblyName System.Drawing` 后读取 `Image.FromFile()` 检查尺寸与像素格式；`Get-FileHash -Algorithm SHA256` 检查文件摘要。
-- Manifest 回写：`concept_001` 保留历史批准但为 `unselected + approved`；`asset_002`、`concept_003`、`concept_004`、`concept_006` 与 `asset_008` 为 `unselected + rejected`；`concept_005` 与 `asset_009` 为 `unselected + review`；`concept_007` 为 `selected + approved`；`asset_010` 已登记实际候选与生成记录，当前 `unselected + pending`；`integration.status: not_integrated`，没有正式路径或 Godot 资源绑定。工作流缩略图与对比预览不登记为资产。
+- Manifest 回写：`concept_001` 保留历史批准但为 `unselected + approved`；`asset_002`、`concept_003`、`concept_004`、`concept_006` 与 `asset_008` 为 `unselected + rejected`；`concept_005`、`asset_009` 与 `asset_010` 为 `unselected + review`；`concept_007` 为 `selected + approved`；`asset_011` 已登记实际候选与生成记录，当前 `unselected + pending`；`integration.status: not_integrated`，没有正式路径或 Godot 资源绑定。工作流缩略图与对比预览不登记为资产。
 - 一致性检查：Manifest 的 `root` 指向本候选目录，`files` 仅指向实际存在的概念 PNG 与 `generation.md`；不声明运行时生效文件，不声明透明图标参数。
-- 实际截图／动作预览证据：无 Godot 运行截图；`asset_010` 原图、`review/codex-workflow/thumbnail-{96,48}.png` 及 `contrast-preview.png` 已查看。候选展示不等于接入效果验收。
-- 未解决问题：等待负责人判断 `asset_010` 是否可作为三款记忆终端图标的正式家族母版；文字场在正式接入时仍宜拆层，三件区域变体、最终显示尺寸和接入位置尚未决定。外部图片只作参考，未核对并获得可用授权前不纳入项目资产。
+- 实际截图／动作预览证据：无 Godot 运行截图；`asset_011` 原图、`review/codex-workflow/thumbnail-{96,48}.png` 及 `contrast-preview.png` 已查看。候选展示不等于接入效果验收。
+- 未解决问题：等待负责人判断 `asset_011` 是否可作为三款记忆终端图标的正式家族母版；环绕文字场在正式接入时仍宜拆层，三件区域变体、最终显示尺寸和接入位置尚未决定。外部图片只作参考，未核对并获得可用授权前不纳入项目资产。
 - 本地提交：`concept_001` 提交 `42c45c2`；`concept_007` 提交 `65fe340`；`asset_008` 提交 `d0def0e`；其余历史版本以对应任务记录所在提交为准。不 push、不 merge main。

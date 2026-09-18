@@ -209,7 +209,12 @@ variants:
     stage: asset
     version: 010
     selection: unselected
-    approval: pending
+    approval: review
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: revise_terminal_identity_with_surrounding_fields
+      quote: "这个还是不太能看出来终端，尝试用多个透明的、环绕的、边框不连续的文字场"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/010
     files:
       asset: m1_memory_terminal_asset_010.png
@@ -226,6 +231,29 @@ variants:
       shell_segments: 4
       memory_layers: 3
       text_depth_layers: 3
+      review_sizes: [96, 48]
+  asset_011:
+    stage: asset
+    version: 011
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/011
+    files:
+      asset: m1_memory_terminal_asset_011.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "三分之四镜核空间终端；四片环绕透明文字场；断续边框；多深度工作面"
+      camera: three_quarter_front_right
+      structural_symmetry: spherical
+      screen_space_symmetry: false
+      shell_segments: 4
+      memory_layers: 3
+      text_field_panels: 4
+      discontinuous_borders: true
       review_sizes: [96, 48]
 integration:
   status: not_integrated
