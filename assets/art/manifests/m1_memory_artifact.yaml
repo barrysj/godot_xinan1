@@ -8,7 +8,7 @@ variants:
   concept_001:
     stage: concept
     version: 001
-    selection: selected
+    selection: unselected
     approval: approved
     approval_evidence:
       source: docs/art/tasks/m1-memory-artifact.md
@@ -136,8 +136,13 @@ variants:
   concept_007:
     stage: concept
     version: 007
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-memory-artifact.md
+      date: 2026-09-18
+      decision: approved_for_asset_production_with_minor_refinement
+      quote: "方向可以。尝试生成资产吧（带微调）"
     root: design/concepts/m1-memory-artifact/m1_memory_artifact/007
     files:
       concept: m1_memory_terminal_concept_007.png
@@ -150,5 +155,24 @@ variants:
       concept_language: "镜核文字终端透视重做；后壳被核心遮挡；前壳遮挡核心；共同球形包络"
       symmetry: bilateral
       shell_segments: 4
+  asset_008:
+    stage: asset
+    version: 008
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-memory-artifact/m1_memory_artifact/008
+    files:
+      asset: m1_memory_terminal_asset_008.png
+      generation: generation.md
+    metadata:
+      canvas: [1254, 1254]
+      transparent: true
+      usage: [asset_review, family_design_master, memory_terminal_icon]
+      style_layer: anomaly
+      concept_language: "图形化镜核文字终端；圆钝四壳；三层记忆薄片；无框透明文字场"
+      symmetry: bilateral
+      shell_segments: 4
+      memory_layers: 3
+      review_sizes: [96, 48]
 integration:
   status: not_integrated
