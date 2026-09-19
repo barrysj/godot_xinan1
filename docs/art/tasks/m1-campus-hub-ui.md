@@ -13,8 +13,8 @@
 
 - 当前使用版：无；Manifest 对象 `m1_campus_hub_ui` 尚未接入。
 - 本轮概念基础：`concept_003`，`design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/003/`，概念阶段，hero 文件为 `campus_hub_hero_concept_003.png`；`concept_001`、`concept_002` 保留为历史对照。负责人已明确要求开始生成资产，因此保留正式资产候选 `asset_004`，并根据新的徽章参考方向新增 `asset_005`；两者都不等同于概念批准或正式资产批准。
-- 当前正式资产候选：`asset_005`，`design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_005/`，文件为 `campus_hub_science_badge_asset_005.png`；用途为首页核心终端、终端进度状态和结算状态复用。状态保持 `unselected + pending + not_integrated`；`asset_004` 保留为直接对照与回退候选。
-- 本轮改动、需保留的部分与当前待决事项：保留探索 UI 的深蓝结构、青色边缘和中央修复晶核；吸收负责人提供参考图的深钴蓝圆环、白色留白、蓝／暖金轨道和科学徽章构图，明确删除校名、字母、年份、具体字形与水印。待负责人确认圆环层级是否足够清爽、暖金轨道是否需要减弱，以及 48px 下外轮廓是否稳定。
+- 当前正式资产候选：`asset_007`，`design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_007/`，文件为 `campus_hub_memory_terminal_orb_asset_007.png`；用途为首页核心终端、终端进度状态和结算状态复用。状态保持 `unselected + pending + not_integrated`；`asset_005` 保留为徽章方向对照，`asset_004` 保留为更早的回退候选。
+- 本轮改动、需保留的部分与当前待决事项：根据负责人反馈移除中央水晶和外圈尖角菱形，改为参考已批准记忆终端的圆球材质、内部层带与立体高光；保留深钴蓝圆环、白色留白、蓝／暖金轨道和少量品红诊断点。待负责人确认圆球材质是否足够“终端”、蓝金轨道是否需要降亮，以及日常 UI 中整体是否清爽。
 - 复用的批准方向／资产及原评审记录：M1 探索 UI 的“图标／悬停简要信息／点击详情”渐进展示原则，以及 M1 记忆载体 011 的局部青品红数字强调；不把它们的异常背景、图标或终端位图直接拼进本概念。
 - 技术依据：日常 Token 使用 `colors.json` 的 `daily`，版式以 4px 间距倍数和 `typography.json` 的标题／正文／等宽角色为后续原生实现依据；动画只沿用 `animation.json` 的 `120–220ms` 稳定交互范围。概念图本身不建立新的 Token，也不建立 selected-to-effective binding。
 - 接入要求：概念通过后，先以原生 Container／Anchor、现有 Theme 和可拆分矢量／NinePatch 组件实现；文字、数值、按钮、焦点和设置入口必须由 Godot 原生组件承担。运行评审覆盖 1920×1080、2560×1440、1920×1200，至少检查首页、队伍、成长、派遣、回忆／资源状态与设置入口的安全区和可读性。
@@ -29,15 +29,16 @@
 | 概念 | `concept_003` · `campus_hub_hero_concept_003.png` · `00AB3EECBDB8781059B58CADB1DC0A34B63229B176DC8AFB60F1D3157872142E` | 待评审 | 按质检意见只替换底部前景生活方式道具 | 根据负责人反馈调整，2026-09-19 |
 | 资产 | `asset_004` · `campus_hub_repair_nexus_asset_004.png` · `04C62EE793E203D1DC3FB9464810DA555A377B681448AF9DC5BFCB6756447BC3` | 待评审 | 透明 RGBA 核心终端图标；中央高光与 48px 识别度待确认 | 负责人明确要求开始生成资产，2026-09-19 |
 | 资产 | `asset_005` · `campus_hub_science_badge_asset_005.png` · `9BDACD2946D7B1B5541752B43A46654703F70C98577C265D8BF2E7D994174668` | 待评审 | 吸收用户参考图的圆环、蓝金轨道和科学徽章结构；不含原图文字、年份或水印 | 根据负责人新主题反馈生成，2026-09-20 |
+| 资产 | `asset_007` · `campus_hub_memory_terminal_orb_asset_007.png` · `E8B68895A0B1D1E6A93792B076C82C634D88B195D202B3CDFB7E1F952AE40B45` | 待评审 | 移除水晶与尖角节点，换为记忆终端圆球及玻璃／陶瓷立体材质 | 根据负责人反馈修订，2026-09-20 |
 | 接入效果 | 未开始 | 待评审 | | |
 
 ## 验证与结果
 
 - 本任务验收条件：实际概念与资产候选均可解码；资源 Manifest 能发现该对象与所有版本；资产状态保持 `unselected + pending + not_integrated`；没有 Godot 引用或运行画面变更；候选原图在对话中展示给负责人审核。
-- 技术检查结果及必要复现命令：PowerShell 7 `System.Drawing.Bitmap` 实测 `asset_004` 为 `1254×1254`、`Format32bppArgb`，四角 alpha 为 `0,0,0,0`，中心 alpha 为 `253`；`asset_005` 为 `1254×1254`、`Format32bppArgb`，四角 alpha 为 `0,0,1,0`，中心 alpha 为 `253`，SHA-256 为 `9BDACD2946D7B1B5541752B43A46654703F70C98577C265D8BF2E7D994174668`；`git diff --check` 待提交前执行。通用 `asset_report.py` 因环境未安装 Pillow，未冒充通过，已在对应 generation.md 记录边界。
-- Manifest 回写：`assets/art/manifests/m1_campus_hub_ui.yaml` 新增 `asset_005`，主索引不变；未写批准依据、Godot 预览或 integration binding。
+- 技术检查结果及必要复现命令：PowerShell 7 `System.Drawing.Bitmap` 实测 `asset_004` 为 `1254×1254`、`Format32bppArgb`，四角 alpha 为 `0,0,0,0`，中心 alpha 为 `253`；`asset_005` 为 `1254×1254`、`Format32bppArgb`，四角 alpha 为 `0,0,1,0`，中心 alpha 为 `253`；`asset_007` 为 `1254×1254`、`Format32bppArgb`，四角 alpha 为 `0,0,1,0`，中心 alpha 为 `253`，SHA-256 为 `E8B68895A0B1D1E6A93792B076C82C634D88B195D202B3CDFB7E1F952AE40B45`；`git diff --check` 待提交前执行。通用 `asset_report.py` 因环境未安装 Pillow，未冒充通过，已在对应 generation.md 记录边界。
+- Manifest 回写：`assets/art/manifests/m1_campus_hub_ui.yaml` 新增 `asset_007`，主索引不变；未写批准依据、Godot 预览或 integration binding。
 - 一致性检查：候选图是独立不透明概念板，不作为运行时纹理；正式实现必须拆成原生布局、矢量／NinePatch 和可替换图标。当前无 Godot 引用，integration 为 `not_integrated`。
 - 适用的布局／动画验证结果：概念阶段不启动游戏；无运行画面变化。后续接入阶段按三种目标分辨率和现有 UI 规范复核。
-- 实际截图／动作预览证据：概念原图为 `design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/003/campus_hub_hero_concept_003.png`，正式资产候选为 `design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_004/campus_hub_repair_nexus_asset_004.png` 与 `design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_005/campus_hub_science_badge_asset_005.png`，均已在对话中展示；无 Godot 运行截图。
-- 未解决问题：`asset_005` 的圆环层级、暖金轨道强度、中央高光和 48px 外轮廓需负责人评审后决定；尚未获准批量生产面板、终端进度条或队伍头像。若后续方案要求真实校园场景或现实人物，必须先取得对应素材，不能用虚构图替代。
+- 实际截图／动作预览证据：概念原图为 `design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/003/campus_hub_hero_concept_003.png`，正式资产候选为 `design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_004/campus_hub_repair_nexus_asset_004.png`、`design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_005/campus_hub_science_badge_asset_005.png` 与 `design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_007/campus_hub_memory_terminal_orb_asset_007.png`，均已在对话中展示；无 Godot 运行截图。
+- 未解决问题：`asset_007` 的圆球材质、蓝金轨道强度、整体清爽度和 48px 外轮廓需负责人评审后决定；尚未获准批量生产面板、终端进度条或队伍头像。若后续方案要求真实校园场景或现实人物，必须先取得对应素材，不能用虚构图替代。
 - 本地提交：待资产候选与文档验证后提交到 `art/m1-campus-hub-ui`；远程不推送。

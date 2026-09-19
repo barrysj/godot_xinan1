@@ -134,6 +134,36 @@ variants:
         - assets/art/ui/m1_exploration_ui/memory.png
         - assets/art/icons/m1_memory_artifact/cyan_magenta.png
         - user_attachment:E:/Pictures/素材/c9fcc3cec3fdfc03924583898a639094a4c27d1e88f4.webp
+  asset_007:
+    stage: asset
+    version: 007
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_007
+    files:
+      asset: campus_hub_memory_terminal_orb_asset_007.png
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon
+      canvas: [1254, 1254]
+      resolution: [1254, 1254]
+      transparent: true
+      usage: [asset_review, home_repair_nexus, terminal_progress, settlement_status]
+      style_layer: daily_campus_science_badge_with_memory_terminal_material
+      concept_basis: asset_005
+      material_reference: assets/art/icons/m1_memory_artifact/cyan_magenta.png
+      symmetry: radial_and_central
+      review_sizes: [96, 48]
+      implementation_note: native_label_and_progress_overlay; no_baked_text_or_controls
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "中心已改为圆球记忆终端材质；外圈尖角节点替换为圆形校准件；左下角存在单个 alpha=1 抗锯齿像素，48px 下需复核。"
+      source_tool: codex_builtin_imagegen_edit
+      source_id: exec-df74199e-4b3a-40ac-967e-efc4024352fe
+      edit_target: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_005/campus_hub_science_badge_asset_005.png
+      style_references:
+        - assets/art/icons/m1_memory_artifact/cyan_magenta.png
+        - assets/art/ui/m1_exploration_ui/panel.png
+        - assets/art/ui/m1_exploration_ui/memory.png
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"
