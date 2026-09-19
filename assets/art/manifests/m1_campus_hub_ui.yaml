@@ -103,6 +103,37 @@ variants:
         - assets/art/ui/m1_exploration_ui/panel.png
         - assets/art/ui/m1_exploration_ui/memory.png
         - assets/art/icons/m1_memory_artifact/cyan_magenta.png
+  asset_005:
+    stage: asset
+    version: 005
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_005
+    files:
+      asset: campus_hub_science_badge_asset_005.png
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon
+      canvas: [1254, 1254]
+      resolution: [1254, 1254]
+      transparent: true
+      usage: [asset_review, home_repair_nexus, terminal_progress, settlement_status]
+      style_layer: daily_campus_science_badge_with_exploration_ui_surface_language
+      concept_basis: asset_004
+      reference_basis: user_provided_science_badge_reference_2026_09_20
+      symmetry: radial_and_central
+      review_sizes: [96, 48]
+      implementation_note: native_label_and_progress_overlay; no_baked_text_or_controls
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "圆环徽章、蓝金轨道与中央晶核可读；左下角存在单个 alpha=1 抗锯齿像素，48px 下应优先检查外轮廓。"
+      source_tool: codex_builtin_imagegen_edit
+      source_id: exec-456817ca-bca4-4acd-8e96-ded9beb9a64a
+      edit_target: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_004/campus_hub_repair_nexus_asset_004.png
+      style_references:
+        - assets/art/ui/m1_exploration_ui/panel.png
+        - assets/art/ui/m1_exploration_ui/memory.png
+        - assets/art/icons/m1_memory_artifact/cyan_magenta.png
+        - user_attachment:E:/Pictures/素材/c9fcc3cec3fdfc03924583898a639094a4c27d1e88f4.webp
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"
