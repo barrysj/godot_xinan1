@@ -75,6 +75,34 @@ variants:
       source_id: exec-e0ded6b3-0206-47a6-9ae3-80ffc7584326
       edit_target: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/002/campus_hub_hero_concept_002.png
       quality_basis: image-quality-check-002
+  asset_004:
+    stage: asset
+    version: 004
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_004
+    files:
+      asset: campus_hub_repair_nexus_asset_004.png
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon
+      canvas: [1254, 1254]
+      resolution: [1254, 1254]
+      transparent: true
+      usage: [asset_review, home_repair_nexus, terminal_progress, settlement_status]
+      style_layer: daily_with_exploration_ui_surface_language
+      concept_basis: concept_003
+      symmetry: bilateral_and_central
+      review_sizes: [96, 48]
+      implementation_note: native_label_and_progress_overlay; no_baked_text_or_controls
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "透明 RGBA 单体可读；中央高光偏亮，48px 下外圈细节会收缩，需在接入预览中复核。"
+      source_tool: codex_builtin_imagegen
+      source_id: exec-2bb442fe-2054-4914-a834-847294e472c4
+      style_references:
+        - assets/art/ui/m1_exploration_ui/panel.png
+        - assets/art/ui/m1_exploration_ui/memory.png
+        - assets/art/icons/m1_memory_artifact/cyan_magenta.png
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"
