@@ -25,6 +25,29 @@ variants:
       native_overlay_regions: [left_navigation, upper_right_title]
       title_mark_direction: cyan_magenta_wave_node_emblem
       integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_002:
+    stage: concept
+    version: 002
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/002
+    files:
+      library: library.png
+      pinxue_building: pinxue-building.png
+      ginkgo_main_building: ginkgo-main-building.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept_reference_batch
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, title_direction, menu_layout_study, reference_identity_validation]
+      style_layer: seasonal_real_campus_reference
+      source_identity: user_provided_real_campus_reference_photos
+      reference_subjects: [library_lakeside, pinxue_building, autumn_ginkgo_main_building]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      title_mark_direction: editable_native_title_over_real_campus_landmark
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-main-menu.md
