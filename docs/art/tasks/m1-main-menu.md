@@ -1,6 +1,6 @@
 # 美术任务：M1 主菜单视觉样板
 
-状态：`concept_006` 已生成并获用户授权进行主菜单 review 试接入；异常图仍为 `unselected + pending`，`concept_005` 的银杏主楼正常概念已获用户确认可用，正式资产与最终视觉 QA 未批准。生成成功、技术检查和本地提交均不代表标题方向、正式资产或发布授权已批准。
+状态：`concept_007` 已生成并获用户要求替换图书馆异常倒影；异常图仍为 `unselected + pending`，`concept_005` 的银杏主楼正常概念已获用户确认可用，正式资产与最终视觉 QA 未批准。生成成功、技术检查和本地提交均不代表标题方向、正式资产或发布授权已批准。
 
 ## 目标与范围
 
@@ -12,8 +12,8 @@
 
 ## 当前版本与方案
 
-- 当前使用版：`concept_006` 异常三联图作为 review 试接入；未完成完整终局通关时显示异常轮播，读取现有 `CampusProgress.campaign.restored` 为真后切换到 `concept_002`／`concept_005` 的正常轮播。
-- 当前候选：Manifest 对象 `m1_main_menu_visual`，版本 `concept_006`，阶段 `concept`，文件位于 `design/concepts/m1-main-menu/m1_main_menu_visual/006/`；异常版分别保持湖畔图书馆、品学楼中轴喷泉、秋天银杏主楼身份，并按地点使用不同记忆失真语言。
+- 当前使用版：`concept_006` 异常三联图加 `concept_007` 图书馆倒影修订作为 review 试接入；未完成完整终局通关时显示异常轮播，读取现有 `CampusProgress.campaign.restored` 为真后切换到 `concept_002`／`concept_005` 的正常轮播。
+- 当前候选：Manifest 对象 `m1_main_menu_visual`，版本 `concept_007` 为图书馆异常倒影定向修订，文件位于 `design/concepts/m1-main-menu/m1_main_menu_visual/007/`；品学楼与秋天银杏主楼继续使用 `concept_006`，三处分别保持地点身份并使用不同记忆失真语言。
 - 历史候选：版本 `concept_001` 保留为抽象校园网络中庭方向；版本 `concept_002` 保留三张小批候选；版本 `concept_003`、`concept_004` 保留此前的去旗帜、去岔路和中轴修订，均为 `unselected + pending`，不因本轮修订自动升级或淘汰。
 - 方案名称：**抽象校园网络中庭 / Abstract Campus Node Plaza**。
 - 主视觉：以中央圆形网络节点、放射式校园路径和少量通用理工建筑块面表达“校园系统正在被记忆重新连接”；画面明确是虚构抽象构图，不冒充真实校园地图或建筑。
@@ -62,6 +62,13 @@
 - 试接入规则：`menu.gd` 只读取既有存档，不写入新字段；`campaign.restored == false` 显示异常图，`campaign.restored == true` 显示较正常图；三地点每 8 秒交叉淡入轮播。
 - 生成与质量记录：见 `design/concepts/m1-main-menu/m1_main_menu_visual/006/generation.md`。当前属于 `review` 试接入，异常图等待人工概念评审。
 
+### 概念 007：图书馆水面倒影定向修订
+
+- 修改范围：只加强水面倒影的异常程度与颜色变化；加入深蓝、青色、电光蓝、紫色、品红和少量酸黄的分区式记忆颜色，以及错帧、重复窗列、局部倒置、彩色环形波纹和几何倒影碎片。
+- 保留范围：图书馆建筑、湖岸、天空、地平线、镜头构图、真实建筑本体和左侧菜单安全区；不改变品学楼与银杏主楼异常图。
+- 当前文件：`design/concepts/m1-main-menu/m1_main_menu_visual/007/library-anomaly.png`。
+- 生成与质量记录：见同目录 `generation.md`。`image-quality-check` 结果为 `PASS_WITH_NOTES`，可继续作为主菜单 review 图使用。
+
 ## 阶段评审
 
 | 阶段 | 被评文件、版本与 SHA-256 | 人工决定 | 修改意见 | 决定来源与日期 |
@@ -72,13 +79,14 @@
 | 概念 | `concept_004`：`ginkgo-main-building.png`；`8615e1cfb198b8e6acbbd25ffe96698bb10582cb1d3ae51321f3bfbcf96ca342` | 待评审 | 已按意见将主楼向左微移并校正道路中轴，等待确认修订结果 | 待负责人决定 |
 | 概念 | `concept_005`：`ginkgo-main-building.png`；`01587c6106e9b6ab7b5667fb9cc891e01481e460095037ee1377558e8212378c` | 已确认 | 用户确认本版大门中列与道路中轴对齐结果可用；仅确认正常状态概念，不等同于正式发布资产批准 | 2026-09-20 用户确认 |
 | 概念 | `concept_006`：`library-anomaly.png`（`4abfad9fe4b21f3ff71ee3c1545cd08330b8c106390bd533a5eb701665e19697`）、`pinxue-building-anomaly.png`（`95fd5e2380002f022b728cbfbb6d2c40797beb625b5ae0a9ac4f653428bb9b86`）、`ginkgo-main-building-anomaly.png`（`49912bda0715fbeb212c8079c1f26e72d3ccc0cc76959b117dbad6a1607f5292`） | 待评审 | 三地点异常状态概念；用户已授权主菜单 review 试接入，等待异常视觉确认 | 2026-09-20 用户请求 |
+| 概念 | `concept_007`：`library-anomaly.png`；`f0100e195b71f4cf84cb1226b4bb97215b3b92675432246c7e11b5678c3a7b3f` | 待评审 | 按用户意见加强水面倒影异常与颜色变化；建筑和左侧菜单安全区保持不变 | 2026-09-20 用户请求 |
 | 资产 | 尚未制作 | 待评审 | 需先通过概念阶段 | |
 | 接入效果 | `scenes/menu/menu.tscn` + `scenes/menu/menu.gd` review 试接入 | 待评审 | 已按用户请求接入异常／正常状态轮播；需 Godot 运行截图与多分辨率检查 | 2026-09-20 用户请求 |
 
 ## 验证与结果
 
 - 本任务验收条件：每张概念需在几秒内读出对应的校园地标主题；至少一侧或下方能容纳原生导航，标题区能保持低干扰；不能出现可读伪文字、烘焙菜单或不可编辑的正式标题；未确认的异常概念保持 `unselected + pending`，review 试接入保持独立授权，不等同于正式资产批准。
-- 技术检查结果：`PASS_WITH_NOTES`。`concept_002` 至 `concept_006` 的实际文件均可读取，PNG，1672×941，`Format24bppRgb`，非透明；异常三联图没有发现水印、签名或菜单文字，完整提示词、来源和质量闸门记录见各版本目录的 `generation.md`。
+- 技术检查结果：`PASS_WITH_NOTES`。`concept_002` 至 `concept_007` 的实际文件均可读取，PNG，1672×941，`Format24bppRgb`，非透明；异常图没有发现水印、签名或菜单文字，`concept_007` 的倒影异常和色彩变化通过 `image-quality-check`，完整提示词、来源和质量闸门记录见各版本目录的 `generation.md`。
 - 复现检查命令：
   - `Add-Type -AssemblyName System.Drawing; Get-ChildItem -LiteralPath 'design/concepts/m1-main-menu/m1_main_menu_visual/002' -Filter '*.png' | ForEach-Object { $img = [System.Drawing.Image]::FromFile($_.FullName); try { \"$($_.Name) $($img.Width)x$($img.Height) $($img.PixelFormat)\" } finally { $img.Dispose() } }`
   - `Get-ChildItem -LiteralPath 'design/concepts/m1-main-menu/m1_main_menu_visual/002' -Filter '*.png' | Get-FileHash -Algorithm SHA256`
@@ -89,7 +97,7 @@
   - `Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile((Resolve-Path 'design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png')); try { $img.Width; $img.Height; $img.PixelFormat } finally { $img.Dispose() }`
   - `Get-FileHash -Algorithm SHA256 'design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png'`
 - Manifest 回写：`assets/art/manifests/m1_main_menu_visual.yaml` 已登记 `concept_006`；`concept_005` 记录为用户确认的 `selected + approved` 正常概念，`concept_006` 保持 `unselected + pending` 并以 `authorized_active` 进行 review 试接入。
-- 一致性检查：Manifest 的 root 与文件均指向实际存在的概念副本；异常概念保留在 `design/concepts/` 并以用户授权的 review 方式试接入，未升级为正式资产；未修改共享 Token、Theme、实现总览或 Roadmap。
+- 一致性检查：Manifest 的 root 与文件均指向实际存在的概念副本；异常概念保留在 `design/concepts/` 并以用户授权的 review 方式试接入，`concept_007` 替换菜单中的图书馆异常图，未升级为正式资产；未修改共享 Token、Theme、实现总览或 Roadmap。
 - 实际截图／展示证据：本轮已在对话展示三张 `concept_006` 异常图；它们是概念候选，不等同于正式资产批准。主菜单运行截图仍待可用 Godot 编辑器／运行时重新验证。
 - 资源台验证：`py -3 -m unittest discover -s tools/art/asset_manager/tests -v`，33 项测试全部通过；覆盖主 Manifest schema、对象发现、注册文件存在性及候选不自动提升规则。当前环境未发现可调用的 Godot 4 可执行文件，因此主菜单运行截图、存档真假状态切换和三种桌面分辨率检查待补；本轮未修改工具链或共享 Theme。
 - 专业边界与已知问题：真实建筑参考提升了校园识别度，但也带来构图裁切、建筑连续性和照片来源授权的后续风险；本轮异常概念仍需负责人确认，正式资产阶段应再简化细节、单独制作标题标识，并以实际菜单安全区和三种桌面分辨率重新验证。完整终局通关开关使用现有 `campaign.restored`，未新增存档字段。

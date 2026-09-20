@@ -143,12 +143,37 @@ variants:
       native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
       anomaly_grammar: [landmark_first, memory_distortion, data_reflection, geometric_glitch, cyan_magenta_accent]
       integration_boundary: "异常概念仅作为主菜单 review 试接入；正式资产、发布授权和最终安全区仍待人工评审"
+  concept_007:
+    stage: concept
+    version: 007
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/007
+    files:
+      library_anomaly: library-anomaly.png
+      generation: generation.md
+    revision_of: concept_006.library_anomaly
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "主菜单图书馆异常倒影定向修订；替换 concept_006 的图书馆异常图，品学楼与银杏主楼保持 concept_006"
+      date: 2026-09-20
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, anomaly_reflection_revision]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_006_library_anomaly
+      edit_scope: [increase_water_reflection_anomaly, add_chromatic_memory_shift, preserve_building_and_safe_region]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产与视觉批准仍待人工评审"
 integration:
   status: authorized_active
-  active_variant: concept_006
+  active_variant: concept_006_with_concept_007_library_revision
   root: design/concepts/m1-main-menu/m1_main_menu_visual/006
   files:
-    library_anomaly: library-anomaly.png
+    library_anomaly: ../007/library-anomaly.png
     pinxue_building_anomaly: pinxue-building-anomaly.png
     ginkgo_main_building_anomaly: ginkgo-main-building-anomaly.png
   visual_review: pending
