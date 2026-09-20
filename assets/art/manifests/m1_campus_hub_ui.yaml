@@ -248,6 +248,46 @@ variants:
       style_references:
         - assets/art/icons/m1_memory_artifact/cyan_magenta.png
         - assets/art/ui/m1_exploration_ui/panel.png
+  asset_011:
+    stage: asset
+    version: 011
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_011
+    files:
+      study: icon_study.svg
+      team: icon_team.svg
+      growth: icon_growth.svg
+      dispatch: icon_dispatch.svg
+      codex: icon_codex.svg
+      resource: icon_resource.svg
+      memory: icon_memory.svg
+      settings: icon_settings.svg
+      message: icon_message.svg
+      notification: icon_notification.svg
+      preview: icon_pack_preview.png
+      preview_source: icon_pack_preview.svg
+      small_preview: icon_pack_small_preview.png
+      small_preview_source: icon_pack_small_preview.svg
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon_pack
+      canvas: [64, 64]
+      transparent: true
+      quantity: 10
+      usage: [asset_review, home_navigation, sidebar_navigation, resource_status, message_status]
+      style_layer: daily_with_exploration_ui_surface_language
+      palette: ["#F6F8FA", "#22E0F0", "#FF2BA6", "#F7E733"]
+      review_sizes: [64, 32, 24]
+      implementation_note: native_panel_hover_disabled_selected_and_numeric_badge; no_baked_background_or_visible_text
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "十枚 SVG 轮廓和语义在 64px 评审板中清楚；24–32px 与运行时对比度仍需在 Godot 接入阶段复核。"
+      source_tool: codex_manual_svg
+      source_id: local-vector-authoring-2026-09-20
+      style_references:
+        - data/visual/colors.json
+        - assets/art/ui/m1_exploration_ui/panel.png
+        - assets/art/ui/m1_exploration_ui/button.png
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"

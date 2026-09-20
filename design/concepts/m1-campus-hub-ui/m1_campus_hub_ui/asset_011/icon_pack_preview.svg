@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="960" height="450" viewBox="0 0 960 450">
+  <rect width="960" height="450" fill="#EEF4F7"/>
+  <text x="40" y="48" fill="#17202B" font-family="sans-serif" font-size="25" font-weight="700">校园修复站 · 功能图标候选 011</text>
+  <text x="40" y="76" fill="#536170" font-family="sans-serif" font-size="14">透明 SVG · 64×64 基准 · 白色主轮廓 / 青色功能线 / 品红状态点 / 黄色奖励强调</text>
+  <g font-family="sans-serif" font-size="16" font-weight="600" text-anchor="middle">
+    <g transform="translate(40 100)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_study.svg" xlink:href="icon_study.svg"/><text x="80" y="116" fill="#F6F8FA">学习</text></g>
+    <g transform="translate(220 100)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_team.svg" xlink:href="icon_team.svg"/><text x="80" y="116" fill="#F6F8FA">队伍</text></g>
+    <g transform="translate(400 100)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_growth.svg" xlink:href="icon_growth.svg"/><text x="80" y="116" fill="#F6F8FA">成长</text></g>
+    <g transform="translate(580 100)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_dispatch.svg" xlink:href="icon_dispatch.svg"/><text x="80" y="116" fill="#F6F8FA">派遣</text></g>
+    <g transform="translate(760 100)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_codex.svg" xlink:href="icon_codex.svg"/><text x="80" y="116" fill="#F6F8FA">图鉴</text></g>
+    <g transform="translate(40 260)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_resource.svg" xlink:href="icon_resource.svg"/><text x="80" y="116" fill="#F6F8FA">资源</text></g>
+    <g transform="translate(220 260)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_memory.svg" xlink:href="icon_memory.svg"/><text x="80" y="116" fill="#F6F8FA">回忆</text></g>
+    <g transform="translate(400 260)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_settings.svg" xlink:href="icon_settings.svg"/><text x="80" y="116" fill="#F6F8FA">设置</text></g>
+    <g transform="translate(580 260)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_message.svg" xlink:href="icon_message.svg"/><text x="80" y="116" fill="#F6F8FA">消息</text></g>
+    <g transform="translate(760 260)"><rect width="160" height="140" rx="18" fill="#17202B"/><image x="48" y="22" width="64" height="64" href="icon_notification.svg" xlink:href="icon_notification.svg"/><text x="80" y="116" fill="#F6F8FA">通知</text></g>
+  </g>
+</svg>

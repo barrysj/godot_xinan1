@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <title>资源</title>
+  <ellipse cx="28" cy="18" rx="15" ry="7" stroke="#F7E733" stroke-width="3.5"/>
+  <path d="M13 18v10c0 4 7 7 15 7s15-3 15-7V18M13 28v10c0 4 7 7 15 7 3 0 6 0 8-1" stroke="#F6F8FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="46" cy="43" r="10" stroke="#22E0F0" stroke-width="3.5"/>
+  <path d="M46 37v12M42 40h6.5a3 3 0 0 1 0 6H43" stroke="#22E0F0" stroke-width="3" stroke-linecap="round"/>
+</svg>
