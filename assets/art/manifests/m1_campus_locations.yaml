@@ -51,8 +51,12 @@ variants:
   concept_003:
     stage: concept
     version: "003"
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-20
+      decision: approved_as_concept_baseline
     root: design/concepts/m1-campus-locations/m1_campus_locations/003
     files:
       concept: concept.png

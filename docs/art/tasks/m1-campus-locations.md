@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：概念候选待负责人评审。任务草案与版本记录遵循[美术工作流](../WORKFLOW.md)；本任务不修改校园大地图、路线、地点 Resource 或运行时代码。
+状态：南门概念已批准，其他地点概念制作中。任务草案与版本记录遵循[美术工作流](../WORKFLOW.md)；本任务不修改校园大地图、路线、地点 Resource 或运行时代码。
 
 ## 目标与范围
 
@@ -25,8 +25,8 @@
 ## 当前版本与方案
 
 - 当前使用版：无；`m1_campus_locations` 未接入，`integration.status` 为 `not_integrated`。
-- 本轮候选：`concept_003`；[南门远景修订概念](../../design/concepts/m1-campus-locations/m1_campus_locations/003/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_locations/003/generation.md)。原始 `concept_001`、`concept_002` 保留用于回溯与对比。
-- 本轮改动、需保留的部分与当前待决事项：按用户反馈缩小中央道路尽端主楼的立面门窗与模块，降低细节和对比以强化距离感；南门双门卫房、门柱、左侧树墙、入口道路、内向校园轴线、右上补全及四个热点锚点保持不变。待决是用户确认远景尺度与空气透视是否符合预期，并确认南门身份是否可作为后续正式视觉种子。
+- 当前概念基准：`concept_003`；[南门远景修订概念](../../design/concepts/m1-campus-locations/m1_campus_locations/003/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_locations/003/generation.md)。原始 `concept_001`、`concept_002` 保留用于回溯与对比。
+- 当前已确认部分与后续待决事项：负责人确认南门概念可以，`concept_003` 作为已选概念基准；其远景主楼通过缩小门窗、降低细节和空气透视表达距离，南门近景结构、右上补全及四个热点锚点保持不变。后续地点仍需逐一确认现实身份；概念批准不等同于正式资产批准或 Godot 接入授权。
 - 复用的批准方向／资产及原评审记录：沿用 v0.3 清爽理工校园 × 轻数字美术 × 局部赛博强化方向，以及已批准图书馆环境的日常层渲染纪律；不复制图书馆几何，不修改图书馆任务。
 - 技术依据：1672 × 941、不透明 RGB PNG；日常状态使用 `data/visual/colors.json` 的日常层；间距与安全区按 `data/visual/spacing.json` 的 4px 倍数原则在后续原生 UI 接入中处理。本轮不生成 Godot 资源、不改运行时代码。
 - 接入要求：未来背景不烘焙文字、按钮、侧栏、热点图标或路线线条；需在 1920×1080、2560×1440、1920×1200 三种桌面视口验证四角与底部操作区不压关键建筑。
@@ -37,18 +37,18 @@
 | --- | --- | --- | --- | --- |
 | 概念 | `concept_001/concept.png` · `586D7711B6BF19FEFF5C53149152D76F366F35F54B7482B205CD62DE0FFEDA11` | 待评审 | 请确认南门身份、2D 表现方向、构图安全区与四个热点锚点。 | 待负责人决定 |
 | 概念 | `concept_002/concept.png` · `AEFC64205550A9C384A2967623AF4F2826A186A36C48E15419ECFB5313F3B367` | 待评审 | 用户要求移除右上选定区域；请确认修补边界、连续天空／树冠效果，以及其余南门构图是否保持。 | 2026-09-20，用户修订请求；待负责人决定 |
-| 概念 | `concept_003/concept.png` · `5CB280638B9B29A1CCF7DDCC8334E2E0E12A4826ABD5C746D03BC2033454386A` | 待评审 | 用户要求远景主楼体现距离感；请确认门窗缩小、细节降低与空气透视是否达到预期，以及近景门区是否保持。 | 2026-09-20，用户修订请求；待负责人决定 |
+| 概念 | `concept_003/concept.png` · `5CB280638B9B29A1CCF7DDCC8334E2E0E12A4826ABD5C746D03BC2033454386A` | 已批准，选为概念基准 | 用户确认可以；保留远景主楼的门窗缩小、细节降低与空气透视，作为其他地点概念的日常层参考。 | 2026-09-20，负责人确认“可以了，继续生成其他的地点” |
 | 资产 | 未制作 | 不适用 | 概念批准后才制作正式背景。 | 待负责人决定 |
 | 接入效果 | 未接入 | 不适用 | 正式资产批准并提升后才接入 Godot。 | 待负责人决定 |
 
 ## 验证与结果
 
-- 本任务验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；候选保持 `unselected + pending`；集成状态为 `not_integrated`；其他五处不被虚构生成。
+- 本任务验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003` 为 `selected + approved`，后续地点候选默认 `unselected + pending`；集成状态为 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。
 - 技术检查结果：PowerShell 7 使用 `System.Drawing.Image` 核对 `concept_003` 为 1672 × 941、RGB、不透明；`view_image` 实际查看通过；概念无可见地图控件、浏览器 chrome、按钮、热点图标、水印或学校 logo；质量闸门为 `PASS_WITH_NOTES`，提示需人工确认远景尺度；本轮 `git diff --check` 通过，资源台 33 项测试通过。
-- Manifest 回写：主 Manifest 增加 `m1_campus_locations`，对象清单保留 `concept_001`、`concept_002` 并追加 `concept_003`；三版均为 `unselected + pending`，不填写 `approval_evidence`，不填写生效文件，不建立 selected-to-effective binding。
+- Manifest 回写：主 Manifest 增加 `m1_campus_locations`，对象清单保留 `concept_001`、`concept_002` 并追加 `concept_003`；仅 `concept_003` 根据负责人确认更新为 `selected + approved` 并记录 `approval_evidence`，不填写正式生效文件，集成仍为 `not_integrated`。
 - 一致性检查：当前没有正式资产、Godot 引用或生效文件；概念文件与 generation.md 位于同一候选根目录，参考原图位于任务 references 目录，不进入正式资产路径。
 - 资源目录扫描：`AssetCatalog.scan()` 通过；全局 13 个对象、237 个文件，缺失 0、哈希不一致 0；本对象三个概念版本均为 `matched`，集成仍为 `not_integrated`。
 - 适用的布局／动画验证结果：本轮为静态概念，不执行 Godot 接入、动画或运行截图；概念原图已在对话展示。
 - 实际截图／动作预览证据：远景修订概念 `003/concept.png` 已展示；原版 `001/concept.png`、`002/concept.png` 保留；无运行时截图。
-- 未解决问题：五处地点仍缺各自足够的现实取景证据；两个终点尚未获得身份确认；用户提供原图的公开／商业再分发许可未单独核验；概念尚未人工批准。
+- 未解决问题：步道、球场、走廊仍缺足够的现实取景证据；两个终点尚未获得身份确认；用户提供原图的公开／商业再分发许可未单独核验；南门仅完成概念批准，尚未制作正式资产或接入 Godot。
 - 本地提交：待资源台与差异检查通过后提交；不自动推送远程。
