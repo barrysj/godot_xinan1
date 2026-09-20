@@ -75,6 +75,30 @@ variants:
       source_id: exec-e0ded6b3-0206-47a6-9ae3-80ffc7584326
       edit_target: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/002/campus_hub_hero_concept_002.png
       quality_basis: image-quality-check-002
+  concept_013:
+    stage: concept
+    version: 013
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/013
+    files:
+      concept: campus_hub_lecture_hall_concept_013.png
+      source_notes: generation.md
+    metadata:
+      asset_type: environment_layout_concept
+      resolution: [1672, 941]
+      transparent: false
+      usage: [base_environment, progressive_prop_layout, duty_ai_context, concept_review]
+      style_layer: daily
+      scene_reference: converted_tiered_lecture_hall
+      implementation_note: formal_background_plus_separate_progress_props_and_ai_states; native_ui_cards_only
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "阶梯教室身份、中央展示空间和左右 UI 遮挡区成立；路线板与屏幕细节仅为概念气氛，正式资产需清理并分层。"
+      source_tool: codex_builtin_imagegen
+      source_id: exec-bfdfbe1b-b8ae-4d84-be5e-a08b96d1823c
+      style_references:
+        - design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/003/campus_hub_hero_concept_003.png
+        - assets/art/backgrounds/m1_library/daily/atrium-down.png
   asset_004:
     stage: asset
     version: 004
