@@ -193,12 +193,37 @@ variants:
       text_baked_in: false
       native_overlay_regions: [left_navigation, upper_sky_title]
       integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产、角色独立拆分和视觉批准仍待人工评审"
+  concept_009:
+    stage: concept
+    version: 009
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/009
+    files:
+      library_anomaly_two_digital_swans: library-anomaly-two-digital-swans.png
+      generation: generation.md
+    revision_of: concept_008.library_anomaly_digital_swan
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "主菜单图书馆异常图缩小黑天鹅并改为两只远景湖面黑天鹅；替换 concept_008，保留品学楼与银杏主楼 concept_006"
+      date: 2026-09-20
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, distant_digital_swan_pair]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_008_library_digital_swan
+      edit_scope: [reduce_swan_scale, move_swans_to_middle_distance, create_two_swan_pair, preserve_water_anomaly]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产、角色独立拆分和视觉批准仍待人工评审"
 integration:
   status: authorized_active
-  active_variant: concept_006_with_concept_008_library_revision
+  active_variant: concept_006_with_concept_009_library_revision
   root: design/concepts/m1-main-menu/m1_main_menu_visual/006
   files:
-    library_anomaly: ../008/library-anomaly-digital-swan.png
+    library_anomaly: ../009/library-anomaly-two-digital-swans.png
     pinxue_building_anomaly: pinxue-building-anomaly.png
     ginkgo_main_building_anomaly: ginkgo-main-building-anomaly.png
   visual_review: pending
