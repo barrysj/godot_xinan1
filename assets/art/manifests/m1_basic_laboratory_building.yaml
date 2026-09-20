@@ -8,8 +8,12 @@ variants:
   concept_001:
     stage: concept
     version: "001"
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: approved_as_concept
     root: design/concepts/m1-campus-locations/m1_basic_laboratory_building/001
     files:
       concept: concept.png
@@ -30,4 +34,3 @@ integration:
   status: not_integrated
   active_variant: null
   evidence: docs/art/tasks/m1-campus-locations.md
-

@@ -53,8 +53,8 @@ quality_result:
 
 ## 状态
 
-- `selection: unselected`
-- `approval: pending`
+- `selection: selected`
+- `approval: approved`
+- 批准证据：2026-09-21，负责人确认本批地点概念验收通过；详见 `docs/art/tasks/m1-campus-locations.md`。
 - `integration: not_integrated`
 - 运行时地点绑定：`pending_runtime_location_binding`
-
