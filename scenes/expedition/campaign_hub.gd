@@ -305,6 +305,7 @@ func _campaign_action(id: String) -> void:
 	elif id == "supply":
 		chosen_supply = not chosen_supply
 		_home()
+	elif id == "codex": _open_codex()
 	elif id.begins_with("enter:"):
 		if journey.enter(int(id.trim_prefix("enter:")),progress.campaign.memories) and _save_campaign(): _show_journey()
 	elif id == "leave":

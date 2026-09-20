@@ -50,6 +50,10 @@ func run_checks(hub) -> void:
 		await capture_library_environment_preview(hub)
 		hub.get_tree().quit()
 		return
+	if "--hub-icon-capture" in OS.get_cmdline_user_args():
+		await capture_hub_icons(hub)
+		hub.get_tree().quit(1 if failures else 0)
+		return
 	if "--readability-capture" in OS.get_cmdline_user_args():
 		await capture_readability(hub)
 		hub.get_tree().quit()
@@ -132,6 +136,54 @@ func run_checks(hub) -> void:
 			hub._ending()
 	print("CAMPAIGN_FLOW checks=%d failures=%d" % [checks,failures])
 	if not OS.has_feature("web"): hub.get_tree().quit(1 if failures else 0)
+
+func verify_hub_icons(hub) -> void:
+	var expected := {
+		"memories": "res://assets/art/ui/m1_campus_hub/runtime/icon_memory.png",
+		"growth": "res://assets/art/ui/m1_campus_hub/runtime/icon_growth.png",
+		"dispatch": "res://assets/art/ui/m1_campus_hub/runtime/icon_dispatch.png",
+		"codex": "res://assets/art/ui/m1_campus_hub/runtime/icon_codex.png",
+	}
+	for id in expected:
+		var item: Button = hub.campaign_panel.action_button(id)
+		verify(is_instance_valid(item),"hub exposes %s action button" % id)
+		if is_instance_valid(item):
+			verify(item.icon != null and item.icon.resource_path == expected[id],"hub %s uses approved icon" % id)
+			verify(item.get_theme_constant("icon_max_width") == 36,"hub %s icon stays at UI scale" % id)
+	var resource_status: Node = hub.campaign_panel.find_child("ResourceStatus",true,false)
+	verify(is_instance_valid(resource_status),"hub exposes resource status card")
+	if is_instance_valid(resource_status):
+		var icons: Array[Node] = resource_status.find_children("*","TextureRect",true,false)
+		var resource_icon: TextureRect = null
+		if icons.size() == 1: resource_icon = icons[0] as TextureRect
+		verify(resource_icon != null and resource_icon.texture.resource_path == "res://assets/art/ui/m1_campus_hub/runtime/icon_resource.png","resource status uses approved icon")
+
+func capture_hub_icons(hub) -> void:
+	hub.get_window().mode = Window.MODE_WINDOWED
+	await hub.get_tree().process_frame
+	hub.progress.complete_prologue()
+	hub.progress.complete_tutorial_dispatch()
+	hub.progress.points = 42
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		hub.get_window().size = resolution
+		await hub.get_tree().process_frame
+		hub._home()
+		verify_hub_icons(hub)
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		var picture: Image = hub.get_viewport().get_texture().get_image()
+		verify(picture.get_size() == resolution,"hub icon capture matches requested viewport")
+		picture.save_png("res://.godot/m1-campus-hub-icons-%dx%d.png" % [resolution.x,resolution.y])
+		if resolution == Vector2i(1920,1080):
+			var growth: Button = hub.campaign_panel.action_button("growth")
+			growth.grab_focus()
+			await RenderingServer.frame_post_draw
+			hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-campus-hub-icons-focus-1920x1080.png")
+			growth.release_focus()
+	hub._campaign_action("codex")
+	verify(is_instance_valid(hub.codex_panel),"hub codex icon opens existing codex")
+	if is_instance_valid(hub.codex_panel): hub.codex_panel.close_guide()
+	print("HUB_ICON_CAPTURE checks=%d failures=%d" % [checks,failures])
 
 func capture_readability(hub) -> void:
 	hub.get_window().mode = Window.MODE_WINDOWED

@@ -360,6 +360,16 @@ variants:
       settings: icon_settings.svg
       message: icon_message.svg
       notification: icon_notification.svg
+      runtime_study: runtime/icon_study.png
+      runtime_team: runtime/icon_team.png
+      runtime_growth: runtime/icon_growth.png
+      runtime_dispatch: runtime/icon_dispatch.png
+      runtime_codex: runtime/icon_codex.png
+      runtime_resource: runtime/icon_resource.png
+      runtime_memory: runtime/icon_memory.png
+      runtime_settings: runtime/icon_settings.png
+      runtime_message: runtime/icon_message.png
+      runtime_notification: runtime/icon_notification.png
       generation: generation.md
     metadata:
       asset_type: transparent_ui_icon_pack
@@ -368,9 +378,17 @@ variants:
       quantity: 10
       source_variant: asset_012
       palette: ["#F6F8FA", "#22E0F0", "#F7E733"]
-      implementation_note: approved_formal_icons_runtime_status_badges_remain_code_native
+      runtime_format: transparent_png_64x64
+      implementation_note: approved_formal_svg_sources_with_deterministic_png_runtime_derivatives; runtime_status_badges_remain_code_native
 integration:
-  status: not_integrated
+  status: authorized_active
   active_variant: asset_012_formal
   root: assets/art/ui/m1_campus_hub
-  evidence: "docs/art/tasks/m1-campus-hub-ui.md；012 已批准并提升，Godot 试接入已授权但尚未完成。"
+  runtime_files:
+    memory: runtime/icon_memory.png
+    growth: runtime/icon_growth.png
+    dispatch: runtime/icon_dispatch.png
+    codex: runtime/icon_codex.png
+    resource: runtime/icon_resource.png
+  visual_review: pending
+  evidence: "docs/art/tasks/m1-campus-hub-ui.md；012 已批准并接入 M1 基地首页，三尺寸与焦点态技术验证通过，运行效果待人工评审。"

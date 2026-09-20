@@ -182,3 +182,17 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台 33 tests 通过；selected 正式组合保持 matched，013 仅保留为不提升的历史候选 |
 
 实际截图写入 `.godot/m1-library-preview-*.png`，共九张 1920×1080 组合截图。预览页的按钮文案保持短动作名，当前状态显示在按钮组下方；没有把预览状态伪装成游戏内昼夜系统。
+
+## M1 基地首页图标接入验证 E29
+
+2026-09-21；正式资产提升基线 `00a38f8` 加本轮接入工作树。仅修改 M1 基地首页的资源状态与真实功能入口视觉，不改变战役状态、收益或开放规则；学习、队伍、设置、消息、通知因没有对应首页功能而不接入。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| 探索场景 `-- --campaign-flow-check --hub-icon-capture` | 46 checks / 0 failures；核对回忆、成长、派遣、图鉴四个原生按钮及资源状态图标均引用 `asset_012_formal` 运行时派生图，图标宽度约束为 36；图鉴真实打开并关闭；捕获三种桌面分辨率及成长焦点态 |
+| 探索场景 `--headless -- --campaign-flow-check` | 124 checks / 0 failures；完整战役、战斗、奖励、恢复与终局无回归 |
+| 探索场景 `--headless -- --meta-smoke` | 67 checks / 0 failures；旧基地、派遣与存档流程无回归 |
+| 运行时 PNG 检查 | 10 张均为 64×64，透明角 alpha=0；正式 SVG 保留为源，PNG 为确定性运行时派生图 |
+| `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台 33 tests 通过；批准、正式路径与接入状态可核验 |
+
+实际截图位于 `design/concepts/m1-campus-hub-ui/review/codex-workflow/integration-012/`：三尺寸基地首页与 1080p 成长按钮焦点态。普通入口使用青色边框，键盘焦点使用黄色细框；品红状态点没有烘焙到图标中，且当前无未读状态所以不显示。技术验证不代替负责人对接入效果的人工视觉验收。运行环境仍有既有 `user://logs`、系统根证书及像素图原图加载警告。

@@ -5,6 +5,13 @@ const MEMORY_TERMINAL_VIEW = preload("res://scenes/expedition/memory_terminal_vi
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
+const HUB_ICONS := {
+	"codex": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_codex.png"),
+	"dispatch": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_dispatch.png"),
+	"growth": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_growth.png"),
+	"memory": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_memory.png"),
+	"resource": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_resource.png"),
+}
 const LIBRARY_ENVIRONMENT_STATE := "anomaly"
 const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
 var column: VBoxContainer
@@ -66,9 +73,10 @@ func text(value: String, font_size: int = 22, parent: Control = null) -> void:
 	label.add_theme_color_override("font_color",Color(palette.text_primary))
 	(column if parent == null else parent).add_child(label)
 
-func button(label: String, id: String, enabled: bool = true, parent: Control = null) -> void:
+func button(label: String, id: String, enabled: bool = true, parent: Control = null) -> Button:
 	var item = Button.new()
 	item.text = label
+	item.set_meta("action_id",id)
 	item.custom_minimum_size.y = 58
 	item.add_theme_font_size_override("font_size",24)
 	item.disabled = not enabled
@@ -86,6 +94,66 @@ func button(label: String, id: String, enabled: bool = true, parent: Control = n
 	item.add_theme_color_override("font_disabled_color",Color(palette.text_secondary))
 	item.pressed.connect(func(): action.emit(id))
 	(column if parent == null else parent).add_child(item)
+	return item
+
+func _home_icon_button(label: String, id: String, icon: Texture2D, parent: Control) -> Button:
+	var item := button(label,id,true,parent)
+	item.custom_minimum_size = Vector2(250,76)
+	item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	item.add_theme_font_size_override("font_size",21)
+	item.icon = icon
+	item.expand_icon = true
+	item.add_theme_constant_override("icon_max_width",36)
+	item.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	item.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	item.add_theme_constant_override("icon_separation",14)
+	for state in ["normal","hover","pressed","disabled","focus"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color("223548") if state in ["hover","pressed"] else Color("17202B")
+		style.border_color = Color(palette.highlight if state == "focus" else palette.accent_primary)
+		style.set_border_width_all(2)
+		style.set_corner_radius_all(10)
+		style.set_content_margin_all(14)
+		item.add_theme_stylebox_override(state,style)
+	for color_name in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		item.add_theme_color_override(color_name,Color("F6F8FA"))
+	return item
+
+func _resource_status(points: int) -> void:
+	var panel := PanelContainer.new()
+	panel.name = "ResourceStatus"
+	panel.custom_minimum_size = Vector2(320,58)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("17202B")
+	style.border_color = Color(palette.accent_primary)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(10)
+	style.set_content_margin_all(10)
+	panel.add_theme_stylebox_override("panel",style)
+	column.add_child(panel)
+	var status_row := HBoxContainer.new()
+	status_row.add_theme_constant_override("separation",12)
+	panel.add_child(status_row)
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(36,36)
+	icon.texture = HUB_ICONS.resource
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	status_row.add_child(icon)
+	var label := Label.new()
+	label.text = "修复资源 %d · 校园后勤" % points
+	label.add_theme_font_size_override("font_size",20)
+	label.add_theme_color_override("font_color",Color("F6F8FA"))
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	status_row.add_child(label)
+
+func action_button(id: String) -> Button:
+	for candidate in find_children("*","Button",true,false):
+		if candidate.get_meta("action_id","") == id:
+			return candidate as Button
+	return null
 
 func row() -> HBoxContainer:
 	var result = HBoxContainer.new()
@@ -119,11 +187,18 @@ func home(progress, chosen_supply: bool) -> void:
 	if progress.campaign.restored:
 		text("校园已恢复。你可以重访各地，或重看结尾。")
 		button("重看结尾","ending")
-	text("修复资源 %d · 校园后勤" % progress.points,21)
-	var secondary = row()
-	button("回忆档案","memories",true,secondary)
-	button("校园成长","growth",true,secondary)
-	button("普通派遣","dispatch",true,secondary)
+	_resource_status(progress.points)
+	text("基地功能",23)
+	var secondary := GridContainer.new()
+	secondary.columns = 4
+	secondary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	secondary.add_theme_constant_override("h_separation",14)
+	secondary.add_theme_constant_override("v_separation",14)
+	column.add_child(secondary)
+	_home_icon_button("回忆","memories",HUB_ICONS.memory,secondary)
+	_home_icon_button("成长","growth",HUB_ICONS.growth,secondary)
+	_home_icon_button("派遣","dispatch",HUB_ICONS.dispatch,secondary)
+	_home_icon_button("图鉴","codex",HUB_ICONS.codex,secondary)
 	if progress.supply_unlocked:
 		text("出发补给："+("携带厚笔记本" if chosen_supply else "未携带"),19)
 		button("切换补给","supply")

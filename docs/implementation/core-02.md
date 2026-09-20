@@ -2,7 +2,7 @@
 
 - 功能 ID：CORE-02
 - 当前状态：部分实装（战役机制已验证，纪念内容与发布验收未完成）
-- 验证日期：2026-09-18；起点 `7f92ba8`，实现与加固至 `3fb297a`，可理解性修复至 `577ad8b`；与 main 美术管线合并回归见 [E22](verification.md#m1-与美术管线合并验证-e22)，011 探索 UI 首次正式接入见 [E24](verification.md#m1-探索-ui-011-接入验证-e24)，M1 图书馆环境接入见 [E25](verification.md#m1-图书馆环境接入验证-e25)，012 浮窗／按钮升级见 [E27](verification.md#m1-探索-ui-012-浮窗按钮升级验证-e27)，热点无文字动效见 [E28](verification.md#m1-探索热点无文字动效验证-e28)。
+- 验证日期：2026-09-21；起点 `7f92ba8`，实现与加固至 `3fb297a`，可理解性修复至 `577ad8b`；与 main 美术管线合并回归见 [E22](verification.md#m1-与美术管线合并验证-e22)，011 探索 UI 首次正式接入见 [E24](verification.md#m1-探索-ui-011-接入验证-e24)，M1 图书馆环境接入见 [E25](verification.md#m1-图书馆环境接入验证-e25)，012 浮窗／按钮升级见 [E27](verification.md#m1-探索-ui-012-浮窗按钮升级验证-e27)，热点无文字动效见 [E28](verification.md#m1-探索热点无文字动效验证-e28)，基地首页图标接入见 [E29](verification.md#m1-基地首页图标接入验证-e29)。
 
 ## 玩家能力与接入范围
 
@@ -16,17 +16,17 @@
 - `game/meta/campus_progress.gd`：profile v4 原子写入、教学、终端、回忆、人物与终局幂等事务。
 - `game/run/campus_region.gd`、`location_visit.gd`、`campaign_journey.gd`：固定区域、访问热点、离场与快照。
 - `game/run/campaign_checkpoint.gd`：M1检查点；构筑复用ShortRun编解码，旧随机局仍走原schema恢复。
-- `scenes/expedition/campaign_hub.gd`：基地、序章、区域与终局接入；`campaign_panel.gd`：地点页与 012 面板／按钮 NinePatch 接入。
+- `scenes/expedition/campaign_hub.gd`：基地、序章、区域与终局接入，基地图鉴按钮进入既有图鉴页；`campaign_panel.gd`：地点页、012 面板／按钮 NinePatch，以及基地回忆／成长／派遣／图鉴／资源状态图标接入。
 - `scenes/expedition/exploration_board.gd`、`exploration_hotspot.gd`、`exploration_skin.gd`：图书馆四热点响应式布局、正式环境按状态／视角映射与 Cover 缩放、无文字错相浮动／呼吸及聚焦反馈；其他地点保持原面板路径。
 - `scenes/expedition/campaign_panel.gd`、`campaign_hub.gd`、`debug_panel.gd`：图书馆环境游戏内只读预览入口；启动参数或调试面板均可打开，状态／视角按钮不触碰正式存档。
 
 ## 验证与证据
 
-入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)、[E25](verification.md#m1-图书馆环境接入验证-e25)、[E26](verification.md#m1-图书馆环境游戏内预览验证-e26)与[E28](verification.md#m1-探索热点无文字动效验证-e28)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；探索 UI、环境、无文字动效和游戏内预览后的主流程与预览矩阵均为 0 失败，覆盖战报／奖励／访问恢复、暂停、人物兑现、真实鼠标热点交互、Esc 焦点恢复及预览存档隔离。接入证据保存于 `.godot/` 捕获文件及图书馆任务记录。
+入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)、[E25](verification.md#m1-图书馆环境接入验证-e25)、[E26](verification.md#m1-图书馆环境游戏内预览验证-e26)、[E28](verification.md#m1-探索热点无文字动效验证-e28)与[E29](verification.md#m1-基地首页图标接入验证-e29)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；基地图标专项 46/0、完整战役 124/0、旧基地 67/0，覆盖五枚真实引用、三尺寸、焦点态与图鉴导航。接入证据保存于对应 `design/concepts/**/review/codex-workflow/` 目录及美术任务记录。
 
 ## 当前玩家引导与结果反馈
 
-2026-09-16；基线3fb297a，战场修复a2750bc，探索界面577ad8b。基地突出当前目标与三终端状态；路线四站分支只开放当前可选节点，先预览再前往。地点由campaign_board.gd展示可选热点，campaign_panel.gd提供对象详情与操作。领取奖励后返回原地点，显示所得奖励、守卫解除与出口开放；完成区域显示终端、资源、永久人物与派遣开放结果。待定终点按第二/第三终端功能命名，没有补造真实地名。
+2026-09-21；基地突出当前目标与三终端状态，并以批准的 012 图标区分资源、回忆、成长、派遣和图鉴；深色原生按钮保留短动作名、焦点与键盘导航。路线四站分支只开放当前可选节点，先预览再前往。地点由campaign_board.gd展示可选热点，campaign_panel.gd提供对象详情与操作。领取奖励后返回原地点，显示所得奖励、守卫解除与出口开放；完成区域显示终端、资源、永久人物与派遣开放结果。待定终点按第二/第三终端功能命名，没有补造真实地名。
 
 完整战役124/0、地点134/0；exploration-capture三尺寸102/0，含图书馆路线实际模拟战斗与截图尺寸断言。Web导出及实际点击证据见验证E21。工程通过不代表陌生玩家能理解。
 
@@ -37,6 +37,7 @@
 - 恢复以永久状态与文字呈现；非图书馆地点为逻辑占位，未核对真实空间。
 - Windows与桌面Web证据见E20；Android横屏真机、照片及美术阶段批准仍未验收。
 - 普通派遣在M1按终端数量开放，仍使用旧计时与费用；人物样本只有占位发明家。
+- 基地首页仅接入已有功能，未给学习、队伍、设置、消息、通知制造空页面；品红状态点预留为运行时未读角标，当前无未读状态所以不显示。
 
 ## 交接给统筹
 
