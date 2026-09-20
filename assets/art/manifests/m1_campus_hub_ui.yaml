@@ -291,8 +291,13 @@ variants:
   asset_012:
     stage: asset
     version: 012
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-20
+      decision: approved_for_integration
+      quote: "可以了，尝试接入游戏"
     root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_012
     files:
       study: icon_study.svg
@@ -329,6 +334,43 @@ variants:
         - data/visual/colors.json
         - assets/art/ui/m1_exploration_ui/panel.png
         - assets/art/ui/m1_exploration_ui/button.png
+    integration_authorization:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      scope: "正式提升 012 图标包并试接入 M1 基地首页；运行效果待人工验收"
+      date: 2026-09-20
+  asset_012_formal:
+    stage: asset
+    version: "012-formal"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-20
+      decision: promoted_from_approved_asset_012
+      quote: "可以了，尝试接入游戏"
+    root: assets/art/ui/m1_campus_hub
+    files:
+      study: icon_study.svg
+      team: icon_team.svg
+      growth: icon_growth.svg
+      dispatch: icon_dispatch.svg
+      codex: icon_codex.svg
+      resource: icon_resource.svg
+      memory: icon_memory.svg
+      settings: icon_settings.svg
+      message: icon_message.svg
+      notification: icon_notification.svg
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon_pack
+      canvas: [64, 64]
+      transparent: true
+      quantity: 10
+      source_variant: asset_012
+      palette: ["#F6F8FA", "#22E0F0", "#F7E733"]
+      implementation_note: approved_formal_icons_runtime_status_badges_remain_code_native
 integration:
   status: not_integrated
-  evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"
+  active_variant: asset_012_formal
+  root: assets/art/ui/m1_campus_hub
+  evidence: "docs/art/tasks/m1-campus-hub-ui.md；012 已批准并提升，Godot 试接入已授权但尚未完成。"

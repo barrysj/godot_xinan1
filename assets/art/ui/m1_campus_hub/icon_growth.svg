@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <title>成长</title>
+  <path d="M10 52h44" stroke="#F6F8FA" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M14 52V38h9v14M28 52V29h9v23" stroke="#22E0F0" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M42 52V20h9v32" stroke="#F7E733" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="m13 28 12-10 10 5 15-13" stroke="#F6F8FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M42 10h8v8" stroke="#F6F8FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

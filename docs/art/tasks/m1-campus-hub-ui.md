@@ -1,24 +1,24 @@
 # 美术任务：M1 校园修复站与日常 UI 视觉样板
 
-状态：草案，未批准。首轮只提交一个基地首页 hero 概念候选；概念、正式资产、Godot 接入效果均需分别人工评审。
+状态：图标资产 012 已批准并提升；Godot 试接入已授权，接入效果待人工评审。首页 hero 概念及其他候选不因图标批准而自动通过。
 
 ## 目标与范围
 
 - 用途、数量与本次要求：为局外“校园修复站”建立一套可反复使用的日常 UI 视觉语言；已有 1 张非地点绑定的首页 hero 概念样板，本轮补齐 10 枚有明确界面位置的功能图标。
 - 对应规范、已有身份参考：[WORKFLOW](../WORKFLOW.md)、[ART_CONTRACT](../ART_CONTRACT.md)、[STYLE_BIBLE](../STYLE_BIBLE.md)、[UI_SPEC](../specs/UI_SPEC.md)、`data/visual/{colors,typography,spacing,animation}.json`；参考已批准的 M1 探索 UI 与 M1 记忆载体，仅继承其信息层级和局部强调，不复制异常层强度。
-- 目标 Godot 场景、入口与依赖：未来对应 `scenes/expedition/meta_hub.gd` 的基地页、`campaign_panel.gd` 的首页／记录入口，以及现有 `campus_map.gd`、`location_dispatch_panel.gd`、`visual_team_panel.gd`。本轮不修改 Godot。
-- 不在本次范围内：真实校园地点背景、现实人物或学生身份、面板／按钮重制、队伍头像家族、派遣地图重绘、共享 Theme／Token 重构、运行时代码与接入截图。
+- 目标 Godot 场景、入口与依赖：接入 `scenes/expedition/campaign_panel.gd` 的 M1 基地首页，复用现有原生 Button、Container、Theme 与动态文字；成长、派遣、回忆、图鉴使用正式图标，资源状态使用资源图标。其余无对应页面的图标暂不制造假入口。
+- 不在本次范围内：真实校园地点背景、现实人物或学生身份、面板／按钮重制、队伍头像家族、派遣地图重绘、共享 Theme／Token 重构，以及尚不存在的学习／消息／通知独立页面。
 
 ## 当前版本与方案
 
-- 当前使用版：无；Manifest 对象 `m1_campus_hub_ui` 尚未接入。
+- 当前使用版：`asset_012_formal` 已提升至 `assets/art/ui/m1_campus_hub/`；Godot 接入进行中。
 - 本轮概念基础：`concept_003`，`design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/003/`，概念阶段，hero 文件为 `campus_hub_hero_concept_003.png`；`concept_001`、`concept_002` 保留为历史对照。负责人已明确要求开始生成资产，因此保留正式资产候选 `asset_004`，并根据新的徽章参考方向新增 `asset_005`；两者都不等同于概念批准或正式资产批准。
 - 当前选定资产种子：`asset_007`，`design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_007/`，文件为 `campus_hub_memory_terminal_orb_asset_007.png`；用途为首页核心终端、终端进度状态和结算状态复用。负责人于 2026-09-20 同意继续生成其他素材，007 作为家族视觉种子；仍未授权 Godot 接入。`asset_005` 保留为徽章方向对照，`asset_004` 保留为更早的回退候选。
 - 最新修订候选：`asset_012` 功能图标包，基于 `asset_011` 的质量检查意见重新制作。10 枚图标保持无背景 SVG；移除队伍、消息、通知等图标内烘焙的品红状态点，派遣路径点改为青色，回忆移除黄／品红装饰；黄色只保留给成长和资源收益。品红未读状态点、卡片、悬停、禁用、选中和数字角标均留给 Godot 原生控件。008–010 保留为历史待评审候选，但不属于当前首页最小接入集。
 - 复用的批准方向／资产及原评审记录：M1 探索 UI 的“图标／悬停简要信息／点击详情”渐进展示原则，以及 M1 记忆载体 011 的局部青品红数字强调；不把它们的异常背景、图标或终端位图直接拼进本概念。
 - 技术依据：日常 Token 使用 `colors.json` 的 `daily`，版式以 4px 间距倍数和 `typography.json` 的标题／正文／等宽角色为后续原生实现依据；动画只沿用 `animation.json` 的 `120–220ms` 稳定交互范围。概念图本身不建立新的 Token，也不建立 selected-to-effective binding。
 - 接入要求：概念通过后，先以原生 Container／Anchor、现有 Theme 和可拆分矢量／NinePatch 组件实现；文字、数值、按钮、焦点和设置入口必须由 Godot 原生组件承担。运行评审覆盖 1920×1080、2560×1440、1920×1200，至少检查首页、队伍、成长、派遣、回忆／资源状态与设置入口的安全区和可读性。
-- 提前试接入授权：无。
+- 接入授权：负责人于 2026-09-20 回复“可以了，尝试接入游戏”，批准 `asset_012` 并授权 M1 基地首页试接入；运行效果仍需单独评审。
 
 ## 阶段评审
 
@@ -34,16 +34,17 @@
 | 资产 | `asset_009` · `campus_hub_repair_beacon_asset_009.png` · `081C53A27332695B28578AE836A16C5040710200BB495CB74F2D40B4B335FD21` | 待评审 | 纵向维修信标；用于地图热点、派遣目的地和维修状态 | 基于 007 家族种子生成，2026-09-20 |
 | 资产 | `asset_010` · `campus_hub_memory_bay_asset_010.png` · `F1233CBA3C272A6479033A27FE1325DEEC32E2321A4FDC3B49DC16166087F1C8` | 待评审 | 横向记忆舱托架；用于结算卡和修复完成展示 | 基于 007 家族种子生成，2026-09-20 |
 | 资产 | `asset_011` · 10 枚功能图标 SVG · 预览 SHA-256 `C80EA9ACE6E61E46EAE305F3776DC9F30EC2EA1446B8A6B8992A27A5A0D6DB85` | 待评审 | 首页与侧栏的学习、队伍、成长、派遣、图鉴、资源、回忆、设置、消息、通知；无背景、无可见文字 | 负责人明确要求“生成一些图标”，2026-09-20 |
-| 资产 | `asset_012` · 10 枚功能图标 SVG · 预览 SHA-256 `16E8F42C7B49D745C148B183E8863CB19377CD4C0F52CD5DC5956FD67E46FD61` | 待评审 | 移除烘焙品红状态点；黄色仅用于成长／资源收益；状态提示改由运行时角标承担 | 根据质量检查意见重新生成，2026-09-20 |
-| 接入效果 | 未开始 | 待评审 | | |
+| 资产 | `asset_012` · 10 枚功能图标 SVG · 预览 SHA-256 `16E8F42C7B49D745C148B183E8863CB19377CD4C0F52CD5DC5956FD67E46FD61` | 通过并提升 | 移除烘焙品红状态点；黄色仅用于成长／资源收益；状态提示改由运行时角标承担 | 负责人回复“可以了，尝试接入游戏”，2026-09-20 |
+| 正式资产 | `asset_012_formal` · `assets/art/ui/m1_campus_hub/` | 通过 | 与批准 012 的 10 枚 SVG 逐文件一致；生产记录随正式资产保存 | 根据上述批准提升，2026-09-20 |
+| 接入效果 | M1 基地首页试接入 | 待评审 | 只接实际存在的回忆、成长、派遣、图鉴与资源状态；不制造空入口 | 负责人授权试接入，2026-09-20 |
 
 ## 验证与结果
 
 - 本任务验收条件：实际概念与资产候选均可解码；10 枚 SVG 均为 `64×64` 透明画布、无可见文字并可组成评审板；资源 Manifest 能发现该对象与所有版本；没有 Godot 引用或运行画面变更；候选预览在对话中展示给负责人审核。
 - 技术检查结果及必要复现命令：既有位图候选检查结果保持不变；`asset_011` 与 `asset_012` 均使用 PowerShell 7 XML 解析检查。`asset_012` 的 10 枚生产图标与 2 份预览 SVG 全部可解析，生产图标均为 `64×64`、`viewBox="0 0 64 64"` 且不含 `<text>`；生产图标内不再包含 `#FF2BA6`／`#E83E8C`，`#F7E733` 只存在于成长和资源图标。Chrome headless 实际渲染 64px 与 32／24px PNG 评审板，缩小后仍可区分主要语义。`py -3 -B -m unittest discover -s tools/art/asset_manager/tests` 共 33 项通过；`git diff --check` 通过。
-- Manifest 回写：`assets/art/manifests/m1_campus_hub_ui.yaml` 新增 `asset_012`，登记 10 枚 SVG、两套 PNG／SVG 评审板和生产记录；状态为 `unselected + pending`，记录 `revision_of: asset_011`，未写 Godot integration binding。
+- Manifest 回写：`asset_012` 已记录 `selected + approved` 与接入授权；新增 `asset_012_formal` 指向正式路径，integration 暂保持 `not_integrated`，待真实代码和运行截图完成后再升级。
 - 一致性检查：候选图是独立不透明概念板，不作为运行时纹理；正式实现必须拆成原生布局、矢量／NinePatch 和可替换图标。当前无 Godot 引用，integration 为 `not_integrated`。
 - 适用的布局／动画验证结果：概念阶段不启动游戏；无运行画面变化。后续接入阶段按三种目标分辨率和现有 UI 规范复核。
 - 实际截图／动作预览证据：`asset_012/icon_pack_preview.png` 为修订后的 64px 静态评审板，`asset_012/icon_pack_small_preview.png` 为 32px／24px 缩放评审板；无 Godot 运行截图。
-- 未解决问题：`asset_012` 仍需人工决定是否作为正式图标方向；24–32px 的运行时清晰度和动态状态点表现需在试接入阶段复核。008–010 不属于当前首页最小接入集。尚未获准生产面板、终端进度条或队伍头像。
+- 未解决问题：接入效果、24–32px 的运行时清晰度和动态状态点表现仍需截图评审。008–010 不属于当前首页最小接入集；学习、队伍、设置、消息、通知图标暂不强制接到没有对应入口的位置。
 - 本地提交：待资产候选与文档验证后提交到 `art/m1-campus-hub-ui`；远程不推送。
