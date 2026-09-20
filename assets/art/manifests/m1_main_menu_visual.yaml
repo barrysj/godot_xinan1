@@ -268,13 +268,57 @@ variants:
       text_baked_in: false
       native_overlay_regions: [left_navigation, upper_sky_title]
       integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产与视觉批准仍待人工评审"
+  asset_001:
+    stage: asset
+    version: 001
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-main-menu.md
+      date: 2026-09-21
+      decision: approved_and_promoted_six_main_menu_backgrounds
+      quote: "好，将这6张都提升为资产"
+    root: assets/art/backgrounds/m1_main_menu
+    files:
+      normal_library: normal/library.png
+      normal_pinxue_building: normal/pinxue-building.png
+      normal_ginkgo_main_building: normal/ginkgo-main-building.png
+      anomaly_library: anomaly/library-two-digital-swans.png
+      anomaly_pinxue_building: anomaly/pinxue-building.png
+      anomaly_ginkgo_main_building: anomaly/ginkgo-main-building.png
+      generation: generation.md
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "正式主菜单正常／异常背景接入；实际菜单裁切与多分辨率效果待视觉评审"
+      date: 2026-09-21
+    metadata:
+      asset_type: main_menu_hero_background_set
+      resolution: [1672, 941]
+      transparent: false
+      states: [normal, anomaly]
+      subjects: [library_lakeside, pinxue_building, autumn_ginkgo_main_building]
+      source_variants: [concept_002, concept_005, concept_006, concept_011]
+      usage: [main_menu, restored_state, anomaly_state]
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      text_baked_in: false
+      quality_gate: PASS_WITH_NOTES
+      source_identity: user_provided_real_campus_reference_photos
+      integration_boundary: "菜单文字、按钮与状态提示继续由 Godot 原生组件承担；正式背景不承载可编辑 UI"
 integration:
   status: authorized_active
-  active_variant: concept_006_with_concept_011_library_revision
-  root: design/concepts/m1-main-menu/m1_main_menu_visual/006
+  active_variant: asset_001
+  root: assets/art/backgrounds/m1_main_menu
   files:
-    library_anomaly: ../011/library-anomaly-two-digital-swans-clear-directions.png
-    pinxue_building_anomaly: pinxue-building-anomaly.png
-    ginkgo_main_building_anomaly: ginkgo-main-building-anomaly.png
+    normal_library: normal/library.png
+    normal_pinxue_building: normal/pinxue-building.png
+    normal_ginkgo_main_building: normal/ginkgo-main-building.png
+    anomaly_library: anomaly/library-two-digital-swans.png
+    anomaly_pinxue_building: anomaly/pinxue-building.png
+    anomaly_ginkgo_main_building: anomaly/ginkgo-main-building.png
+  mapping:
+    normal_state: normal
+    anomaly_state: anomaly
+    restored_gate: game/meta/campus_progress.gd::campaign.restored
+    order: [library, pinxue_building, ginkgo_main_building]
   visual_review: pending
   evidence: docs/art/tasks/m1-main-menu.md

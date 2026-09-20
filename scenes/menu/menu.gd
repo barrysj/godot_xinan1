@@ -4,18 +4,18 @@ const ProgressModel = preload("res://game/meta/campus_progress.gd")
 const BACKGROUNDS = [
 	{
 		"name": "图书馆",
-		"normal": "res://design/concepts/m1-main-menu/m1_main_menu_visual/002/library.png",
-		"anomaly": "res://design/concepts/m1-main-menu/m1_main_menu_visual/011/library-anomaly-two-digital-swans-clear-directions.png",
+		"normal": "res://assets/art/backgrounds/m1_main_menu/normal/library.png",
+		"anomaly": "res://assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
 	},
 	{
 		"name": "品学楼",
-		"normal": "res://design/concepts/m1-main-menu/m1_main_menu_visual/002/pinxue-building.png",
-		"anomaly": "res://design/concepts/m1-main-menu/m1_main_menu_visual/006/pinxue-building-anomaly.png",
+		"normal": "res://assets/art/backgrounds/m1_main_menu/normal/pinxue-building.png",
+		"anomaly": "res://assets/art/backgrounds/m1_main_menu/anomaly/pinxue-building.png",
 	},
 	{
 		"name": "银杏主楼",
-		"normal": "res://design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png",
-		"anomaly": "res://design/concepts/m1-main-menu/m1_main_menu_visual/006/ginkgo-main-building-anomaly.png",
+		"normal": "res://assets/art/backgrounds/m1_main_menu/normal/ginkgo-main-building.png",
+		"anomaly": "res://assets/art/backgrounds/m1_main_menu/anomaly/ginkgo-main-building.png",
 	},
 ]
 const BACKGROUND_HOLD_SECONDS := 8.0

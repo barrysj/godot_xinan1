@@ -1,19 +1,19 @@
 # 美术任务：M1 主菜单视觉样板
 
-状态：`concept_011` 已生成并获用户要求让两只黑天鹅动作与朝向不同；异常图仍为 `unselected + pending`，`concept_005` 的银杏主楼正常概念已获用户确认可用，正式资产与最终视觉 QA 未批准。生成成功、技术检查和本地提交均不代表标题方向、正式资产或发布授权已批准。
+状态：`asset_001` 的六张主菜单背景已获用户批准并提升为正式资产；异常与正常主题已切换到稳定 `assets/art/backgrounds/m1_main_menu/` 路径，Godot 接入效果与最终多分辨率视觉 QA 仍待评审。生成成功、技术检查和本地提交不替代接入效果或发布授权批准。
 
 ## 目标与范围
 
-- 用途、数量与本次要求：建立一组由真实校园参考图引导的主菜单 hero 概念候选，分别验证图书馆、品学楼、秋天银杏主楼三种身份主题与原生导航区之间的关系；在用户最新要求下，补充三张对应的异常状态概念，并试接入主菜单状态切换，不批量生产标题家族或按钮资产。
+- 用途、数量与本次要求：建立并提升一组由真实校园参考图引导的主菜单 hero 背景资产，包含图书馆、品学楼、秋天银杏主楼三种身份主题的正常／异常各一张；标题家族和按钮资产不在本任务范围内。
 - 对应规范、已有身份参考：`docs/art/STYLE_BIBLE.md`、`docs/art/ART_CONTRACT.md`、`docs/art/WORKFLOW.md`、`docs/art/specs/UI_SPEC.md`、`docs/art/specs/ENVIRONMENT_SPEC.md`、`data/visual/colors.json`、`data/visual/typography.json`、`data/visual/spacing.json`。
 - 已批准连续性参考：M1 图书馆日常／异常环境（`m1_library_environment`）与三色记忆终端家族（`m1_memory_artifact`）仅用于配色、光影和数字层级协调，不修改它们、不把它们烘焙进本候选。
 - 目标 Godot 场景与现状：`scenes/menu/menu.tscn`；本轮将其从模板背景接到三地点异常／正常主题轮播，标题与短动作按钮继续由 Godot 原生组件承担。
-- 不在本次范围内的内容：不制作正式发布背景、不制作可发布标题字标、不替换共享 Theme、不加入新玩法交互、不虚构真实校园建筑、不生成动画资产；当前接入仅为用户授权的 review 试接入。
+- 不在本次范围内的内容：不制作可发布标题字标、不替换共享 Theme、不加入新玩法交互、不虚构真实校园建筑、不生成动画资产；当前 Godot 接入仍需独立做视觉 QA。
 
 ## 当前版本与方案
 
-- 当前使用版：`concept_006` 异常三联图加 `concept_011` 图书馆远景双黑天鹅明确动作修订作为 review 试接入；未完成完整终局通关时显示异常轮播，读取现有 `CampusProgress.campaign.restored` 为真后切换到 `concept_002`／`concept_005` 的正常轮播。
-- 当前候选：Manifest 对象 `m1_main_menu_visual`，版本 `concept_011` 为图书馆异常双黑天鹅动作与朝向定向修订，文件位于 `design/concepts/m1-main-menu/m1_main_menu_visual/011/`；品学楼与秋天银杏主楼继续使用 `concept_006`，三处分别保持地点身份并使用不同记忆失真语言。
+- 当前正式版：Manifest 对象 `m1_main_menu_visual` 的 `asset_001`，正式文件位于 `assets/art/backgrounds/m1_main_menu/`；异常图使用最终双黑天鹅图书馆与 `concept_006` 的品学楼／银杏主楼，正常图使用 `concept_002` 的图书馆／品学楼与已确认中轴线的 `concept_005` 银杏主楼。
+- 当前接入：`menu.gd` 读取正式资产路径；未完成完整终局通关时显示异常轮播，读取现有 `CampusProgress.campaign.restored` 为真后切换到正常轮播。
 - 历史候选：版本 `concept_001` 保留为抽象校园网络中庭方向；版本 `concept_002` 保留三张小批候选；版本 `concept_003`、`concept_004` 保留此前的去旗帜、去岔路和中轴修订，均为 `unselected + pending`，不因本轮修订自动升级或淘汰。
 - 方案名称：**抽象校园网络中庭 / Abstract Campus Node Plaza**。
 - 主视觉：以中央圆形网络节点、放射式校园路径和少量通用理工建筑块面表达“校园系统正在被记忆重新连接”；画面明确是虚构抽象构图，不冒充真实校园地图或建筑。
@@ -96,6 +96,13 @@
 - 当前文件：`design/concepts/m1-main-menu/m1_main_menu_visual/011/library-anomaly-two-digital-swans-clear-directions.png`。
 - 生成与质量记录：见同目录 `generation.md`。`image-quality-check` 结果为 `PASS_WITH_NOTES`，当前仍是一体化背景概念，不是独立透明角色资产。
 
+### 正式资产 `asset_001`：六张主菜单背景
+
+- 正常主题：图书馆、品学楼、已确认大门中列与道路中轴对齐的秋天银杏主楼。
+- 异常主题：水面色彩异常与远景双数字黑天鹅图书馆、数据化喷泉品学楼、几何化银杏大道主楼。
+- 正式路径：`assets/art/backgrounds/m1_main_menu/normal/` 与 `assets/art/backgrounds/m1_main_menu/anomaly/`。
+- 提升记录：见 `assets/art/backgrounds/m1_main_menu/generation.md`；六张源文件均为 1672×941、24bpp RGB、非透明 PNG，正式包与来源概念逐文件哈希一致。
+
 ## 阶段评审
 
 | 阶段 | 被评文件、版本与 SHA-256 | 人工决定 | 修改意见 | 决定来源与日期 |
@@ -111,12 +118,12 @@
 | 概念 | `concept_009`：`library-anomaly-two-digital-swans.png`；`3e76911600f46b58b60041d52f9cfacf070734edcb6b285768fb8018ce2713b1` | 待评审 | 按用户意见缩小黑天鹅并改为两只远景湖面黑天鹅；移除前景大鸟 | 2026-09-20 用户请求 |
 | 概念 | `concept_010`：`library-anomaly-two-digital-swans-asymmetric.png`；`cf97bece99d789b6ab0413fb1476bd332ceb3e6a8380cc2a4beeb8af72627250` | 待评审 | 两只动作差异初版；右鸟抬翼轮廓仍需复核，保留为中间候选 | 2026-09-21 用户请求 |
 | 概念 | `concept_011`：`library-anomaly-two-digital-swans-clear-directions.png`；`26c91dd40488fae87396b59f69bb9cbb9f094d714091c0c238ed636e6a3cf96b` | 待评审 | 左鸟向左低颈游，右鸟向右抬颈并展翼；动作与朝向已明确 | 2026-09-21 用户请求 |
-| 资产 | 尚未制作 | 待评审 | 需先通过概念阶段 | |
-| 接入效果 | `scenes/menu/menu.tscn` + `scenes/menu/menu.gd` review 试接入 | 待评审 | 已按用户请求接入异常／正常状态轮播；需 Godot 运行截图与多分辨率检查 | 2026-09-20 用户请求 |
+| 资产 | `asset_001`：`assets/art/backgrounds/m1_main_menu/` 六张背景；来源哈希见 `generation.md` | 已批准 | 用户批准六张提升为资产；正式包已登记并替换菜单引用 | 2026-09-21 用户请求 |
+| 接入效果 | `scenes/menu/menu.tscn` + `scenes/menu/menu.gd` 正式资产接入 | 待评审 | 已切换到 `assets/art/` 稳定路径；需 Godot 运行截图与多分辨率检查 | 2026-09-21 |
 
 ## 验证与结果
 
-- 本任务验收条件：每张概念需在几秒内读出对应的校园地标主题；至少一侧或下方能容纳原生导航，标题区能保持低干扰；不能出现可读伪文字、烘焙菜单或不可编辑的正式标题；未确认的异常概念保持 `unselected + pending`，review 试接入保持独立授权，不等同于正式资产批准。
+- 本任务验收条件：每张背景需在几秒内读出对应的校园地标主题；至少一侧或下方能容纳原生导航，标题区能保持低干扰；不能出现可读伪文字、烘焙菜单或不可编辑的正式标题；正式包的六张文件、Manifest 路径和菜单引用必须一致。
 - 技术检查结果：`PASS_WITH_NOTES`。`concept_002` 至 `concept_011` 的实际文件均可读取，PNG，1672×941，`Format24bppRgb`，非透明；异常图没有发现水印、签名或菜单文字，`concept_007` 的倒影异常、`concept_008` 的数字黑天鹅、`concept_009` 的远景双黑天鹅和 `concept_011` 的动作朝向修订均通过 `image-quality-check`，完整提示词、来源和质量闸门记录见各版本目录的 `generation.md`。
 - 复现检查命令：
   - `Add-Type -AssemblyName System.Drawing; Get-ChildItem -LiteralPath 'design/concepts/m1-main-menu/m1_main_menu_visual/002' -Filter '*.png' | ForEach-Object { $img = [System.Drawing.Image]::FromFile($_.FullName); try { \"$($_.Name) $($img.Width)x$($img.Height) $($img.PixelFormat)\" } finally { $img.Dispose() } }`
@@ -127,9 +134,9 @@
   - `Get-FileHash -Algorithm SHA256 'design/concepts/m1-main-menu/m1_main_menu_visual/004/ginkgo-main-building.png'`
   - `Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile((Resolve-Path 'design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png')); try { $img.Width; $img.Height; $img.PixelFormat } finally { $img.Dispose() }`
   - `Get-FileHash -Algorithm SHA256 'design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png'`
-- Manifest 回写：`assets/art/manifests/m1_main_menu_visual.yaml` 已登记 `concept_006`；`concept_005` 记录为用户确认的 `selected + approved` 正常概念，`concept_006` 保持 `unselected + pending` 并以 `authorized_active` 进行 review 试接入。
-- 一致性检查：Manifest 的 root 与文件均指向实际存在的概念副本；异常概念保留在 `design/concepts/` 并以用户授权的 review 方式试接入，`concept_011` 替换菜单中的图书馆异常图，未升级为正式资产；未修改共享 Token、Theme、实现总览或 Roadmap。
-- 实际截图／展示证据：本轮已在对话展示三张 `concept_006` 异常图；它们是概念候选，不等同于正式资产批准。主菜单运行截图仍待可用 Godot 编辑器／运行时重新验证。
+- Manifest 回写：`assets/art/manifests/m1_main_menu_visual.yaml` 已登记并选用 `asset_001`；六张正式文件位于 `assets/art/backgrounds/m1_main_menu/`，`integration.active_variant` 与菜单脚本一致。
+- 一致性检查：正式包与六个来源概念文件逐文件哈希一致；原概念目录保留，未覆盖或删除历史版本；未修改共享 Token、Theme、实现总览或 Roadmap。
+- 实际截图／展示证据：六张概念图已完成质量闸门；正式包接入后仍待可用 Godot 环境完成异常／恢复状态和三种桌面分辨率截图。
 - 资源台验证：`py -3 -m unittest discover -s tools/art/asset_manager/tests -v`，33 项测试全部通过；覆盖主 Manifest schema、对象发现、注册文件存在性及候选不自动提升规则。当前环境未发现可调用的 Godot 4 可执行文件，因此主菜单运行截图、存档真假状态切换和三种桌面分辨率检查待补；本轮未修改工具链或共享 Theme。
-- 专业边界与已知问题：真实建筑参考提升了校园识别度，但也带来构图裁切、建筑连续性和照片来源授权的后续风险；本轮异常概念仍需负责人确认，正式资产阶段应再简化细节、单独制作标题标识，并以实际菜单安全区和三种桌面分辨率重新验证。完整终局通关开关使用现有 `campaign.restored`，未新增存档字段。
+- 专业边界与已知问题：真实建筑参考提升了校园识别度，但也带来构图裁切、建筑连续性和照片来源授权的后续风险；正式资产已批准，但最终菜单安全区、三种桌面分辨率和照片发布边界仍需单独确认。完整终局通关开关使用现有 `campaign.restored`，未新增存档字段。
 - 本地提交：概念候选、来源记录、任务档案与 Manifest 将在本分支完成验证后提交；不推送远程。
