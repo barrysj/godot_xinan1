@@ -48,6 +48,28 @@ variants:
       source_identity: edited_concept_001_with_user_selected_upper_right_region_removed
       concept_basis: concept_001
       edit_scope: "upper-right user-selected region only"
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_campus_locations/003
+    files:
+      concept: concept.png
+      generation: generation.md
+    metadata:
+      asset_type: environment_concept
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      location_id: gate
+      location_identity: "南门"
+      usage: [campaign_gate, concept_review]
+      hotspot_anchor_count: 4
+      safe_area: "四角与底部操作带留低对比空间；不烘焙 UI 或热点"
+      source_identity: edited_concept_002_for_far_main_building
+      concept_basis: concept_002
+      edit_scope: "distant main building facade scale and atmospheric perspective only"
 integration:
   status: not_integrated
   active_variant: null
