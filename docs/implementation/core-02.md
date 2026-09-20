@@ -16,13 +16,13 @@
 - `game/meta/campus_progress.gd`：profile v4 原子写入、教学、终端、回忆、人物与终局幂等事务。
 - `game/run/campus_region.gd`、`location_visit.gd`、`campaign_journey.gd`：固定区域、访问热点、离场与快照。
 - `game/run/campaign_checkpoint.gd`：M1检查点；构筑复用ShortRun编解码，旧随机局仍走原schema恢复。
-- `scenes/expedition/campaign_hub.gd`：基地、序章、区域与终局接入，基地图鉴按钮进入既有图鉴页；`campaign_panel.gd`：地点页、012 面板／按钮 NinePatch，以及基地回忆／成长／派遣／图鉴／资源状态图标接入。
+- `scenes/expedition/campaign_hub.gd`：基地、序章、区域与终局接入，基地图鉴按钮进入既有图鉴页；`campaign_panel.gd`：地点页、012 面板／按钮 NinePatch，以及基地回忆／成长／派遣／图鉴／资源状态图标接入。基地 PNG 图标支持有导入缓存的正式资源加载与首次检出的原图字节回退，不要求先打开编辑器预热。
 - `scenes/expedition/exploration_board.gd`、`exploration_hotspot.gd`、`exploration_skin.gd`：图书馆四热点响应式布局、正式环境按状态／视角映射与 Cover 缩放、无文字错相浮动／呼吸及聚焦反馈；其他地点保持原面板路径。
 - `scenes/expedition/campaign_panel.gd`、`campaign_hub.gd`、`debug_panel.gd`：图书馆环境游戏内只读预览入口；启动参数或调试面板均可打开，状态／视角按钮不触碰正式存档。
 
 ## 验证与证据
 
-入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)、[E25](verification.md#m1-图书馆环境接入验证-e25)、[E26](verification.md#m1-图书馆环境游戏内预览验证-e26)、[E28](verification.md#m1-探索热点无文字动效验证-e28)与[E29](verification.md#m1-基地首页图标接入验证-e29)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；基地图标专项 46/0、完整战役 124/0、旧基地 67/0，覆盖五枚真实引用、三尺寸、焦点态与图鉴导航。接入证据保存于对应 `design/concepts/**/review/codex-workflow/` 目录及美术任务记录。
+入口统一见[共享验证目录 E20](verification.md#m1-战役验证-e20)、[E24](verification.md#m1-探索-ui-011-接入验证-e24)、[E25](verification.md#m1-图书馆环境接入验证-e25)、[E26](verification.md#m1-图书馆环境游戏内预览验证-e26)、[E28](verification.md#m1-探索热点无文字动效验证-e28)与[E29](verification.md#m1-基地首页图标接入验证-e29)。永久状态103项、地点134项、六种区域顺序完整战斗流程检查通过；基地图标专项 61/0、完整战役 124/0、旧基地 67/0，覆盖五枚真实映射与像素、无导入缓存直启、三尺寸、焦点态与图鉴导航。接入证据保存于对应 `design/concepts/**/review/codex-workflow/` 目录及美术任务记录。
 
 ## 当前玩家引导与结果反馈
 

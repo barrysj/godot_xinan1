@@ -189,9 +189,11 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 
 | 入口 | 结果与覆盖 |
 | --- | --- |
-| 探索场景 `-- --campaign-flow-check --hub-icon-capture` | 46 checks / 0 failures；核对回忆、成长、派遣、图鉴四个原生按钮及资源状态图标均引用 `asset_012_formal` 运行时派生图，图标宽度约束为 36；图鉴真实打开并关闭；捕获三种桌面分辨率及成长焦点态 |
+| 探索场景 `-- --campaign-flow-check --hub-icon-capture` | 61 checks / 0 failures；核对回忆、成长、派遣、图鉴四个原生按钮及资源状态图标均映射 `asset_012_formal`、纹理为 64×64，图标宽度约束为 36；图鉴真实打开并关闭；捕获三种桌面分辨率及成长焦点态；无缓存回退与有缓存导入两条路径均通过 |
 | 探索场景 `--headless -- --campaign-flow-check` | 124 checks / 0 failures；完整战役、战斗、奖励、恢复与终局无回归 |
 | 探索场景 `--headless -- --meta-smoke` | 67 checks / 0 failures；旧基地、派遣与存档流程无回归 |
+| Mono 引擎无导入缓存直接启动 | 修复前稳定出现 `Preload file ...png has no resource loaders` 并令 M1 脚本编译失败；改为运行期导入资源优先、PNG 字节回退后，同一启动命令无 Script Error |
+| 标准版 Godot `--headless --path . --export-release Web builds/web/index.html` | release 导出成功；正式包使用已导入纹理路径 |
 | 运行时 PNG 检查 | 10 张均为 64×64，透明角 alpha=0；正式 SVG 保留为源，PNG 为确定性运行时派生图 |
 | `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台 33 tests 通过；批准、正式路径与接入状态可核验 |
 

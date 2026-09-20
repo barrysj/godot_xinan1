@@ -5,16 +5,17 @@ const MEMORY_TERMINAL_VIEW = preload("res://scenes/expedition/memory_terminal_vi
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
-const HUB_ICONS := {
-	"codex": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_codex.png"),
-	"dispatch": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_dispatch.png"),
-	"growth": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_growth.png"),
-	"memory": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_memory.png"),
-	"resource": preload("res://assets/art/ui/m1_campus_hub/runtime/icon_resource.png"),
+const HUB_ICON_PATHS := {
+	"codex": "res://assets/art/ui/m1_campus_hub/runtime/icon_codex.png",
+	"dispatch": "res://assets/art/ui/m1_campus_hub/runtime/icon_dispatch.png",
+	"growth": "res://assets/art/ui/m1_campus_hub/runtime/icon_growth.png",
+	"memory": "res://assets/art/ui/m1_campus_hub/runtime/icon_memory.png",
+	"resource": "res://assets/art/ui/m1_campus_hub/runtime/icon_resource.png",
 }
 const LIBRARY_ENVIRONMENT_STATE := "anomaly"
 const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
 var column: VBoxContainer
+var hub_icon_textures: Dictionary = {}
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
 var anomaly: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).anomaly
 var exploration_stage: Control
@@ -96,12 +97,31 @@ func button(label: String, id: String, enabled: bool = true, parent: Control = n
 	(column if parent == null else parent).add_child(item)
 	return item
 
-func _home_icon_button(label: String, id: String, icon: Texture2D, parent: Control) -> Button:
+func _hub_icon(id: String) -> Texture2D:
+	if hub_icon_textures.has(id): return hub_icon_textures[id]
+	var path: String = HUB_ICON_PATHS.get(id, "")
+	if path.is_empty(): return null
+	if ResourceLoader.exists(path):
+		var imported := load(path) as Texture2D
+		if imported != null:
+			hub_icon_textures[id] = imported
+			return imported
+	var bytes := FileAccess.get_file_as_bytes(path)
+	var image := Image.new()
+	if bytes.is_empty() or image.load_png_from_buffer(bytes) != OK:
+		push_warning("基地图标读取失败：" + path)
+		return null
+	var texture := ImageTexture.create_from_image(image)
+	hub_icon_textures[id] = texture
+	return texture
+
+func _home_icon_button(label: String, id: String, icon_id: String, parent: Control) -> Button:
 	var item := button(label,id,true,parent)
 	item.custom_minimum_size = Vector2(250,76)
 	item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	item.add_theme_font_size_override("font_size",21)
-	item.icon = icon
+	item.icon = _hub_icon(icon_id)
+	item.set_meta("icon_asset_path",HUB_ICON_PATHS.get(icon_id,""))
 	item.expand_icon = true
 	item.add_theme_constant_override("icon_max_width",36)
 	item.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -137,7 +157,8 @@ func _resource_status(points: int) -> void:
 	panel.add_child(status_row)
 	var icon := TextureRect.new()
 	icon.custom_minimum_size = Vector2(36,36)
-	icon.texture = HUB_ICONS.resource
+	icon.texture = _hub_icon("resource")
+	icon.set_meta("icon_asset_path",HUB_ICON_PATHS.resource)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -195,10 +216,10 @@ func home(progress, chosen_supply: bool) -> void:
 	secondary.add_theme_constant_override("h_separation",14)
 	secondary.add_theme_constant_override("v_separation",14)
 	column.add_child(secondary)
-	_home_icon_button("回忆","memories",HUB_ICONS.memory,secondary)
-	_home_icon_button("成长","growth",HUB_ICONS.growth,secondary)
-	_home_icon_button("派遣","dispatch",HUB_ICONS.dispatch,secondary)
-	_home_icon_button("图鉴","codex",HUB_ICONS.codex,secondary)
+	_home_icon_button("回忆","memories","memory",secondary)
+	_home_icon_button("成长","growth","growth",secondary)
+	_home_icon_button("派遣","dispatch","dispatch",secondary)
+	_home_icon_button("图鉴","codex","codex",secondary)
 	if progress.supply_unlocked:
 		text("出发补给："+("携带厚笔记本" if chosen_supply else "未携带"),19)
 		button("切换补给","supply")

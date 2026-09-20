@@ -148,7 +148,8 @@ func verify_hub_icons(hub) -> void:
 		var item: Button = hub.campaign_panel.action_button(id)
 		verify(is_instance_valid(item),"hub exposes %s action button" % id)
 		if is_instance_valid(item):
-			verify(item.icon != null and item.icon.resource_path == expected[id],"hub %s uses approved icon" % id)
+			verify(item.icon != null and item.icon.get_size() == Vector2(64,64),"hub %s loads approved icon pixels" % id)
+			verify(item.get_meta("icon_asset_path","") == expected[id],"hub %s maps approved icon path" % id)
 			verify(item.get_theme_constant("icon_max_width") == 36,"hub %s icon stays at UI scale" % id)
 	var resource_status: Node = hub.campaign_panel.find_child("ResourceStatus",true,false)
 	verify(is_instance_valid(resource_status),"hub exposes resource status card")
@@ -156,7 +157,8 @@ func verify_hub_icons(hub) -> void:
 		var icons: Array[Node] = resource_status.find_children("*","TextureRect",true,false)
 		var resource_icon: TextureRect = null
 		if icons.size() == 1: resource_icon = icons[0] as TextureRect
-		verify(resource_icon != null and resource_icon.texture.resource_path == "res://assets/art/ui/m1_campus_hub/runtime/icon_resource.png","resource status uses approved icon")
+		verify(resource_icon != null and resource_icon.texture != null and resource_icon.texture.get_size() == Vector2(64,64),"resource status loads approved icon pixels")
+		verify(resource_icon != null and resource_icon.get_meta("icon_asset_path","") == "res://assets/art/ui/m1_campus_hub/runtime/icon_resource.png","resource status maps approved icon path")
 
 func capture_hub_icons(hub) -> void:
 	hub.get_window().mode = Window.MODE_WINDOWED

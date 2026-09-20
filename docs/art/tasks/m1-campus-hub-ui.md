@@ -44,7 +44,8 @@
 - 技术检查结果及必要复现命令：既有位图候选检查结果保持不变；`asset_011` 与 `asset_012` 均使用 PowerShell 7 XML 解析检查。`asset_012` 的 10 枚生产图标与 2 份预览 SVG 全部可解析，生产图标均为 `64×64`、`viewBox="0 0 64 64"` 且不含 `<text>`；生产图标内不再包含 `#FF2BA6`／`#E83E8C`，`#F7E733` 只存在于成长和资源图标。Chrome headless 实际渲染 64px 与 32／24px PNG 评审板，缩小后仍可区分主要语义。`py -3 -B -m unittest discover -s tools/art/asset_manager/tests` 共 33 项通过；`git diff --check` 通过。
 - Manifest 回写：`asset_012` 保持 `selected + approved`，`asset_012_formal` 为正式源；integration 已升级为 `authorized_active`，列出当前真实使用的五枚运行时图标，视觉评审仍为 `pending`。
 - 一致性检查：正式 10 枚 SVG 与批准候选逐文件一致；为规避运行时依赖编辑器 SVG 导入缓存，使用确定性渲染的 64×64 透明 PNG 派生图。10 张 PNG 均为 64×64、左上角 alpha=0；状态点、卡片和文字仍由 Godot 原生控件承担。
-- 适用的布局／交互验证结果：`--campaign-flow-check --hub-icon-capture` 为 46 checks / 0 failures；覆盖五枚资源引用、图标最大宽度、资源状态卡、图鉴真实导航与关闭、三种桌面分辨率及成长按钮焦点态。完整战役为 124/0，旧基地 `--meta-smoke` 为 67/0。
+- 适用的布局／交互验证结果：`--campaign-flow-check --hub-icon-capture` 为 61 checks / 0 failures；覆盖五枚资源映射与真实 64×64 像素、图标最大宽度、资源状态卡、图鉴真实导航与关闭、三种桌面分辨率及成长按钮焦点态。完整战役为 124/0，旧基地 `--meta-smoke` 为 67/0。
+- 首次启动回归：曾因无 `.import` 缓存时直接 `preload` PNG 导致 `campaign_panel.gd` 解析失败并露出旧基地层；现改为“已有导入资源则加载，否则从 PNG 字节创建纹理”。清理生成元数据后使用项目 `run-campus-demo.ps1` 同款 Mono 引擎直接启动，不再出现脚本错误；随后有缓存路径同样通过 61/0。Web release 导出成功。
 - 实际截图证据：`design/concepts/m1-campus-hub-ui/review/codex-workflow/integration-012/` 保存 1920×1080、2560×1440、1920×1200 首页，以及 1920×1080 成长焦点态；截图均来自真实 M1 基地运行页。
 - 未解决问题：接入效果仍需负责人视觉评审；运行时没有未读状态，因此本轮不显示品红角标。008–010 不属于当前首页最小接入集；学习、队伍、设置、消息、通知图标暂不接到没有对应入口的位置。
 - 本地提交：正式资产提升提交为 `00a38f8`；本次接入在技术验证后另行提交到 `art/m1-campus-hub-ui`，远程不推送。
