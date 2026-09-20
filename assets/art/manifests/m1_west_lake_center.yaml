@@ -1,0 +1,33 @@
+schema_version: 3
+object:
+  id: m1_west_lake_center
+  display_name: "西湖中心环境"
+  type: background
+  subtype: campaign_location
+variants:
+  concept_001:
+    stage: concept
+    version: "001"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_west_lake_center/001
+    files:
+      concept: concept.png
+      generation: generation.md
+    metadata:
+      asset_type: environment_concept
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      location_id: west_lake_center
+      location_identity: "西湖中心"
+      usage: [campaign_west_lake_center, concept_review]
+      source_identity: user_confirmed_real_location_photo
+      identity_status: user_confirmed_real_location_reference
+      runtime_mapping_status: pending_runtime_location_binding
+      style_reference: approved_m1_campus_locations_concept_003
+integration:
+  status: not_integrated
+  active_variant: null
+  evidence: docs/art/tasks/m1-campus-locations.md
+

@@ -18,4 +18,13 @@ objects:
   m1_campus_court: manifests/m1_campus_court.yaml
   m1_pinxue_courtyard: manifests/m1_pinxue_courtyard.yaml
   m1_pinxue_atrium: manifests/m1_pinxue_atrium.yaml
+  m1_xuezi_cafeteria: manifests/m1_xuezi_cafeteria.yaml
+  m1_student_activity_center: manifests/m1_student_activity_center.yaml
+  m1_west_lake_center: manifests/m1_west_lake_center.yaml
+  m1_chengdian_auditorium_commercial_street: manifests/m1_chengdian_auditorium_commercial_street.yaml
+  m1_yinhua_halal_cafeterias: manifests/m1_yinhua_halal_cafeterias.yaml
+  m1_basic_laboratory_building: manifests/m1_basic_laboratory_building.yaml
+  m1_west_lake_entrance: manifests/m1_west_lake_entrance.yaml
+  m1_sports_field: manifests/m1_sports_field.yaml
+  m1_library_front: manifests/m1_library_front.yaml
   m1_memory_artifact: manifests/m1_memory_artifact.yaml
