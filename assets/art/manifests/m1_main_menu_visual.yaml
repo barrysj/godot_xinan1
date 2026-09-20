@@ -90,6 +90,27 @@ variants:
       text_baked_in: false
       native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
       integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_005:
+    stage: concept
+    version: 005
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/005
+    files:
+      ginkgo_main_building: ginkgo-main-building.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, menu_layout_study, focused_revision]
+      style_layer: seasonal_real_campus_reference
+      source_identity: revised_from_concept_004_ginkgo_main_building
+      revision_of: concept_004.ginkgo_main_building
+      edit_scope: [align_main_entrance_to_road_centerline, preserve_road]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
 integration:
   status: not_integrated
   evidence: docs/art/tasks/m1-main-menu.md
