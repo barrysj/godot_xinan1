@@ -137,8 +137,13 @@ variants:
   asset_007:
     stage: asset
     version: 007
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-20
+      decision: approved_as_family_seed
+      quote: "可以。继续生成其他素材"
     root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_007
     files:
       asset: campus_hub_memory_terminal_orb_asset_007.png
@@ -164,6 +169,85 @@ variants:
         - assets/art/icons/m1_memory_artifact/cyan_magenta.png
         - assets/art/ui/m1_exploration_ui/panel.png
         - assets/art/ui/m1_exploration_ui/memory.png
+  asset_008:
+    stage: asset
+    version: 008
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_008
+    files:
+      asset: campus_hub_calibration_node_asset_008.png
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon
+      canvas: [1254, 1254]
+      resolution: [1254, 1254]
+      transparent: true
+      usage: [asset_review, campus_map_node, progress_ring_node, status_card_accent]
+      style_layer: daily_campus_science_badge_with_memory_terminal_material
+      family_seed: asset_007
+      material_reference: assets/art/icons/m1_memory_artifact/cyan_magenta.png
+      review_sizes: [64, 48]
+      implementation_note: native_status_and_label_overlay; no_baked_text_or_controls
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "单一圆形技术节点；小尺寸优先保留外环与中心镜面。"
+      source_tool: codex_builtin_imagegen
+      source_id: exec-ef68b7e9-12cf-40f1-a6e8-1debb3e0aabf
+      style_references:
+        - assets/art/icons/m1_memory_artifact/cyan_magenta.png
+        - assets/art/ui/m1_exploration_ui/panel.png
+  asset_009:
+    stage: asset
+    version: 009
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_009
+    files:
+      asset: campus_hub_repair_beacon_asset_009.png
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon
+      canvas: [1254, 1254]
+      resolution: [1254, 1254]
+      transparent: true
+      usage: [asset_review, campus_map_hotspot, dispatch_destination, repair_status]
+      style_layer: daily_campus_science_badge_with_memory_terminal_material
+      family_seed: asset_007
+      review_sizes: [96, 48]
+      implementation_note: native_status_and_label_overlay; no_baked_text_or_controls
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "纵向维修信标轮廓清楚；48px 下优先保留主体、球形镜头和中央状态槽。"
+      source_tool: codex_builtin_imagegen
+      source_id: exec-0e2fe3fd-cfd8-4467-9d52-1ef1bc5fdf31
+      style_references:
+        - assets/art/icons/m1_memory_artifact/cyan_magenta.png
+        - assets/art/ui/m1_exploration_ui/panel.png
+  asset_010:
+    stage: asset
+    version: 010
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/asset_010
+    files:
+      asset: campus_hub_memory_bay_asset_010.png
+      generation: generation.md
+    metadata:
+      asset_type: transparent_ui_icon
+      canvas: [1254, 1254]
+      resolution: [1254, 1254]
+      transparent: true
+      usage: [asset_review, settlement_card, repair_complete, memory_terminal_bay]
+      style_layer: daily_campus_science_badge_with_memory_terminal_material
+      family_seed: asset_007
+      review_sizes: [96, 64]
+      implementation_note: native_status_and_label_overlay; no_baked_text_or_controls
+      quality_gate: PASS_WITH_NOTES
+      quality_notes: "横向托架与圆球材质分层清楚；64px 以下优先保留托架轮廓和暖金接口。"
+      source_tool: codex_builtin_imagegen
+      source_id: exec-e8317d72-54ca-484a-90a8-18949e0528e7
+      style_references:
+        - assets/art/icons/m1_memory_artifact/cyan_magenta.png
+        - assets/art/ui/m1_exploration_ui/panel.png
 integration:
   status: not_integrated
   evidence: "docs/art/tasks/m1-campus-hub-ui.md；概念阶段未授权 Godot 试接入。"
