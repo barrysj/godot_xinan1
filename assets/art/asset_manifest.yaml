@@ -16,4 +16,6 @@ objects:
   m1_campus_locations: manifests/m1_campus_locations.yaml
   m1_campus_walk: manifests/m1_campus_walk.yaml
   m1_campus_court: manifests/m1_campus_court.yaml
+  m1_pinxue_courtyard: manifests/m1_pinxue_courtyard.yaml
+  m1_pinxue_atrium: manifests/m1_pinxue_atrium.yaml
   m1_memory_artifact: manifests/m1_memory_artifact.yaml
