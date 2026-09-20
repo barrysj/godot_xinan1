@@ -5,6 +5,7 @@ const MEMORY_TERMINAL_VIEW = preload("res://scenes/expedition/memory_terminal_vi
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
+const CampusUi = preload("res://scenes/ui/campus_ui.gd")
 const HUB_ICON_PATHS := {
 	"codex": "res://assets/art/ui/m1_campus_hub/runtime/icon_codex.png",
 	"dispatch": "res://assets/art/ui/m1_campus_hub/runtime/icon_dispatch.png",
@@ -15,6 +16,10 @@ const HUB_ICON_PATHS := {
 const LIBRARY_ENVIRONMENT_STATE := "anomaly"
 const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
 var column: VBoxContainer
+var page_margin: MarginContainer
+var page_scroll: ScrollContainer
+var home_root: Control
+var default_parent: Control
 var hub_icon_textures: Dictionary = {}
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
 var anomaly: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).anomaly
@@ -37,20 +42,43 @@ func _ready() -> void:
 	add_theme_stylebox_override("panel",background)
 	theme = preload("res://resources/theme/theme-main.tres").duplicate()
 	theme.default_font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
-	var margin = MarginContainer.new()
-	for side in ["left","top","right","bottom"]: margin.add_theme_constant_override("margin_"+side,36)
-	add_child(margin)
-	var scroll = ScrollContainer.new()
-	margin.add_child(scroll)
+	page_margin = MarginContainer.new()
+	page_margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for side in ["left","top","right","bottom"]: page_margin.add_theme_constant_override("margin_"+side,32)
+	add_child(page_margin)
+	page_scroll = ScrollContainer.new()
+	page_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page_margin.add_child(page_scroll)
 	column = VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation",18)
-	scroll.add_child(column)
+	page_scroll.add_child(column)
+	default_parent = column
+	home_root = Control.new()
+	home_root.name = "HomeRoot"
+	home_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	home_root.hide()
+	add_child(home_root)
 
 func clear(title: String, detail: String) -> void:
+	_show_standard_page()
 	_clear_column()
 	text(title,32)
 	text(detail,21)
+
+func _show_standard_page() -> void:
+	home_root.hide()
+	page_margin.show()
+	default_parent = column
+
+func _show_home_page() -> void:
+	page_margin.hide()
+	home_root.show()
+	default_parent = home_root
+	for child in home_root.get_children():
+		home_root.remove_child(child)
+		child.queue_free()
 
 func _clear_column() -> void:
 	for child in column.get_children():
@@ -67,12 +95,8 @@ func _clear_column() -> void:
 	environment_preview_viewpoint_buttons.clear()
 
 func text(value: String, font_size: int = 22, parent: Control = null) -> void:
-	var label = Label.new()
-	label.text = value
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size",font_size)
-	label.add_theme_color_override("font_color",Color(palette.text_primary))
-	(column if parent == null else parent).add_child(label)
+	var label := CampusUi.label(value,font_size,"daily")
+	(default_parent if parent == null else parent).add_child(label)
 
 func button(label: String, id: String, enabled: bool = true, parent: Control = null) -> Button:
 	var item = Button.new()
@@ -83,18 +107,9 @@ func button(label: String, id: String, enabled: bool = true, parent: Control = n
 	item.disabled = not enabled
 	item.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	item.custom_minimum_size.x = 320
-	for state in ["normal","hover","pressed","disabled","focus"]:
-		var style = StyleBoxFlat.new()
-		style.bg_color = Color(palette.surface_blue if state in ["hover","pressed"] else palette.surface)
-		style.border_color = Color(palette.accent_primary if enabled else palette.text_secondary)
-		style.set_border_width_all(2)
-		style.set_corner_radius_all(6)
-		item.add_theme_stylebox_override(state,style)
-	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
-		item.add_theme_color_override(state,Color(palette.text_primary))
-	item.add_theme_color_override("font_disabled_color",Color(palette.text_secondary))
+	CampusUi.apply_button(item,"daily")
 	item.pressed.connect(func(): action.emit(id))
-	(column if parent == null else parent).add_child(item)
+	(default_parent if parent == null else parent).add_child(item)
 	return item
 
 func _hub_icon(id: String) -> Texture2D:
@@ -151,7 +166,7 @@ func _resource_status(points: int) -> void:
 	style.set_corner_radius_all(10)
 	style.set_content_margin_all(10)
 	panel.add_theme_stylebox_override("panel",style)
-	column.add_child(panel)
+	default_parent.add_child(panel)
 	var status_row := HBoxContainer.new()
 	status_row.add_theme_constant_override("separation",12)
 	panel.add_child(status_row)
@@ -179,54 +194,166 @@ func action_button(id: String) -> Button:
 func row() -> HBoxContainer:
 	var result = HBoxContainer.new()
 	result.add_theme_constant_override("separation",18)
-	column.add_child(result)
+	default_parent.add_child(result)
 	return result
 
 func home(progress, chosen_supply: bool) -> void:
-	clear("校园修复站","你是这座虚拟校园的管理员。前代系统正在回滚新建内容；收回三台记忆终端，才能修正它的指令。")
+	_show_home_page()
+	var safe := MarginContainer.new()
+	safe.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for side in ["left","top","right","bottom"]: safe.add_theme_constant_override("margin_"+side,32)
+	home_root.add_child(safe)
+	var page := VBoxContainer.new()
+	page.add_theme_constant_override("separation",20)
+	safe.add_child(page)
+	var header := PanelContainer.new()
+	CampusUi.apply_panel(header,"daily","quiet")
+	header.custom_minimum_size.y = 86
+	page.add_child(header)
+	var header_row := HBoxContainer.new()
+	header_row.add_theme_constant_override("separation",20)
+	header.add_child(header_row)
+	var heading := VBoxContainer.new()
+	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header_row.add_child(heading)
+	heading.add_child(CampusUi.label("校园修复站",32,"daily"))
+	heading.add_child(CampusUi.label("阶梯教室据点 · 当前 AI 值班中",17,"daily",true))
+	var objective_chip := PanelContainer.new()
+	CampusUi.apply_panel(objective_chip,"daily","strong")
+	objective_chip.custom_minimum_size = Vector2(440,0)
+	header_row.add_child(objective_chip)
+	var objective_label := CampusUi.label(progress.Campaign.objective(progress.campaign),19,"daily")
+	objective_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	objective_chip.add_child(objective_label)
+
+	var body := HBoxContainer.new()
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation",20)
+	page.add_child(body)
+	var mission := _home_card(body,"探索任务",Vector2(372,0))
+	var stage := _home_stage(body,progress)
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var facilities := _home_card(body,"基地功能",Vector2(372,0))
+	default_parent = facilities
 	if progress.load_blocked:
-		text(progress.error_message)
+		text(progress.error_message,18,mission)
 		return
-	terminal_progress(progress.campaign.terminals)
-	var primary = _detail_box()
-	text("当前目标 · "+progress.Campaign.objective(progress.campaign),26,primary)
+	text("当前目标",18,mission)
+	text(progress.Campaign.objective(progress.campaign),23,mission)
 	if not progress.active_run.is_empty():
-		text("有一段尚未结束的探索。继续会回到已保存的地点或战前。",19,primary)
-		button("继续探索","continue",true,primary)
+		text("已有探索进度，可从保存的地点或战前继续。",17,mission)
+		button("继续探索","continue",true,mission)
 	if not progress.campaign.prologue_done:
-		text("先带四名同学突破校门封锁，学习部署与领奖。",19,primary)
-		button("前往校门","prologue",true,primary)
+		text("先突破校门封锁，完成部署与领奖教学。",17,mission)
+		button("前往校门","prologue",true,mission)
 	elif not progress.campaign.routes_acquired:
-		text("封锁已解除。让档案员取回三条路线：立即完成，不消耗资源。",19,primary)
-		button("取回路线","tutorial",true,primary)
+		text("封锁已解除，取回校园路线资料。",17,mission)
+		button("取回路线","tutorial",true,mission)
 	else:
-		text("选择目的地 · 推荐从图书馆开始",23)
-		var routes = row()
+		text("选择目的地",18,mission)
+		var routes := VBoxContainer.new()
+		routes.add_theme_constant_override("separation",10)
+		mission.add_child(routes)
 		for region in ["library","region_b","region_c"]:
-			button({"library":"图书馆","region_b":"第二终端","region_c":"第三终端"}[region],"region:"+region,true,routes)
-	if progress.campaign.terminals.size() == 3 and not progress.campaign.restored: button("接入终端","finale")
+			var route_button := button({"library":"图书馆","region_b":"第二终端","region_c":"第三终端"}[region],"region:"+region,true,routes)
+			route_button.custom_minimum_size.x = 0
+			route_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if progress.campaign.terminals.size() == 3 and not progress.campaign.restored: button("接入终端","finale",true,mission)
 	if progress.campaign.restored:
-		text("校园已恢复。你可以重访各地，或重看结尾。")
-		button("重看结尾","ending")
+		text("校园已恢复，可重访各地。",17,mission)
+		button("重看结尾","ending",true,mission)
+	default_parent = facilities
 	_resource_status(progress.points)
-	text("基地功能",23)
 	var secondary := GridContainer.new()
-	secondary.columns = 4
+	secondary.columns = 2
 	secondary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	secondary.add_theme_constant_override("h_separation",14)
-	secondary.add_theme_constant_override("v_separation",14)
-	column.add_child(secondary)
+	secondary.add_theme_constant_override("h_separation",10)
+	secondary.add_theme_constant_override("v_separation",10)
+	facilities.add_child(secondary)
 	_home_icon_button("回忆","memories","memory",secondary)
 	_home_icon_button("成长","growth","growth",secondary)
 	_home_icon_button("派遣","dispatch","dispatch",secondary)
 	_home_icon_button("图鉴","codex","codex",secondary)
 	if progress.supply_unlocked:
-		text("出发补给："+("携带厚笔记本" if chosen_supply else "未携带"),19)
-		button("切换补给","supply")
-	button("主菜单","menu")
+		text("出发补给 · "+("厚笔记本" if chosen_supply else "未携带"),17,facilities)
+		var supply_button := button("切换补给","supply",true,facilities)
+		supply_button.custom_minimum_size.x = 0
+		supply_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var menu_button := button("主菜单","menu",true,facilities)
+	menu_button.custom_minimum_size.x = 0
+	menu_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_focus_first_home_action.call_deferred()
 
-func terminal_progress(terminals: Array) -> void:
-	var strip = row()
+func _home_card(parent: Control, title: String, minimum: Vector2) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = minimum
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	CampusUi.apply_panel(panel,"daily")
+	parent.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation",12)
+	panel.add_child(box)
+	box.add_child(CampusUi.label(title,25,"daily"))
+	return box
+
+func _home_stage(parent: Control, progress) -> PanelContainer:
+	var stage := PanelContainer.new()
+	stage.name = "CampusStage"
+	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	CampusUi.apply_panel(stage,"daily","quiet")
+	parent.add_child(stage)
+	var content := VBoxContainer.new()
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_theme_constant_override("separation",16)
+	stage.add_child(content)
+	var spacer_top := Control.new()
+	spacer_top.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(spacer_top)
+	var ai_status := PanelContainer.new()
+	CampusUi.apply_panel(ai_status,"daily","strong")
+	ai_status.custom_minimum_size = Vector2(0,76)
+	ai_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(ai_status)
+	var ai_row := HBoxContainer.new()
+	ai_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	ai_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ai_row.add_theme_constant_override("separation",12)
+	ai_status.add_child(ai_row)
+	var ai_icon := TextureRect.new()
+	ai_icon.texture = _hub_icon("notification")
+	ai_icon.custom_minimum_size = Vector2(42,42)
+	ai_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ai_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	ai_row.add_child(ai_icon)
+	var ai_label := CampusUi.label("当前 AI · 修复流程待命",20,"daily")
+	ai_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	ai_label.custom_minimum_size.x = 240
+	ai_row.add_child(ai_label)
+	var terminals := HBoxContainer.new()
+	terminals.add_theme_constant_override("separation",10)
+	content.add_child(terminals)
+	terminal_progress(progress.campaign.terminals,terminals)
+	var hint := CampusUi.label("阶梯教室布景将在概念批准后替换此展示层",16,"daily",true)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(hint)
+	var spacer_bottom := Control.new()
+	spacer_bottom.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(spacer_bottom)
+	return stage
+
+func _focus_first_home_action() -> void:
+	if not is_instance_valid(home_root) or not home_root.visible: return
+	for candidate in home_root.find_children("*","Button",true,false):
+		if not candidate.disabled and candidate.visible:
+			candidate.grab_focus()
+			return
+
+func terminal_progress(terminals: Array, parent: Control = null) -> void:
+	var strip: HBoxContainer
+	if parent == null:
+		strip = row()
+	else:
+		strip = parent as HBoxContainer
 	for region in ["library","region_b","region_c"]:
 		var view = MEMORY_TERMINAL_VIEW.new()
 		view.setup(region, terminals.has(region), "compact")

@@ -198,3 +198,15 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台 33 tests 通过；批准、正式路径与接入状态可核验 |
 
 实际截图位于 `design/concepts/m1-campus-hub-ui/review/codex-workflow/integration-012/`：三尺寸基地首页与 1080p 成长按钮焦点态。普通入口使用青色边框，键盘焦点使用黄色细框；品红状态点没有烘焙到图标中，且当前无未读状态所以不显示。技术验证不代替负责人对接入效果的人工视觉验收。运行环境仍有既有 `user://logs`、系统根证书及像素图原图加载警告。
+
+## M1 正式 UI 基础与基地骨架验证 E30
+
+2026-09-21；在不修改玩法、存档 schema 或 `CampaignPanel.action(id)` 的前提下，新增日常层共享样式并将 M1 基地首页改为顶部状态栏、左任务、中布景、右功能的响应式容器布局。中部只使用现有终端资产与明确的概念占位提示，未接入未批准的阶梯教室或值班 AI 美术。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| 探索场景 `--headless -- --campaign-flow-check --order=012` | 124 checks / 0 failures；完整战斗、奖励、恢复与终局无回归 |
+| 探索场景 `-- --campaign-flow-check --hub-icon-capture` | 61 checks / 0 failures；三尺寸基地截图、五枚正式图标映射、图鉴开关与焦点态保持有效 |
+| 实际截图检查 | 1920×1080、2560×1440、1920×1200 三栏不重叠；首个可操作按钮获得焦点，成长按钮显示黄色焦点边；修复 AI 状态条被压成竖排的问题后重跑通过 |
+
+截图为 `.godot/m1-campus-hub-icons-*.png` 与 `.godot/m1-campus-hub-icons-focus-1920x1080.png`。阶梯教室环境和悬浮屏幕 AI 仍须按美术工作流完成概念、资产与接入审批。
