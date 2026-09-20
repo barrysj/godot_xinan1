@@ -5,7 +5,7 @@ const BACKGROUNDS = [
 	{
 		"name": "图书馆",
 		"normal": "res://design/concepts/m1-main-menu/m1_main_menu_visual/002/library.png",
-		"anomaly": "res://design/concepts/m1-main-menu/m1_main_menu_visual/009/library-anomaly-two-digital-swans.png",
+		"anomaly": "res://design/concepts/m1-main-menu/m1_main_menu_visual/011/library-anomaly-two-digital-swans-clear-directions.png",
 	},
 	{
 		"name": "品学楼",

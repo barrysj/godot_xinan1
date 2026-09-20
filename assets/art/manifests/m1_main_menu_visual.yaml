@@ -218,12 +218,62 @@ variants:
       text_baked_in: false
       native_overlay_regions: [left_navigation, upper_sky_title]
       integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产、角色独立拆分和视觉批准仍待人工评审"
+  concept_010:
+    stage: concept
+    version: 010
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/010
+    files:
+      library_anomaly_two_digital_swans_asymmetric: library-anomaly-two-digital-swans-asymmetric.png
+      generation: generation.md
+    revision_of: concept_009.library_anomaly_two_digital_swans
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "两只远景黑天鹅动作差异初版候选；不作为主菜单当前 active 版本"
+      date: 2026-09-21
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, action_direction_candidate]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_009_library_two_digital_swans
+      edit_scope: [vary_swan_direction_and_action]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "中间候选；右侧抬翼轮廓仍需动作朝向复核"
+  concept_011:
+    stage: concept
+    version: 011
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/011
+    files:
+      library_anomaly_two_digital_swans_clear_directions: library-anomaly-two-digital-swans-clear-directions.png
+      generation: generation.md
+    revision_of: concept_010.library_anomaly_two_digital_swans_asymmetric
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "两只远景黑天鹅动作与朝向明确修订；替换 concept_009 作为主菜单当前图书馆异常图"
+      date: 2026-09-21
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, asymmetric_swan_actions]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_010_library_two_digital_swans_asymmetric
+      edit_scope: [clarify_left_facing_low_neck_glide, clarify_right_facing_raised_neck_wing_stretch, preserve_distant_scale]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产与视觉批准仍待人工评审"
 integration:
   status: authorized_active
-  active_variant: concept_006_with_concept_009_library_revision
+  active_variant: concept_006_with_concept_011_library_revision
   root: design/concepts/m1-main-menu/m1_main_menu_visual/006
   files:
-    library_anomaly: ../009/library-anomaly-two-digital-swans.png
+    library_anomaly: ../011/library-anomaly-two-digital-swans-clear-directions.png
     pinxue_building_anomaly: pinxue-building-anomaly.png
     ginkgo_main_building_anomaly: ginkgo-main-building-anomaly.png
   visual_review: pending
