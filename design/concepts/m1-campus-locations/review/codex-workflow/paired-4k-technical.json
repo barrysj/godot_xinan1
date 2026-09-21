@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-22",
+  "expected_final_count": 24,
+  "current_count": 13,
+  "native_4k": false,
+  "files": [
+    {
+      "id": "south_gate",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_campus_locations/006/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "30BBB95C1F8B53E42FEDB0CF5628C2E1C76749B8BE943A0AC60F39E0715A8597",
+      "final_sha256": "AA5A235FC16A7CB49BBB2E4439F742D3F4DB72E0946AD4E5C255845E75D92ACE",
+      "bytes": 16907509,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "pinxue_courtyard",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_pinxue_courtyard/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "B37DECB579E1F48D9A6941791CD21DF9923D5740098FF54EB1F42154161B53E2",
+      "final_sha256": "C2D2045263D750ED6E2C501C46A7046AEA16056C2F74935918DE232D5169513A",
+      "bytes": 16242576,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "pinxue_atrium",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_pinxue_atrium/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "69EAC771ED8BCDC53187E1A6D4AECF928298195A796159758A8B527851264A5C",
+      "final_sha256": "A58308FE8D9CBAE263E291142216D04F4B459288F56A715D9AB309622ED5C311",
+      "bytes": 17645306,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "xuezi_cafeteria",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "B71BD388409511304AFB622914F0B7BA39499E7B4CACD4165755D6248903DD34",
+      "final_sha256": "7C61C646936DF650D241EDBDA6F75B72A1D829730DC42C1AB73F894C74FD58FF",
+      "bytes": 17878635,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "student_activity_center",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_student_activity_center/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "EF8AB934BD6452B03B72DAE00AACCA6F03A30E3E2AAA9FDFD0DE4475062AA43D",
+      "final_sha256": "29E723AD9E07E5C3A3A192660EB2810FD9EC0B0A8B1EFB309FC4C0468D67204F",
+      "bytes": 16339208,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "west_lake_center",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_west_lake_center/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "197834659957D443FA254C565A38F9AEB6D2E761A1233F5BB7D0076D0C58FBC6",
+      "final_sha256": "D5D01837172887A83232D4126D5BAE77E4936AD1CD2F0430FE3E8BBA32335CB3",
+      "bytes": 18727222,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "chengdian_auditorium_commercial_street",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "07E9CDBFC2F438DBFB658ABB36670E2BD42CE34DDA638A96D17805C2B2F27B82",
+      "final_sha256": "B615510A1AF54A1A45C250BD70E3507300790CA7C06EB888354489B0B8BBAFDE",
+      "bytes": 16047301,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "yinhua_halal_cafeterias",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "C612CDEED7A526041C29050CF81ED841725B6E1C9F2EC317FA166FDFA223617D",
+      "final_sha256": "D4A5A4CB9F3AC9E5D7D396DA5CB6E8E50D846D2314B500ADCB256168FA684FAE",
+      "bytes": 18400285,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "basic_laboratory_building",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_basic_laboratory_building/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "72D71CF4A27177EB75EDF75D75DEA035B28D51E4A76E86490FA5E7B45E6D8825",
+      "final_sha256": "76A96AFDA2F449D423B8EC9E3002DE2BA43804709D937B9EA699292E7FFAC5F5",
+      "bytes": 16916769,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "west_lake_entrance",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_west_lake_entrance/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "A7BEB74DFEF58EF4CC301EB8FCC3348F37DC40F1DC77D32DFD777CAC0576C806",
+      "final_sha256": "33911512C2410DCEBBFEFB300E2938D32420CC50CD8240DD1935D12A4101A9E2",
+      "bytes": 15741480,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "sports_field",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_sports_field/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "92DF0220DF0EA9A64CF604DD73EE8F578E678FC4D7C30BB14A987E9FCFA6769E",
+      "final_sha256": "A0956325545A2D4915C00F2C9223A4E6ADA355ABBC42C497AFBCDD15E20932F6",
+      "bytes": 16366789,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "library_front",
+      "state": "daily",
+      "path": "design/concepts/m1-campus-locations/m1_library_front/004/daily.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "352CB3746B4DB2A6DD2932DE129F358988D283DE68119982CFFBFD3F8745C898",
+      "final_sha256": "AC79DE853DF79AEFBD6606FF3248CEFF3E1F0791D6280D524E377D505737AA8C",
+      "bytes": 15675451,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    },
+    {
+      "id": "student_activity_center",
+      "state": "anomaly",
+      "path": "design/concepts/m1-campus-locations/m1_student_activity_center/004/anomaly.png",
+      "source_resolution": [
+        1672,
+        941
+      ],
+      "final_resolution": [
+        3840,
+        2160
+      ],
+      "source_crop_top_px": 0.25,
+      "format": "PNG",
+      "pixel_format": "Format24bppRgb",
+      "source_sha256": "95386BBCFEFDA90C5B9466F2CC365326A76F1529E80DE6577A458D5099EEB727",
+      "final_sha256": "7C3A42F03E423D5EEF72D502581422E4D940CBF540745481E32F657B72DF0C37",
+      "bytes": 14254240,
+      "delivery_method": "System.Drawing HighQualityBicubic centered aspect fit",
+      "native_4k": false
+    }
+  ]
+}

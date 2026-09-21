@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：十二处明确现实地点的日常资产已批准；首轮异常态因强度过高已拒绝，十二张收敛版 3840×2160 异常态资产候选已生成、待负责人资产评审；旧步道与篮球场两个未确认现实身份候选仍待评审。任务草案与版本记录遵循[美术工作流](../WORKFLOW.md)；本任务不修改校园大地图、路线、地点 Resource 或运行时代码。
+状态：正在按“12张日常＋12张黑紫异常、全部3840×2160”重制；已完成12张日常候选与1张学生活动中心墨蓝灰天空异常校准图。其余11张异常暂停扩展，等待负责人确认天空比例；本批尚未完成、未批准、未接入。旧日常正式资产不变，旧步道与篮球场仍待评审。
 
 ## 目标与范围
 
@@ -24,7 +24,21 @@
 
 用户随后又明确提供并确认九处实景，分别登记为 `m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field` 与 `m1_library_front`。这些对象保留现实地点身份，但同样不擅自绑定现有运行时占位；图书馆正面候选按用户要求移除了旗帜与旗杆。
 
-## 当前版本与方案
+## 当前配对4K重制与天空校准（2026-09-22）
+
+- 用户明确纠正：异常需要第一版类似的黑紫氛围，但削减异常元素数量；不是维持白天只叠加少量异常。第二轮 `asset_anomaly_002` 因日光方向不符改为 `unselected + rejected`。
+- 第三轮已生成12张日常、9张黑紫异常中间稿；负责人随后指出“天空过于紫色了”。这9张紫天中间稿不作为最终交付；生成路径、完整提示词及参考用途保存在 [批次生成索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)，不宣称已完成12张新版异常。
+- 按负责人指定的 `create-game-assets`，先以天空占比大的学生活动中心做代表样图，确认后才扩展家族。天空改为低饱和墨蓝／蓝黑、灰蓝云层，紫色留在建筑暗部和局部異象；保留双光弧，不新增异常，不改机位与建筑结构。本任务不重定义全局Token或风格规范。
+- 12张日常新版为 `asset_daily_002 / unselected + pending`：南门目录006，其余地点004，文件名 `daily.png`。活动中心同目录的 `anomaly.png` 登记 `asset_anomaly_003 / unselected + pending`，用途仅为天空校准样图。
+- 已落盘13张均为3840×2160、RGB、不透明PNG。原始生成尺寸全部1672×941，采用System.Drawing HighQualityBicubic，源上下各裁0.25像素以适配16:9再放大；属于重采样4K，不是原生4K或AI超分，不能增加真实细节。
+- 当前待决只是一项：活动中心样图的“墨蓝灰天空＋建筑暗紫＋局部紫色异象”比例是否合适。确认后修订其余11张异常，包括图书馆（书页／记忆异常较多但集中，继续去除旗帜／旗杆），再做最终24张配对验收。
+- 技术与QA：`create-game-assets/scripts/asset_report.py --expect-size 3840x2160 --json` 13张通过；按 `image-quality-check` 的技术、身份、物理、提示词、可读性、伪影顺序检查，结果 `PASS_WITH_NOTES`。详见 [技术属性与哈希](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-technical.json)、[质量报告](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-quality.json)、[前后对照（左修订、右紫天中间稿）](../../../design/concepts/m1-campus-locations/review/codex-workflow/sky-calibration-comparison.jpg)。
+- 来源：Codex内置imagegen，未回报可核实模型版本；原生输出和来源路径保留，不推定为“image 2.5”。公开／商业再分发许可仍未单独核验。
+- 修正南门Manifest历史登记错误：首轮异常拒绝意见此前误写到了 `concept_001`；现按既有阶段表恢复其 `pending`，将拒绝证据归还 `asset_anomaly_001`，不改变已批准 `concept_003` 和日常001。
+- 验证基线：`art/m1-campus-locations` 的 `70105e7` 加本轮工作树；不改变运行时代码、正式生效路径或接入状态。
+- 资源校验：33项资源台测试通过；`AssetCatalog.scan()` 为26对象／348文件，缺失0、哈希不一致0、错误0；`git diff --check` 通过。仅保存和登记本轮候选，不修改旧正式资产。
+
+## 既有版本与方案（截至2026-09-21，现行修订见上节）
 
 - 当前正式资产：十二处日常背景已按批准概念逐字节提升到 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png`。首轮异常态（南门 `004`、其余地点 `002`）因全景赛博化与异常覆盖过强，登记为 `asset_anomaly_001 / unselected + rejected` 并保留作反例。收敛版异常态为南门 `005`、其余地点 `003`，登记为 `asset_anomaly_002 / unselected + pending`，均为 3840×2160 候选，尚未提升到正式运行目录。
 - 当前概念基准：`concept_003`；[南门远景修订概念](../../design/concepts/m1-campus-locations/m1_campus_locations/003/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_locations/003/generation.md)。原始 `concept_001`、`concept_002` 保留用于回溯与对比。
@@ -60,10 +74,12 @@
 | 概念 | `m1_library_front/concept_001/concept.png` · `9A1149B2E7071D13AC43F0BC6452085AA23F9C97E76EBF04DB5908C2D09D2C1C` | 已批准 | 图书馆正面；旗帜与旗杆移除、正立面对称、玻璃中轴与前广场通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 资产 | 十二处 `asset_daily_001`；对应 `assets/art/backgrounds/m1_campus_locations/*/daily.png` | 已批准并提升 | 完全复用已批准概念像素，不重绘；候选与正式文件 SHA-256 逐项一致。仅为日常态正式资产，尚未接入。 | 2026-09-21，负责人要求“将这12张都提升为资产” |
 | 资产 | 十二处异常态 `asset_anomaly_001`；南门 `004`、其余地点 `002` | 已拒绝 | 异常覆盖与霓虹／数据元素密度过高，削弱现实校园识别和地点差异；保留文件与记录作反例，不提升、不接入。 | 2026-09-21，负责人反馈“过于夸张”，并要求按质量建议重新生成 |
-| 资产 | 十二处收敛版异常态 `asset_anomaly_002`；南门 `005`、其余地点 `003` | 待评审 | 普通地点只保留一种局部异常，维持白天、自然材质和大部分日常画面；图书馆仍为全组最高异常密度，但将书页、档案框与知识图谱集中在中央玻璃中轴和内圈广场，继续保持无旗帜／旗杆。最终文件均为 3840×2160 重采样交付。 | 2026-09-21，按负责人要求重新生成并提升交付分辨率；等待资产批准 |
+| 资产 | 十二处收敛版异常态 `asset_anomaly_002`；南门 `005`、其余地点 `003` | 已拒绝（日光方向不符） | 普通地点只保留一种局部异常，维持白天、自然材质和大部分日常画面；图书馆仍为全组最高异常密度，但将书页、档案框与知识图谱集中在中央玻璃中轴和内圈广场，继续保持无旗帜／旗杆。最终文件均为 3840×2160 重采样交付。 | 2026-09-21，按负责人要求重新生成并提升交付分辨率；等待资产批准 |
+| 资产 | 十二处 `asset_daily_002`；南门006、其余004的daily.png | 待评审 | 新生成日常4K候选，未沿用旧资产批准；来源与哈希见各目录generation.md。 | 2026-09-22，负责人要求重制12日常＋12异常 |
+| 资产 | 活动中心 `asset_anomaly_003`；004/anomaly.png | 待天空校准评审 | 墨蓝灰天空、局部紫色异象；其余11张异常待此样图确认后制作。 | 2026-09-22，负责人反馈“天空过于紫色了” |
 | 接入效果 | 未接入 | 不适用 | 正式资产批准并提升后才接入 Godot。 | 待负责人决定 |
 
-## 验证与结果
+## 历史验证与结果（截至2026-09-21）
 
 - 本任务验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 均为 `selected + approved`；旧步道与篮球场仍为 `unselected + pending`；所有对象集成状态保持 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。
 - 技术检查结果：PowerShell 7 使用 `System.Drawing.Image` 核对十二张收敛版异常态均为 3840×2160、24bpp RGB、不透明且可解码；生成源为 1672×941，交付文件使用高质量双三次重采样，不宣称原生 4K。十二张生成源均经实际画面检查与通用图片质量闸门检查为 `PASS_WITH_NOTES`：地点身份、主要建筑／景观和底部可用区域保持可读，异常集中于地点专属区域，未使用全景夜化、霓虹铺地、数据雨或泛滥悬浮面板；图书馆异常密度高于其余地点且未恢复旗帜或旗杆。由于 4K PNG 体积较大，`view_image` 对最终文件返回 Base64 解码限制；最终文件以 `System.Drawing.Image` 完成逐张可解码、尺寸、格式与透明度技术核验，视觉内容则以同源生成输出逐张检查。
