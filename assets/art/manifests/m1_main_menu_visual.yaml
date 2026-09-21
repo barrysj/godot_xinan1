@@ -1,0 +1,324 @@
+schema_version: 3
+object:
+  id: m1_main_menu_visual
+  display_name: "M1 主菜单视觉样板"
+  type: ui
+  subtype: main_menu_hero
+variants:
+  concept_001:
+    stage: concept
+    version: 001
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/001
+    files:
+      concept: hero.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, title_direction, menu_layout_study]
+      style_layer: evening
+      source_identity: fictional_abstract_digital_campus_no_real_site_reference
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_right_title]
+      title_mark_direction: cyan_magenta_wave_node_emblem
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_002:
+    stage: concept
+    version: 002
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/002
+    files:
+      library: library.png
+      pinxue_building: pinxue-building.png
+      ginkgo_main_building: ginkgo-main-building.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept_reference_batch
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, title_direction, menu_layout_study, reference_identity_validation]
+      style_layer: seasonal_real_campus_reference
+      source_identity: user_provided_real_campus_reference_photos
+      reference_subjects: [library_lakeside, pinxue_building, autumn_ginkgo_main_building]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      title_mark_direction: editable_native_title_over_real_campus_landmark
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_003:
+    stage: concept
+    version: 003
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/003
+    files:
+      ginkgo_main_building: ginkgo-main-building.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, menu_layout_study, focused_revision]
+      style_layer: seasonal_real_campus_reference
+      source_identity: revised_from_user_provided_real_campus_reference_concept_002
+      revision_of: concept_002.ginkgo_main_building
+      edit_scope: [remove_flag_and_pole, remove_left_branch_road]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_004:
+    stage: concept
+    version: 004
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/004
+    files:
+      ginkgo_main_building: ginkgo-main-building.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, menu_layout_study, focused_revision]
+      style_layer: seasonal_real_campus_reference
+      source_identity: revised_from_concept_003_ginkgo_main_building
+      revision_of: concept_003.ginkgo_main_building
+      edit_scope: [shift_main_building_left, straighten_campus_axis]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_005:
+    stage: concept
+    version: 005
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-main-menu.md
+      date: 2026-09-20
+      decision: user_confirmed_main_entrance_alignment
+      note: "用户确认本版大门中列与道路中轴对齐结果可用；仅确认该正常状态概念，不等同于正式发布资产批准"
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/005
+    files:
+      ginkgo_main_building: ginkgo-main-building.png
+      generation: generation.md
+    metadata:
+      asset_type: main_menu_hero_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, menu_layout_study, focused_revision]
+      style_layer: seasonal_real_campus_reference
+      source_identity: revised_from_concept_004_ginkgo_main_building
+      revision_of: concept_004.ginkgo_main_building
+      edit_scope: [align_main_entrance_to_road_centerline, preserve_road]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      integration_boundary: "正式菜单文字、按钮与标题字形由 Godot 原生组件或独立可编辑标识承担"
+  concept_006:
+    stage: concept
+    version: 006
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/006
+    files:
+      library_anomaly: library-anomaly.png
+      pinxue_building_anomaly: pinxue-building-anomaly.png
+      ginkgo_main_building_anomaly: ginkgo-main-building-anomaly.png
+      generation: generation.md
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "主菜单异常状态轮播试接入；完整终局通关后切换至 concept_002 / concept_005 的正常主题；等待异常概念人工评审"
+      date: 2026-09-20
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_batch
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, anomaly_state_reference]
+      style_layer: anomaly_space
+      source_identity: derived_from_campus_normal_concept_candidates
+      reference_subjects: [library_lakeside, pinxue_building, autumn_ginkgo_main_building]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, lower_left_navigation, upper_sky_title]
+      anomaly_grammar: [landmark_first, memory_distortion, data_reflection, geometric_glitch, cyan_magenta_accent]
+      integration_boundary: "异常概念仅作为主菜单 review 试接入；正式资产、发布授权和最终安全区仍待人工评审"
+  concept_007:
+    stage: concept
+    version: 007
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/007
+    files:
+      library_anomaly: library-anomaly.png
+      generation: generation.md
+    revision_of: concept_006.library_anomaly
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "主菜单图书馆异常倒影定向修订；替换 concept_006 的图书馆异常图，品学楼与银杏主楼保持 concept_006"
+      date: 2026-09-20
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, anomaly_reflection_revision]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_006_library_anomaly
+      edit_scope: [increase_water_reflection_anomaly, add_chromatic_memory_shift, preserve_building_and_safe_region]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产与视觉批准仍待人工评审"
+  concept_008:
+    stage: concept
+    version: 008
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/008
+    files:
+      library_anomaly_digital_swan: library-anomaly-digital-swan.png
+      generation: generation.md
+    revision_of: concept_007.library_anomaly
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "主菜单图书馆异常图加入一只数字化黑天鹅；替换 concept_007，保留品学楼与银杏主楼 concept_006"
+      date: 2026-09-20
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, digital_swan_landmark]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_007_library_anomaly
+      edit_scope: [add_one_digital_black_swan, preserve_water_chromatic_anomaly, preserve_menu_safe_region]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产、角色独立拆分和视觉批准仍待人工评审"
+  concept_009:
+    stage: concept
+    version: 009
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/009
+    files:
+      library_anomaly_two_digital_swans: library-anomaly-two-digital-swans.png
+      generation: generation.md
+    revision_of: concept_008.library_anomaly_digital_swan
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "主菜单图书馆异常图缩小黑天鹅并改为两只远景湖面黑天鹅；替换 concept_008，保留品学楼与银杏主楼 concept_006"
+      date: 2026-09-20
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, distant_digital_swan_pair]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_008_library_digital_swan
+      edit_scope: [reduce_swan_scale, move_swans_to_middle_distance, create_two_swan_pair, preserve_water_anomaly]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产、角色独立拆分和视觉批准仍待人工评审"
+  concept_010:
+    stage: concept
+    version: 010
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/010
+    files:
+      library_anomaly_two_digital_swans_asymmetric: library-anomaly-two-digital-swans-asymmetric.png
+      generation: generation.md
+    revision_of: concept_009.library_anomaly_two_digital_swans
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "两只远景黑天鹅动作差异初版候选；不作为主菜单当前 active 版本"
+      date: 2026-09-21
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, action_direction_candidate]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_009_library_two_digital_swans
+      edit_scope: [vary_swan_direction_and_action]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "中间候选；右侧抬翼轮廓仍需动作朝向复核"
+  concept_011:
+    stage: concept
+    version: 011
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-main-menu/m1_main_menu_visual/011
+    files:
+      library_anomaly_two_digital_swans_clear_directions: library-anomaly-two-digital-swans-clear-directions.png
+      generation: generation.md
+    revision_of: concept_010.library_anomaly_two_digital_swans_asymmetric
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "两只远景黑天鹅动作与朝向明确修订；替换 concept_009 作为主菜单当前图书馆异常图"
+      date: 2026-09-21
+    metadata:
+      asset_type: main_menu_hero_anomaly_concept_revision
+      resolution: [1672, 941]
+      transparent: false
+      usage: [concept_review, main_menu_review_integration, asymmetric_swan_actions]
+      style_layer: anomaly_space
+      source_identity: revised_from_concept_010_library_two_digital_swans_asymmetric
+      edit_scope: [clarify_left_facing_low_neck_glide, clarify_right_facing_raised_neck_wing_stretch, preserve_distant_scale]
+      text_baked_in: false
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      integration_boundary: "仅替换主菜单 review 试接入中的图书馆异常图；正式资产与视觉批准仍待人工评审"
+  asset_001:
+    stage: asset
+    version: 001
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-main-menu.md
+      date: 2026-09-21
+      decision: approved_and_promoted_six_main_menu_backgrounds
+      quote: "好，将这6张都提升为资产"
+    root: assets/art/backgrounds/m1_main_menu
+    files:
+      normal_library: normal/library.png
+      normal_pinxue_building: normal/pinxue-building.png
+      normal_ginkgo_main_building: normal/ginkgo-main-building.png
+      anomaly_library: anomaly/library-two-digital-swans.png
+      anomaly_pinxue_building: anomaly/pinxue-building.png
+      anomaly_ginkgo_main_building: anomaly/ginkgo-main-building.png
+      generation: generation.md
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      scope: "正式主菜单正常／异常背景接入；实际菜单裁切与多分辨率效果待视觉评审"
+      date: 2026-09-21
+    metadata:
+      asset_type: main_menu_hero_background_set
+      resolution: [1672, 941]
+      transparent: false
+      states: [normal, anomaly]
+      subjects: [library_lakeside, pinxue_building, autumn_ginkgo_main_building]
+      source_variants: [concept_002, concept_005, concept_006, concept_011]
+      usage: [main_menu, restored_state, anomaly_state]
+      native_overlay_regions: [left_navigation, upper_sky_title]
+      text_baked_in: false
+      quality_gate: PASS_WITH_NOTES
+      source_identity: user_provided_real_campus_reference_photos
+      integration_boundary: "菜单文字、按钮与状态提示继续由 Godot 原生组件承担；正式背景不承载可编辑 UI"
+integration:
+  status: authorized_active
+  active_variant: asset_001
+  root: assets/art/backgrounds/m1_main_menu
+  files:
+    normal_library: normal/library.png
+    normal_pinxue_building: normal/pinxue-building.png
+    normal_ginkgo_main_building: normal/ginkgo-main-building.png
+    anomaly_library: anomaly/library-two-digital-swans.png
+    anomaly_pinxue_building: anomaly/pinxue-building.png
+    anomaly_ginkgo_main_building: anomaly/ginkgo-main-building.png
+  mapping:
+    normal_state: normal
+    anomaly_state: anomaly
+    restored_gate: game/meta/campus_progress.gd::campaign.restored
+    order: [library, pinxue_building, ginkgo_main_building]
+  visual_review: pending
+  evidence: docs/art/tasks/m1-main-menu.md

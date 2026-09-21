@@ -28,3 +28,4 @@ objects:
   m1_sports_field: manifests/m1_sports_field.yaml
   m1_library_front: manifests/m1_library_front.yaml
   m1_memory_artifact: manifests/m1_memory_artifact.yaml
+  m1_main_menu_visual: manifests/m1_main_menu_visual.yaml
