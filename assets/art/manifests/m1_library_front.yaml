@@ -55,7 +55,11 @@ variants:
     stage: asset
     version: "anomaly-001"
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: rejected_over_intense_anomaly_direction
     root: design/concepts/m1-campus-locations/m1_library_front/002
     files:
       anomaly: anomaly.png
@@ -68,6 +72,28 @@ variants:
       source_variant: asset_daily_001
       edit_scope: location_specific_library_knowledge_corruption
       anomaly_intensity: high
+      requested_edit: keep_flags_and_flagpoles_removed
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_002:
+    stage: asset
+    version: "anomaly-002"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_library_front/003
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_daily_001
+      edit_scope: localized_library_memory_rift_and_knowledge_graph
+      anomaly_intensity: medium_high_localized
+      daily_preservation_target: "55-65%"
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
       requested_edit: keep_flags_and_flagpoles_removed
       runtime_mapping_status: pending_runtime_location_binding
 integration:
