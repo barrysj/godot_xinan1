@@ -1,0 +1,32 @@
+schema_version: 3
+object:
+  id: m1_campus_hub_environment
+  display_name: M1 阶梯教室基地背景
+  type: environment
+  subtype: campus_hub_background
+variants:
+  asset_017:
+    stage: asset
+    version: '017'
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-22
+      decision: approved_for_formal_asset
+      quote: 请将这张纳入正式资产
+    root: assets/art/backgrounds/m1_campus_hub
+    files:
+      background: lecture-hall.png
+      source_notes: generation.md
+    metadata:
+      resolution: [3840, 2160]
+      state: daily
+      source_tool: user_supplied_chatgpt_web_output
+      quality_gate: PASS_WITH_NOTES
+      implementation_note: approved_flattened_background_not_integrated
+relationships:
+  ui: m1_campus_hub_ui
+integration:
+  status: not_integrated
+  evidence: docs/art/tasks/m1-campus-hub-ui.md
