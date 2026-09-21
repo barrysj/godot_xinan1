@@ -2,8 +2,8 @@
 
 > 持续功能档案；全项目判断由统筹维护[总览](../implementation-status.md)。
 
-- 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已完成技术接入，效果待人工评审）。
-- 验证日期：2026-09-18；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`，接入实现基线待本次提交写入。
+- 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已完成技术接入，效果待人工评审；十二处校园地点仅完成概念批准，尚非正式资产且未接入）。
+- 验证日期：2026-09-21；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`；校园地点概念批准基线 `c858661`。
 
 ## 玩家能力与接入范围
 
@@ -15,12 +15,15 @@
 
 M1 三款记忆终端静态图标已作为同一个 `asset_011` 家族批准并提升到 `assets/art/icons/m1_memory_artifact/`；当前只有干净正式 PNG 和 Manifest 登记，尚未绑定区域或接入 Godot，因此不计入玩家当前可见能力。
 
+M1 校园地点已有十二个具体概念版本获得负责人批准：南门 `concept_003`、品学楼单区内部庭院与品学楼组团中庭的 `concept_001`，以及学子食堂、学生活动中心、西湖中心、成电会堂+商业街、银桦食堂+清真食堂、基础实验大楼、西湖入口、操场、图书馆正面的 `concept_001`。这些批准仅冻结概念方向；候选仍位于 `design/concepts/`，尚未提升为 `assets/art/` 正式背景，未绑定运行时地点 ID，也未接入 Godot，因此不计入玩家当前可见能力。旧湖畔步道与篮球场候选不在本次批准范围，继续待评。
+
 ## 实现与规则入口
 
 - [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[图书馆正式背景](../../assets/art/backgrounds/m1_library/)、[记忆终端正式包](../../assets/art/icons/m1_memory_artifact/)、[角色定义](../../resources/content/enemies/chalk.tres)。
 - 图书馆运行映射：`scenes/expedition/exploration_skin.gd`、`exploration_board.gd`、`campaign_panel.gd`；环境接入不改变 `game/run/` 的访问、奖励或离场规则。
 - 游戏内预览入口：启动参数 `--library-environment-preview`，或 `--campus-debug` 后按 F8 选择“图书馆预览”；预览页可分别切换三种状态与三张视角，使用临时 Journey 且不写入存档。
 - 规则事实源：[战斗动画](../battle-animation.md)、[美术工作流](../art/WORKFLOW.md)、[粉笔精灵任务](../art/tasks/chalk-spirit.md)、[记忆终端任务](../art/tasks/m1-memory-artifact.md)。
+- 校园地点概念批准事实源：[M1 校园地点任务](../art/tasks/m1-campus-locations.md)与对应对象 Manifest；概念文件仍在 `design/concepts/m1-campus-locations/`，不得按正式资产路径或运行时绑定使用。
 - 工具与完整验证矩阵见 [ART-03](art-03.md#骨骼序列帧通用生产与预览)，资源台见 [ART-05](art-05.md)。
 
 ## 混合动画资产包归一（已实装）
@@ -41,6 +44,8 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 
 ## 验证与证据
 
+- 2026-09-22本地合并验证：基地分支058ede0与main b8ee753整合，资产登记和验证文档冲突保留双方内容；基地四尺寸216/0，完整战役124/0，资源台33项通过。main新增主菜单六图首次运行因当前工作区缺导入缓存失败，Godot --headless --editor --import后，tools/menu_runtime_check.tscn -- --test-size=2560x1440复测MENU_CHECK passed（2状态／6背景／6轮播）。未掩盖既有根证书及旧像素图加载警告；保留main工作区未跟踪文件，不推送远程。
+
 - 图书馆九张正式 PNG 均为 1672 × 941、RGB、不透明，与批准候选逐文件 SHA-256 一致；批准来源、状态组合和文件清单见图书馆任务。Manifest 登记 `asset_005_environment_set` 为 `selected + approved`，集成状态为 `authorized_active`，默认 `anomaly / atrium_down`，视觉评审仍为 pending。
 - `--library-environment-capture` 真实运行通过 104 checks / 0 failures，覆盖九张正式图、三种状态、三种视角和三种桌面分辨率；既有 `--exploration-capture` 通过 132 checks / 0 failures，确认热点、详情、奖励、离开与恢复流程不受遮挡。
 - 游戏内预览捕获通过 31 checks / 0 failures，确认 3 个状态按钮 × 3 个视角按钮实际驱动环境切换，并保持 active run 不变；截图见验证 E26。
@@ -50,6 +55,7 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 - 继承历史证据 E10–E12、E19，重跑入口见[验证目录](verification.md)。技术通过不替代人工或手机端验收。
 - 2026-09-18：记忆终端 `asset_011` 的青品红、绿青、红紫三款候选与正式文件逐项一致，资源台扫描无缺失／不一致；三款为同一版本，不保留 012／013 冗余记录。视觉批准与提升证据见[任务记录](../art/tasks/m1-memory-artifact.md)。
 - 2026-09-18：`MemoryTerminalView` 已接入基地状态卡、区域首次回收结算和三阶段终局阵列；三处均复用正式 PNG，未引入新的存档字段或运行时 Manifest 读取。Godot 图形截图与负责人接入效果评审仍待完成。
+- 2026-09-21：校园地点任务与对象 Manifest 已记录十二个具体版本为 `selected + approved`，其中南门批准沿用 2026-09-20 证据，两个品学楼地点及新增九处实景使用 2026-09-21 负责人确认。资源台 33 项测试通过；扫描 26 个对象、263 个登记文件，缺失 0、哈希不一致 0。此验证只证明概念文件与批准登记完整，不代表正式资产制作、运行时地点映射、Godot 接入或接入效果验收完成。
 
 ## 已知边界与统筹
 
@@ -58,3 +64,5 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 **待统筹**：共享控制器、正式包路径、确定性提升与资源台递归依赖校验已落地；需要统筹复核 ART-03／ART-05 和战斗表现边界。高层总览与 Roadmap 未在本功能任务改动。
 
 **待统筹补充**：M1 图书馆九张背景已有 Godot 映射、默认状态和三分辨率接入截图；日常／夜间没有被虚构为游戏内自然时间系统，视觉效果仍需负责人人工评审，不能据此宣布最终美术验收完成。
+
+**待统筹补充**：十二处校园地点已形成概念方向基线，但仍需先决定 M1 实际采用地点与运行时映射，再制作和批准正式背景。不得将本次概念批准汇总成“十二处场景已接入”或“美术资产已完成”。

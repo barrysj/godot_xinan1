@@ -1,12 +1,70 @@
 extends Control
 
+const ProgressModel = preload("res://game/meta/campus_progress.gd")
+const BACKGROUNDS = [
+	{
+		"name": "图书馆",
+		"normal": "res://assets/art/backgrounds/m1_main_menu/normal/library.png",
+		"anomaly": "res://assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
+	},
+	{
+		"name": "品学楼",
+		"normal": "res://assets/art/backgrounds/m1_main_menu/normal/pinxue-building.png",
+		"anomaly": "res://assets/art/backgrounds/m1_main_menu/anomaly/pinxue-building.png",
+	},
+	{
+		"name": "银杏主楼",
+		"normal": "res://assets/art/backgrounds/m1_main_menu/normal/ginkgo-main-building.png",
+		"anomaly": "res://assets/art/backgrounds/m1_main_menu/anomaly/ginkgo-main-building.png",
+	},
+]
+const BACKGROUND_HOLD_SECONDS := 8.0
+
 @export var play_button: Button
 @export var settings_button: Button
 @export var exit_button: Button
 @export var settings_menu: Control
 @export var margin_container: MarginContainer
+@export var background: TextureRect
+@export var background_tint: ColorRect
+@export var state_label: Label
 var codex_panel: Control
 var codex_button: Button
+var background_index := 0
+var background_elapsed := 0.0
+var normal_backgrounds_unlocked := false
+
+func _load_progress_state() -> void:
+	var progress = ProgressModel.new()
+	# A missing save is a fresh anomaly state; an unreadable save must not be
+	# overwritten or accidentally unlock the restored campus presentation.
+	normal_backgrounds_unlocked = progress.read_save() and bool(progress.campaign.get("restored", false))
+
+func _background_path(index: int) -> String:
+	return str(BACKGROUNDS[index].normal if normal_backgrounds_unlocked else BACKGROUNDS[index].anomaly)
+
+func _set_background(index: int, instant := false) -> void:
+	background_index = posmod(index, BACKGROUNDS.size())
+	var texture = load(_background_path(background_index)) as Texture2D
+	if texture == null:
+		return
+	if instant:
+		background.texture = texture
+		background.modulate.a = 1.0
+		return
+	background.modulate.a = 0.0
+	background.texture = texture
+	create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT).tween_property(background, "modulate:a", 1.0, 0.65)
+
+func _update_state_label() -> void:
+	if normal_backgrounds_unlocked:
+		state_label.text = "校园已恢复 · 日常影像已解锁"
+		state_label.modulate = Color("ffe4a6")
+		background_tint.color = Color(0.015, 0.025, 0.07, 0.20)
+	else:
+		state_label.text = "异常校园 · 完整通关后恢复日常影像"
+		state_label.modulate = Color("a9f4ff")
+		background_tint.color = Color(0.01, 0.02, 0.08, 0.38)
 
 func _open_codex() -> void:
 	if is_instance_valid(codex_panel): return
@@ -16,6 +74,9 @@ func _open_codex() -> void:
 
 
 func _ready():
+	_load_progress_state()
+	_update_state_label()
+	_set_background(0, true)
 	codex_button = Button.new()
 	codex_button.text = "校园图鉴"
 	codex_button.add_theme_font_override("font",preload("res://assets/fonts/SourceHanSansSC-Medium.otf"))
@@ -35,6 +96,15 @@ func _ready():
 	if "--codex-check" in OS.get_cmdline_user_args():
 		var check = load("res://scenes/codex/codex_check.gd").new()
 		get_tree().root.call_deferred("add_child",check)
+
+
+func _process(delta: float) -> void:
+	if settings_menu.visible or (is_instance_valid(codex_panel) and codex_panel.visible):
+		return
+	background_elapsed += delta
+	if background_elapsed >= BACKGROUND_HOLD_SECONDS:
+		background_elapsed = 0.0
+		_set_background(background_index + 1)
 
 
 func _on_PlayButton_pressed() -> void:

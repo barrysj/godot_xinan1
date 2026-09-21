@@ -1,0 +1,38 @@
+schema_version: 3
+object:
+  id: m1_pinxue_atrium
+  display_name: "品学楼组团中庭环境"
+  type: background
+  subtype: campaign_location
+variants:
+  concept_001:
+    stage: concept
+    version: "001"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: approved_as_concept
+    root: design/concepts/m1-campus-locations/m1_pinxue_atrium/001
+    files:
+      concept: concept.png
+      generation: generation.md
+    metadata:
+      asset_type: environment_concept
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      location_id: pinxue_atrium
+      location_identity: "品学楼组团的中庭"
+      usage: [campaign_pinxue_atrium, concept_review]
+      hotspot_anchor_count: 4
+      safe_area: "四角与底部操作带留低对比空间；不烘焙 UI 或热点"
+      source_identity: user_confirmed_pinxue_building_atrium_photo_and_campus_map
+      identity_status: user_confirmed_real_location_reference
+      runtime_mapping_status: pending_runtime_location_binding
+      style_reference: approved_m1_campus_locations_concept_003
+integration:
+  status: not_integrated
+  active_variant: null
+  evidence: docs/art/tasks/m1-campus-locations.md
