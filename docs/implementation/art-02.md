@@ -7,6 +7,8 @@
 
 ## 玩家能力与接入范围
 
+2026-09-22 017接入（基线f9ef11e）：按用户要求切换基地背景正式路径，运行时纹理实测3840×2160。`--campaign-flow-check --hub-icon-capture`四尺寸216/0，`--campaign-flow-check`完整战役124/0；截图design/concepts/m1-campus-hub-ui/review/codex-workflow/hub017/。保留既有UI、字节加载及Cover适配；未重新验证Web导出，整图AI／布景分层仍未完成。待统筹，接入视觉待评审。
+
 2026-09-22补充（基线059b365）：阶梯教室4K整图asset_017已获用户批准，正式文件`assets/art/backgrounds/m1_campus_hub/lecture-hall.png`及独立Manifest`m1_campus_hub_environment.yaml`已登记。通过System.Drawing解码尺寸3840×2160与Get-FileHash源／目标一致性检查；资源台单测33项通过。仅资产入库，运行仍使用014，未改画面故不新增运行截图；原尺寸视觉局部QA及动态道具拆层边界见来源记录。待统筹：新增正式背景可供后续接入，本次不计为玩家已可见4K。
 
 两名绘制角色、护盾特效、三张战斗背景，以及粉笔精灵七动作与粉笔弹体。M1 图书馆另有日常、夜间、异常三状态 × 三机位共九张正式背景，已通过正式路径接入现有探索页；主流程默认异常／中庭俯视，其他状态与机位保留为配置和预览入口。原六项保留已授权试接入；粉笔精灵 006 资产批准沿用任务记录，接入效果仍待人工评审。

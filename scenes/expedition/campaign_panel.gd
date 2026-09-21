@@ -202,8 +202,9 @@ func row() -> HBoxContainer:
 func home(progress, chosen_supply: bool) -> void:
 	_show_home_page()
 	var backdrop := TextureRect.new()
+	backdrop.name = "HomeBackground"
 	var image := Image.new()
-	var bytes := FileAccess.get_file_as_bytes("res://design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/014/lecture-hall.png")
+	var bytes := FileAccess.get_file_as_bytes("res://assets/art/backgrounds/m1_campus_hub/lecture-hall.png")
 	if image.load_png_from_buffer(bytes) == OK:
 		backdrop.texture = ImageTexture.create_from_image(image)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

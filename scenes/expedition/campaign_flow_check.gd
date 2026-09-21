@@ -191,6 +191,8 @@ func capture_hub_icons(hub) -> void:
 
 func verify_hub_layout(hub) -> void:
 	var panel = hub.campaign_panel
+	var background: TextureRect = panel.find_child("HomeBackground",true,false)
+	verify(background != null and background.texture != null and background.texture.get_size() == Vector2(3840,2160),"home loads approved 4K background at full resolution")
 	verify(panel.action_button("reset_profile") == null,"reset is absent from home")
 	var mission: Control = panel.find_child("HomeMission",true,false)
 	verify(mission.size.y < 320,"default mission remains compact")

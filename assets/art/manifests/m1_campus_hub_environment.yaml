@@ -24,9 +24,15 @@ variants:
       state: daily
       source_tool: user_supplied_chatgpt_web_output
       quality_gate: PASS_WITH_NOTES
-      implementation_note: approved_flattened_background_not_integrated
+      implementation_note: approved_flattened_background_active_in_home
 relationships:
   ui: m1_campus_hub_ui
 integration:
-  status: not_integrated
+  status: authorized_active
+  active_variant: asset_017
+  root: assets/art/backgrounds/m1_campus_hub
+  files:
+    background: lecture-hall.png
+  owner: scenes/expedition/campaign_panel.gd
+  visual_review: pending
   evidence: docs/art/tasks/m1-campus-hub-ui.md
