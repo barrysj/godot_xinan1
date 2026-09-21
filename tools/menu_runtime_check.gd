@@ -48,5 +48,5 @@ func _check_menu() -> void:
 	if failures.is_empty():
 		print("MENU_CHECK passed states=2 backgrounds=6 rotations=6 window=%s viewport=%s texture=%s" % [DisplayServer.window_get_size(), get_viewport().get_visible_rect().size, get_viewport().get_texture().get_size()])
 	else:
-		push_error("MENU_CHECK failed %s" % failures)
-	get_tree().quit()
+		push_error("MENU_CHECK failed %s" % str(failures))
+		get_tree().quit(1)
