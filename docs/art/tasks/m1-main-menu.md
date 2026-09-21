@@ -1,6 +1,6 @@
 # 美术任务：M1 主菜单视觉样板
 
-状态：`asset_001` 的六张主菜单背景已获用户批准并提升为正式资产；异常与正常主题已切换到稳定 `assets/art/backgrounds/m1_main_menu/` 路径，Godot 图形接入与三种桌面窗口尺寸检查已通过。生成成功、技术检查和本地提交不替代接入效果或发布授权批准。
+状态：六张主菜单背景已升级为 3840×2160 的 `asset_002`；异常与正常主题继续使用稳定 `assets/art/backgrounds/m1_main_menu/` 路径，Godot 图形接入与四种桌面窗口尺寸检查已通过。生成成功、技术检查和本地提交不替代照片发布授权批准。
 
 ## 目标与范围
 
@@ -12,7 +12,7 @@
 
 ## 当前版本与方案
 
-- 当前正式版：Manifest 对象 `m1_main_menu_visual` 的 `asset_001`，正式文件位于 `assets/art/backgrounds/m1_main_menu/`；异常图使用最终双黑天鹅图书馆与 `concept_006` 的品学楼／银杏主楼，正常图使用 `concept_002` 的图书馆／品学楼与已确认中轴线的 `concept_005` 银杏主楼。
+- 当前正式版：Manifest 对象 `m1_main_menu_visual` 的 `asset_002`，正式文件位于 `assets/art/backgrounds/m1_main_menu/`；六张 4K 候选来源集中保存在 `concept_012`。
 - 当前接入：`menu.gd` 读取正式资产路径；未完成完整终局通关时显示异常轮播，读取现有 `CampusProgress.campaign.restored` 为真后切换到正常轮播。
 - 接入验证：`tools/menu_runtime_check.tscn` 以图形模式覆盖异常／正常两种状态、三地点六张背景、8 秒轮播索引及 1920×1080、1920×1200、2560×1440 窗口；六张图均实际渲染成功。
 - 历史候选：版本 `concept_001` 保留为抽象校园网络中庭方向；版本 `concept_002` 保留三张小批候选；版本 `concept_003`、`concept_004` 保留此前的去旗帜、去岔路和中轴修订，均为 `unselected + pending`，不因本轮修订自动升级或淘汰。
@@ -21,7 +21,7 @@
 - 标题标识方向：右上区域的青／品红双波形与节点组合，先作为不可读徽记占位；如果概念获批，正式标题需拆成独立可编辑标识或由原生／矢量方案实现，不能把菜单文字烘焙进背景。
 - 导航关系：左侧三分之一保持低信息、低亮度，供原生 `开始`、`设置`、`退出` 等短动作按钮垂直排列；按钮文字只在 Godot 中实现，概念图不承诺最终文案。右侧中部保留中央节点焦点，避免导航遮挡核心世界观图形。
 - 复用的批准方向／资产及原评审记录：`docs/art/tasks/m1-library-environment.md`、`docs/art/tasks/m1-memory-artifact.md` 及其 Manifest；本候选没有复制或修改其中任何文件。
-- 技术依据：主视觉候选为 1672×941、非透明整屏 PNG；色彩沿用 `colors.json` 的 night／evening 角色，标题使用 `typography.json` 的 display 角色，按钮与正文继续使用原生 Theme 和 `spacing.json` 的 4px 倍数。精确接入裁切、字体字重和多分辨率适配待概念批准后另行制定。
+- 技术依据：当前主视觉为 3840×2160、非透明整屏 PNG；色彩沿用 `colors.json` 的 night／evening 角色，标题使用 `typography.json` 的 display 角色，按钮与正文继续使用原生 Theme 和 `spacing.json` 的 4px 倍数。
 - 提前试接入授权：无。
 
 ### 概念 002：真实校园主题小批候选
@@ -104,6 +104,13 @@
 - 正式路径：`assets/art/backgrounds/m1_main_menu/normal/` 与 `assets/art/backgrounds/m1_main_menu/anomaly/`。
 - 提升记录：见 `assets/art/backgrounds/m1_main_menu/generation.md`；六张源文件均为 1672×941、24bpp RGB、非透明 PNG，正式包与来源概念逐文件哈希一致。
 
+### 4K 修订 `concept_012` / `asset_002`
+
+- 六张已批准主菜单背景在不改变地点、镜头、UI 安全区和异常叙事的前提下完成细节增强，并统一规范为 3840×2160、24bpp RGB、非透明 PNG。
+- 银杏主楼继续保持正中大门列与道路双黄线对齐；图书馆异常图继续只保留两只远景数字黑天鹅，动作与朝向不同。
+- 正式路径仍为 `assets/art/backgrounds/m1_main_menu/normal/` 与 `anomaly/`，Manifest 当前活动版本为 `asset_002`；历史版本可由 Git 与旧概念目录追溯。
+- 主菜单 `TextureRect` 改用线性过滤，避免 2K／4K 显示时出现最近邻放大颗粒。
+
 ## 阶段评审
 
 | 阶段 | 被评文件、版本与 SHA-256 | 人工决定 | 修改意见 | 决定来源与日期 |
@@ -120,12 +127,14 @@
 | 概念 | `concept_010`：`library-anomaly-two-digital-swans-asymmetric.png`；`cf97bece99d789b6ab0413fb1476bd332ceb3e6a8380cc2a4beeb8af72627250` | 待评审 | 两只动作差异初版；右鸟抬翼轮廓仍需复核，保留为中间候选 | 2026-09-21 用户请求 |
 | 概念 | `concept_011`：`library-anomaly-two-digital-swans-clear-directions.png`；`26c91dd40488fae87396b59f69bb9cbb9f094d714091c0c238ed636e6a3cf96b` | 待评审 | 左鸟向左低颈游，右鸟向右抬颈并展翼；动作与朝向已明确 | 2026-09-21 用户请求 |
 | 资产 | `asset_001`：`assets/art/backgrounds/m1_main_menu/` 六张背景；来源哈希见 `generation.md` | 已批准 | 用户批准六张提升为资产；正式包已登记并替换菜单引用 | 2026-09-21 用户请求 |
+| 资产 | `asset_002`：六张 3840×2160 背景；来源为 `concept_012` | 已批准 | 用户要求将背景分辨率提升至 3840×2160；保持既有构图与内容约束 | 2026-09-21 用户请求 |
 | 接入效果 | `scenes/menu/menu.tscn` + `scenes/menu/menu.gd` 正式资产接入 | 待评审 | 已切换到 `assets/art/` 稳定路径；需 Godot 运行截图与多分辨率检查 | 2026-09-21 |
 
 ## 验证与结果
 
 - 本任务验收条件：每张背景需在几秒内读出对应的校园地标主题；至少一侧或下方能容纳原生导航，标题区能保持低干扰；不能出现可读伪文字、烘焙菜单或不可编辑的正式标题；正式包的六张文件、Manifest 路径和菜单引用必须一致。
 - 技术检查结果：`PASS_WITH_NOTES`。`concept_002` 至 `concept_011` 的实际文件均可读取，PNG，1672×941，`Format24bppRgb`，非透明；异常图没有发现水印、签名或菜单文字，`concept_007` 的倒影异常、`concept_008` 的数字黑天鹅、`concept_009` 的远景双黑天鹅和 `concept_011` 的动作朝向修订均通过 `image-quality-check`，完整提示词、来源和质量闸门记录见各版本目录的 `generation.md`。
+- 4K 质量闸门：`concept_012` / `asset_002` 六张均可解码，3840×2160、16:9、24bpp RGB、非透明；地点身份、菜单安全区、银杏主楼入口中轴、图书馆异常图两只远景黑天鹅的数量／动作／朝向均保持。未发现伪文字、水印、额外主体或会破坏主菜单用途的结构伪影，结论为 `PASS_WITH_NOTES`；备注是增强细节不等同于原生 4K 摄影采样。
 - 复现检查命令：
   - `Add-Type -AssemblyName System.Drawing; Get-ChildItem -LiteralPath 'design/concepts/m1-main-menu/m1_main_menu_visual/002' -Filter '*.png' | ForEach-Object { $img = [System.Drawing.Image]::FromFile($_.FullName); try { \"$($_.Name) $($img.Width)x$($img.Height) $($img.PixelFormat)\" } finally { $img.Dispose() } }`
   - `Get-ChildItem -LiteralPath 'design/concepts/m1-main-menu/m1_main_menu_visual/002' -Filter '*.png' | Get-FileHash -Algorithm SHA256`
@@ -135,9 +144,10 @@
   - `Get-FileHash -Algorithm SHA256 'design/concepts/m1-main-menu/m1_main_menu_visual/004/ginkgo-main-building.png'`
   - `Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile((Resolve-Path 'design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png')); try { $img.Width; $img.Height; $img.PixelFormat } finally { $img.Dispose() }`
   - `Get-FileHash -Algorithm SHA256 'design/concepts/m1-main-menu/m1_main_menu_visual/005/ginkgo-main-building.png'`
-- Manifest 回写：`assets/art/manifests/m1_main_menu_visual.yaml` 已登记并选用 `asset_001`；六张正式文件位于 `assets/art/backgrounds/m1_main_menu/`，`integration.active_variant` 与菜单脚本一致。
+- Manifest 回写：`assets/art/manifests/m1_main_menu_visual.yaml` 已登记并选用 `asset_002`；六张正式文件位于 `assets/art/backgrounds/m1_main_menu/`，`integration.active_variant` 与菜单脚本一致。
 - 一致性检查：正式包与六个来源概念文件逐文件哈希一致；原概念目录保留，未覆盖或删除历史版本；未修改共享 Token、Theme、实现总览或 Roadmap。
-- 实际截图／展示证据：六张概念图已完成质量闸门；正式包接入后仍待可用 Godot 环境完成异常／恢复状态和三种桌面分辨率截图。
-- 资源台验证：`py -3 -m unittest discover -s tools/art/asset_manager/tests -v`，33 项测试全部通过；覆盖主 Manifest schema、对象发现、注册文件存在性及候选不自动提升规则。当前环境未发现可调用的 Godot 4 可执行文件，因此主菜单运行截图、存档真假状态切换和三种桌面分辨率检查待补；本轮未修改工具链或共享 Theme。
-- 专业边界与已知问题：真实建筑参考提升了校园识别度，但也带来构图裁切、建筑连续性和照片来源授权的后续风险；正式资产已批准，但最终菜单安全区、三种桌面分辨率和照片发布边界仍需单独确认。完整终局通关开关使用现有 `campaign.restored`，未新增存档字段。
+- 实际截图／展示证据：六张 4K 图已完成质量闸门；正式包已完成异常／恢复状态及 1920×1080、1920×1200、2560×1440、3840×2160 四档截图。
+- 4K 接入复验：Godot 4.7.2 图形模式在 1920×1080、1920×1200、2560×1440、3840×2160 四档运行；每档均通过异常／正常 2 状态、6 张背景加载与 6 次轮播推进，截图位于 `.godot/m1-main-menu-<尺寸>-<state>-<index>.png`。`tools/menu_runtime_check.gd` 同时断言每张源纹理为 3840×2160。
+- 资源台验证：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v`，33 项测试全部通过；覆盖主 Manifest schema、对象发现、注册文件存在性及候选不自动提升规则。Godot 4.7.2 四档图形检查与主流程回归均通过。
+- 专业边界与已知问题：真实建筑参考提升了校园识别度，但照片发布授权仍需项目方确认；4K 版本属于 AI 细节增强与精确像素规范化，不等同于原生 4K 摄影采样。完整终局通关开关使用现有 `campaign.restored`，未新增存档字段。
 - 本地提交：概念候选、来源记录、任务档案与 Manifest 将在本分支完成验证后提交；不推送远程。

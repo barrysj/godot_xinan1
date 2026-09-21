@@ -195,3 +195,18 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `scenes/menu/menu.tscn -- --codex-check` | `CODEX_CHECK entries=35 ... passed`；菜单、图鉴、暂停与战斗恢复回归通过 |
 
 实际截图写入 `.godot/m1-main-menu-<state>-<index>.png`，并已检查异常态数字化湖面／双黑天鹅、正常态湖畔图、标题、按钮与状态提示。根证书读取、旧像素图加载和退出时单个 ObjectDB 泄漏为既有环境／测试边界，不属于本功能失败；不替代 Android、Web、真人体验验收。
+
+## M1 主菜单 4K 背景升级验证 E30
+
+2026-09-21；基线为 `art/main-menu-4k` 的 3840×2160 正式资产包 `asset_002`。Godot 使用线性背景过滤，运行检查新增六张源纹理尺寸断言。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| `tools/menu_runtime_check.tscn -- --test-size=1920x1080` | `MENU_CHECK passed`；2 状态、6 张 4K 源背景、6 次轮播推进通过 |
+| `tools/menu_runtime_check.tscn -- --test-size=1920x1200` | `MENU_CHECK passed`；16:10 裁切与 UI 安全区通过 |
+| `tools/menu_runtime_check.tscn -- --test-size=2560x1440` | `MENU_CHECK passed`；用户 2K 目标尺寸实际截图通过 |
+| `tools/menu_runtime_check.tscn -- --test-size=3840x2160` | `MENU_CHECK passed`；4K 实际截图通过 |
+| `scenes/menu/menu.tscn -- --codex-check` | `CODEX_CHECK entries=35 ... passed`；主菜单、图鉴、暂停与战斗恢复回归通过 |
+| `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台 33 tests 通过；Manifest `asset_002` 文件和审批结构可读取 |
+
+截图写入 `.godot/m1-main-menu-<尺寸>-<state>-<index>.png`。质量闸门为 `PASS_WITH_NOTES`：六张达到精确 4K 像素尺寸并保持既有构图约束，但增强细节不视作原生 4K 摄影采样。Godot 仍有既有根证书、旧像素图动态加载和退出泄漏警告，不属于本功能失败。

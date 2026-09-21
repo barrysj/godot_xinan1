@@ -1,9 +1,9 @@
 extends Node
 
 const MENU_SCENE := preload("res://scenes/menu/menu.tscn")
+var requested_size := Vector2i(1920, 1080)
 
 func _ready() -> void:
-	var requested_size := Vector2i(1920, 1080)
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--test-size="):
 			var parts := argument.trim_prefix("--test-size=").split("x")
@@ -32,8 +32,10 @@ func _check_menu() -> void:
 			await RenderingServer.frame_post_draw
 			if menu.background.texture == null:
 				failures.append("texture:%s:%d" % [state, index])
+			elif menu.background.texture.get_size() != Vector2(3840, 2160):
+				failures.append("texture_size:%s:%d:%s" % [state, index, menu.background.texture.get_size()])
 			var image := menu.get_viewport().get_texture().get_image()
-			var output := "res://.godot/m1-main-menu-%s-%d.png" % [state, index]
+			var output := "res://.godot/m1-main-menu-%dx%d-%s-%d.png" % [requested_size.x, requested_size.y, state, index]
 			var error := image.save_png(output)
 			if error != OK:
 				failures.append("capture:%s:%d:%s" % [state, index, error])
@@ -47,6 +49,7 @@ func _check_menu() -> void:
 		await get_tree().process_frame
 	if failures.is_empty():
 		print("MENU_CHECK passed states=2 backgrounds=6 rotations=6 window=%s viewport=%s texture=%s" % [DisplayServer.window_get_size(), get_viewport().get_visible_rect().size, get_viewport().get_texture().get_size()])
+		get_tree().quit()
 	else:
 		push_error("MENU_CHECK failed %s" % str(failures))
 		get_tree().quit(1)
