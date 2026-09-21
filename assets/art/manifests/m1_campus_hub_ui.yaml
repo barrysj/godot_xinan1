@@ -5,6 +5,19 @@ object:
   type: ui
   subtype: campus_hub_home_hero
 variants:
+  concept_015:
+    stage: concept
+    version: '015'
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/015
+    files:
+      concept: hub-ui-concept.png
+      source_notes: generation.md
+    metadata:
+      source_tool: codex_builtin_imagegen
+      quality_gate: REGENERATE_MINOR
+      implementation_note: layout_review_only_not_integrated
   concept_014:
     stage: concept
     version: '014'
