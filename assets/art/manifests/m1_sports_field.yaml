@@ -50,6 +50,24 @@ variants:
       source_variant: concept_001
       promotion_mode: exact_copy
       usage: [campaign_sports_field]
+  asset_anomaly_001:
+    stage: asset
+    version: "anomaly-001"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_sports_field/002
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [1672, 941]
+      transparent: false
+      state: anomaly
+      source_variant: asset_daily_001
+      edit_scope: location_specific_field_topology
+      anomaly_intensity: medium
+      runtime_mapping_status: pending_runtime_location_binding
 integration:
   status: not_integrated
   active_variant: null
