@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusTrialReward" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/trial_reward_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "backup"
+trigger = "half_health"
+effect = "shield"
+max_health_ratio = 0.25
+[resource]
+script = ExtResource("s")
+id = "backup"
+display_name = "应急备份"
+description = "佩戴者首次降至半血，获得最大生命25%的护盾。战前可转移。"
+category = "装备"
+effects = Array[ExtResource("p")]([SubResource("p0")])

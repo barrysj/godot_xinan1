@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CampusTrialCharacter" load_steps=6 format=3]
+[ext_resource type="Script" path="res://game/content/trial_character_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/characters/inventor.tres" id="base"]
+[ext_resource type="Resource" path="res://resources/trial/skills/analysis.tres" id="skill"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "vulnerability"
+trigger = "skill_impact"
+effect = "mark"
+target = "skill_target"
+limit = "action"
+duration = 4
+[resource]
+script = ExtResource("s")
+id = "analyst"
+display_name = "分析员"
+description = "技能暴露4秒漏洞，另一位队友普攻验证后破解+16。"
+unit = ExtResource("base")
+tags = Array[String](["broadcast","analysis"])
+stats = {"health":220,"attack":22,"interval":1.6,"attack_range":3.5}
+skill_override = ExtResource("skill")
+effects = Array[ExtResource("p")]([SubResource("p0")])

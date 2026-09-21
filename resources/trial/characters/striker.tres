@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusTrialCharacter" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/trial_character_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/characters/striker.tres" id="base"]
+[resource]
+script = ExtResource("s")
+id = "striker"
+display_name = "冲刺手"
+description = "技能追击射程内生命比例最低的敌人。"
+unit = ExtResource("base")
+tags = Array[String](["makers","assault"])
+stats = {}

@@ -139,3 +139,41 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 ## 维护边界
 
 新增内容需要加入资源引用清单，导出由引用关系打包，不依赖编辑器文件扫描。不要修改共享 Resource 来记录运行状态。描述文字要与配置保持一致；图鉴读取同一份资源，但不会把自然语言解析为技能。一次新增少量内容并实战检查，通常比先录入几十条再集中修错更省力。
+
+## 三战试炼内容
+
+独立入口使用 `resources/trial/manifest.tres`，不使用主线随机奖励池。六位人物、六种羁绊、六项成长、敌人／技能与三场遭遇均是引用资源。`game/trial/trial_catalog.gd` 只负责注册、展示目录与实例工厂；运行计数、护盾、标记、攻速时限保存在模拟器，不写回 `.tres`。
+
+| 资源 | 主要字段与职责 |
+| --- | --- |
+| `CampusTrialCharacter` | 稳定ID、名称、基础 `CampusUnit`、标签ID数组、可选技能覆盖／属性覆盖、个人效果 |
+| `CampusSynergy` | 稳定ID、说明、激活人数2～4、效果数组；只统计上阵人物，每个ID当前只有一档门槛 |
+| `CampusTrialReward` | 羁绊／装备／训练／专属类别、人物ID、效果；装备仅持有者生效，专属仅指定人物生效 |
+| `CampusTrialEncounter` | 敌人资源与对应六阵位、维护周期／护盾、战后奖励ID池；最后一场不领奖 |
+| `CampusBattleProc` | 一个触发点、效果、目标、次数作用域及参数；不是任意脚本或自然语言技能 |
+
+追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物同样复用／新增 `CampusUnit` 后追加 manifest.characters；试炼v2以人物索引保存，现有顺序必须保持、只在尾部追加，不能用删改ID或重排代替内容迁移。敌人、奖励和标签使用稳定字符串ID。
+
+触发点和去重约定：
+
+| trigger | 时间与上下文 |
+| --- | --- |
+| `battle_start` | 开战建好实例后，各绑定人物触发 |
+| `skill_emit` | 技能成功释放、弹道尚未命中；提供主目标和本次效果数组，用于穿透 |
+| `before_damage_skill` | 有效伤害技能命中、进入共享伤害批次之前；用于一次伤害加成 |
+| `skill_impact` | 每个实际有效技能效果结算后；同一动作的基础破解只记一次，资源另按limit去重 |
+| `half_health` | 第一次结算后存活且不高于半血；没有符合目标也不会推迟到后续补触发 |
+| `verify` | 另一队友的有效普攻兑现漏洞后；team效果使用验证者作为来源 |
+| `hack_complete` | 玩家确认断开／接管维护后 |
+
+`limit=owner` 为此来源效果每个人每场一次；`team` 为全队共享一次；`action` 为每个人每个动作一次；`none` 为每次匹配事件。计数键为来源ID、效果ID和作用域，跨羁绊／角色／奖励不串用；重试全部清零。`skill_target` 和 `action` 只允许三个技能触发点，其他事件没有目标／动作上下文。效果不递归触发新的技能事件，避免“护盾触发护盾”无限循环。
+
+支持效果：shield / heal 读取固定值与目标最大生命比例；hack 读取正整数贡献；mark 读取时限（0时沿用manifest默认）并支持专属额外验证次数；attack_speed 是**攻击间隔倍率**（0.75为更快，1.5为更慢），要求正倍率和正持续时间；damage_bonus 只用于伤害技能命中前；pierce 只用于技能发射时，倍率作用于主目标技能伤害。射线、到期、冷却和护盾来源语义见 battle-demo.md。
+
+目标为 owner、lowest_ally、lowest_other_near、skill_target；附近距离读取 radius。`required_tag` 同时要求该人物带标签且开战时激活，用于“并肩防护”这样的羁绊升级。护盾默认来源自动命名空间化；只有需要共同移除同一类护盾时才显式填 source。不会默认移除其他来源护盾。
+
+运行扩展的明确边界：v2只有一个训练归属，训练项固定为 `training`；`lens` 是现有出发解锁的固定装备ID，必须保留。专属才能设置 character_id / mark_uses_bonus，只有训练读取 health_multiplier / attack_multiplier。新增第二项独立训练归属、可选出发补给或新的触发／效果类型，需要同步扩展存档或处理器与针对性检查，不能只填一个新字符串。
+
+运行 `pwsh.exe -File ./run-synergy-trial.ps1 -Check` 先校验内容，再运行效果、存档、完整三战、表现和共享战斗检查。仅校验资源可运行 Godot `--headless --path . res://game/trial/trial_content_check.tscn`。覆盖空／重名／重复ID、非法引用／枚举／非有限数值、技能配置，以及领奖时所有选项都已持有的死路；进入试炼时同样先校验，失败不读写玩家存档。验证程序中变异外部数组资源使用 `duplicate_deep(Resource.DEEP_DUPLICATE_ALL)`，不能用普通 `duplicate(true)` 假设外部Resource已隔离。
+
+`pwsh.exe -File ./run-synergy-trial.ps1 -Capture` 用独立 `.godot` 测试存档真实跑三场，输出战前、暂停、战斗、破解、奖励和通关截图。新增组合仍须看实际战斗并试玩，校验通过只能证明配置受支持，不能证明奖励有趣或已经平衡。

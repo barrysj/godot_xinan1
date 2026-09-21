@@ -195,3 +195,13 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `scenes/menu/menu.tscn -- --codex-check` | `CODEX_CHECK entries=35 ... passed`；菜单、图鉴、暂停与战斗恢复回归通过 |
 
 实际截图写入 `.godot/m1-main-menu-<state>-<index>.png`，并已检查异常态数字化湖面／双黑天鹅、正常态湖畔图、标题、按钮与状态提示。根证书读取、旧像素图加载和退出时单个 ObjectDB 泄漏为既有环境／测试边界，不属于本功能失败；不替代 Android、Web、真人体验验收。
+
+## 羁绊与破解试炼验证 E30
+
+2026-09-22；基线 `f6b79df` → 共享战斗 `599ea0d` 加本轮试炼工作树。PowerShell 7 / Godot 4.7.2 Windows，详情与已知边界见 [CORE-05](core-05.md)、[COMBAT-02](combat-02.md)。
+
+- `pwsh.exe -File ./run-synergy-trial.ps1 -Check`：八个入口全部退出0；内容95、效果70、存档76、三战104、表现34、准确性51项均无失败，原动作与自动战斗检查PASS。
+- `pwsh.exe -File ./run-synergy-trial.ps1 -Capture`：1600×900真实三战、两次领奖、破解选择、暂停冻结、通关解锁PASS；独立`.godot`存档，截图已查看并在对话展示。
+- `pwsh.exe -File ./run-battle-demo.ps1 -Smoke`：两敌阵、四装备归属与倍速一致PASS；探索场景`-- --campaign-flow-check --order=012` 124/0，`-- --run-smoke`三路线与输入／存档／恢复／重试PASS。
+
+存档故障注入有一条预期备份写入错误；根证书及旧Kenney原图加载警告仍存在。没有据此扩展为Web、手机或平衡性验收。

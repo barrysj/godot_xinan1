@@ -315,7 +315,7 @@ func _resolve(due: Array[Dictionary]) -> void:
 				e.target.atk = clampf(previous + e.value, 0, 10000)
 				e.actual = e.target.atk - previous
 			else:
-				e.target.interval = clampf(e.value, 0.1, 10)
+				_set_attack_interval(e.target, e.value)
 				e.actual = e.target.interval
 		elif e.kind == "heal":
 			e.actual = minf(maxf(0, e.value), maxf(0, e.target.max_hp - e.target.hp))
@@ -363,3 +363,7 @@ func _resolve(due: Array[Dictionary]) -> void:
 ## implemented as a separate revival mechanic.
 func _after_impact_batch(_due: Array[Dictionary]) -> void:
 	pass
+
+## Temporary modifier layers can preserve absolute skill changes as their base.
+func _set_attack_interval(target: Dictionary, value: float) -> void:
+	target.interval = clampf(value, 0.1, 10)

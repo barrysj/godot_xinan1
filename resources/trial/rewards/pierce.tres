@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CampusTrialReward" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/trial_reward_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "pierce"
+trigger = "skill_emit"
+effect = "pierce"
+value = 0.6
+target = "skill_target"
+limit = "action"
+[resource]
+script = ExtResource("s")
+id = "pierce"
+display_name = "贯穿射击"
+description = "远射手技能贯穿主目标射线上的另一名敌人，造成60%技能伤害；优先射程内距射手最近者。"
+category = "专属"
+character_id = "archer"
+effects = Array[ExtResource("p")]([SubResource("p0")])

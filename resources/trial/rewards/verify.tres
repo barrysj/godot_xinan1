@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CampusTrialReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/trial_reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "verify"
+display_name = "协同验证"
+description = "分析员的漏洞允许两位不同队友各验证一次。"
+category = "专属"
+character_id = "analyst"
+mark_uses_bonus = 1

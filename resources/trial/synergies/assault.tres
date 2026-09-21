@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CampusSynergy" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/synergy_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "primary"
+trigger = "before_damage_skill"
+effect = "damage_bonus"
+value = 25
+[resource]
+script = ExtResource("s")
+id = "assault"
+display_name = "突击"
+description = "成员首次伤害技能命中，附加25点基础伤害。"
+effects = Array[ExtResource("p")]([SubResource("p0")])

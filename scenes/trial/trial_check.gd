@@ -103,16 +103,16 @@ func _mechanics() -> void:
 	sim.marks[foe.id] = {"owner": analyst.id, "until": -1.0, "users": [], "limit": 1}
 	sim._verify(archer, foe)
 	expect(sim.progress == 32, "expired marks give no progress")
-	foe.shield = 70.0
-	foe.system_shield = 50.0
+	sim.grant_shield(foe, 20.0, "native")
+	sim.grant_shield(foe, 50.0, "maintenance")
 	sim.progress = 100
 	sim.awaiting_choice = true
 	sim.choose_hack("disconnect")
-	expect(foe.shield == 20 and foe.system_shield == 0, "disconnect preserves non-system shields")
+	expect(foe.shield == 20 and foe.shield_layers.all(func(layer): return layer.source != "maintenance"), "disconnect preserves non-system shields")
 	sim.start(formation, 0, [], {}, -1)
 	foe = sim.units.filter(func(u): return u.side == 1)[0]
-	foe.shield = 70.0
-	foe.system_shield = 50.0
+	sim.grant_shield(foe, 20.0, "native")
+	sim.grant_shield(foe, 50.0, "maintenance")
 	sim.progress = 100
 	sim.awaiting_choice = true
 	sim.choose_hack("takeover")

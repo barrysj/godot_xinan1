@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/trial/skills/strike.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(64, 144, 16, 16)
+[resource]
+script = ExtResource("s")
+id = "trial_gate"
+display_name = "入口守卫"
+health = 680
+attack = 23
+interval = 2.0
+defense = 8
+attack_range = 1.45
+skill = ExtResource("skill")
+portrait = SubResource("portrait")
