@@ -74,6 +74,26 @@ variants:
       source_identity: edited_concept_002_for_far_main_building
       concept_basis: concept_002
       edit_scope: "distant main building facade scale and atmospheric perspective only"
+  asset_daily_001:
+    stage: asset
+    version: "daily-001"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: user_authorized_promotion_of_approved_concept
+    root: assets/art/backgrounds/m1_campus_locations/south_gate
+    files:
+      daily: daily.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      source_variant: concept_003
+      promotion_mode: exact_copy
+      usage: [campaign_gate]
 integration:
   status: not_integrated
   active_variant: null

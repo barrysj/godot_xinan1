@@ -26,7 +26,7 @@
 
 ## 当前版本与方案
 
-- 当前使用版：无；`m1_campus_locations` 未接入，`integration.status` 为 `not_integrated`。
+- 当前正式资产：十二处日常背景已按批准概念逐字节提升到 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png`；尚未接入，所有对象 `integration.status` 仍为 `not_integrated`。
 - 当前概念基准：`concept_003`；[南门远景修订概念](../../design/concepts/m1-campus-locations/m1_campus_locations/003/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_locations/003/generation.md)。原始 `concept_001`、`concept_002` 保留用于回溯与对比。
 - 当前已确认部分与后续待决事项：负责人确认南门概念可以，`concept_003` 作为已选概念基准；其远景主楼通过缩小门窗、降低细节和空气透视表达距离，南门近景结构、右上补全及四个热点锚点保持不变。后续地点仍需逐一确认现实身份；概念批准不等同于正式资产批准或 Godot 接入授权。
 - 新增地点候选：`m1_campus_walk/concept_001`；[校园湖畔步道概念](../../design/concepts/m1-campus-locations/m1_campus_walk/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_walk/001/generation.md)。该候选使用校园平面图的大关系，不宣称具体现实步道身份，状态为 `unselected + pending`。
@@ -58,7 +58,8 @@
 | 概念 | `m1_west_lake_entrance/concept_001/concept.png` · `A7B3AF56903EA047EEDCF7C4A271FD4EADCE32A4FB684D72707514DF1410BC7B` | 已批准 | 西湖入口；前广场、湖面与右侧假山喷泉通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 概念 | `m1_sports_field/concept_001/concept.png` · `7C09249556773ED8DDA0C390E14B3CDDABE274BCE3958CDE18AC4D0E67688A2E` | 已批准 | 操场；球场尺度、球门、树列与远处拱形看台通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 概念 | `m1_library_front/concept_001/concept.png` · `9A1149B2E7071D13AC43F0BC6452085AA23F9C97E76EBF04DB5908C2D09D2C1C` | 已批准 | 图书馆正面；旗帜与旗杆移除、正立面对称、玻璃中轴与前广场通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
-| 资产 | 未制作 | 不适用 | 概念批准后才制作正式背景。 | 待负责人决定 |
+| 资产 | 十二处 `asset_daily_001`；对应 `assets/art/backgrounds/m1_campus_locations/*/daily.png` | 已批准并提升 | 完全复用已批准概念像素，不重绘；候选与正式文件 SHA-256 逐项一致。仅为日常态正式资产，尚未接入。 | 2026-09-21，负责人要求“将这12张都提升为资产” |
+| 资产 | 十二处异常态 `asset_anomaly_001` | 制作中，待评审 | 以对应日常图保持构图与地点身份，加入差异化数字空间异常；图书馆正面使用更高异常强度。 | 2026-09-21，负责人要求制作对应异常图资产 |
 | 接入效果 | 未接入 | 不适用 | 正式资产批准并提升后才接入 Godot。 | 待负责人决定 |
 
 ## 验证与结果
@@ -66,9 +67,9 @@
 - 本任务验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 均为 `selected + approved`；旧步道与篮球场仍为 `unselected + pending`；所有对象集成状态保持 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。
 - 技术检查结果：PowerShell 7 使用 `System.Drawing.Image` 核对南门 `concept_003`、步道、球场、两个品学楼地点及本轮九处实景候选均为 1672 × 941、24bpp RGB、不透明；九张新增候选均经 `view_image` 实际查看与通用图片质量闸门检查通过。概念无可见全景控件、浏览器 chrome、按钮、热点图标、水印、学校 logo 或可读招牌；图书馆正面的旗帜、旗杆、底座和阴影均已移除，玻璃中轴、天空与前广场连续。本轮 `git diff --check` 通过，资源台 33 项测试通过。
 - Manifest 回写：南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 共十二个具体版本均登记为 `selected + approved`，批准证据指向本任务与 2026-09-21 负责人确认；旧步道与篮球场不在本次批准范围，继续保持 `unselected + pending`。不填写正式生效文件，全部对象集成均为 `not_integrated`。
-- 一致性检查：当前没有正式资产、Godot 引用或生效文件；概念文件与 generation.md 位于同一候选根目录，参考原图位于任务 references 目录，不进入正式资产路径。
+- 一致性检查：十二张日常正式资产与批准概念逐项 SHA-256 一致；正式目录只保存运行 PNG，概念、参考图与 generation.md 继续留在 `design/concepts/`。当前没有 Godot 引用或生效文件。
 - 资源目录扫描：`AssetCatalog.scan()` 通过；全局 26 个对象、263 个文件，缺失 0、哈希不一致 0；南门、两个品学楼地点与本轮九处实景共十二个具体版本均为 `matched + selected + approved`，运行时地点绑定仍为 `pending_runtime_location_binding`，集成均为 `not_integrated`；旧步道与篮球场仍为 `matched + unselected + pending`。
 - 适用的布局／动画验证结果：本轮为静态概念，不执行 Godot 接入、动画或运行截图；概念原图已在对话展示。
 - 实际截图／动作预览证据：南门、步道、球场、两个品学楼候选及本轮学子食堂、学生活动中心、西湖中心、成电会堂+商业街、银桦食堂+清真食堂、基础实验大楼、西湖入口、操场、图书馆正面九张候选原图均已在对话展示；无运行时截图。
-- 未解决问题：旧步道候选仍缺具体路径照片和地图标记；旧篮球场候选仍缺指定场地照片和地图标记；教学走廊仍缺走廊实景；十二处已批准概念的运行时 ID 映射尚未确认；两个终点仍未获得独立身份资料；用户提供原图的公开／商业再分发许可未单独核验；概念批准不等于正式资产批准，全部尚未制作正式资产或接入 Godot。
+- 未解决问题：十二处异常态资产尚待制作与人工评审；旧步道候选仍缺具体路径照片和地图标记；旧篮球场候选仍缺指定场地照片和地图标记；教学走廊仍缺走廊实景；十二处正式日常资产的运行时 ID 映射尚未确认；两个终点仍未获得独立身份资料；用户提供原图的公开／商业再分发许可未单独核验；全部尚未接入 Godot。
 - 本地提交：资源台、差异检查与图像检查通过后按项目规则提交；不自动推送远程。

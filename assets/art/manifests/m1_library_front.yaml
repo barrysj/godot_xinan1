@@ -31,6 +31,26 @@ variants:
       runtime_mapping_status: pending_runtime_location_binding
       style_reference: approved_m1_campus_locations_concept_003
       requested_edit: remove_flags_and_flagpoles
+  asset_daily_001:
+    stage: asset
+    version: "daily-001"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: user_authorized_promotion_of_approved_concept
+    root: assets/art/backgrounds/m1_campus_locations/library_front
+    files:
+      daily: daily.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      source_variant: concept_001
+      promotion_mode: exact_copy
+      usage: [campaign_library_front]
 integration:
   status: not_integrated
   active_variant: null
