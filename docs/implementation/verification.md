@@ -205,3 +205,13 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - `pwsh.exe -File ./run-battle-demo.ps1 -Smoke`：两敌阵、四装备归属与倍速一致PASS；探索场景`-- --campaign-flow-check --order=012` 124/0，`-- --run-smoke`三路线与输入／存档／恢复／重试PASS。
 
 存档故障注入有一条预期备份写入错误；根证书及旧Kenney原图加载警告仍存在。没有据此扩展为Web、手机或平衡性验收。
+
+## 四色代码与消耗道具验证 E31
+
+2026-09-22；基线 `fce306c` 加四色代码工作树，PowerShell 7 / Godot 4.7.2 Windows。当前规则见 battle-demo.md，实施入口与边界见 CORE-05。
+
+- `pwsh.exe -File ./run-synergy-trial.ps1 -Check`：十场景通过，规则最终74/0（最后三项配置类型检查另行重跑）、真实鼠标UI13/0；内容95、效果70、存档76、旧三战104、表现34、准确性51均0失败；动作／自动战斗PASS。
+- `pwsh.exe -File ./run-synergy-trial.ps1 -Capture`：真实三战获胜、6次程序、两件道具消耗、暂停冻结与终端视口内断言PASS；截图为 `.godot/trial-code-*.png`，已查看并在对话展示。
+- 覆盖普攻按动作产色、护盾命中、漏洞颜色归属、上限、四程序、共享冷却、待执行指令、不可执行操作无扣费、道具转换、v1/v2迁移、v3保存与失败回滚、默认Resource数组不受装配污染。测试使用独立存档。
+
+根证书读取错误与旧图片警告为既有环境边界；故障注入预期出现备份写入失败，不代表脚本失败。脚本运行器额外检查成功标记及SCRIPT ERROR，避免解析失败被误报通过。未覆盖手机、手柄、Web或真人平衡评估。

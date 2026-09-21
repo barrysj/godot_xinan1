@@ -9,3 +9,4 @@ extends Resource
 @export var skill_override: CampusSkill
 @export var stats: Dictionary = {}
 @export var effects: Array[CampusBattleProc] = []
+@export_enum("red", "blue", "green", "purple") var code_type := "red"

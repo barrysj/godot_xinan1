@@ -8,6 +8,7 @@ const TEAL = Color("76e5cb")
 const RED = Color("ff958f")
 const GOLD = Color("ffe08d")
 const BLUE = Color("8fdfff")
+const Codes = preload("res://game/trial/code_catalog.gd")
 var simulation
 var actors: Dictionary = {}
 var effects: Array[Dictionary] = []
@@ -98,9 +99,12 @@ func consume_events(events: Array) -> void:
 			"mark_verified": _spawn(event, "verify", "协同验证", GOLD, 0.85)
 			"hack_progress":
 				if event.get("actual", 0) > 0: _spawn(event, "packet", "+%d" % event.actual, TEAL, 0.8)
+			"code_generated":
+				var data: Dictionary = Codes.RULES.types[event.code_type]
+				_spawn(event, "packet", "%s +%d" % [data.symbol, event.actual], data.color, 0.8)
 			"trait_triggered": _spawn(event, "trait", event.get("label", "羁绊触发"), GOLD, 1.0)
 			"hack_completed":
-				_banner = "维护已断开" if event.get("choice", "") == "disconnect" else "维护已接管"
+				_banner = event.get("label", "维护已断开" if event.get("choice", "") == "disconnect" else "维护已接管")
 				_banner_age = 0
 				_spawn(event, "system", "", BLUE, 1.2)
 	queue_redraw()
@@ -212,6 +216,7 @@ func draw_overlay(canvas: Node2D) -> void:
 	elif simulation.awaiting_choice: _center(canvas, Vector2(size.x / 2, 35), "破解完成 · 等待指令", GOLD, 22)
 	else:
 		var system_text = "维护系统" if simulation.hack_choice.is_empty() else ("系统已断开" if simulation.hack_choice == "disconnect" else "系统已接管")
+		if simulation.has_method("system_status"): system_text = simulation.system_status()
 		_center(canvas, Vector2(size.x / 2, 30), system_text, Color("a4c3cd"), 16)
 	if simulation.awaiting_choice:
 		canvas.draw_rect(Rect2(3,3,size.x-6,size.y-6), Color(GOLD,0.5), false, 2)

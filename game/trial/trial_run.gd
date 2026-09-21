@@ -2,8 +2,10 @@ extends RefCounted
 ## Checkpoint state only: interrupted battles restart with this preparation state.
 ## Role indices are append-only catalog identities; six slots are board geometry.
 const Catalog = preload("res://game/trial/trial_catalog.gd")
-const SAVE_VERSION := 2
-const DEFAULT_PATH := "user://synergy_trial_v2.json"
+const Codes = preload("res://game/trial/code_catalog.gd")
+const SAVE_VERSION := 3
+const DEFAULT_PATH := "user://synergy_trial_v3.json"
+const PREVIOUS_PATH := "user://synergy_trial_v2.json"
 const LEGACY_PATH := "user://synergy_trial_v1.json"
 const SLOT_COUNT := 6
 const PARTY_SIZE := 4
@@ -23,11 +25,14 @@ var path := DEFAULT_PATH
 var last_error := ""
 var load_blocked := false
 var recovered_backup := false
+var programs: Array = Array(Codes.RULES.default_loadout).duplicate()
+var supplies: Dictionary = Codes.stock()
 
 func snapshot() -> Dictionary:
 	return {"version": SAVE_VERSION, "formation": formation.duplicate(), "battle": battle, "phase": phase,
 		"rewards": rewards.duplicate(), "gear": gear.duplicate(), "trainee": trainee, "unlocked": unlocked,
-		"report": report, "starting_supply": starting_supply, "claimed_rewards": claimed_rewards.duplicate()}
+		"report": report, "starting_supply": starting_supply, "claimed_rewards": claimed_rewards.duplicate(),
+		"programs":programs.duplicate(), "supplies":supplies.duplicate()}
 
 func restore(data) -> bool:
 	var normalized := _normalize(data)
@@ -47,10 +52,17 @@ func _apply(data: Dictionary) -> void:
 	report = data.report
 	starting_supply = data.starting_supply
 	claimed_rewards = data.claimed_rewards.duplicate()
+	programs = data.programs.duplicate()
+	supplies = data.supplies.duplicate()
+	for id in supplies: supplies[id] = int(supplies[id])
 
 func _normalize(data) -> Dictionary:
 	if not data is Dictionary or not _integer(data.get("version"), 1, SAVE_VERSION): return {}
 	var result: Dictionary = data.duplicate(true)
+	if int(data.version) < 3:
+		result.programs = Array(Codes.RULES.default_loadout).duplicate()
+		result.supplies = Codes.stock()
+	if not Codes.valid_loadout(result.get("programs")) or not Codes.valid_stock(result.get("supplies")): return {}
 	var f = result.get("formation")
 	if not f is Array or f.size() != SLOT_COUNT: return {}
 	var used: Array = []
@@ -100,6 +112,7 @@ func _normalize(data) -> Dictionary:
 		if not id is String or not _reward_pool(index).has(id) or expected_rewards.has(id): return {}
 		expected_rewards.append(id)
 	if expected_rewards != result.rewards: return {}
+	result.version = SAVE_VERSION
 	return result
 
 func _integer(value, low: int, high: int) -> bool:
@@ -129,7 +142,8 @@ func read_save() -> bool:
 	recovered_backup = false
 	var source := path
 	if not FileAccess.file_exists(source) and not FileAccess.file_exists(source + ".bak"):
-		if path == DEFAULT_PATH and FileAccess.file_exists(LEGACY_PATH): source = LEGACY_PATH
+		if path == DEFAULT_PATH and (FileAccess.file_exists(PREVIOUS_PATH) or FileAccess.file_exists(PREVIOUS_PATH + ".bak")): source = PREVIOUS_PATH
+		elif path == DEFAULT_PATH and (FileAccess.file_exists(LEGACY_PATH) or FileAccess.file_exists(LEGACY_PATH + ".bak")): source = LEGACY_PATH
 		else:
 			load_blocked = false
 			return true
@@ -141,9 +155,9 @@ func read_save() -> bool:
 	if restore(raw):
 		load_blocked = false
 		return true
-	if source == path and restore(_read_payload(path + ".bak")):
+	if restore(_read_payload(source + ".bak")):
 		load_blocked = false
-		recovered_backup = true
+		recovered_backup = source == path
 		last_error = "已从上次有效备份恢复；本次进度可能回退一个操作。"
 		return true
 	load_blocked = true
@@ -235,8 +249,13 @@ func select_reward(id: String, owner: int = -1) -> bool:
 	phase = "prepare"
 	return true
 
-func finish(won: bool, summary: String) -> bool:
+func finish(won: bool, summary: String, remaining_items: Dictionary = {}) -> bool:
 	if phase != "prepare": return false
+	if won and not remaining_items.is_empty():
+		if not Codes.valid_stock(remaining_items): return false
+		for id in supplies:
+			if remaining_items[id] > supplies[id]: return false
+		supplies = remaining_items.duplicate()
 	report = summary
 	phase = "prepare" if not won else ("reward" if battle < Catalog.BATTLES.size() - 1 else "complete")
 	if phase == "complete": unlocked = true
@@ -253,4 +272,13 @@ func restart(supply: String = "") -> bool:
 	gear = {} if supply.is_empty() else {supply: 1}
 	trainee = -1
 	report = ""
+	programs = Array(Codes.RULES.default_loadout).duplicate()
+	supplies = Codes.stock()
+	return true
+
+func set_program(slot: int, id: String) -> bool:
+	if phase != "prepare" or slot < 0 or slot >= 2 or Codes.program(id) == null: return false
+	var other := programs.find(id)
+	if other >= 0: programs[other] = programs[slot]
+	programs[slot] = id
 	return true

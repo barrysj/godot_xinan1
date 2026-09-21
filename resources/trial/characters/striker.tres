@@ -9,3 +9,4 @@ description = "技能追击射程内生命比例最低的敌人。"
 unit = ExtResource("base")
 tags = Array[String](["makers","assault"])
 stats = {}
+code_type = "red"

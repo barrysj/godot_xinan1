@@ -152,7 +152,7 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 | `CampusTrialEncounter` | 敌人资源与对应六阵位、维护周期／护盾、战后奖励ID池；最后一场不领奖 |
 | `CampusBattleProc` | 一个触发点、效果、目标、次数作用域及参数；不是任意脚本或自然语言技能 |
 
-追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物同样复用／新增 `CampusUnit` 后追加 manifest.characters；试炼v2以人物索引保存，现有顺序必须保持、只在尾部追加，不能用删改ID或重排代替内容迁移。敌人、奖励和标签使用稳定字符串ID。
+追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物同样复用／新增 `CampusUnit` 后追加 manifest.characters；试炼v3仍以人物索引保存，现有顺序必须保持、只在尾部追加，不能用删改ID或重排代替内容迁移。敌人、奖励和标签使用稳定字符串ID。
 
 触发点和去重约定：
 
@@ -161,19 +161,31 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 | `battle_start` | 开战建好实例后，各绑定人物触发 |
 | `skill_emit` | 技能成功释放、弹道尚未命中；提供主目标和本次效果数组，用于穿透 |
 | `before_damage_skill` | 有效伤害技能命中、进入共享伤害批次之前；用于一次伤害加成 |
-| `skill_impact` | 每个实际有效技能效果结算后；同一动作的基础破解只记一次，资源另按limit去重 |
+| `skill_impact` | 每个实际有效技能效果结算后；代码效果按资源limit去重 |
 | `half_health` | 第一次结算后存活且不高于半血；没有符合目标也不会推迟到后续补触发 |
 | `verify` | 另一队友的有效普攻兑现漏洞后；team效果使用验证者作为来源 |
-| `hack_complete` | 玩家确认断开／接管维护后 |
+| `hack_complete` | 玩家成功执行任一配方程序后 |
 
 `limit=owner` 为此来源效果每个人每场一次；`team` 为全队共享一次；`action` 为每个人每个动作一次；`none` 为每次匹配事件。计数键为来源ID、效果ID和作用域，跨羁绊／角色／奖励不串用；重试全部清零。`skill_target` 和 `action` 只允许三个技能触发点，其他事件没有目标／动作上下文。效果不递归触发新的技能事件，避免“护盾触发护盾”无限循环。
 
-支持效果：shield / heal 读取固定值与目标最大生命比例；hack 读取正整数贡献；mark 读取时限（0时沿用manifest默认）并支持专属额外验证次数；attack_speed 是**攻击间隔倍率**（0.75为更快，1.5为更慢），要求正倍率和正持续时间；damage_bonus 只用于伤害技能命中前；pierce 只用于技能发射时，倍率作用于主目标技能伤害。射线、到期、冷却和护盾来源语义见 battle-demo.md。
+支持效果：shield / heal 读取固定值与目标最大生命比例；hack 在四色模式读取code_amount，旧百分条回归读取value；mark 读取时限（0时沿用manifest默认）并支持专属额外验证次数；attack_speed 是**攻击间隔倍率**（0.75为更快，1.5为更慢），要求正倍率和正持续时间；damage_bonus 只用于伤害技能命中前；pierce 只用于技能发射时，倍率作用于主目标技能伤害。射线、到期、冷却和护盾来源语义见 battle-demo.md。
 
 目标为 owner、lowest_ally、lowest_other_near、skill_target；附近距离读取 radius。`required_tag` 同时要求该人物带标签且开战时激活，用于“并肩防护”这样的羁绊升级。护盾默认来源自动命名空间化；只有需要共同移除同一类护盾时才显式填 source。不会默认移除其他来源护盾。
 
-运行扩展的明确边界：v2只有一个训练归属，训练项固定为 `training`；`lens` 是现有出发解锁的固定装备ID，必须保留。专属才能设置 character_id / mark_uses_bonus，只有训练读取 health_multiplier / attack_multiplier。新增第二项独立训练归属、可选出发补给或新的触发／效果类型，需要同步扩展存档或处理器与针对性检查，不能只填一个新字符串。
+运行扩展的明确边界：v3仍只有一个训练归属，训练项固定为 `training`；`lens` 是现有出发解锁的固定装备ID，必须保留。专属才能设置 character_id / mark_uses_bonus，只有训练读取 health_multiplier / attack_multiplier。新增第二项独立训练归属、可选出发补给或新的触发／效果类型，需要同步扩展存档或处理器与针对性检查，不能只填一个新字符串。
 
 运行 `pwsh.exe -File ./run-synergy-trial.ps1 -Check` 先校验内容，再运行效果、存档、完整三战、表现和共享战斗检查。仅校验资源可运行 Godot `--headless --path . res://game/trial/trial_content_check.tscn`。覆盖空／重名／重复ID、非法引用／枚举／非有限数值、技能配置，以及领奖时所有选项都已持有的死路；进入试炼时同样先校验，失败不读写玩家存档。验证程序中变异外部数组资源使用 `duplicate_deep(Resource.DEEP_DUPLICATE_ALL)`，不能用普通 `duplicate(true)` 假设外部Resource已隔离。
 
 `pwsh.exe -File ./run-synergy-trial.ps1 -Capture` 用独立 `.godot` 测试存档真实跑三场，输出战前、暂停、战斗、破解、奖励和通关截图。新增组合仍须看实际战斗并试玩，校验通过只能证明配置受支持，不能证明奖励有趣或已经平衡。
+
+### 四色代码内容
+
+`resources/trial/code_rules.tres` 是代码类型、容量、产出频率、程序、道具和默认装配的事实源；`code_catalog.gd` 校验后供模拟与界面共用。`code_rules.gd`、`code_program_def.gd`、`code_item_def.gd` 是显式Resource类型，不接受随意拼装的其他Resource。
+
+- 人物 `code_type` 指向类型ID。类型包含名称、符号、Color；校验允许3～5种，当前编辑器枚举为四色，增加第五种须同步扩展人物枚举和测试。
+- 程序包含稳定ID、名称、说明、cost字典、effect及治疗比例。消耗须为已注册颜色的正整数且不超过容量；新增配方可复用四种现有效果，新效果需实现处理器。
+- 两种道具定义amount和starting_count，运行库存不能超过初始数量。当前保存契约固定两槽，扩展槽位或补充库存需同步修改迁移与验证。
+- `CampusBattleProc.effect=hack` 在新模式以 `code_amount` 产出代码，`code_type` 为空时使用本人颜色；保留value供旧模拟回归，不能把进度点直接当代码块。
+- 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。v3新增programs和supplies；旧v1/v2只读迁移，人物索引兼容限制保持。
+
+`game/trial/code_check.tscn` 覆盖规则、坏配置、道具事务、迁移及两条三战路线；`scenes/trial/code_ui_check.tscn` 通过真实Viewport鼠标事件验证终端。两者均已加入 `-Check`；完整数值与玩家规则只维护于 battle-demo.md。

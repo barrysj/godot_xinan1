@@ -9,3 +9,4 @@ description = "保护自身与附近队友。"
 unit = ExtResource("base")
 tags = Array[String](["sports","protect"])
 stats = {}
+code_type = "purple"

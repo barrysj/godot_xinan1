@@ -9,3 +9,4 @@ description = "技能优先射击射程内后排。"
 unit = ExtResource("base")
 tags = Array[String](["sports","assault"])
 stats = {}
+code_type = "red"

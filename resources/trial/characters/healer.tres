@@ -9,3 +9,4 @@ description = "治疗生命比例最低的队友。"
 unit = ExtResource("base")
 tags = Array[String](["broadcast","protect"])
 stats = {}
+code_type = "green"

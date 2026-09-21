@@ -141,13 +141,16 @@ func _after_impact_batch(due: Array[Dictionary]) -> void:
 	if _living(0).is_empty() or _living(1).is_empty() or elapsed >= 90: return
 	while elapsed + EPSILON >= next_pulse:
 		next_pulse += pulse_interval
-		if hack_choice.is_empty():
-			for foe in _living(1): _apply_shield(foe, foe, pulse_amount, "maintenance", 0, "维护脉冲")
-			_note("维护脉冲 · 敌方补盾")
-		elif hack_choice == "takeover":
-			var ally := _target({}, _living(0), "low")
-			_apply_shield(ally, ally, pulse_amount, "maintenance", 0, "接管维护")
-			_note("维护脉冲 · 保护我方")
+		_maintenance_pulse()
+
+func _maintenance_pulse() -> void:
+	if hack_choice.is_empty():
+		for foe in _living(1): _apply_shield(foe, foe, pulse_amount, "maintenance", 0, "维护脉冲")
+		_note("维护脉冲 · 敌方补盾")
+	elif hack_choice == "takeover":
+		var ally := _target({}, _living(0), "low")
+		_apply_shield(ally, ally, pulse_amount, "maintenance", 0, "接管维护")
+		_note("维护脉冲 · 保护我方")
 
 func _dispatch(trigger: String, actor: Dictionary = {}, context: Dictionary = {}) -> void:
 	for binding in bindings:

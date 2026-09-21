@@ -12,5 +12,5 @@ duration = 8
 script = ExtResource("s")
 id = "makers"
 display_name = "创客社"
-description = "破解完成后，成员攻击间隔缩短25%，持续8秒。"
+description = "本场首次执行破解后，成员攻击间隔缩短25%，持续8秒。"
 effects = Array[ExtResource("p")]([SubResource("p0")])

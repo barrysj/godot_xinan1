@@ -11,5 +11,5 @@ value = 12
 script = ExtResource("s")
 id = "analysis"
 display_name = "解析"
-description = "成员首次技能生效，各额外贡献12点破解。"
+description = "成员首次技能生效，各额外产出1块自身类型代码。"
 effects = Array[ExtResource("p")]([SubResource("p0")])
