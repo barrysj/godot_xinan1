@@ -95,7 +95,7 @@ func _clear_column() -> void:
 	environment_preview_viewpoint_buttons.clear()
 
 func text(value: String, font_size: int = 22, parent: Control = null) -> void:
-	var label := CampusUi.label(value,font_size,"daily")
+	var label := CampusUi.label(value,font_size,"night" if home_root.visible else "daily")
 	(default_parent if parent == null else parent).add_child(label)
 
 func button(label: String, id: String, enabled: bool = true, parent: Control = null) -> Button:
@@ -109,9 +109,7 @@ func button(label: String, id: String, enabled: bool = true, parent: Control = n
 	item.custom_minimum_size.x = 320
 	CampusUi.apply_button(item,"daily")
 	if is_instance_valid(home_root) and home_root.visible:
-		var focus_style := CampusUi.button_style("daily","focus")
-		focus_style.border_color = Color(palette.accent_primary)
-		item.add_theme_stylebox_override("focus",focus_style)
+		_apply_home_button(item)
 	item.pressed.connect(func(): action.emit(id))
 	(default_parent if parent == null else parent).add_child(item)
 	return item
@@ -133,6 +131,39 @@ func _hub_icon(id: String) -> Texture2D:
 	var texture := ImageTexture.create_from_image(image)
 	hub_icon_textures[id] = texture
 	return texture
+
+func _home_surface() -> StyleBoxFlat:
+	var style := CampusUi.panel_style("night","quiet")
+	style.bg_color = Color(0.055,0.105,0.17,0.90)
+	style.border_color = Color(0.24,0.69,0.80,0.65)
+	style.set_border_width_all(1)
+	style.corner_radius_top_left = 2
+	style.corner_radius_bottom_right = 2
+	style.shadow_color = Color(0.015,0.04,0.07,0.32)
+	style.shadow_size = 8
+	return style
+
+func _apply_home_button(item: Button) -> void:
+	var texture := ExplorationSkin.texture("res://assets/art/ui/m1_exploration_ui/button.png")
+	for state in ["normal","hover","pressed","disabled"]:
+		var style := StyleBoxTexture.new()
+		style.texture = texture
+		style.texture_margin_left = 28
+		style.texture_margin_right = 28
+		style.texture_margin_top = 12
+		style.texture_margin_bottom = 12
+		style.set_content_margin_all(14)
+		if state == "pressed": style.modulate_color = Color(0.65,0.8,0.88)
+		elif state == "disabled": style.modulate_color = Color(0.45,0.5,0.6,0.65)
+		item.add_theme_stylebox_override(state,style)
+	var focus := StyleBoxFlat.new()
+	focus.bg_color = Color.TRANSPARENT
+	focus.border_color = Color(palette.accent_primary)
+	focus.set_border_width_all(3)
+	focus.set_corner_radius_all(6)
+	item.add_theme_stylebox_override("focus",focus)
+	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		item.add_theme_color_override(state,Color("f7fbff"))
 
 func _home_icon_button(label: String, id: String, icon_id: String, parent: Control) -> Button:
 	var item := button(label,id,true,parent)
@@ -205,7 +236,7 @@ func home(progress, chosen_supply: bool) -> void:
 	_show_home_page()
 	var backdrop := TextureRect.new()
 	var image := Image.new()
-	var bytes := FileAccess.get_file_as_bytes("res://design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/013/campus_hub_lecture_hall_concept_013.png")
+	var bytes := FileAccess.get_file_as_bytes("res://design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/014/lecture-hall.png")
 	if image.load_png_from_buffer(bytes) == OK:
 		backdrop.texture = ImageTexture.create_from_image(image)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -281,20 +312,19 @@ func home(progress, chosen_supply: bool) -> void:
 	for entry in [["成长","growth","growth"],["派遣","dispatch","dispatch"],["回忆","memories","memory"],["图鉴","codex","codex"]]:
 		var item := _home_icon_button(entry[0],entry[1],entry[2],grid)
 		item.custom_minimum_size = Vector2(184,76)
-		for state in ["normal","hover","pressed","disabled","focus"]:
-			var style := CampusUi.button_style("night",state)
-			style.bg_color.a = 0.86
-			style.border_color = Color(palette.accent_primary)
-			item.add_theme_stylebox_override(state,style)
+		_apply_home_button(item)
 	default_parent = utilities
 	var primary: Button = mission.find_children("*","Button",true,false)[0] if not mission.find_children("*","Button",true,false).is_empty() else menu
-	primary.grab_focus.call_deferred()
+	_focus_home_action.call_deferred(primary)
+
+func _focus_home_action(item: Button) -> void:
+	if is_instance_valid(item) and item.is_inside_tree() and item.is_visible_in_tree():
+		item.grab_focus()
 
 func _floating_card(parent: Control) -> VBoxContainer:
 	var panel := PanelContainer.new()
 	panel.size_flags_vertical = Control.SIZE_SHRINK_END
-	var style := CampusUi.panel_style("daily","quiet")
-	style.bg_color = Color(palette.surface,0.88)
+	var style := _home_surface()
 	panel.add_theme_stylebox_override("panel",style)
 	parent.add_child(panel)
 	var box := VBoxContainer.new()
