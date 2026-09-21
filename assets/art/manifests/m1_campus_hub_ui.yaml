@@ -8,8 +8,17 @@ variants:
   concept_015:
     stage: concept
     version: '015'
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-21
+      decision: layout_and_material_direction_approved
+      quote: "还不错，继续推进"
+    integration_authorization:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-21
+      scope: "按015方向推进原生控件，修正图标和高光；运行效果待评审"
     root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/015
     files:
       concept: hub-ui-concept.png
@@ -17,7 +26,7 @@ variants:
     metadata:
       source_tool: codex_builtin_imagegen
       quality_gate: REGENERATE_MINOR
-      implementation_note: layout_review_only_not_integrated
+      implementation_note: native_controls_in_campaign_panel_and_campus_ui_not_raster_integration
   concept_014:
     stage: concept
     version: '014'

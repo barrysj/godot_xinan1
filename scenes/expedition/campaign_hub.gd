@@ -26,6 +26,7 @@ func _ready() -> void:
 	super._ready()
 	campaign_enabled = not is_test or "--campaign-flow-check" in OS.get_cmdline_user_args()
 	if not campaign_enabled: return
+	_hide_version_overlay.call_deferred()
 	inspector.theme = theme
 	deployment.theme = theme
 	campaign_panel = preload("res://scenes/expedition/campaign_panel.gd").new()
@@ -58,15 +59,28 @@ func _show_library_environment_preview() -> void:
 	campaign_panel.show()
 	campaign_panel.library_environment_preview()
 
+func _hide_version_overlay() -> void:
+	var version := get_node_or_null("/root/GGT_Transitions/Version") as Control
+	if version != null and not debug_enabled:
+		var was_visible := version.visible
+		version.hide()
+		tree_exiting.connect(func():
+			if is_instance_valid(version): version.visible = was_visible)
+
 func _home() -> void:
 	reset_pending = false
 	screen = "base"
 	campaign_panel.show()
 	campaign_panel.home(progress,chosen_supply)
 	if debug_enabled: campaign_panel.text("DEBUG · 当前使用独立调试存档",18)
-	campaign_panel.button("重开存档","reset_profile")
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(campaign_panel) and is_instance_valid(campaign_panel.home_overlay) and not paused:
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause"):
+			if reset_pending: _profile_action("reset_cancel")
+			else: campaign_panel.close_home_overlay()
+			get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(debug_panel):
 		if debug_panel.handle_input(event):
 			get_viewport().set_input_as_handled()
@@ -81,16 +95,14 @@ func _request_exit(destination: String) -> void:
 func _profile_action(id: String) -> bool:
 	if id == "reset_profile" and screen == "base":
 		reset_pending = true
-		campaign_panel.clear("重开存档", "将清空主线进度、角色解锁、回忆、资源、成长、派遣和当前探索。设置保留。\n确认后先备份当前存档，再从序章开始。")
-		campaign_panel.button("取消","reset_cancel")
-		campaign_panel.button("确认重开","reset_confirm")
+		campaign_panel.show_home_reset_confirmation()
 		return true
 	if id == "reset_cancel" and reset_pending:
 		_home()
 		return true
 	if id == "reset_confirm" and reset_pending:
 		if not progress.restart_profile():
-			campaign_panel.text(progress.error_message)
+			campaign_panel.show_home_reset_confirmation(progress.error_message)
 			return true
 		campaign_mode = ""
 		journey = Journey.new()
@@ -285,6 +297,10 @@ func _memory_text(id: String) -> String:
 
 func _campaign_action(id: String) -> void:
 	if paused: return
+	if id == "hub_menu":
+		campaign_panel.show_home_menu()
+		return
+	if id == "hub_close": return
 	if _profile_action(id): return
 	if progress.load_blocked: return
 	if id == "base":

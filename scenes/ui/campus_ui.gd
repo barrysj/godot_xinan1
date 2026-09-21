@@ -6,6 +6,41 @@ const COLORS_PATH := "res://data/visual/colors.json"
 
 static var _colors: Dictionary = {}
 
+## Base-only material: native geometry, shared palette, no raster text or gloss.
+static func hub_surface(state: String = "normal", primary: bool = false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	var accent := Color(colors("daily").accent_primary)
+	style.bg_color = Color(colors("night").surface,0.90)
+	style.border_color = Color(colors("daily").text_secondary,0.85)
+	if primary:
+		style.bg_color = accent
+		style.border_color = accent
+	if state == "hover":
+		style.bg_color = style.bg_color.lightened(0.10)
+		style.border_color = accent
+	elif state == "pressed":
+		style.bg_color = style.bg_color.darkened(0.12)
+	elif state == "disabled":
+		style.bg_color = Color(colors("night").surface,0.65)
+		style.border_color.a = 0.3
+	elif state == "focus":
+		style.bg_color = Color.TRANSPARENT
+		style.border_color = Color(colors("night").text_primary) if primary else accent
+	style.set_border_width_all(2 if state == "focus" else 1)
+	style.set_corner_radius_all(10)
+	style.corner_detail = 1
+	style.set_content_margin_all(18)
+	return style
+
+static func apply_hub_button(item: Button, primary: bool = false) -> void:
+	for state in ["normal","hover","pressed","disabled","focus"]:
+		var style := hub_surface(state,primary)
+		style.set_content_margin_all(12)
+		item.add_theme_stylebox_override(state,style)
+	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		item.add_theme_color_override(state,Color(colors("daily").text_primary if primary else colors("night").text_primary))
+	item.add_theme_color_override("font_disabled_color",Color(colors("night").text_primary,0.4))
+
 static func colors(layer: String = "daily") -> Dictionary:
 	if _colors.is_empty():
 		_colors = JSON.parse_string(FileAccess.get_file_as_string(COLORS_PATH))

@@ -166,13 +166,14 @@ func capture_hub_icons(hub) -> void:
 	hub.progress.complete_prologue()
 	hub.progress.complete_tutorial_dispatch()
 	hub.progress.points = 42
-	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200),Vector2i(1280,720)]:
 		hub.get_window().size = resolution
 		await hub.get_tree().process_frame
 		hub._home()
 		verify_hub_icons(hub)
 		await RenderingServer.frame_post_draw
 		await RenderingServer.frame_post_draw
+		verify_hub_layout(hub)
 		var picture: Image = hub.get_viewport().get_texture().get_image()
 		verify(picture.get_size() == resolution,"hub icon capture matches requested viewport")
 		picture.save_png("res://.godot/m1-campus-hub-icons-%dx%d.png" % [resolution.x,resolution.y])
@@ -182,10 +183,55 @@ func capture_hub_icons(hub) -> void:
 			await RenderingServer.frame_post_draw
 			hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-campus-hub-icons-focus-1920x1080.png")
 			growth.release_focus()
+	await verify_hub_overlays(hub)
 	hub._campaign_action("codex")
 	verify(is_instance_valid(hub.codex_panel),"hub codex icon opens existing codex")
 	if is_instance_valid(hub.codex_panel): hub.codex_panel.close_guide()
 	print("HUB_ICON_CAPTURE checks=%d failures=%d" % [checks,failures])
+
+func verify_hub_layout(hub) -> void:
+	var panel = hub.campaign_panel
+	verify(panel.action_button("reset_profile") == null,"reset is absent from home")
+	var mission: Control = panel.find_child("HomeMission",true,false)
+	verify(mission.size.y < 320,"default mission remains compact")
+	var rects: Array[Rect2] = []
+	for id in ["choose_region","growth","dispatch","memories","codex","hub_menu"]:
+		var item: Button = panel.action_button(id)
+		var rect := item.get_global_rect()
+		verify(panel.get_global_rect().encloses(rect),"home button in bounds: "+id)
+		for previous in rects: verify(not previous.intersects(rect),"home buttons do not overlap")
+		rects.append(rect)
+		verify(item.get_theme_stylebox("normal") is StyleBoxFlat,"home uses native matte geometry")
+	verify(is_equal_approx(rects[1].position.y,rects[4].position.y),"four facility cards share one row")
+	var version = hub.get_node_or_null("/root/GGT_Transitions/Version")
+	verify(version == null or not version.visible,"debug version does not cover mission")
+
+func verify_hub_overlays(hub) -> void:
+	var panel = hub.campaign_panel
+	var explore: Button = panel.action_button("choose_region")
+	explore.grab_focus()
+	explore.pressed.emit()
+	await hub.get_tree().process_frame
+	verify(is_instance_valid(panel.home_overlay),"explore opens region overlay")
+	verify(panel.action_button("region:library") != null,"region choice reachable")
+	verify(explore.focus_mode == Control.FOCUS_NONE,"background excluded from modal focus")
+	var cancel := InputEventAction.new()
+	cancel.action = "ui_cancel"
+	cancel.pressed = true
+	hub._input(cancel)
+	await hub.get_tree().process_frame
+	verify(not is_instance_valid(panel.home_overlay) and explore.has_focus(),"cancel restores explore focus")
+	var menu: Button = panel.action_button("hub_menu")
+	menu.grab_focus()
+	menu.pressed.emit()
+	await hub.get_tree().process_frame
+	verify(panel.action_button("reset_profile") != null,"reset available only inside menu")
+	await RenderingServer.frame_post_draw
+	hub.get_viewport().get_texture().get_image().save_png("res://.godot/m1-campus-hub-menu.png")
+	panel.action_button("reset_profile").pressed.emit()
+	verify(hub.reset_pending and panel.action_button("reset_confirm") != null,"menu reset requires confirmation")
+	hub._input(cancel)
+	verify(not hub.reset_pending and panel.home_root.visible,"cancel reset returns home")
 
 func capture_readability(hub) -> void:
 	hub.get_window().mode = Window.MODE_WINDOWED

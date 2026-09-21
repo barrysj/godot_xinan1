@@ -19,6 +19,8 @@ var column: VBoxContainer
 var page_margin: MarginContainer
 var page_scroll: ScrollContainer
 var home_root: Control
+var home_overlay: Control
+var home_return_focus: Control
 var default_parent: Control
 var hub_icon_textures: Dictionary = {}
 var palette: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json")).daily
@@ -68,11 +70,13 @@ func clear(title: String, detail: String) -> void:
 	text(detail,21)
 
 func _show_standard_page() -> void:
+	close_home_overlay(false)
 	home_root.hide()
 	page_margin.show()
 	default_parent = column
 
 func _show_home_page() -> void:
+	close_home_overlay(false)
 	page_margin.hide()
 	home_root.show()
 	default_parent = home_root
@@ -133,58 +137,25 @@ func _hub_icon(id: String) -> Texture2D:
 	return texture
 
 func _home_surface() -> StyleBoxFlat:
-	var style := CampusUi.panel_style("night","quiet")
-	style.bg_color = Color(0.055,0.105,0.17,0.90)
-	style.border_color = Color(0.24,0.69,0.80,0.65)
-	style.set_border_width_all(1)
-	style.corner_radius_top_left = 2
-	style.corner_radius_bottom_right = 2
-	style.shadow_color = Color(0.015,0.04,0.07,0.32)
-	style.shadow_size = 8
-	return style
+	return CampusUi.hub_surface()
 
 func _apply_home_button(item: Button) -> void:
-	var texture := ExplorationSkin.texture("res://assets/art/ui/m1_exploration_ui/button.png")
-	for state in ["normal","hover","pressed","disabled"]:
-		var style := StyleBoxTexture.new()
-		style.texture = texture
-		style.texture_margin_left = 28
-		style.texture_margin_right = 28
-		style.texture_margin_top = 12
-		style.texture_margin_bottom = 12
-		style.set_content_margin_all(14)
-		if state == "pressed": style.modulate_color = Color(0.65,0.8,0.88)
-		elif state == "disabled": style.modulate_color = Color(0.45,0.5,0.6,0.65)
-		item.add_theme_stylebox_override(state,style)
-	var focus := StyleBoxFlat.new()
-	focus.bg_color = Color.TRANSPARENT
-	focus.border_color = Color(palette.accent_primary)
-	focus.set_border_width_all(3)
-	focus.set_corner_radius_all(6)
-	item.add_theme_stylebox_override("focus",focus)
-	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
-		item.add_theme_color_override(state,Color("f7fbff"))
+	CampusUi.apply_hub_button(item)
 
 func _home_icon_button(label: String, id: String, icon_id: String, parent: Control) -> Button:
 	var item := button(label,id,true,parent)
-	item.custom_minimum_size = Vector2(250,76)
+	item.custom_minimum_size = Vector2(116,116)
 	item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	item.add_theme_font_size_override("font_size",21)
 	item.icon = _hub_icon(icon_id)
 	item.set_meta("icon_asset_path",HUB_ICON_PATHS.get(icon_id,""))
 	item.expand_icon = true
 	item.add_theme_constant_override("icon_max_width",36)
-	item.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	item.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	item.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 	item.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	item.add_theme_constant_override("icon_separation",14)
-	for state in ["normal","hover","pressed","disabled","focus"]:
-		var style := StyleBoxFlat.new()
-		style.bg_color = Color("223548") if state in ["hover","pressed"] else Color("17202B")
-		style.border_color = Color(palette.highlight if state == "focus" else palette.accent_primary)
-		style.set_border_width_all(2)
-		style.set_corner_radius_all(10)
-		style.set_content_margin_all(14)
-		item.add_theme_stylebox_override(state,style)
+	_apply_home_button(item)
 	for color_name in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
 		item.add_theme_color_override(color_name,Color("F6F8FA"))
 	return item
@@ -192,13 +163,9 @@ func _home_icon_button(label: String, id: String, icon_id: String, parent: Contr
 func _resource_status(points: int) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "ResourceStatus"
-	panel.custom_minimum_size = Vector2(320,58)
+	panel.custom_minimum_size = Vector2(230,58)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("17202B")
-	style.border_color = Color(palette.accent_primary)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(10)
+	var style := _home_surface()
 	style.set_content_margin_all(10)
 	panel.add_theme_stylebox_override("panel",style)
 	default_parent.add_child(panel)
@@ -214,7 +181,7 @@ func _resource_status(points: int) -> void:
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	status_row.add_child(icon)
 	var label := Label.new()
-	label.text = "修复资源 %d · 校园后勤" % points
+	label.text = "修复资源 %d" % points
 	label.add_theme_font_size_override("font_size",20)
 	label.add_theme_color_override("font_color",Color("F6F8FA"))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -254,9 +221,10 @@ func home(progress, chosen_supply: bool) -> void:
 	top.add_theme_constant_override("separation",16)
 	page.add_child(top)
 	var location := _floating_card(top)
-	location.get_parent().custom_minimum_size.x = 280
+	location.get_parent().custom_minimum_size.x = 240
+	location.add_theme_constant_override("separation",4)
 	location.get_parent().size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	text("校园修复站",28,location)
+	text("校园修复站",26,location)
 	text("阶梯教室",18,location)
 	var top_space := Control.new()
 	top_space.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -264,7 +232,7 @@ func home(progress, chosen_supply: bool) -> void:
 	default_parent = top
 	_resource_status(progress.points)
 	top.get_child(top.get_child_count()-1).size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	var menu := button("菜单","menu",true,top)
+	var menu := button("菜单","hub_menu",true,top)
 	menu.custom_minimum_size = Vector2(100,58)
 	menu.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	var space := Control.new()
@@ -274,9 +242,18 @@ func home(progress, chosen_supply: bool) -> void:
 	bottom.add_theme_constant_override("separation",24)
 	page.add_child(bottom)
 	var mission := _floating_card(bottom)
-	mission.get_parent().custom_minimum_size.x = 400
+	mission.get_parent().custom_minimum_size.x = 440
+	mission.get_parent().name = "HomeMission"
 	text("当前目标",18,mission)
-	text(progress.Campaign.objective(progress.campaign),23,mission)
+	text(progress.Campaign.objective(progress.campaign).split(" · ")[0],26,mission)
+	var progress_row := HBoxContainer.new()
+	progress_row.add_theme_constant_override("separation",18)
+	mission.add_child(progress_row)
+	text("记忆终端 %d / 3" % progress.campaign.terminals.size(),18,progress_row)
+	var indicators := ""
+	for i in range(3): indicators += "●  " if i < progress.campaign.terminals.size() else "○  "
+	text(indicators,18,progress_row)
+	for label in progress_row.get_children(): label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	if progress.load_blocked:
 		text(progress.error_message,18,mission)
 	elif not progress.active_run.is_empty():
@@ -305,16 +282,19 @@ func home(progress, chosen_supply: bool) -> void:
 	utilities.add_theme_constant_override("separation",12)
 	bottom.add_child(utilities)
 	var grid := GridContainer.new()
-	grid.columns = 2
+	grid.columns = 4
 	grid.add_theme_constant_override("h_separation",12)
 	grid.add_theme_constant_override("v_separation",12)
 	utilities.add_child(grid)
 	for entry in [["成长","growth","growth"],["派遣","dispatch","dispatch"],["回忆","memories","memory"],["图鉴","codex","codex"]]:
 		var item := _home_icon_button(entry[0],entry[1],entry[2],grid)
-		item.custom_minimum_size = Vector2(184,76)
+		item.custom_minimum_size = Vector2(116,116)
 		_apply_home_button(item)
 	default_parent = utilities
 	var primary: Button = mission.find_children("*","Button",true,false)[0] if not mission.find_children("*","Button",true,false).is_empty() else menu
+	if primary != menu:
+		CampusUi.apply_hub_button(primary,true)
+		primary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_focus_home_action.call_deferred(primary)
 
 func _focus_home_action(item: Button) -> void:
@@ -333,11 +313,57 @@ func _floating_card(parent: Control) -> VBoxContainer:
 	return box
 
 func _home_routes(progress) -> void:
-	clear("选择区域","选择本次探索的目的地。")
+	var box := _home_dialog("选择区域")
 	for region in ["library","region_b","region_c"]:
-		button({"library":"图书馆","region_b":"第二终端","region_c":"第三终端"}[region],"region:"+region)
-	button("返回基地","base")
-	column.get_child(2).grab_focus()
+		button({"library":"图书馆","region_b":"第二终端","region_c":"第三终端"}[region],"region:"+region,true,box)
+	var back := button("返回基地","hub_close",true,box)
+	back.pressed.connect(close_home_overlay)
+	_focus_home_action.call_deferred(box.get_child(1))
+
+func show_home_menu() -> void:
+	var box := _home_dialog("基地菜单")
+	var back := button("返回基地","hub_close",true,box)
+	back.pressed.connect(close_home_overlay)
+	button("主菜单","menu",true,box)
+	var reset := button("重开存档","reset_profile",true,box)
+	reset.add_theme_color_override("font_color",Color(CampusUi.colors("semantic").danger))
+	reset.tooltip_text = "备份旧档后重新开始，下一步需要确认。"
+	_focus_home_action.call_deferred(back)
+
+func show_home_reset_confirmation(error_message: String = "") -> void:
+	var box := _home_dialog("重开存档")
+	box.get_parent().custom_minimum_size.x = 460
+	text("将清空主线、角色解锁、回忆、资源、成长、派遣和当前探索。设置保留。确认后先备份旧档，再从序章开始。",20,box)
+	if not error_message.is_empty(): text(error_message,18,box)
+	var cancel := button("取消","reset_cancel",true,box)
+	var confirm := button("确认重开","reset_confirm",true,box)
+	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		confirm.add_theme_color_override(state,Color(CampusUi.colors("semantic").danger))
+	_focus_home_action.call_deferred(cancel)
+
+func _home_dialog(title: String) -> VBoxContainer:
+	close_home_overlay(false)
+	home_return_focus = get_viewport().gui_get_focus_owner()
+	for item in home_root.find_children("*","Button",true,false): item.focus_mode = Control.FOCUS_NONE
+	home_overlay = ColorRect.new()
+	home_overlay.name = "HomeOverlay"
+	home_overlay.color = Color(0,0,0,0.35)
+	home_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	home_root.add_child(home_overlay)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	home_overlay.add_child(center)
+	var box := _floating_card(center)
+	text(title,26,box)
+	return box
+
+func close_home_overlay(restore_focus: bool = true) -> void:
+	if not is_instance_valid(home_overlay): return
+	home_overlay.get_parent().remove_child(home_overlay)
+	home_overlay.queue_free()
+	home_overlay = null
+	for item in home_root.find_children("*","Button",true,false): item.focus_mode = Control.FOCUS_ALL
+	if restore_focus and is_instance_valid(home_return_focus): _focus_home_action.call_deferred(home_return_focus)
 
 func _legacy_home_layout(progress, chosen_supply: bool) -> void:
 	_show_home_page()

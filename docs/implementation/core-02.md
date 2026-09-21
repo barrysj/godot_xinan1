@@ -27,6 +27,8 @@
 
 ## 当前玩家引导与结果反馈
 
+2026-09-21 015原生控件修订（基线8f16052）：`campus_ui.gd`集中基地专用哑光切角样式；`campaign_panel.gd`实现紧凑任务、独立横排四功能、区域／菜单／重开确认浮窗；`campaign_hub.gd`接入菜单和Esc返回。保留014背景与012图标，不使用015整图作UI。`campaign_flow_check.gd --hub-icon-capture`扩展至1280×720及原三尺寸，212项通过，检查边界、按钮无重叠、图标映射、弹窗焦点隔离／恢复、菜单重开确认；完整战役124/0，存档重开14/0。运行命令：Godot --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check --hub-icon-capture；完整战役移除末尾参数；重开使用 --profile-reset-check。截图见design/concepts/m1-campus-hub-ui/review/codex-workflow/hub015/。未验证实体手柄／本轮Web导出；014仍是整图，AI三态与进度布景未分层；其他功能页仍待改造。接入视觉待评审，待统筹。
+
 2026-09-21 最新修订（基线e41a80a，覆盖下方旧骨架描述）：负责人更正概念批准为014，013撤回。`campaign_panel.gd` 使用014试接入背景，紧凑深蓝半透明任务／地点卡、探索同款NinePatch按钮、青色焦点。保持原action接口、存档和规则。验证命令：Godot expedition.tscn -- --campaign-flow-check（124/0）；追加 --hub-icon-capture（三尺寸61/0），1920×1080实机截图已目检。截图 `.godot/m1-campus-hub-icons-*.png`。背景仍为概念整图、其他页面未随本次统一换肤；实体手柄及Web未重验。待统筹。
 
 2026-09-21 浮动卡片修订：基地移除整高侧板和中央外框，改为全屏013概念背景试接入、底部独立卡片、顶部状态块；探索按钮打开区域选择。基线60d4f73，完整战役124/0，三尺寸图标检查61/0；截图 `.godot/m1-campus-hub-icons-*.png`。正式背景分层、动态道具及AI三态尚未完成；未验证实体手柄与本次Web导出。待统筹。
