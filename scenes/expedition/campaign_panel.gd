@@ -108,6 +108,10 @@ func button(label: String, id: String, enabled: bool = true, parent: Control = n
 	item.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	item.custom_minimum_size.x = 320
 	CampusUi.apply_button(item,"daily")
+	if is_instance_valid(home_root) and home_root.visible:
+		var focus_style := CampusUi.button_style("daily","focus")
+		focus_style.border_color = Color(palette.accent_primary)
+		item.add_theme_stylebox_override("focus",focus_style)
 	item.pressed.connect(func(): action.emit(id))
 	(default_parent if parent == null else parent).add_child(item)
 	return item
@@ -198,6 +202,114 @@ func row() -> HBoxContainer:
 	return result
 
 func home(progress, chosen_supply: bool) -> void:
+	_show_home_page()
+	var backdrop := TextureRect.new()
+	var image := Image.new()
+	var bytes := FileAccess.get_file_as_bytes("res://design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/013/campus_hub_lecture_hall_concept_013.png")
+	if image.load_png_from_buffer(bytes) == OK:
+		backdrop.texture = ImageTexture.create_from_image(image)
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	home_root.add_child(backdrop)
+	var safe := MarginContainer.new()
+	safe.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for side in ["left","top","right","bottom"]: safe.add_theme_constant_override("margin_"+side,32)
+	home_root.add_child(safe)
+	var page := VBoxContainer.new()
+	safe.add_child(page)
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation",16)
+	page.add_child(top)
+	var location := _floating_card(top)
+	location.get_parent().custom_minimum_size.x = 280
+	location.get_parent().size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	text("校园修复站",28,location)
+	text("阶梯教室",18,location)
+	var top_space := Control.new()
+	top_space.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(top_space)
+	default_parent = top
+	_resource_status(progress.points)
+	top.get_child(top.get_child_count()-1).size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	var menu := button("菜单","menu",true,top)
+	menu.custom_minimum_size = Vector2(100,58)
+	menu.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	var space := Control.new()
+	space.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page.add_child(space)
+	var bottom := HBoxContainer.new()
+	bottom.add_theme_constant_override("separation",24)
+	page.add_child(bottom)
+	var mission := _floating_card(bottom)
+	mission.get_parent().custom_minimum_size.x = 400
+	text("当前目标",18,mission)
+	text(progress.Campaign.objective(progress.campaign),23,mission)
+	if progress.load_blocked:
+		text(progress.error_message,18,mission)
+	elif not progress.active_run.is_empty():
+		button("继续探索","continue",true,mission)
+	elif not progress.campaign.prologue_done:
+		button("前往校门","prologue",true,mission)
+	elif not progress.campaign.routes_acquired:
+		button("取回路线","tutorial",true,mission)
+	elif progress.campaign.terminals.size() == 3 and not progress.campaign.restored:
+		button("接入终端","finale",true,mission)
+	else:
+		var explore := button("探索","choose_region",true,mission)
+		explore.pressed.connect(func(): _home_routes(progress))
+	if not progress.active_run.is_empty() and progress.campaign.routes_acquired:
+		var choose := button("选择区域","choose_region",true,mission)
+		choose.pressed.connect(func(): _home_routes(progress))
+	if progress.campaign.restored: button("重看结尾","ending",true,mission)
+	if progress.supply_unlocked:
+		text("补给："+("厚笔记本" if chosen_supply else "未携带"),17,mission)
+		button("切换补给","supply",true,mission)
+	var gap := Control.new()
+	gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bottom.add_child(gap)
+	var utilities := VBoxContainer.new()
+	utilities.size_flags_vertical = Control.SIZE_SHRINK_END
+	utilities.add_theme_constant_override("separation",12)
+	bottom.add_child(utilities)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation",12)
+	grid.add_theme_constant_override("v_separation",12)
+	utilities.add_child(grid)
+	for entry in [["成长","growth","growth"],["派遣","dispatch","dispatch"],["回忆","memories","memory"],["图鉴","codex","codex"]]:
+		var item := _home_icon_button(entry[0],entry[1],entry[2],grid)
+		item.custom_minimum_size = Vector2(184,76)
+		for state in ["normal","hover","pressed","disabled","focus"]:
+			var style := CampusUi.button_style("night",state)
+			style.bg_color.a = 0.86
+			style.border_color = Color(palette.accent_primary)
+			item.add_theme_stylebox_override(state,style)
+	default_parent = utilities
+	var primary: Button = mission.find_children("*","Button",true,false)[0] if not mission.find_children("*","Button",true,false).is_empty() else menu
+	primary.grab_focus.call_deferred()
+
+func _floating_card(parent: Control) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_vertical = Control.SIZE_SHRINK_END
+	var style := CampusUi.panel_style("daily","quiet")
+	style.bg_color = Color(palette.surface,0.88)
+	panel.add_theme_stylebox_override("panel",style)
+	parent.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation",12)
+	panel.add_child(box)
+	return box
+
+func _home_routes(progress) -> void:
+	clear("选择区域","选择本次探索的目的地。")
+	for region in ["library","region_b","region_c"]:
+		button({"library":"图书馆","region_b":"第二终端","region_c":"第三终端"}[region],"region:"+region)
+	button("返回基地","base")
+	column.get_child(2).grab_focus()
+
+func _legacy_home_layout(progress, chosen_supply: bool) -> void:
 	_show_home_page()
 	var safe := MarginContainer.new()
 	safe.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

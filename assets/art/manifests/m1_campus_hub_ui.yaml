@@ -5,6 +5,20 @@ object:
   type: ui
   subtype: campus_hub_home_hero
 variants:
+  concept_014:
+    stage: concept
+    version: '014'
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/014
+    files:
+      concept: lecture-hall.png
+      source_notes: generation.md
+    metadata:
+      quality_gate: PASS_WITH_NOTES
+      source_tool: codex_builtin_imagegen
+      resolution: [1672, 941]
+      implementation_note: concept_only_not_integrated
   concept_001:
     stage: concept
     version: 001
@@ -78,8 +92,17 @@ variants:
   concept_013:
     stage: concept
     version: 013
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      date: 2026-09-21
+      decision: concept_approved
+      quote: "美术概念013通过，基地界面布局按照建议的执行"
+    integration_authorization:
+      source: docs/art/tasks/m1-campus-hub-ui.md
+      scope: "基地布局试接入，尚非正式分层资产"
+      date: 2026-09-21
     root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/013
     files:
       concept: campus_hub_lecture_hall_concept_013.png
