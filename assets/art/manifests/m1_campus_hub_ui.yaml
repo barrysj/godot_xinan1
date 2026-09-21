@@ -5,6 +5,20 @@ object:
   type: ui
   subtype: campus_hub_home_hero
 variants:
+  concept_016:
+    stage: concept
+    version: '016'
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-hub-ui/m1_campus_hub_ui/016
+    files:
+      concept: lecture-hall-lowres.png
+      source_notes: generation.md
+    metadata:
+      source_tool: codex_builtin_imagegen
+      resolution: [1672, 941]
+      quality_gate: REGENERATE_MAJOR
+      implementation_note: failed_3840x2160_requirement_not_integrated
   concept_015:
     stage: concept
     version: '015'
