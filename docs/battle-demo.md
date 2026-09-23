@@ -106,7 +106,7 @@ Demo 与正式冒险共用 `game/combat/battle_simulation.gd`，固定 0.05 秒�
 
 ## 独立试炼入口与遗留代码
 
-早期固定三战试炼用于验证羁绊、四色代码、奖励和图形反馈。主菜单独立试炼入口已移除，玩家通过原校园流程体验这些玩法。部分旧试炼场景、短局存档及启动文件仍留在仓库，清理待完成；它们不应再作为玩法规则或实现入口。`resources/combat/`、`game/combat/combat_content_catalog.gd` 与 `game/content/combat_content_check.tscn` 是校园玩法共享数据，应保留。
+早期固定三战试炼用于验证羁绊、四色代码、奖励和图形反馈。主菜单独立试炼入口、场景、短局存档及启动文件现已移除；玩家通过原校园流程体验这些玩法。`resources/combat/`、`game/combat/combat_content_catalog.gd` 与 `game/content/combat_content_check.tscn` 是校园玩法共享数据。
 
 ## 原主线羁绊、破解与战后强化（2026-09-24）
 
