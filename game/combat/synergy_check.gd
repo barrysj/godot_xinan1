@@ -1,8 +1,9 @@
 extends Node
 ## Contract checks for declarative reactions through the real combat resolver.
-const Simulation = preload("res://game/combat/synergy_simulation.gd")
-const Catalog = preload("res://game/trial/trial_catalog.gd")
+const Simulation = preload("res://game/combat/code_battle_simulation.gd")
+const Catalog = preload("res://game/combat/combat_content_catalog.gd")
 const Proc = preload("res://game/content/battle_proc.gd")
+const Fixture = preload("res://game/combat/combat_check_fixture.gd")
 const DEFAULT = [0, -1, 3, 2, 1, -1]
 var checks := 0
 var failures := 0
@@ -13,9 +14,8 @@ func expect(ok: bool, message: String) -> void:
 		failures += 1
 		push_error(message)
 
-func fresh(formation: Array = DEFAULT, rewards: Array = [], gear: Dictionary = {}, trainee: int = -1):
-	var sim = Simulation.new()
-	sim.start(formation, 0, rewards, gear, trainee)
+func fresh(formation: Array = DEFAULT, rewards: Array = [], owners: Dictionary = {}):
+	var sim = Fixture.build(formation, rewards, owners)
 	quiet(sim)
 	return sim
 
@@ -47,7 +47,7 @@ func clear_shield(unit: Dictionary) -> void:
 
 func hit(actor: Dictionary, target: Dictionary, action: int, skill: bool = false, amount: float = 10) -> Dictionary:
 	return {"actor":actor,"target":target,"action_id":action,"kind":"damage","value":amount,
-		"special":skill,"trial_skill":skill,"origin":actor.position}
+		"special":skill,"synergy_skill":skill,"origin":actor.position}
 
 func resolve(sim, effects: Array) -> void:
 	var batch: Array[Dictionary] = []
@@ -145,16 +145,16 @@ func _makers_expiry() -> void:
 	var striker = role(sim,5)
 	var base: float = inventor.interval
 	var other_base: float = role(sim,0).interval
-	sim.awaiting_choice = true
-	expect(sim.choose_hack("takeover"), "Hack choice accepted once")
+	sim._dispatch("hack_complete")
 	expect(is_equal_approx(inventor.interval,base*0.75) and is_equal_approx(striker.interval,striker.base_interval*0.75), "Makers speeds both trait holders")
 	expect(role(sim,0).interval == other_base, "Makers does not buff unrelated characters")
-	expect(not sim.choose_hack("takeover"), "Hack complete cannot be repeated")
+	sim._dispatch("hack_complete")
+	expect(is_equal_approx(inventor.interval,base*0.75), "Hack-complete reaction cannot repeat")
 	tick(sim,7.95)
 	expect(is_equal_approx(inventor.interval,base*0.75), "Makers bonus lasts to just before eight seconds")
 	tick(sim,0.05)
 	expect(is_equal_approx(inventor.interval,base) and sim.speed_modifiers.is_empty(), "Makers expires exactly at eight seconds")
-	sim.start(formation,0,[],{},-1)
+	sim = fresh(formation)
 	expect(role(sim,4).interval == base and sim.speed_modifiers.is_empty(), "Speed does not leak into the next battle")
 
 func _assault_and_analysis() -> void:
@@ -173,13 +173,13 @@ func _assault_and_analysis() -> void:
 	var analyst = role(sim,3)
 	var inventor = role(sim,4)
 	resolve(sim,[hit(analyst,foe(sim),21,true),hit(analyst,foe(sim,1),21,true)])
-	expect(sim.progress == 16, "Analysis gets one base plus one first-skill contribution across multiple hits")
+	expect(sim.blocks.blue == 1, "Analysis grants one blue code block across a multi-hit skill")
 	resolve(sim,[hit(analyst,foe(sim),22,true)])
-	expect(sim.progress == 20, "Analysis first-skill contribution does not repeat next action")
+	expect(sim.blocks.blue == 1, "Analysis first-skill contribution does not repeat next action")
 	resolve(sim,[hit(inventor,foe(sim),23,true),hit(inventor,foe(sim,1),23,true)])
-	expect(sim.progress == 40, "Inventor contributes base and research once per action plus own analysis bonus")
+	expect(sim.blocks.purple == 2, "Inventor receives its own and the active synergy's code reactions")
 	resolve(sim,[hit(inventor,foe(sim),24,true)])
-	expect(sim.progress == 48, "Inventor action-limited research can trigger on the next action")
+	expect(sim.blocks.purple == 3, "Inventor action-limited research triggers again on the next action")
 
 func _content_extension() -> void:
 	var sim = fresh()
@@ -197,7 +197,7 @@ func _content_extension() -> void:
 	resolve(sim,[hit(guard,foe(sim),32,true)])
 	expect(guard.shield == 14, "New action scope resets for a new action ID")
 	expect(proc.value == 7 and proc.limit == "action", "Proc runtime does not mutate resource configuration")
-	sim.start(DEFAULT,0,[],{},-1)
+	sim = fresh()
 	expect(not sim.bindings.any(func(binding): return binding.source == "extension/test_support"), "Runtime-installed extension does not leak to another battle")
 
 func _enemy_speed_extension() -> void:
@@ -284,19 +284,19 @@ func _marks() -> void:
 	var target = foe(sim)
 	sim.marks[target.id] = {"owner":analyst.id,"until":4.0,"users":[],"limit":2}
 	sim._verify(analyst,target)
-	expect(sim.progress == 0, "Exposer cannot verify their own vulnerability")
+	expect(sim.blocks.blue == 0, "Exposer cannot verify their own vulnerability")
 	sim.grant_shield(target,100,"fixture")
 	var health: float = target.hp
 	resolve(sim,[hit(archer,target,41,false,10)])
-	expect(target.hp == health and sim.progress == 16, "A valid fully absorbed basic hit verifies vulnerability")
+	expect(target.hp == health and sim.blocks.blue == 1, "A valid fully absorbed basic hit verifies vulnerability")
 	resolve(sim,[hit(archer,target,42,false,10)])
-	expect(sim.progress == 16, "Same ally cannot use the second verification slot")
+	expect(sim.blocks.blue == 1, "Same ally cannot use the second verification slot")
 	resolve(sim,[hit(guard,target,43,false,10)])
-	expect(sim.progress == 32 and not sim.marks.has(target.id), "A second distinct ally consumes the remaining slot")
+	expect(sim.blocks.blue == 2 and not sim.marks.has(target.id), "A second distinct ally consumes the remaining slot")
 	sim.marks[target.id] = {"owner":analyst.id,"until":sim.elapsed+0.05,"users":[],"limit":1}
 	tick(sim,0.05)
 	sim._verify(guard,target)
-	expect(not sim.marks.has(target.id) and sim.progress == 32, "Mark expires before effects on its exact expiry boundary")
+	expect(not sim.marks.has(target.id) and sim.blocks.blue == 2, "Mark expires before effects on its exact expiry boundary")
 
 func _equipment_and_exclusive() -> void:
 	var sim = fresh(DEFAULT,["lens","backup","verify","pierce"],{"lens":1,"backup":3})
@@ -319,10 +319,6 @@ func _equipment_and_exclusive() -> void:
 	expect(is_equal_approx(analyst.shield,analyst.max_hp*0.25), "Backup grants shield only to its actual wearer")
 	expect(sim.bindings.filter(func(binding): return binding.source == "reward/pierce").size() == 1 and sim.bindings.any(func(binding): return binding.source == "reward/pierce" and binding.owner == archer.id), "Pierce exclusive installs only on archer")
 	# Training remains tied to character identity after changing deployment slot.
-	var base = Catalog.definition(1)
-	var trained = fresh([1,-1,3,2,0,-1],["training"],{},1)
-	expect(is_equal_approx(role(trained,1).max_hp,base.health*1.15) and is_equal_approx(role(trained,1).atk,base.attack*1.15), "Training follows the character rather than a formation slot")
-	expect(is_equal_approx(role(trained,0).max_hp,Catalog.definition(0).health), "Training does not increase other characters")
 
 func _piercing_backline() -> void:
 	var sim = fresh(DEFAULT,["pierce"])
@@ -371,7 +367,7 @@ func _failed_skills() -> void:
 	expect(sim.request_action(analyst.id,target.id), "Ready analyst starts a real skill windup")
 	place(target,Vector2(0,0))
 	var events = tick(sim,0.8)
-	expect(events.any(func(event): return event.kind == "action_missed") and sim.progress == 0, "Out-of-range skill release earns no progress")
+	expect(events.any(func(event): return event.kind == "action_missed") and sim.blocks.values().all(func(amount): return amount == 0), "Out-of-range skill release earns no code")
 	sim = fresh()
 	analyst = role(sim,3)
 	target = foe(sim)
@@ -387,33 +383,33 @@ func _failed_skills() -> void:
 	expect(not sim.projectiles.is_empty(), "Skill actually launches a projectile before target dies")
 	target.hp = 0
 	events.append_array(sim.advance(0.05))
-	expect(events.any(func(event): return event.kind == "projectile_expired") and sim.progress == 0 and sim.marks.is_empty(), "Expired projectiles against dead targets earn neither skill progress nor marks")
+	expect(events.any(func(event): return event.kind == "projectile_expired") and sim.blocks.values().all(func(amount): return amount == 0) and sim.marks.is_empty(), "Expired projectiles against dead targets earn neither code nor marks")
 	var dead = hit(analyst,target,99,true)
 	resolve(sim,[dead])
-	expect(not dead.valid and sim.progress == 0, "Resolver rejects already-dead skill targets")
+	expect(not dead.valid and sim.blocks.values().all(func(amount): return amount == 0), "Resolver rejects already-dead skill targets")
 
 func _maintenance_provenance() -> void:
 	var sim = fresh()
 	var target = foe(sim)
 	sim.grant_shield(target,30,"natural")
 	tick(sim,6.0)
-	expect(target.shield == 100, "Natural and maintenance shields coexist")
+	expect(target.shield == 65, "Natural and maintenance shields coexist")
 	resolve(sim,[hit(role(sim,0),target,70,false,21.6)])
 	var natural := 0.0
 	for layer in target.shield_layers:
 		if layer.source == "natural": natural += layer.amount
-	sim.awaiting_choice = true
-	sim.choose_hack("disconnect")
+	for kind in sim.blocks: sim.blocks[kind] = 4
+	expect(sim.cast_program("disconnect"), "Disconnect executes through the current code recipe")
 	expect(is_equal_approx(target.shield,natural) and natural > 0, "Disconnect only removes remaining maintenance layers after partial shield absorption")
 	sim = fresh()
 	target = foe(sim)
 	sim.grant_shield(target,30,"natural")
 	tick(sim,6.0)
-	sim.awaiting_choice = true
-	sim.choose_hack("takeover")
+	for kind in sim.blocks: sim.blocks[kind] = 4
+	expect(sim.cast_program("takeover"), "Takeover executes through the current code recipe")
 	var previous: float = target.shield
 	var guard = role(sim,0)
 	guard.hp *= 0.6
 	clear_shield(guard)
 	tick(sim,6.0)
-	expect(target.shield == previous and guard.shield == 70, "Takeover preserves enemy existing shields and redirects next pulse to lowest-health ally")
+	expect(target.shield == previous and guard.shield == 35, "Takeover preserves enemy shields and redirects the next pulse")

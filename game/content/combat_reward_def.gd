@@ -1,5 +1,5 @@
 @tool
-class_name CampusTrialReward
+class_name CampusCombatReward
 extends Resource
 @export var id: String = ""
 @export var display_name: String = ""

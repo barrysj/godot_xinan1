@@ -13,28 +13,6 @@ var ready_at := 0.0
 var casts := 0
 var last_error := ""
 
-func start(formation: Array, battle: int, rewards: Array, gear: Dictionary, trainee: int, programs: Array = [], supplies: Dictionary = {}) -> void:
-	blocks.clear()
-	for kind in Codes.RULES.types: blocks[kind] = 0
-	loadout = programs.duplicate() if Codes.valid_loadout(programs) else Array(Codes.RULES.default_loadout).duplicate()
-	items = supplies.duplicate() if Codes.valid_stock(supplies) else Codes.stock()
-	attack_counts.clear()
-	credited_actions.clear()
-	pending_pulse = ""
-	system_taken = false
-	ready_at = 0
-	casts = 0
-	last_error = ""
-	super.start(formation, battle, rewards, gear, trainee)
-	for actor in _living(0): actor.code_type = Catalog.MANIFEST.characters[actor.role].code_type
-
-## No 100-point gate: all decisions now spend concrete code recipes.
-func _add_progress(_actor: Dictionary, _amount: int, _reason: String) -> void:
-	pass
-
-func choose_hack(_choice: String) -> bool:
-	return false
-
 func _apply_proc(binding: Dictionary, owner: Dictionary, context: Dictionary) -> bool:
 	if binding.proc.effect == "hack":
 		var kind: String = binding.proc.code_type
@@ -44,6 +22,9 @@ func _apply_proc(binding: Dictionary, owner: Dictionary, context: Dictionary) ->
 	return super._apply_proc(binding, owner, context)
 
 func _after_impact_batch(due: Array[Dictionary]) -> void:
+	for hit in due:
+		if hit.get("valid", false) and hit.actor.side == 0 and hit.kind == "damage" and not hit.special and hit.actual + hit.blocked > 0:
+			_verify(hit.actor, hit.target)
 	super._after_impact_batch(due)
 	for hit in due:
 		if not hit.get("valid", false) or hit.actor.side != 0 or hit.kind != "damage" or hit.special or hit.actual + hit.blocked <= 0: continue
@@ -175,15 +156,11 @@ func configure_combat(programs: Array, supplies: Dictionary, maintenance_interva
 	ready_at = 0
 	casts = 0
 	last_error = ""
-	progress = 0
-	awaiting_choice = false
-	hack_choice = ""
 	marks.clear()
 	contributions.clear()
 	notes.clear()
 	bindings.clear()
 	proc_uses.clear()
-	skill_seen.clear()
 	half_seen.clear()
 	speed_modifiers.clear()
 	tag_ids.clear()
@@ -222,7 +199,7 @@ func configure_combat(programs: Array, supplies: Dictionary, maintenance_interva
 		var definition = RewardCatalog.find_combat(reward.get("target", ""))
 		if definition == null: continue
 		for u in _living(0):
-			var matches_owner: bool = (definition.category == "羁绊" and u.tags.has("protect")) or (definition.category == "专属" and definition.character_id == u.get("content_id", "")) or (definition.category == "装备" and reward.get("owner", "") == u.get("content_id", ""))
+			var matches_owner: bool = definition.category == "羁绊" or (definition.category == "专属" and definition.character_id == u.get("content_id", "")) or (definition.category == "装备" and reward.get("owner", "") == u.get("content_id", ""))
 			if matches_owner:
 				install_effects(u,definition.effects,"reward/"+definition.id,definition.display_name)
 	_dispatch("battle_start")

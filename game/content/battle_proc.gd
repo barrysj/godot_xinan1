@@ -13,6 +13,6 @@ extends Resource
 @export var radius: float = 2.05
 @export var required_tag: String = ""
 @export var source: String = ""
-## Colored-code mode uses these fields instead of the legacy progress value.
+## Code-producing reactions may specify an amount and override the owner's color.
 @export var code_amount := 1
 @export var code_type := ""

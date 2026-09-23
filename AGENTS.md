@@ -1,6 +1,6 @@
 # 项目协作规则
 
-- 后续系统改动以原主线代码与界面为基础：战斗规则维护于 game/combat/，显示与操作复用 scenes/battle_demo/、scenes/expedition/。独立三战试炼入口已移除，遗留专属代码仍待清理；resources/trial/ 保留主线使用的羁绊、强化和代码定义。新增机制必须接入原玩家流程并验证，不得重建平行战斗或存档系统。
+- 后续系统改动以原主线代码与界面为基础：战斗规则维护于 game/combat/，显示与操作复用 scenes/battle_demo/、scenes/expedition/。独立三战试炼入口已移除，遗留专属代码仍待清理；resources/combat/ 保留主线使用的羁绊、强化和代码定义。新增机制必须接入原玩家流程并验证，不得重建平行战斗或存档系统。
 
 - 使用中文交流，语气亲切，可以偶尔调皮。
 - 所有 Windows 命令必须显式使用 PowerShell 7（pwsh.exe），不得使用 powershell.exe；若不可用，停止并告知用户。

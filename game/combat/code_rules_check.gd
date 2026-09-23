@@ -1,7 +1,8 @@
 extends Node
 const Sim = preload("res://game/combat/code_battle_simulation.gd")
 const Codes = preload("res://game/combat/code_catalog.gd")
-const Catalog = preload("res://game/trial/trial_catalog.gd")
+const Catalog = preload("res://game/combat/combat_content_catalog.gd")
+const Fixture = preload("res://game/combat/combat_check_fixture.gd")
 var checks := 0
 var failures := 0
 
@@ -12,9 +13,7 @@ func expect(ok: bool, text: String) -> void:
 		push_error(text)
 
 func fresh(programs: Array = ["disconnect", "takeover"]):
-	var sim = Sim.new()
-	sim.start([0,-1,-1,2,1,3], 0, [], {}, -1, programs, Codes.stock())
-	return sim
+	return Fixture.build([0,-1,-1,2,1,3], [], {}, programs, Codes.stock())
 
 func impact(sim, actor: Dictionary, target: Dictionary, action: int, damage: float = 1) -> void:
 	var hits: Array[Dictionary] = []
@@ -94,10 +93,8 @@ func _production() -> void:
 	sim.blocks.blue = 6
 	sim._gain(author, "blue", 4, "test")
 	expect(sim.blocks.blue == 6, "production respects cap")
-	sim.progress = 0
-	for i in 5: sim._add_progress(actor, 100, "legacy")
-	expect(not sim.awaiting_choice and sim.progress == 0, "legacy meter cannot pause new mode")
-	sim.start([0,-1,-1,2,1,3], 0, [], {}, -1)
+	sim.reset(fresh().units)
+	sim.configure_combat(["disconnect", "takeover"], Codes.stock())
 	expect(sim.blocks.values().all(func(n): return n == 0) and sim.attack_counts.is_empty(), "retry clears all battle resource state")
 
 func _commands() -> void:

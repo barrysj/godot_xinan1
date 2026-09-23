@@ -1,12 +1,9 @@
 extends "res://game/combat/battle_simulation.gd"
-## Trial rules subscribe to shared combat results. Resources never store run state.
-const Catalog = preload("res://game/trial/trial_catalog.gd")
+## Shared synergy reactions for the campus battle simulation.
+const Catalog = preload("res://game/combat/combat_content_catalog.gd")
 var tags: Array[String] = []
 var tag_ids: Array[String] = []
 var upgrades: Array = []
-var progress := 0
-var awaiting_choice := false
-var hack_choice := ""
 var pulse_interval := 6.0
 var pulse_amount := 70.0
 var next_pulse := 6.0
@@ -15,45 +12,8 @@ var contributions := {}
 var notes: Array[String] = []
 var bindings: Array[Dictionary] = []
 var proc_uses := {}
-var skill_seen := {}
 var half_seen := {}
 var speed_modifiers := {}
-
-func start(formation: Array, battle: int, rewards: Array, gear: Dictionary, trainee: int) -> void:
-	tags = Catalog.active_tags(formation)
-	tag_ids = Catalog.active_tag_ids(formation)
-	upgrades = rewards.duplicate()
-	progress = 0
-	awaiting_choice = false
-	hack_choice = ""
-	marks.clear()
-	contributions.clear()
-	notes.clear()
-	bindings.clear()
-	proc_uses.clear()
-	skill_seen.clear()
-	half_seen.clear()
-	speed_modifiers.clear()
-	pulse_interval = Catalog.BATTLES[battle].pulse
-	pulse_amount = Catalog.BATTLES[battle].shield
-	next_pulse = pulse_interval
-	reset(Catalog.roster(formation, battle, rewards, gear, trainee))
-	for u in units: u.base_interval = u.interval
-	for u in _living(0):
-		var character = Catalog.MANIFEST.characters[u.role]
-		install_effects(u, character.effects, "character/" + character.id, character.display_name)
-		for id in tag_ids:
-			if not u.tags.has(id): continue
-			var synergy = Catalog.synergy(id)
-			install_effects(u, synergy.effects, "synergy/" + id, synergy.display_name)
-		for id in upgrades:
-			var reward = Catalog.reward(id)
-			if reward == null: continue
-			if reward.category == "装备" and u.gear != id: continue
-			if reward.category == "专属" and reward.character_id != u.content_id: continue
-			if reward.category == "训练" and u.role != trainee: continue
-			install_effects(u, reward.effects, "reward/" + id, reward.display_name)
-	_dispatch("battle_start")
 
 ## A stable source ID namespaces one-shot counters across characters and traits.
 ## Additional content only needs resources using supported trigger/effect pairs.
@@ -67,48 +27,22 @@ func drain_events() -> Array[Dictionary]:
 	events.clear()
 	return output
 
-func _add_progress(actor: Dictionary, amount: int, reason: String) -> void:
-	var goal: int = Catalog.MANIFEST.hack_goal
-	if not hack_choice.is_empty() or progress >= goal or amount <= 0: return
-	var actual := mini(amount, goal - progress)
-	progress += actual
-	contributions[actor.name] = contributions.get(actor.name, 0) + actual
-	_note("%s · %s +%d" % [actor.name, reason, actual])
-	_emit("hack_progress", actor, actor, -1, {"actual":actual, "progress":progress, "reason":reason})
-
 func _note(message: String) -> void:
 	notes.append("%.1fs  %s" % [elapsed, message])
 	if notes.size() > 100: notes.pop_front()
 
 func advance(delta: float) -> Array[Dictionary]:
-	if awaiting_choice or finished: return []
+	if finished: return []
 	if not is_finite(delta) or delta <= 0: return []
 	for id in marks.keys():
 		if marks[id].until <= elapsed + delta + EPSILON: marks.erase(id)
-	var output = super.advance(delta)
-	if not finished and not closing and progress >= Catalog.MANIFEST.hack_goal and hack_choice.is_empty():
-		awaiting_choice = true
-	return output
-
-func choose_hack(choice: String) -> bool:
-	if not awaiting_choice or not choice in ["disconnect", "takeover"]: return false
-	hack_choice = choice
-	awaiting_choice = false
-	if choice == "disconnect":
-		for u in units:
-			var removed := remove_shields(u, "maintenance")
-			if removed > 0: _emit("shield_removed", u, u, -1, {"actual":removed, "shield":u.shield})
-	_dispatch("hack_complete")
-	var allies := _living(0)
-	if not allies.is_empty(): _emit("hack_completed", allies[0], allies[0], -1, {"choice":choice})
-	_note("破解完成 · " + ("断开维护" if choice == "disconnect" else "接管维护"))
-	return true
+	return super.advance(delta)
 
 func _skill_events(actor: Dictionary, target: Dictionary, due: Array[Dictionary]) -> void:
 	var begin := due.size()
 	super._skill_events(actor, target, due)
 	if actor.side != 0: return
-	for i in range(begin, due.size()): due[i].trial_skill = true
+	for i in range(begin, due.size()): due[i].synergy_skill = true
 	_dispatch("skill_emit", actor, {"target":target, "action_id":active_action_id, "effects":due, "begin":begin})
 
 func _resolve(due: Array[Dictionary]) -> void:
@@ -127,12 +61,7 @@ func _after_impact_batch(due: Array[Dictionary]) -> void:
 	for e in due:
 		if not e.get("valid", false) or e.actor.side != 0: continue
 		var actor: Dictionary = e.actor
-		if e.kind == "damage" and not e.special and e.actual + e.blocked > 0: _verify(actor, e.target)
-		if e.get("trial_skill", false):
-			if not skill_seen.has(e.action_id):
-				skill_seen[e.action_id] = true
-				_add_progress(actor, Catalog.MANIFEST.skill_progress, "技能")
-			_dispatch("skill_impact", actor, e)
+		if e.get("synergy_skill", false): _dispatch("skill_impact", actor, e)
 	for actor in _living(0):
 		if actor.hp <= actor.max_hp * 0.5 and not half_seen.has(actor.id):
 			half_seen[actor.id] = true
@@ -144,13 +73,8 @@ func _after_impact_batch(due: Array[Dictionary]) -> void:
 		_maintenance_pulse()
 
 func _maintenance_pulse() -> void:
-	if hack_choice.is_empty():
-		for foe in _living(1): _apply_shield(foe, foe, pulse_amount, "maintenance", 0, "维护脉冲")
-		_note("维护脉冲 · 敌方补盾")
-	elif hack_choice == "takeover":
-		var ally := _target({}, _living(0), "low")
-		_apply_shield(ally, ally, pulse_amount, "maintenance", 0, "接管维护")
-		_note("维护脉冲 · 保护我方")
+	for foe in _living(1): _apply_shield(foe, foe, pulse_amount, "maintenance", 0, "维护脉冲")
+	_note("维护脉冲 · 敌方补盾")
 
 func _dispatch(trigger: String, actor: Dictionary = {}, context: Dictionary = {}) -> void:
 	for binding in bindings:
@@ -191,12 +115,7 @@ func _apply_proc(binding: Dictionary, owner: Dictionary, context: Dictionary) ->
 			context.value += proc.value
 			return true
 		"pierce": return _pierce(owner, context, proc.value)
-		"hack":
-			if not hack_choice.is_empty(): return false
-			_add_progress(owner, int(proc.value), binding.label)
-			return true
 		"mark":
-			if not hack_choice.is_empty(): return false
 			# A support skill's lens exposes the nearest enemy within actual range.
 			if target.is_empty() or target.side == owner.side:
 				target = _target(owner, _living(1 - owner.side).filter(func(u): return AutoBattle.in_range(owner, u)))
@@ -266,16 +185,6 @@ func _pierce(actor: Dictionary, context: Dictionary, scale: float) -> bool:
 			return foe.id != e.target.id and offset.dot(direction) > 0 and absf(offset.cross(direction)) <= 0.65 and AutoBattle.in_range(actor, foe))
 		if candidates.is_empty(): return false
 		_event(due, actor, _target(actor, candidates), "damage", e.value * scale, true)
-		due[-1].trial_skill = true
+		due[-1].synergy_skill = true
 		return true
 	return false
-
-func _verify(actor: Dictionary, target: Dictionary) -> void:
-	if not marks.has(target.id) or not hack_choice.is_empty(): return
-	var mark: Dictionary = marks[target.id]
-	if mark.until <= elapsed + EPSILON or mark.owner == actor.id or mark.users.has(actor.id): return
-	mark.users.append(actor.id)
-	_add_progress(actor, Catalog.MANIFEST.verification_progress, "验证漏洞")
-	_emit("mark_verified", actor, target, -1, {"owner_id":mark.owner})
-	_dispatch("verify", actor)
-	if mark.users.size() >= mark.limit: marks.erase(target.id)

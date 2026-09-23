@@ -54,7 +54,7 @@ func _ready() -> void:
 	verify(game.units.any(func(unit): return unit.get("content_id", "") == "archer" and unit.max_hp >= roundi(game.Content.character(1).health * 1.15)), "training and equipped passive apply to selected main roster member")
 	for actor in game.simulation.units:
 		if actor.get("content_id", "") == "analyst" and actor.side == 0:
-			var proc = load("res://resources/trial/synergies/analysis.tres").effects[0]
+			var proc = load("res://resources/combat/synergies/analysis.tres").effects[0]
 			game.simulation._apply_proc({"proc":proc,"label":"解析"},actor,{})
 			verify(game.simulation.blocks.blue == 1, "analysis proc uses main roster identity instead of trial index")
 	var panel = game.code_panel

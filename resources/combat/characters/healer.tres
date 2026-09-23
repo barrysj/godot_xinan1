@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CampusCombatCharacter" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/combat_character_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "healer"
+display_name = "应援者"
+description = "治疗生命比例最低的队友。"
+tags = Array[String](["broadcast","protect"])
+code_type = "green"

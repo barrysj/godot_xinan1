@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="CampusTrialCharacter" load_steps=5 format=3]
-[ext_resource type="Script" path="res://game/content/trial_character_def.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/content/characters/inventor.tres" id="base"]
+[gd_resource type="Resource" script_class="CampusCombatCharacter" load_steps=5 format=3]
+[ext_resource type="Script" path="res://game/content/combat_character_def.gd" id="s"]
 [ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
 [sub_resource type="Resource" id="p0"]
 script = ExtResource("p")
@@ -8,14 +7,11 @@ id = "research"
 trigger = "skill_impact"
 effect = "hack"
 limit = "action"
-value = 4
 [resource]
 script = ExtResource("s")
 id = "inventor"
 display_name = "发明家"
 description = "产出权限代码；范围技能生效时额外产出1块权限。"
-unit = ExtResource("base")
 tags = Array[String](["makers","analysis"])
-stats = {}
 effects = Array[ExtResource("p")]([SubResource("p0")])
 code_type = "purple"

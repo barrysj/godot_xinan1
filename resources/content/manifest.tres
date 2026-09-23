@@ -56,7 +56,7 @@
 [ext_resource type="Resource" path="res://resources/content/locations/boss.tres" id="locations_boss"]
 [ext_resource type="Resource" path="res://resources/content/locations/reading.tres" id="locations_reading"]
 [ext_resource type="Resource" path="res://resources/content/characters/analyst.tres" id="characters_analyst"]
-[ext_resource type="Resource" path="res://resources/trial/skills/analysis.tres" id="skills_analysis"]
+[ext_resource type="Resource" path="res://resources/content/skills/analysis.tres" id="skills_analysis"]
 [resource]
 script = ExtResource("1")
 equipment = Array[ExtResource("2")]([ExtResource("shoe"), ExtResource("badge"), ExtResource("ribbon")])

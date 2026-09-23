@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="CampusCombatContent" load_steps=23 format=3]
+[ext_resource type="Script" path="res://game/content/combat_content.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/combat_character_def.gd" id="characters_script"]
+[ext_resource type="Resource" path="res://resources/combat/characters/guard.tres" id="characters_guard"]
+[ext_resource type="Resource" path="res://resources/combat/characters/archer.tres" id="characters_archer"]
+[ext_resource type="Resource" path="res://resources/combat/characters/healer.tres" id="characters_healer"]
+[ext_resource type="Resource" path="res://resources/combat/characters/analyst.tres" id="characters_analyst"]
+[ext_resource type="Resource" path="res://resources/combat/characters/inventor.tres" id="characters_inventor"]
+[ext_resource type="Resource" path="res://resources/combat/characters/striker.tres" id="characters_striker"]
+[ext_resource type="Script" path="res://game/content/synergy_def.gd" id="synergies_script"]
+[ext_resource type="Resource" path="res://resources/combat/synergies/sports.tres" id="synergies_sports"]
+[ext_resource type="Resource" path="res://resources/combat/synergies/broadcast.tres" id="synergies_broadcast"]
+[ext_resource type="Resource" path="res://resources/combat/synergies/makers.tres" id="synergies_makers"]
+[ext_resource type="Resource" path="res://resources/combat/synergies/protect.tres" id="synergies_protect"]
+[ext_resource type="Resource" path="res://resources/combat/synergies/assault.tres" id="synergies_assault"]
+[ext_resource type="Resource" path="res://resources/combat/synergies/analysis.tres" id="synergies_analysis"]
+[ext_resource type="Script" path="res://game/content/combat_reward_def.gd" id="rewards_script"]
+[ext_resource type="Resource" path="res://resources/combat/rewards/cover.tres" id="rewards_cover"]
+[ext_resource type="Resource" path="res://resources/combat/rewards/lens.tres" id="rewards_lens"]
+[ext_resource type="Resource" path="res://resources/combat/rewards/training.tres" id="rewards_training"]
+[ext_resource type="Resource" path="res://resources/combat/rewards/verify.tres" id="rewards_verify"]
+[ext_resource type="Resource" path="res://resources/combat/rewards/pierce.tres" id="rewards_pierce"]
+[ext_resource type="Resource" path="res://resources/combat/rewards/backup.tres" id="rewards_backup"]
+[resource]
+script = ExtResource("s")
+characters = Array[ExtResource("characters_script")]([ExtResource("characters_guard"), ExtResource("characters_archer"), ExtResource("characters_healer"), ExtResource("characters_analyst"), ExtResource("characters_inventor"), ExtResource("characters_striker")])
+synergies = Array[ExtResource("synergies_script")]([ExtResource("synergies_sports"), ExtResource("synergies_broadcast"), ExtResource("synergies_makers"), ExtResource("synergies_protect"), ExtResource("synergies_assault"), ExtResource("synergies_analysis")])
+rewards = Array[ExtResource("rewards_script")]([ExtResource("rewards_cover"), ExtResource("rewards_lens"), ExtResource("rewards_training"), ExtResource("rewards_verify"), ExtResource("rewards_pierce"), ExtResource("rewards_backup")])

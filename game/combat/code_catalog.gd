@@ -1,6 +1,6 @@
 extends RefCounted
-const RULES = preload("res://resources/trial/code_rules.tres")
-const PEOPLE = preload("res://resources/trial/manifest.tres")
+const RULES = preload("res://resources/combat/code_rules.tres")
+const PEOPLE = preload("res://resources/combat/manifest.tres")
 const RulesDefinition = preload("res://game/content/code_rules.gd")
 const ProgramDefinition = preload("res://game/content/code_program_def.gd")
 const ItemDefinition = preload("res://game/content/code_item_def.gd")

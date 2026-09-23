@@ -59,8 +59,8 @@ ART-03 修正 804bd51 的密集烘焙：共享混合控制器仍消费同一 con
 
 2026-09-22，当时主菜单试炼入口使用独立 `user://synergy_trial_v3.json`（v2／v1只读迁移），保存编队、试炼节点、奖励来源、装备和单项出发解锁。该独立玩家流程已从当前入口退役；此段只描述旧架构，不应用于当前奖励或存档设计。共享模拟器、静态人物 Resource 和事件表现仍由校园主线使用；当前规则见 [CORE-05](core-05.md) 与 [战斗文档](../battle-demo.md)。
 
-四色代码扩展（2026-09-22，历史）：当时 CORE-05 玩家入口使用 `code_trial_simulation.gd`，程序与道具由 `resources/trial/code_rules.tres` 定义。该运行入口已被 `game/combat/code_battle_simulation.gd` 接替；当前主线奖励池、ShortRun schema 与体验边界见 CORE-05，不再以本段“未接入主线”的表述为准。
+四色代码扩展（2026-09-22，历史）：当时 CORE-05 玩家入口使用 `code_trial_simulation.gd`，程序与道具由 `resources/combat/code_rules.tres` 定义。该运行入口已被 `game/combat/code_battle_simulation.gd` 接替；当前主线奖励池、ShortRun schema 与体验边界见 CORE-05，不再以本段“未接入主线”的表述为准。
 
 ## 原主线接入补充（2026-09-24，待统筹）
 
-CORE-05 已将羁绊、代码配方、道具、表现及六项强化接入原校园战斗与战利品池。规则入口位于 `game/combat/`，界面复用 `scenes/battle_demo/` 和 `scenes/expedition/`；主菜单独立试炼入口移除，旧试炼专用场景与存档代码尚待依赖清理和授权范围核定。原 ShortRun schema 7 保存程序、道具及每局强化，profile 外层版本不变；人物、羁绊、奖励和代码定义仍共享 `resources/trial/`。新增分析员仅加入新局候补，旧局队伍保持。实施、验证与边界见 CORE-05；此集成变化待统筹纳入整体能力快照。
+CORE-05 已将羁绊、代码配方、道具、表现及六项强化接入原校园战斗与战利品池。规则入口位于 `game/combat/`，界面复用 `scenes/battle_demo/` 和 `scenes/expedition/`；主菜单独立试炼入口移除，旧试炼专用场景与存档代码尚待依赖清理和授权范围核定。原 ShortRun schema 7 保存程序、道具及每局强化，profile 外层版本不变；人物、羁绊、奖励和代码定义仍共享 `resources/combat/`。新增分析员仅加入新局候补，旧局队伍保持。实施、验证与边界见 CORE-05；此集成变化待统筹纳入整体能力快照。

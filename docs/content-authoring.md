@@ -142,17 +142,16 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 
 ## 羁绊、强化与代码内容
 
-校园主线使用 `resources/trial/manifest.tres` 中的人物、羁绊和六项强化定义；六项强化与原奖励共用校园战利品候选池。`game/trial/trial_catalog.gd` 仍用于注册共享内容目录和实例工厂；运行计数、护盾、标记、攻速时限保存在模拟器，不写回 `.tres`。早期独立试炼入口已移除，但专属场景／存档的代码清理仍待完成。
+校园主线使用 `resources/combat/manifest.tres` 中的人物标签、羁绊和六项强化定义；六项强化与原奖励共用校园战利品候选池。`game/combat/combat_content_catalog.gd` 提供按稳定 ID 查找和内容校验；人物的战斗数值、技能与敌人阵容沿用原主线资源。运行计数、护盾、标记、攻速时限保存在模拟器，不写回 `.tres`。
 
 | 资源 | 主要字段与职责 |
 | --- | --- |
-| `CampusTrialCharacter` | 稳定ID、名称、基础 `CampusUnit`、标签ID数组、可选技能覆盖／属性覆盖、个人效果 |
+| `CampusCombatCharacter` | 稳定ID、名称、标签ID数组、个人效果和代码颜色；按 `content_id` 对应主线人物 |
 | `CampusSynergy` | 稳定ID、说明、激活人数2～4、效果数组；只统计上阵人物，每个ID当前只有一档门槛 |
-| `CampusTrialReward` | 羁绊／装备／训练／专属类别、人物ID、效果；装备仅持有者生效，专属仅指定人物生效 |
-| `CampusTrialEncounter` | 敌人资源与对应六阵位、维护周期／护盾、战后奖励ID池；最后一场不领奖 |
+| `CampusCombatReward` | 羁绊／装备／训练／专属类别、人物ID、效果；装备仅持有者生效，专属仅指定人物生效 |
 | `CampusBattleProc` | 一个触发点、效果、目标、次数作用域及参数；不是任意脚本或自然语言技能 |
 
-追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物同样复用／新增 `CampusUnit` 后追加 manifest.characters；试炼v3仍以人物索引保存，现有顺序必须保持、只在尾部追加，不能用删改ID或重排代替内容迁移。敌人、奖励和标签使用稳定字符串ID。
+追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物先加入主线人物清单，再以相同稳定 ID 追加战斗标签定义；跨清单按 ID 对应，不按数组位置对应。
 
 触发点和去重约定：
 
@@ -168,32 +167,30 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 
 `limit=owner` 为此来源效果每个人每场一次；`team` 为全队共享一次；`action` 为每个人每个动作一次；`none` 为每次匹配事件。计数键为来源ID、效果ID和作用域，跨羁绊／角色／奖励不串用；重试全部清零。`skill_target` 和 `action` 只允许三个技能触发点，其他事件没有目标／动作上下文。效果不递归触发新的技能事件，避免“护盾触发护盾”无限循环。
 
-支持效果：shield / heal 读取固定值与目标最大生命比例；hack 在四色模式读取code_amount，旧百分条回归读取value；mark 读取时限（0时沿用manifest默认）并支持专属额外验证次数；attack_speed 是**攻击间隔倍率**（0.75为更快，1.5为更慢），要求正倍率和正持续时间；damage_bonus 只用于伤害技能命中前；pierce 只用于技能发射时，倍率作用于主目标技能伤害。射线、到期、冷却和护盾来源语义见 battle-demo.md。
+支持效果：shield / heal 读取固定值与目标最大生命比例；hack 读取 `code_amount` 产出代码块；mark 读取时限（0时沿用manifest默认）并支持专属额外验证次数；attack_speed 是**攻击间隔倍率**（0.75为更快，1.5为更慢），要求正倍率和正持续时间；damage_bonus 只用于伤害技能命中前；pierce 只用于技能发射时，倍率作用于主目标技能伤害。射线、到期、冷却和护盾来源语义见 battle-demo.md。
 
 目标为 owner、lowest_ally、lowest_other_near、skill_target；附近距离读取 radius。`required_tag` 同时要求该人物带标签且开战时激活，用于“并肩防护”这样的羁绊升级。护盾默认来源自动命名空间化；只有需要共同移除同一类护盾时才显式填 source。不会默认移除其他来源护盾。
 
-旧独立试炼 schema v3 的历史约束：当时只有一个训练归属，`lens` 是固定装备ID；该独立短局存档已不再作为当前玩家流程。当前主线强化归属、装备限制与 ShortRun schema 由下文“原主线羁绊、战后强化与代码资源”及 CORE-05 维护。
+共享内容校验运行 `res://game/content/combat_content_check.tscn`，检查人物、羁绊、强化定义的稳定 ID、引用和参数。主线流程另运行 `pwsh.exe -File ./run-battle-demo.ps1 -CodeCheck`，涵盖强化候选、存档和真实战斗；两类验证共同覆盖资源与玩家流程。
 
-羁绊与代码内容沿用原 Resource 校验器。主线检查运行 `pwsh.exe -File ./run-battle-demo.ps1 -CodeCheck`，涵盖强化候选、存档和真实战斗；资源定义可单独运行 `res://game/trial/trial_content_check.tscn`。仅校验资源可运行 Godot `--headless --path . res://game/trial/trial_content_check.tscn`。覆盖空／重名／重复ID、非法引用／枚举／非有限数值、技能配置，以及领奖时所有选项都已持有的死路；进入试炼时同样先校验，失败不读写玩家存档。验证程序中变异外部数组资源使用 `duplicate_deep(Resource.DEEP_DUPLICATE_ALL)`，不能用普通 `duplicate(true)` 假设外部Resource已隔离。
-
-`pwsh.exe -File ./run-battle-demo.ps1 -CodeCapture` 从原校园流程验证战斗、混合战利品卡和强化对象页并输出截图。旧三战场景及其独立存档尚未清理；共享内容资源和校验入口继续保留。
+`pwsh.exe -File ./run-battle-demo.ps1 -CodeCapture` 从原校园流程验证战斗、混合战利品卡和强化对象页并输出截图。共享内容资源和校验入口继续保留。
 
 ### 四色代码内容
 
-`resources/trial/code_rules.tres` 是代码类型、容量、产出频率、程序、道具和默认装配的事实源；`code_catalog.gd` 校验后供模拟与界面共用。`code_rules.gd`、`code_program_def.gd`、`code_item_def.gd` 是显式Resource类型，不接受随意拼装的其他Resource。
+`resources/combat/code_rules.tres` 是代码类型、容量、产出频率、程序、道具和默认装配的事实源；`code_catalog.gd` 校验后供模拟与界面共用。`code_rules.gd`、`code_program_def.gd`、`code_item_def.gd` 是显式Resource类型，不接受随意拼装的其他Resource。
 
 - 人物 `code_type` 指向类型ID。类型包含名称、符号、Color；校验允许3～5种，当前编辑器枚举为四色，增加第五种须同步扩展人物枚举和测试。
 - 程序包含稳定ID、名称、说明、cost字典、effect及治疗比例。消耗须为已注册颜色的正整数且不超过容量；新增配方可复用四种现有效果，新效果需实现处理器。
 - 两种道具定义amount和starting_count，运行库存不能超过初始数量。当前保存契约固定两槽，扩展槽位或补充库存需同步修改迁移与验证。
-- `CampusBattleProc.effect=hack` 在新模式以 `code_amount` 产出代码，`code_type` 为空时使用本人颜色；保留value供旧模拟回归，不能把进度点直接当代码块。
-- 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。v3新增programs和supplies；旧v1/v2只读迁移，人物索引兼容限制保持。
+- `CampusBattleProc.effect=hack` 以 `code_amount` 产出代码，`code_type` 为空时使用本人颜色。
+- 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。主线 ShortRun schema 7 保存装配与库存；旧 schema 由主线迁移处理。
 
 `game/combat/code_rules_check.tscn` 覆盖代码类型、坏配方、程序和道具事务；`scenes/battle_demo/code_integration_check.tscn` 通过原校园流程验证点击、存档及真实胜利。完整数值与玩家规则只维护于 battle-demo.md。
 
 ## 原主线羁绊、战后强化与代码资源
 
-2026-09-24起，`resources/trial/` 内的数据作为原校园玩法的共享定义。人物按稳定 `content_id` 对应，禁止跨清单按数组下标映射。所有强化按原战利品候选资格抽取、单局限领一次；训练、镜片和备份奖励先选本局人物，选择状态可写入恢复检查点。
+2026-09-24起，`resources/combat/` 内的数据作为原校园玩法的共享定义。人物按稳定 `content_id` 对应，禁止跨清单按数组下标映射。所有强化按原战利品候选资格抽取、单局限领一次；训练、镜片和备份奖励先选本局人物，选择状态可写入恢复检查点。
 
 主线 Encounter 提供维护间隔（1～60秒，默认6）和护盾值（1～144，默认35）。ShortRun schema 7 保存程序装配、道具库存和已领取强化；schema 1～6 旧构筑迁移获得默认破解配置及空强化清单，profile 外层版本不变。人物特定强化只对已进入本局 roster 的人物开放。
 
-程序、类型、人物颜色仍由 `resources/trial/code_rules.tres` 与人物资源定义；模拟、界面、验证入口归 `game/combat/` 和 `scenes/battle_demo/`。不要再创建第二个战斗场景或独立试炼存档。分析员为原 manifest 追加角色，旧活动存档保留原名单。
+程序、类型、人物颜色仍由 `resources/combat/code_rules.tres` 与人物资源定义；模拟、界面、验证入口归 `game/combat/` 和 `scenes/battle_demo/`。不要再创建第二个战斗场景或独立试炼存档。分析员为原 manifest 追加角色，旧活动存档保留原名单。

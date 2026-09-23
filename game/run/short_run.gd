@@ -477,12 +477,12 @@ func event_option_available(index: int) -> bool:
 	if not option.character.is_empty() and not roster.has(Content.role_index(option.character)): return false
 	if not option.equipment.is_empty() and not inventory.has(option.equipment): return false
 	# Simulate the whole grant list to catch duplicates and training overflow before payment.
-	var trial = get_script().new()
-	trial.roster = roster.duplicate()
-	trial.inventory = inventory.duplicate()
-	trial.training = training.duplicate()
+	var candidate = get_script().new()
+	candidate.roster = roster.duplicate()
+	candidate.inventory = inventory.duplicate()
+	candidate.training = training.duplicate()
 	for reward in option.results:
-		if not trial.apply_reward(reward): return false
+		if not candidate.apply_reward(reward): return false
 	return true
 
 func take_event(index: int) -> bool:

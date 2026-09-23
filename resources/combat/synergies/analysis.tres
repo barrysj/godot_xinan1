@@ -6,7 +6,6 @@ script = ExtResource("p")
 id = "primary"
 trigger = "skill_impact"
 effect = "hack"
-value = 12
 [resource]
 script = ExtResource("s")
 id = "analysis"

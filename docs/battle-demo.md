@@ -106,15 +106,15 @@ Demo 与正式冒险共用 `game/combat/battle_simulation.gd`，固定 0.05 秒�
 
 ## 独立试炼入口与遗留代码
 
-早期固定三战试炼用于验证羁绊、四色代码、奖励和图形反馈。主菜单独立试炼入口已移除，玩家通过原校园流程体验这些玩法。部分旧试炼场景、短局存档及启动文件仍留在仓库，清理待完成；它们不应再作为玩法规则或实现入口。`resources/trial/`、`game/trial/trial_catalog.gd` 与内容校验资源仍是校园玩法共享数据，不应随遗留入口一起删除。
+早期固定三战试炼用于验证羁绊、四色代码、奖励和图形反馈。主菜单独立试炼入口已移除，玩家通过原校园流程体验这些玩法。部分旧试炼场景、短局存档及启动文件仍留在仓库，清理待完成；它们不应再作为玩法规则或实现入口。`resources/combat/`、`game/combat/combat_content_catalog.gd` 与 `game/content/combat_content_check.tscn` 是校园玩法共享数据，应保留。
 
 ## 原主线羁绊、破解与战后强化（2026-09-24）
 
 当前玩家从原主菜单进入校园流程，战斗仍使用 expedition → pixel_battle → battle_demo。战前选择两个程序，战中点击「破解」暂停并使用程序或道具；Esc 沿用原暂停操作。原场景、部署、人物动画、装备及结算继续复用。
 
-规则实现统一维护于 `game/combat/code_battle_simulation.gd`、`synergy_simulation.gd`、`code_catalog.gd`；终端组件和只读特效位于 `scenes/battle_demo/code_panel.tscn`、`code_panel.gd`、`code_sockets.gd`、`code_fx.gd`。共享资源路径为 `resources/trial/`，其内容校验入口为 `game/trial/trial_content_check.tscn`。
+规则实现统一维护于 `game/combat/code_battle_simulation.gd`、`synergy_simulation.gd`、`code_catalog.gd`；终端组件和只读特效位于 `scenes/battle_demo/code_panel.tscn`、`code_panel.gd`、`code_sockets.gd`、`code_fx.gd`。共享资源路径为 `resources/combat/`，其内容校验入口为 `game/content/combat_content_check.tscn`。
 
-四种颜色代码由不同人物类别产出；库存容量、产出频率、程序配方和道具均以 `resources/trial/code_rules.tres` 为准。战前装配两个程序，战中消耗对应组合发动效果；使用道具会消耗库存道具并生成指定代码块。当前羁绊效果在模拟层触发，代码掉落、吸收及破解释放由原战斗界面播放。
+四种颜色代码由不同人物类别产出；库存容量、产出频率、程序配方和道具均以 `resources/combat/code_rules.tres` 为准。战前装配两个程序，战中消耗对应组合发动效果；使用道具会消耗库存道具并生成指定代码块。当前羁绊效果在模拟层触发，代码掉落、吸收及破解释放由原战斗界面播放。
 
 六项试炼强化已接入主线既有战利品候选池，与原有招募、训练和装备奖励混合抽取；每项强化每局限领一次。人物专属强化只在目标人物属于本局队伍或候补时出现，培养类奖励在领取后选择对象，装备强化与现有每名角色单件装备限制共享。强化效果按实际归属角色或全队规则应用于后续原战斗。
 

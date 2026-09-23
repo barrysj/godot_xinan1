@@ -22,14 +22,14 @@ static func eligible(_badge_owned: bool, roster: Array, inventory: Dictionary = 
 		for reward in pool.rewards:
 			var entry = reward.snapshot()
 			if allowed(entry,roster,inventory,training): result.append(entry)
-	for reward in preload("res://resources/trial/manifest.tres").rewards:
+	for reward in preload("res://resources/combat/manifest.tres").rewards:
 		var entry := {"id":"combat_"+reward.id,"title":reward.display_name,"description":reward.description,"operation":"combat","target":reward.id,"amount":1}
 		if reward.character_id.is_empty() or DB.role_index(reward.character_id) >= 0 and roster.has(DB.role_index(reward.character_id)):
 			if not combat_rewards.any(func(saved): return saved.get("target", "") == reward.id): result.append(entry)
 	return result
 
 static func find_combat(id: String) -> Resource:
-	for reward in preload("res://resources/trial/manifest.tres").rewards:
+	for reward in preload("res://resources/combat/manifest.tres").rewards:
 		if reward.id == id: return reward
 	return null
 
