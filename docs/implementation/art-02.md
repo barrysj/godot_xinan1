@@ -3,7 +3,7 @@
 > 持续功能档案；全项目判断由统筹维护[总览](../implementation-status.md)。
 
 - 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已完成技术接入，效果待人工评审；十二处校园地点日常背景已提升为正式资产但尚未接入；首轮异常态强度过高、第二轮日光方向不符均已拒绝；24张配对4K重制进行中，12张日常新版及1张墨蓝灰天空异常校准图待评，余11张异常待扩展）。
-- 验证日期：2026-09-22；校园配对4K与天空校准基线 `70105e7` 加当前工作树；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`；校园地点概念批准基线 `c858661`。
+- 验证日期：2026-09-23；校园异常微增基线 `7ac6187` 加当前工作树；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`；校园地点概念批准基线 `c858661`。
 
 ## 玩家能力与接入范围
 
@@ -14,6 +14,8 @@ M1 三款记忆终端静态图标已作为同一个 `asset_011` 家族批准并�
 M1 校园地点十二个已批准概念及 `asset_daily_001` 正式日常保留不变。首轮异常因浮夸、第二轮白天收敛图因不符合黑紫氛围，均为 `unselected + rejected`。2026-09-22 按负责人要求重制12日常＋12异常：12张 `asset_daily_002` 已生成并交付4K，黑紫异常中间稿随后被反馈“天空过于紫色”；现仅活动中心 `asset_anomaly_003` 完成墨蓝灰天空校准并交付4K。当前13张均为 `unselected + pending`；等待代表样图确认再扩展剩余11张异常。本批不是24张已完成，不沿用旧资产批准，不提升到正式运行目录，全部地点仍 `not_integrated`。
 
 ## 实现与规则入口
+
+2026-09-23更新：负责人仅确认活动中心004天空比例，并要求异常只加一点。新增005（asset_anomaly_004）保留天空与双光弧，在入口窗框和近旁补少量错位紫光、碎光与倒影；3840×2160重采样PNG，待新增密度人工评审。旧004保留为已确认天空基准，不升级整张资产批准。12张日常不变，其余11张异常尚未扩展；上述2026-09-22批次记录为历史状态。
 
 - [Manifest](../../assets/art/asset_manifest.yaml)、[粉笔精灵正式包](../../assets/art/characters/chalk_spirit/)、[图书馆正式背景](../../assets/art/backgrounds/m1_library/)、[记忆终端正式包](../../assets/art/icons/m1_memory_artifact/)、[角色定义](../../resources/content/enemies/chalk.tres)。
 - 图书馆运行映射：`scenes/expedition/exploration_skin.gd`、`exploration_board.gd`、`campaign_panel.gd`；环境接入不改变 `game/run/` 的访问、奖励或离场规则。
@@ -57,6 +59,8 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 - 2026-09-22：12张日常新版＋1张活动中心天空校准图均经 `asset_report.py --expect-size 3840x2160 --json` 检查通过；最终图为RGB不透明PNG，全部从1672×941以高质量双三次重采样生成，不宣称原生4K。生成源逐图检查、校准图最终文件制作前后对照后检查，通用QA为 `PASS_WITH_NOTES`。各候选完整提示词在generation.md；批次来源、技术属性、哈希和QA在 `design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-*.json`。未进行Godot接入或运行画面修改。
 
 ## 已知边界与统筹
+
+- 2026-09-23：活动中心005已通过asset_report尺寸／格式／不透明检查与实际前后对照；资源台33项测试通过，扫描26对象／350文件，缺失0、不一致0、错误0；git diff --check通过。新增密度待人工评审，未接入Godot。
 
 - 2026-09-22 天空校准与配对日常候选登记验证：资源台33项测试通过，扫描26对象／348登记文件，缺失0、哈希不一致0、错误0；`git diff --check` 通过。技术检查不替代本次天空校准的人工确认。
 

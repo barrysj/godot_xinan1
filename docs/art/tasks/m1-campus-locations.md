@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：正在按“12张日常＋12张黑紫异常、全部3840×2160”重制；已完成12张日常候选与1张学生活动中心墨蓝灰天空异常校准图。其余11张异常暂停扩展，等待负责人确认天空比例；本批尚未完成、未批准、未接入。旧日常正式资产不变，旧步道与篮球场仍待评审。
+状态：正在按“12张日常＋12张黑紫异常、全部3840×2160”重制；12张日常候选已完成。2026-09-23负责人确认活动中心天空比例，要求异常只增加一点；已制作005微增候选，待确认新增密度后扩展其余11张异常。本批尚未完成、未获整套资产批准、未接入；旧正式资产不变。
 
 ## 目标与范围
 
@@ -24,7 +24,16 @@
 
 用户随后又明确提供并确认九处实景，分别登记为 `m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field` 与 `m1_library_front`。这些对象保留现实地点身份，但同样不擅自绑定现有运行时占位；图书馆正面候选按用户要求移除了旗帜与旗杆。
 
-## 当前配对4K重制与天空校准（2026-09-22）
+## 当前样图微调（2026-09-23）
+
+- 人工决定：004的天空比例已确认，只批准天空色调与比例，不是整张资产批准；负责人要求“再适当加一些异常元素（只加一点）”。Manifest在asset_anomaly_003的metadata中记录有限范围的sky_approval，不把整张改为approved。
+- 新候选：学生活动中心005/anomaly.png，asset_anomaly_004 / unselected + pending。保留墨蓝灰天空与双光弧，只在入口附近增加窗框错位紫光、少量碎光和微弱倒影；不增加天空异象、全景电路或泛滥悬浮面板。
+- [新候选与完整提示词](../../../design/concepts/m1-campus-locations/m1_student_activity_center/005/generation.md)、[前后对照（左004、右005）](../../../design/concepts/m1-campus-locations/review/codex-workflow/activity-anomaly-detail-comparison.jpg)。沿用create-game-assets先校准代表资产再扩展家族，本次仅微调样图，不将批准天空理解为批准新异常密度或完成24张。
+- 生成方式：内置imagegen局部编辑；实际源1672×941，最终3840×2160 RGB不透明PNG，高质量双三次重采样、非原生4K。逐图解码与尺寸检查通过；原图及最终文件前后对照已实际查看，天空没有恢复高饱和紫色，主要建筑和道路保持可读。
+- 验证基线：7ac6187加本轮工作树；不改Godot或正式运行目录。原12张日常保持不变，其余11张异常尚未按最终样图扩展。
+- 验证结果：资源台33项测试通过；AssetCatalog扫描26对象／350登记文件，缺失0、不一致0、错误0；git diff --check通过。
+
+## 配对4K重制与天空校准记录（2026-09-22）
 
 - 用户明确纠正：异常需要第一版类似的黑紫氛围，但削减异常元素数量；不是维持白天只叠加少量异常。第二轮 `asset_anomaly_002` 因日光方向不符改为 `unselected + rejected`。
 - 第三轮已生成12张日常、9张黑紫异常中间稿；负责人随后指出“天空过于紫色了”。这9张紫天中间稿不作为最终交付；生成路径、完整提示词及参考用途保存在 [批次生成索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)，不宣称已完成12张新版异常。
