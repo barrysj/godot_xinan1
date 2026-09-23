@@ -285,5 +285,27 @@
       "design/concepts/m1-campus-locations/m1_library_front/006/anomaly.png"
     ],
     "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/remaining-anomaly-4k-review.jpg"
+  },
+  "latest_ring_free_ground_revision": {
+    "date": "2026-09-24",
+    "asset_approval": "pending",
+    "source_resolution_mode": "1671-1672x941 imagegen; high-quality bicubic to 3840x2160; non-native-4k",
+    "water_style_reference": "E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
+    "water_reference_scope": "segmented_cyan_magenta_ripples_and_reflections_only",
+    "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/ring-free-ground-anomaly-4k-review.jpg",
+    "images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_student_activity_center/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/007/anomaly.png"
+    ]
   }
 }

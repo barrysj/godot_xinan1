@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：12张日常＋12张异常的3840×2160候选均已生成并登记。2026-09-24负责人确认活动中心006的异常密度方向后，剩余11处按该基准扩展；整套资产仍待人工评审，未提升新版正式包或接入游戏；旧正式资产不变。
+状态：12张日常＋12张异常的3840×2160候选均已生成并登记。2026-09-24按负责人反馈重制全部12张异常：去除重复发光圆环，增添立面裂缝／少量数据雨、地面碎片与透视投影；两张西湖加入数字水面异常，图书馆作为 Boss 区提高强度。新版仍待人工评审，未提升正式包或接入游戏；旧正式资产不变。
 
 ## 目标与范围
 
@@ -23,6 +23,13 @@
 用户本轮明确提供并确认了两处独立现实地点：品学楼（教学楼）单区内部庭院、品学楼组团的中庭。它们现在分别登记为 `m1_pinxue_courtyard` 与 `m1_pinxue_atrium`；由于用户尚未指定它们对应 `hall`、`end_b` 或 `end_c` 哪个运行时占位，暂不强行绑定。
 
 用户随后又明确提供并确认九处实景，分别登记为 `m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field` 与 `m1_library_front`。这些对象保留现实地点身份，但同样不擅自绑定现有运行时占位；图书馆正面候选按用户要求移除了旗帜与旗杆。
+
+## 去圆环、地面分布与 Boss 区修订（2026-09-24）
+
+- 负责人指出上一批发光圆环在各地点重复、地面异常分布不足。该批12张异常旧候选保留历史文件，但相应 Manifest 版本标为 `unselected + rejected`；新12张另立版本，状态均为 `unselected + pending`。本次修订不影响12张日常候选或既有正式包。
+- 新版目录：南门008；品学楼单区庭院、组团中庭、学子食堂、西湖中心、成电会堂＋商业街、银桦＋清真食堂、基础实验楼、西湖入口、操场各006；学生活动中心007；图书馆正面007。去除的是悬浮发光圆环，真实弧形建筑（食堂门厅、体育馆屋顶等）保持。
+- 视觉方案：地点特有的角状霓虹裂缝和窗内短数据雨，配合前中景分散的青蓝／紫色碎片、透视正确的断续投影与弱倒影。西湖两张的水面仅参考 `E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png` 的断续数字波纹与青蓝／品红碎光，不移植天鹅、图书馆建筑或天空。图书馆正面作为 Boss 区，立面裂缝、窗内数据雨和广场碎片显著增加，同时保留入口与建筑轮廓可读，且不恢复旗帜／旗杆。
+- [新版12张评审拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/ring-free-ground-anomaly-4k-review.jpg)与[批次索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)；每张的两步编辑提示词、来源、交付哈希在对应 `generation.md`。生成源已逐张目检；最终图像为3840×2160 RGB不透明PNG，由1671～1672×941的模型输出高质量双三次重采样，不宣称原生4K。12张解码、尺寸、RGB与不透明检查通过；资源台33项测试通过；AssetCatalog扫描26对象／400登记文件，缺失0、不一致0、错误0；批次索引可解析，git diff --check通过。通用图像质量闸门判为 `PASS_WITH_NOTES`：画面核心任务、地点身份、地面接触与构图可读性通过；广场表面整体偏湿亮、个别投影近似几何线框，需负责人审美复核。技术与通用质检不替代风格或正式资产批准。
 
 ## 其余11处异常扩展（2026-09-24）
 
