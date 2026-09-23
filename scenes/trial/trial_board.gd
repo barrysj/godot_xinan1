@@ -1,6 +1,7 @@
 extends Control
 ## Read-only event projection. No targeting, damage or resource writes occur here.
 signal inspected(text: String)
+signal code_feedback(event: Dictionary)
 const ActorView = preload("res://scenes/trial/trial_actor.gd")
 const Presenter = preload("res://scenes/battle_demo/unit_presentation.gd")
 const FONT = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
@@ -100,10 +101,10 @@ func consume_events(events: Array) -> void:
 			"hack_progress":
 				if event.get("actual", 0) > 0: _spawn(event, "packet", "+%d" % event.actual, TEAL, 0.8)
 			"code_generated":
-				var data: Dictionary = Codes.RULES.types[event.code_type]
-				_spawn(event, "packet", "%s +%d" % [data.symbol, event.actual], data.color, 0.8)
+				code_feedback.emit(event.duplicate(true))
 			"trait_triggered": _spawn(event, "trait", event.get("label", "羁绊触发"), GOLD, 1.0)
 			"hack_completed":
+				code_feedback.emit(event.duplicate(true))
 				_banner = event.get("label", "维护已断开" if event.get("choice", "") == "disconnect" else "维护已接管")
 				_banner_age = 0
 				_spawn(event, "system", "", BLUE, 1.2)

@@ -66,3 +66,9 @@ pwsh.exe -File ./run-battle-demo.ps1 -Smoke
 2026-09-23；基线 `b3a14d8` 加本次界面工作树。已实装，接入视觉待用户评审：复用原生Control及既有主题，不新增位图资产。`scenes/trial/code_sockets.gd` 统一绘制HUD库存、配方已具备／缺失槽位、道具产出预览；`trial.gd` 用两列程序卡与道具卡组织终端，颜色配名称和符号，按钮仅「执行」「使用」。未修改战斗规则或存档。
 
 验证：Godot 4.7.2 Windows，图形运行 `res://scenes/trial/code_ui_check.tscn -- --graphics-capture`，27 checks / 0 failures，覆盖真实鼠标补给／转码／程序扣费、库存图示一致性、配方槽数、暂停与恢复，及1920×1080、2560×1440、1920×1200真实截图尺寸／浮层边界。`.godot/code-graphics-<宽>x<高>.png` 已逐张查看并在对话展示。已修复转换箭头被自动换行挤高选择器的问题。根证书错误仍为既有环境提示；手机和手柄待验。
+
+## 代码掉落收集与破解释放特效
+
+2026-09-23；基线 `9ef25fa` 加本次工作树；已实装，视觉接入待用户评审。`trial_board.gd` 用code_feedback信号转发真实代码／破解事件，`trial.gd` 管理独立非交互特效层，`code_fx.gd` 负责人物掉落、吸入库存、道具三块产出和分类型破解反馈。沿用现有色值与程序绘制，不新增正式美术资产；未修改结算和存档。战斗粒子暂停冻结，主动界面反馈暂停可播。
+
+验证：PowerShell 7 / Godot 4.7.2，图形运行 `res://scenes/trial/code_ui_check.tscn -- --fx-capture` 为27/0；覆盖真实产出事件、暂停冻结、动画不重复发资源、实际鼠标道具与提权、效果到期回收。`res://scenes/trial/trial_presentation_check.tscn` 为34/0。实际1920×1080截图 `.godot/code-fx-drop.png`、`code-fx-collect.png`、`code-fx-item.png`、`code-fx-release.png`；从真实事件推进特效时间截取关键帧，未伪造资源入账，已看图并展示。三种其他程序的符号分支已实现，本次释放截图验证为提权；手机、手柄及动态录像未验。根证书提示为既有环境问题。

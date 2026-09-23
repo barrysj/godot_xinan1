@@ -25,6 +25,7 @@ var save_blocked := false
 var end_delay := -1.0
 var pending_result: Dictionary = {}
 var presentation_alpha := 1.0
+var code_fx: Control
 var console: PanelContainer
 var console_shade: ColorRect
 var bank_labels := {}
@@ -107,6 +108,7 @@ func _transaction(action: Callable) -> bool:
 	return committed
 
 func _render() -> void:
+	if is_instance_valid(code_fx): code_fx.queue_free()
 	if is_instance_valid(console): console.queue_free()
 	if is_instance_valid(console_shade): console_shade.queue_free()
 	bank_labels.clear()
@@ -259,6 +261,10 @@ func _battle_view() -> void:
 	board.simulation = sim
 	battlefield.add_child(board)
 	board.reset_presentation()
+	code_fx = preload("res://scenes/trial/code_fx.gd").new()
+	code_fx.host = self
+	add_child(code_fx)
+	board.code_feedback.connect(code_fx.consume)
 	var sidebar := VBoxContainer.new()
 	sidebar.custom_minimum_size.x = 330
 	sidebar.add_theme_constant_override("separation", 12)

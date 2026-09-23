@@ -26,6 +26,8 @@ func _ready() -> void:
 	view.run.set_program(1,"takeover")
 	view._start()
 	expect(view.running and view.sim.loadout == view.run.programs, "battle receives preparation loadout")
+	await get_tree().process_frame
+	await get_tree().process_frame
 	view._toggle_pause()
 	for tick in range(120): view.board.consume_events(view.sim.advance(0.05))
 	view._update_hud()
@@ -52,12 +54,32 @@ func _ready() -> void:
 			expect(view.get_viewport_rect().encloses(view.console.get_global_rect()), "graphical console fits " + str(resolution))
 			expect(get_viewport().get_texture().get_image().get_size() == resolution, "actual capture resolution")
 			get_viewport().get_texture().get_image().save_png("res://.godot/code-graphics-%dx%d.png" % [resolution.x,resolution.y])
+	expect(not view.code_fx.particles.is_empty(), "real production emits collection particles")
+	view.code_fx.set_process(false)
+	var resource_before: Dictionary = view.sim.blocks.duplicate()
+	var first_age: float = view.code_fx.particles[0].age
+	view.code_fx.advance(0.2, true)
+	expect(view.code_fx.particles[0].age == first_age, "battle collection freezes with pause")
+	view.code_fx.advance(0.23, false)
+	expect(view.sim.blocks == resource_before, "visual collection never grants resources twice")
+	if "--fx-capture" in OS.get_cmdline_user_args():
+		view.console.hide()
+		view.console_shade.hide()
+		await _capture_fx("drop")
+		view.code_fx.advance(0.4, false)
+		await _capture_fx("collect")
+		view.console.show()
+		view.console_shade.show()
 	var controls: Dictionary = view.item_controls.supply
 	controls.destination.select(Codes.RULES.types.keys().find("purple"))
 	controls.destination.item_selected.emit(controls.destination.selected)
 	expect(not controls.button.disabled, "supply enabled for chosen destination")
 	await _click(controls.button)
 	expect(view.sim.items.supply == 0 and view.sim.blocks.purple >= 3, "real mouse click consumes supply and generates chosen code")
+	expect(view.code_fx.particles.any(func(p): return p.ui and p.kind == "drop"), "item creates visible UI collection during pause")
+	if "--fx-capture" in OS.get_cmdline_user_args():
+		view.code_fx.advance(0.23, true)
+		await _capture_fx("item")
 	expect(view.run.supplies.supply == 1, "battle item spending does not overwrite retry checkpoint")
 	controls = view.item_controls.converter
 	controls.source.select(Codes.RULES.types.keys().find("purple"))
@@ -70,6 +92,12 @@ func _ready() -> void:
 	expected.blue -= 2
 	await _click(view.program_controls.takeover.button)
 	expect(view.sim.system_taken and view.sim.blocks == expected, "real program button spends exact recipe")
+	expect(view.code_fx.particles.any(func(p): return p.kind == "program" and p.id == "takeover"), "successful recipe emits typed release effect")
+	if "--fx-capture" in OS.get_cmdline_user_args():
+		view.code_fx.advance(0.3, true)
+		await _capture_fx("release")
+	view.code_fx.advance(3.0, false)
+	expect(view.code_fx.particles.is_empty(), "all effects expire and are reclaimed")
 	expect(view.program_controls.takeover.button.disabled, "used or cooling program visibly disabled")
 	view._close_console()
 	await get_tree().process_frame
@@ -94,3 +122,11 @@ func _click(button: Button) -> void:
 		event.global_position = at
 		get_viewport().push_input(event,true)
 	await get_tree().process_frame
+
+func _capture_fx(label: String) -> void:
+	get_window().mode = Window.MODE_WINDOWED
+	get_window().size = Vector2i(1920,1080)
+	await get_tree().create_timer(0.15).timeout
+	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png("res://.godot/code-fx-" + label + ".png")
