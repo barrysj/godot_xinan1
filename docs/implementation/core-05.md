@@ -1,84 +1,29 @@
-# CORE-05 · 六人羁绊与三战破解试炼
+# CORE-05 · 原主线羁绊、破解与战后强化
 
-- 状态：已实现并通过桌面工程验证；真人趣味性与平衡待验。
-- 日期：2026-09-22；四色代码基线 `fce306c` 加本次工作树；分支 `codex/synergy-hacking-trial`。
-- 当前玩家入口：原主菜单 → 校园流程 → 战斗；三战试炼仅保留开发回归入口。最新接入证据见本页末节。
-- 规则事实源：[战斗文档](../battle-demo.md#三战试炼羁绊与系统破解)。
+- 状态：已接入校园主线；桌面工程验证通过；数值和真人趣味性待验。
+- 当前玩家入口：原主菜单 → 校园流程 → 胜利战报 → 战利品。
+- 规则事实源：[战斗文档](../battle-demo.md#原主线战斗接入)。内容录入：[内容录入](../content-authoring.md#主线羁绊与代码资源接入)。
 
 ## 实现入口
 
-- `resources/trial/manifest.tres` 及引用资源：人物、标签、三敌阵、奖励与破解数据；新Resource类型位于 `game/content/`。新增同类羁绊不再修改角色编号分支，录入契约见 [内容录入](../content-authoring.md#三战试炼内容)。
-- `game/trial/trial_catalog.gd`、`trial_content_validator.gd`：校验、只读注册与运行实例工厂，非法配置阻止进入／读写存档。
-- `game/trial/trial_simulation.gd`：消费实际结算与动作事件，通用效果绑定、次数作用域、合作破解、维护来源、临时倍率及半血事件。
-- `game/trial/trial_run.gd`：合法操作、奖励来源、装备归属、v3原子存档／备份／v2及v1只读迁移、通关出发解锁。
-- `scenes/trial/trial.gd`、`trial_board.gd`、`trial_actor.gd`：原生界面、事件驱动的只读人物／弹道／效果、暂停与战报保存重试；主菜单提供入口。
+- 模拟规则：`game/combat/synergy_simulation.gd`、`code_battle_simulation.gd`；沿用原 BattleSimulation 的结算、伤害和事件时序。
+- 原战斗操作：`scenes/battle_demo/code_panel.tscn` 与 `code_panel.gd`；代码掉落与收集：`code_fx.gd`、`code_sockets.gd`。
+- 战后奖励进入校园既有 `RewardCatalog`、`ShortRun`、`campaign_hub` 与 `campaign_panel`。六种强化保存在当前构筑，角色选择类奖励有独立选择页。
+- 定义仍使用 `resources/trial/` 下已校验的人物、羁绊、奖励、破解和代码 Resource；主菜单独立试炼入口已移除，但独立试炼代码尚待清理与依赖核验。
 
-## 验证
+## 验证与交付
 
-PowerShell 7，Godot 4.7.2 Windows，命令从仓库根目录运行：
+2026-09-24，基线 `b4b091e` 加奖励接入工作树；PowerShell 7 / Godot 4.7.2 Windows。
 
-```powershell
-pwsh.exe -File ./run-synergy-trial.ps1 -Check
-pwsh.exe -File ./run-synergy-trial.ps1 -Capture
-pwsh.exe -File ./run-battle-demo.ps1 -Smoke
-```
+- `pwsh.exe -File ./run-battle-demo.ps1 -EnginePath <Godot 4.7.2 console> -CodeCheck`：`MAIN_CODE_CHECK checks=35 failures=0`，覆盖六种强化候选、应用和去重，程序／道具、绑定效果、构筑 schema 7 与 schema 5 迁移、对象选择检查点、真实战斗胜利及库存提交。
+- 同命令 `-CodeCapture`：`MAIN_CODE_CHECK checks=37 failures=0`，截图实际原校园战后混合奖励卡、强化对象选择页、终端与战斗。截图位于 `.godot/main-code-rewards.png`、`main-code-reward-owner.png`、`main-code-terminal-1920x1080.png` 和 `main-code-battle.png`。
+- `expedition.tscn -- --campaign-flow-check`：`CAMPAIGN_FLOW checks=124 failures=0`；`expedition.tscn -- --run-smoke`：原短局三路线、奖励、恢复及暂停流程 PASS。
+- `game/combat/synergy_check.tscn`：羁绊和通用效果回归；`game/trial/trial_content_check.tscn`：共享 Resource 定义校验。旧独立试炼其余实现尚未清理，见当前边界。
+- `game/combat/code_rules_check.tscn`：`CODE_CHECK checks=48 failures=0`；`synergy_check.tscn`：`SYNERGY_CHECK checks=70 failures=0`；共享内容 `game/trial/trial_content_check.tscn`：`TRIAL_CONTENT_CHECK PASS checks=95 failures=0`。
+- 原 M1 区域流程、随机路线、暂停、部署、内容和图鉴入口沿用 E32 回归，不代表本次重新证明手机、手柄或导出。
 
-- `-Check` 顺序运行以下场景，全部退出0：
+## 当前边界
 
-| 场景 | 结果与覆盖 |
-| --- | --- |
-| `game/trial/trial_content_check.tscn` | 95 / 0；真实Resource、坏配置、扩展人物／羁绊、阶段奖励死路、固定出发装备与单训练边界 |
-| `game/trial/trial_proc_check.tscn` | 70 / 0；六羁绊、效果作用域、动态资源组合、落空／死靶、盾吸收验证、临时倍率与永久间隔组合、贯穿几何 |
-| `game/trial/trial_run_check.tscn` | 76 / 0；真实文件故障、事务回滚／重试、坏主档恢复、未来版本保护、v1各阶段迁移、奖励记录与换装 |
-| `scenes/trial/trial_check.tscn` | 104 / 0；18组阵容／敌阵／破解选择，三条空构筑至逐场领奖完整流程、暂停、重复选择、倍速、重试与解锁 |
-| `scenes/trial/trial_presentation_check.tscn` | 34 / 0；只读投影、事件无重复伤害、暂停、混合动画与死亡回退、帧率30/60/144与三种速度组合、特效回收 |
-| `game/combat/accuracy_check.tscn` | 51 / 0；共享移动／索敌／命中／来源护盾，详见COMBAT-02 |
-| 原 `action_check.tscn`、`auto_battle_check.tscn` | 均PASS，无失败 |
+六项试炼强化已接入校园原战利品候选池，与原奖励共同抽取；每项强化每局限领一次。角色专属奖励仅在对应人物已进入本局队伍或候补名单时出现，角色培养类奖励进入对象选择页，装备受原有单件装备规则限制。奖励数量、出现率和强度尚待真人试玩调整；历史活动存档保留原队伍，分析员仅加入新局候补。移动设备、手柄和导出未验。
 
-- 图形专项增加截图断言后35 / 0。初版完整 `-Capture` 在1600×900实际完成三战、两次领奖与通关；实际暂停断言验证模拟与视觉时间冻结、Board实例保留，未直接改胜负或跳过结算。
-- 图形实跑输出 `.godot/trial-prepare.png`、`trial-combat.png`、`trial-paused.png`、`trial-hack.png`、`trial-reward.png`、`trial-complete.png`，以及按场编号的过程图；已看图并在对话展示。截图入口必须实际抵达破解暂停并通关，未达成返回失败。所有试炼检查使用独立 `.godot` 测试档，不写玩家试炼存档。
-- 原战斗Demo两敌阵、四装备分配与倍速一致性通过；探索场景 `-- --campaign-flow-check --order=012` 为124 / 0，`-- --run-smoke` 三条路线及输入／奖励／恢复／重试／暂停均PASS。
-- 环境仍报告已有根证书读取错误；旧Demo仍有Kenney直接图片加载警告，新切片未据此声明Web导出通过。
-
-## 边界与待统筹
-
-- 初版边界（已被本页末节更新）：固定三战切片；当前战斗机制已接入原主线，试炼奖励池和专属解锁仍未迁入。
-- 数值仍为样本，真人试玩、手机/手柄、Web导出、所有阵容的胜率均待验；三战不强行等待以凑目标时长。
-- 复用既有帧动画／混合表现，其他角色为程序全身占位；人物身份仍为虚构，既有资源批准状态不变。
-- 当前支持已有事件／效果的声明组合；全新效果类型仍须实现处理器与检查。单训练、单种出发补给和人物数组追加约束见内容录入，不能宣称任意玩法只填数据即可。
-- 存档故障注入故意制造一次 `.bak.tmp` 不可写错误，断言原档与回滚状态；须与真实脚本失败区分。
-- 待统筹：主菜单入口、独立v3存档／迁移、局外试炼解锁与共享战斗修正。总览与Roadmap未修改。
-
-## 四色代码扩展（当前玩家入口）
-
-状态：2026-09-22已实现并验证；规则取代玩家入口的100点破解，旧模拟和检查仅承担兼容回归。
-
-- 配置：`resources/trial/code_rules.tres`；Resource定义 `game/content/code_{rules,program_def,item_def}.gd`；人物增加code_type，效果增加code_amount。
-- 运行：`game/trial/code_catalog.gd` 负责类型／成本／库存校验；`code_trial_simulation.gd` 负责普攻掉落、漏洞协作、配方结算、维护指令与道具原子扣费。
-- 流程：`trial_run.gd` 保存两程序装配与两槽道具，失败重试恢复战前，胜利提交库存；v3只读迁移v2/v1。`trial.gd` 提供战前装配、四色HUD和暂停终端；`trial_board.gd` 展示真实代码产出事件。
-- 验证基线：`fce306c` 加本功能工作树；Godot 4.7.2 / PowerShell 7。`-Check` 十个入口全部通过：新增规则74/0、实际鼠标UI13/0，旧内容95、效果70、存档76、三战104、表现34、准确性51均无失败，动作及自动战斗PASS。最终配置类型校验补充后单独重跑规则74/0。
-- 两组程序分别真实完成三场：断链／提权每场2次；重定向／热修复为3、3、5次。该结果只证明可通关，不证明构筑平衡。
-- `-Capture` 1600×900真实通关：6次程序、实际使用两件道具、两次领奖与三次胜利；终端开启期间模拟与视觉冻结且棋盘实例不变。截图 `.godot/trial-code-prepare.png`、`trial-code-console.png`、`trial-code-reward-1.png`、`trial-code-reward-2.png`、`trial-code-complete.png` 已检查并展示。
-- 已知边界：仅固定三战切片；桌面鼠标验证通过，手机／手柄／Web及真人趣味性待验。无新美术资产；不新增道具商店或LLM API。待统筹：新v3存档与代码资源契约，未修改全局总览。
-
-## 破解终端图形化
-
-2026-09-23；基线 `b3a14d8` 加本次界面工作树。已实装，接入视觉待用户评审：复用原生Control及既有主题，不新增位图资产。`scenes/trial/code_sockets.gd` 统一绘制HUD库存、配方已具备／缺失槽位、道具产出预览；`trial.gd` 用两列程序卡与道具卡组织终端，颜色配名称和符号，按钮仅「执行」「使用」。未修改战斗规则或存档。
-
-验证：Godot 4.7.2 Windows，图形运行 `res://scenes/trial/code_ui_check.tscn -- --graphics-capture`，27 checks / 0 failures，覆盖真实鼠标补给／转码／程序扣费、库存图示一致性、配方槽数、暂停与恢复，及1920×1080、2560×1440、1920×1200真实截图尺寸／浮层边界。`.godot/code-graphics-<宽>x<高>.png` 已逐张查看并在对话展示。已修复转换箭头被自动换行挤高选择器的问题。根证书错误仍为既有环境提示；手机和手柄待验。
-
-## 代码掉落收集与破解释放特效
-
-2026-09-23；基线 `9ef25fa` 加本次工作树；已实装，视觉接入待用户评审。`trial_board.gd` 用code_feedback信号转发真实代码／破解事件，`trial.gd` 管理独立非交互特效层，`code_fx.gd` 负责人物掉落、吸入库存、道具三块产出和分类型破解反馈。沿用现有色值与程序绘制，不新增正式美术资产；未修改结算和存档。战斗粒子暂停冻结，主动界面反馈暂停可播。
-
-验证：PowerShell 7 / Godot 4.7.2，图形运行 `res://scenes/trial/code_ui_check.tscn -- --fx-capture` 为27/0；覆盖真实产出事件、暂停冻结、动画不重复发资源、实际鼠标道具与提权、效果到期回收。`res://scenes/trial/trial_presentation_check.tscn` 为34/0。实际1920×1080截图 `.godot/code-fx-drop.png`、`code-fx-collect.png`、`code-fx-item.png`、`code-fx-release.png`；从真实事件推进特效时间截取关键帧，未伪造资源入账，已看图并展示。三种其他程序的符号分支已实现，本次释放截图验证为提权；手机、手柄及动态录像未验。根证书提示为既有环境问题。
-
-## 原主线集成（当前状态，待统筹）
-
-2026-09-24；基线 303aeb8 加本次工作树。覆盖本档案前文“未接入主线”边界：羁绊、四色代码、两程序装配、两种消耗道具及掉落／收集／释放特效已经接入原校园战斗。玩家入口是原主菜单和校园流程，独立试炼按钮已移除。
-
-实现：game/combat/code_battle_simulation.gd 与 synergy_simulation.gd 继承原基础模拟；scenes/battle_demo/code_panel.tscn 是原 pixel_battle 的界面组件。原 trial 同名模块保留薄转发用于历史回归。原 ShortRun schema 6、Encounter 参数与稳定人物身份映射契约见 content-authoring.md。后续系统修改必须基于原代码和玩家流程，已写入 AGENTS.md。
-
-验证日期2026-09-24，Godot 4.7.2 / PowerShell 7。原主线集成实际鼠标操作、暂停退出切换、胜利及检查点恢复验证通过；详见 verification.md E32。旧十场景回归通过，主线124/0，随机路线、部署、暂停、内容与图鉴检查通过。三种桌面尺寸已截图检查，终端实际使用和特效已在对话展示。
-
-已知边界：主线保留原奖励和成长，未导入试炼专属奖励池或出发解锁；旧活动存档不强行新增分析员，新局生效。人物平衡、手机、手柄及导出未验。影响全局主菜单入口、战斗依赖及原构筑存档，待统筹更新高层能力快照。
+独立试炼主菜单入口已经移除，重复模拟和规则回归入口已迁至 `game/combat/`。其余独立试炼场景、短局存档模型及启动脚本仍在工作树中；批量删除尚未完成，须先核验并移除文档、UID、内容校验和回归入口对旧路径的引用，再按明确范围清理。共享的 `resources/trial/` 定义、`trial_catalog.gd` 与内容校验流程继续由主线使用，不属于冗余删除目标。

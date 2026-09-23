@@ -40,4 +40,4 @@ profile v4／旧checkpoint schema 1／旧run schema 5／M1独立checkpoint schem
 
 ## 主线代码库存保存
 
-2026-09-24，基线303aeb8加CORE-05集成工作树：ShortRun schema 6 保存两程序和两种道具库存，旧schema补默认值，非法库存拒绝。沿用原检查点事务，半场中断恢复战前库存，胜利战报保存扣费，续玩战报不补充库存。代码块、冷却、维护接管不跨场保存。真实主线集成验证入口 scenes/battle_demo/code_integration_check.tscn，结果见 E32；profile 外层版本不变。待统筹：原构筑序列化版本变化。
+2026-09-24，基线 `b4b091e` 加 CORE-05 集成工作树：ShortRun schema 7 保存两程序、两种道具库存及本局已领取强化，旧 schema 补默认值，非法库存拒绝。沿用原检查点事务，半场中断恢复战前库存，胜利战报保存扣费，续玩战报不补充库存。代码块、冷却、维护接管不跨场保存。真实主线集成验证入口 `scenes/battle_demo/code_integration_check.tscn`，结果见本功能档案验证记录；profile 外层版本不变；schema 1～6 原档迁移为默认破解装配、库存和空强化列表。强化选择页也作为可恢复检查点保存。构筑序列化版本已升级并需随 CORE-05 维护。

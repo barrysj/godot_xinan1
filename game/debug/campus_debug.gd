@@ -3,7 +3,7 @@ extends RefCounted
 const Run = preload("res://game/run/short_run.gd")
 
 static func reward_pool(hub) -> Array:
-	var pool = Run.Rewards.eligible(hub.run.badge_owned,hub.run.roster,hub.run.inventory,hub.run.node.get("reward_pool","campus_rewards"),hub.run.training).duplicate(true)
+	var pool = Run.Rewards.eligible(hub.run.badge_owned,hub.run.roster,hub.run.inventory,hub.run.node.get("reward_pool","campus_rewards"),hub.run.training,hub.run.combat_rewards).duplicate(true)
 	if not hub.campaign_mode.is_empty(): pool = pool.filter(func(offer): return offer.operation != "recruit")
 	return pool
 

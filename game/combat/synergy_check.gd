@@ -1,6 +1,6 @@
 extends Node
 ## Contract checks for declarative reactions through the real combat resolver.
-const Simulation = preload("res://game/trial/trial_simulation.gd")
+const Simulation = preload("res://game/combat/synergy_simulation.gd")
 const Catalog = preload("res://game/trial/trial_catalog.gd")
 const Proc = preload("res://game/content/battle_proc.gd")
 const DEFAULT = [0, -1, 3, 2, 1, -1]
@@ -72,7 +72,7 @@ func _ready() -> void:
 	_piercing_backline()
 	_failed_skills()
 	_maintenance_provenance()
-	print("TRIAL_PROC_CHECK checks=%d failures=%d" % [checks, failures])
+	print("SYNERGY_CHECK checks=%d failures=%d" % [checks, failures])
 	get_tree().quit(0 if failures == 0 else 1)
 
 func _sports_and_protect() -> void:

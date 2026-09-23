@@ -210,6 +210,8 @@ func _show_journey() -> void:
 		_settle_campaign()
 	elif journey.data.screen == "reward":
 		campaign_panel.rewards(journey.data.offers)
+	elif journey.data.screen == "reward_owner":
+		campaign_panel.reward_owner(journey.data.pending_offer,run.roster,run)
 	elif journey.visit.data.is_empty(): campaign_panel.route(journey)
 	else:
 		campaign_panel.location(journey,campaign_mode == "prologue")
@@ -249,12 +251,20 @@ func _victory() -> void:
 		return
 	journey.data.screen = "reward"
 	if not journey.data.has("offers"):
-		var pool = RunModel.Rewards.eligible(run.badge_owned,run.roster,run.inventory,"campus_rewards",run.training)
+		var pool = RunModel.Rewards.eligible(run.badge_owned,run.roster,run.inventory,"campus_rewards",run.training,run.combat_rewards)
 		pool = pool.filter(func(offer): return offer.operation != "recruit")
 		var rng = RandomNumberGenerator.new()
 		rng.seed = (journey.data.id+journey.visit.data.place+"reward").hash()
 		RunModel.shuffle_with(pool,rng)
 		journey.data.offers = pool.slice(0,3).duplicate(true)
+	if _save_campaign(): _show_journey()
+
+func _finish_journey_reward(offer: Dictionary, owner_id: String = "") -> void:
+	journey.data.last_reward = offer.title+"："+offer.description
+	if not owner_id.is_empty(): journey.data.last_reward += "\n强化对象："+RunModel.Content.character(RunModel.Content.role_index(owner_id)).display_name
+	journey.visit.data.reward_taken = true
+	journey.data.screen = "visit"
+	journey.data.erase("pending_offer")
 	if _save_campaign(): _show_journey()
 
 func _settle_campaign() -> void:
@@ -321,11 +331,22 @@ func _campaign_action(id: String) -> void:
 		var index = int(id.trim_prefix("reward:"))
 		if journey.data.screen != "reward" or journey.visit.data.reward_taken: return
 		if index < 0 or index >= journey.data.offers.size(): return
-		if run.apply_reward(journey.data.offers[index]):
-			journey.data.last_reward = journey.data.offers[index].title+"："+journey.data.offers[index].description
-			journey.visit.data.reward_taken = true
-			journey.data.screen = "visit"
+		var offer: Dictionary = journey.data.offers[index]
+		if offer.operation == "combat" and RunModel.Rewards.combat_needs_owner(offer.target):
+			journey.data.pending_offer = offer.duplicate(true)
+			journey.data.screen = "reward_owner"
 			if _save_campaign(): _show_journey()
+		elif run.apply_reward(offer): _finish_journey_reward(offer)
+	elif id.begins_with("reward_owner:"):
+		if journey.data.screen != "reward_owner": return
+		if run.apply_reward(journey.data.pending_offer,id.trim_prefix("reward_owner:")):
+			var offer: Dictionary = journey.data.pending_offer
+			journey.data.erase("pending_offer")
+			_finish_journey_reward(offer,id.trim_prefix("reward_owner:"))
+	elif id == "reward_back":
+		journey.data.erase("pending_offer")
+		journey.data.screen = "reward"
+		if _save_campaign(): _show_journey()
 	elif id == "visit": _show_journey()
 	elif id == "photo":
 		var memory = preload("res://resources/content/library_memory.tres")

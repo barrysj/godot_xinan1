@@ -140,9 +140,9 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 
 新增内容需要加入资源引用清单，导出由引用关系打包，不依赖编辑器文件扫描。不要修改共享 Resource 来记录运行状态。描述文字要与配置保持一致；图鉴读取同一份资源，但不会把自然语言解析为技能。一次新增少量内容并实战检查，通常比先录入几十条再集中修错更省力。
 
-## 三战试炼内容
+## 羁绊、强化与代码内容
 
-独立入口使用 `resources/trial/manifest.tres`，不使用主线随机奖励池。六位人物、六种羁绊、六项成长、敌人／技能与三场遭遇均是引用资源。`game/trial/trial_catalog.gd` 只负责注册、展示目录与实例工厂；运行计数、护盾、标记、攻速时限保存在模拟器，不写回 `.tres`。
+校园主线使用 `resources/trial/manifest.tres` 中的人物、羁绊和六项强化定义；六项强化与原奖励共用校园战利品候选池。`game/trial/trial_catalog.gd` 仍用于注册共享内容目录和实例工厂；运行计数、护盾、标记、攻速时限保存在模拟器，不写回 `.tres`。早期独立试炼入口已移除，但专属场景／存档的代码清理仍待完成。
 
 | 资源 | 主要字段与职责 |
 | --- | --- |
@@ -174,9 +174,9 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 
 运行扩展的明确边界：v3仍只有一个训练归属，训练项固定为 `training`；`lens` 是现有出发解锁的固定装备ID，必须保留。专属才能设置 character_id / mark_uses_bonus，只有训练读取 health_multiplier / attack_multiplier。新增第二项独立训练归属、可选出发补给或新的触发／效果类型，需要同步扩展存档或处理器与针对性检查，不能只填一个新字符串。
 
-运行 `pwsh.exe -File ./run-synergy-trial.ps1 -Check` 先校验内容，再运行效果、存档、完整三战、表现和共享战斗检查。仅校验资源可运行 Godot `--headless --path . res://game/trial/trial_content_check.tscn`。覆盖空／重名／重复ID、非法引用／枚举／非有限数值、技能配置，以及领奖时所有选项都已持有的死路；进入试炼时同样先校验，失败不读写玩家存档。验证程序中变异外部数组资源使用 `duplicate_deep(Resource.DEEP_DUPLICATE_ALL)`，不能用普通 `duplicate(true)` 假设外部Resource已隔离。
+羁绊与代码内容沿用原 Resource 校验器。主线检查运行 `pwsh.exe -File ./run-battle-demo.ps1 -CodeCheck`，涵盖强化候选、存档和真实战斗；资源定义可单独运行 `res://game/trial/trial_content_check.tscn`。仅校验资源可运行 Godot `--headless --path . res://game/trial/trial_content_check.tscn`。覆盖空／重名／重复ID、非法引用／枚举／非有限数值、技能配置，以及领奖时所有选项都已持有的死路；进入试炼时同样先校验，失败不读写玩家存档。验证程序中变异外部数组资源使用 `duplicate_deep(Resource.DEEP_DUPLICATE_ALL)`，不能用普通 `duplicate(true)` 假设外部Resource已隔离。
 
-`pwsh.exe -File ./run-synergy-trial.ps1 -Capture` 用独立 `.godot` 测试存档真实跑三场，输出战前、暂停、战斗、破解、奖励和通关截图。新增组合仍须看实际战斗并试玩，校验通过只能证明配置受支持，不能证明奖励有趣或已经平衡。
+`pwsh.exe -File ./run-battle-demo.ps1 -CodeCapture` 从原校园流程验证战斗、混合战利品卡和强化对象页并输出截图。旧三战场景及其独立存档尚未清理；共享内容资源和校验入口继续保留。
 
 ### 四色代码内容
 
@@ -188,10 +188,12 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 - `CampusBattleProc.effect=hack` 在新模式以 `code_amount` 产出代码，`code_type` 为空时使用本人颜色；保留value供旧模拟回归，不能把进度点直接当代码块。
 - 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。v3新增programs和supplies；旧v1/v2只读迁移，人物索引兼容限制保持。
 
-`game/trial/code_check.tscn` 覆盖规则、坏配置、道具事务、迁移及两条三战路线；`scenes/trial/code_ui_check.tscn` 通过真实Viewport鼠标事件验证终端。两者均已加入 `-Check`；完整数值与玩家规则只维护于 battle-demo.md。
+`game/combat/code_rules_check.tscn` 覆盖代码类型、坏配方、程序和道具事务；`scenes/battle_demo/code_integration_check.tscn` 通过原校园流程验证点击、存档及真实胜利。完整数值与玩家规则只维护于 battle-demo.md。
 
-## 主线羁绊与代码资源接入
+## 原主线羁绊、战后强化与代码资源
 
-2026-09-24：实现入口迁至 game/combat/，resources/trial/ 中的人物标签、效果、代码规则仍作为共享定义，不复制数值。原人物通过 content_id 与试炼定义 id 匹配，不能用两个清单的数组下标相互索引。原 manifest 末尾追加 analyst 和 analysis 技能，保留既有角色索引；分析员目前复用已有占位表现。
+2026-09-24起，`resources/trial/` 内的数据作为原校园玩法的共享定义。人物按稳定 `content_id` 对应，禁止跨清单按数组下标映射。所有强化按原战利品候选资格抽取、单局限领一次；训练、镜片和备份奖励先选本局人物，选择状态可写入恢复检查点。
 
-Encounter 新增 maintenance_interval（1～60秒，默认6）和 maintenance_shield（1～144，默认35），加载时检查有限值及范围。原 ShortRun schema 6 新增 code_programs / code_supplies；校验合法的两种程序及库存后复用旧迁移链，schema 1～5 补默认配置，未来版本仍拒绝。校园 profile 外层版本不变，独立试炼存档不导入校园存档。
+主线 Encounter 提供维护间隔（1～60秒，默认6）和护盾值（1～144，默认35）。ShortRun schema 7 保存程序装配、道具库存和已领取强化；schema 1～6 旧构筑迁移获得默认破解配置及空强化清单，profile 外层版本不变。人物特定强化只对已进入本局 roster 的人物开放。
+
+程序、类型、人物颜色仍由 `resources/trial/code_rules.tres` 与人物资源定义；模拟、界面、验证入口归 `game/combat/` 和 `scenes/battle_demo/`。不要再创建第二个战斗场景或独立试炼存档。分析员为原 manifest 追加角色，旧活动存档保留原名单。

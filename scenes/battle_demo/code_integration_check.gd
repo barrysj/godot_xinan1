@@ -16,9 +16,42 @@ func _ready() -> void:
 	game._begin_region("library","prologue")
 	game._guard()
 	game.formation = [0,1,2,6,-1,-1]
+	var test_roster: Array[int] = [0,1,2,3,6]
+	game.run.roster = test_roster
 	game._build_units()
 	verify(game.simulation.get_script().resource_path == "res://game/combat/code_battle_simulation.gd", "original controller uses canonical code simulation")
 	verify(game.simulation.tags.size() >= 2, "original roster activates synergies by stable identity")
+	var eligible = game.RunModel.Rewards.eligible(false,game.run.roster,game.run.inventory,"campus_rewards",game.run.training,game.run.combat_rewards)
+	var combat_ids: Array = eligible.filter(func(entry): return entry.operation == "combat").map(func(entry): return entry.target)
+	verify(["cover","lens","training","verify","pierce","backup"].all(func(id): return combat_ids.has(id)), "all six trial upgrades enter the original reward pool")
+	game.campaign_panel.show()
+	game.screen = "campaign"
+	var displayed_offers: Array = eligible.filter(func(entry): return entry.operation != "combat").slice(0,2)
+	displayed_offers.append(eligible.filter(func(entry): return entry.get("target", "") == "training")[0])
+	game.campaign_panel.rewards(displayed_offers)
+	await get_tree().process_frame
+	verify(game.campaign_panel.column.get_child_count() > 1, "original campaign reward panel renders mixed reward cards")
+	verify(displayed_offers.any(func(entry): return entry.operation == "combat"), "original reward panel includes an integrated combat upgrade")
+	if "--capture" in OS.get_cmdline_user_args():
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/main-code-rewards.png")
+		var training_offer: Dictionary = eligible.filter(func(entry): return entry.get("target", "") == "training")[0]
+		game.campaign_panel.reward_owner(training_offer,game.run.roster,game.run)
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/main-code-reward-owner.png")
+	game.campaign_panel.hide()
+	game.screen = "battle"
+	for entry in eligible:
+		if entry.operation != "combat": continue
+		var owner := ""
+		if game.RunModel.Rewards.combat_needs_owner(entry.target): owner = "archer"
+		if entry.target == "backup": owner = "analyst"
+		verify(game.run.apply_reward(entry,owner), "campaign reward can be claimed: "+entry.target)
+	verify(game.run.combat_rewards.size() == 6, "six combat rewards persist as this run build")
+	verify(game.RunModel.Rewards.eligible(false,game.run.roster,game.run.inventory,"campus_rewards",game.run.training,game.run.combat_rewards).filter(func(entry): return entry.operation == "combat").is_empty(), "claimed combat rewards cannot be duplicated this run")
+	game._build_units()
+	verify(game.simulation.bindings.any(func(binding): return binding.source == "reward/cover") and game.simulation.bindings.any(func(binding): return binding.source == "reward/pierce") and game.simulation.upgrades.has("verify"), "synergy and character exclusive rewards bind into original combat")
+	verify(game.units.any(func(unit): return unit.get("content_id", "") == "archer" and unit.max_hp >= roundi(game.Content.character(1).health * 1.15)), "training and equipped passive apply to selected main roster member")
 	for actor in game.simulation.units:
 		if actor.get("content_id", "") == "analyst" and actor.side == 0:
 			var proc = load("res://resources/trial/synergies/analysis.tres").effects[0]
@@ -62,14 +95,26 @@ func _ready() -> void:
 	verify(game.simulation.system_taken and game.simulation.casts == 1, "real mouse conversion and takeover execute in main battle")
 	var saved: Dictionary = game.run.to_dict()
 	var restored = game.RunModel.new()
-	verify(restored.restore(saved) and restored.code_programs == game.run.code_programs, "schema6 restores programs")
+	verify(restored.restore(saved) and restored.code_programs == game.run.code_programs and restored.combat_rewards.size() == 6, "schema7 restores programs and combat rewards")
+	var invalid_owner: Dictionary = saved.duplicate(true)
+	invalid_owner.combat_rewards[1].owner = "missing_character"
+	verify(not restored.restore(invalid_owner), "invalid combat reward owner rejected")
 	saved.code_supplies.supply = -1
 	verify(not restored.restore(saved), "invalid inventory rejected")
 	saved = game.run.to_dict()
 	saved.schema = 5
 	saved.erase("code_programs")
 	saved.erase("code_supplies")
-	verify(restored.restore(saved) and restored.code_supplies.supply == 1, "schema5 gains default kit")
+	verify(restored.restore(saved) and restored.code_supplies.supply == 1 and restored.combat_rewards.is_empty(), "schema5 gains default kit and no fabricated rewards")
+	var journey = load("res://game/run/campaign_journey.gd").new()
+	journey.begin("library",1)
+	journey.enter(0,[])
+	journey.visit.data.guard_won = true
+	journey.data.screen = "reward_owner"
+	journey.data.offers = [eligible.filter(func(entry): return entry.get("target", "") == "training")[0]]
+	journey.data.pending_offer = journey.data.offers[0].duplicate(true)
+	var journey_copy = load("res://game/run/campaign_journey.gd").new()
+	verify(journey_copy.restore(journey.snapshot()) and journey_copy.data.screen == "reward_owner", "campaign owner selection resumes from saved checkpoint")
 	if "--capture" in OS.get_cmdline_user_args():
 		get_window().mode = Window.MODE_WINDOWED
 		var capture_size := Vector2i(1920,1080)

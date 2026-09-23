@@ -56,6 +56,11 @@ func worn_gear(role: int) -> String:
 		if inventory[key] == role: return key
 	return "empty"
 
+func combat_gear_available(role: int) -> bool:
+	if worn_gear(role) != "empty": return false
+	var owner_id: String = Content.role_id(role)
+	return not combat_rewards.any(func(saved): return saved.get("target", "") in ["lens", "backup"] and saved.get("owner", "") == owner_id)
+
 var training: Dictionary = {}
 var points = 0
 var retries = 0
@@ -70,6 +75,8 @@ var reward_ids: Array = []
 var reward_snapshots: Array = []
 var event_done = false
 var event_points = 0
+var combat_rewards: Array[Dictionary] = []
+var pending_reward_offer: Dictionary = {}
 
 func generate(seed_value: int = -1) -> void:
 	route_seed = seed_value if seed_value >= 0 else int(Crypto.new().generate_random_bytes(4).decode_u32(0) & 0x7fffffff)
@@ -122,7 +129,7 @@ static func content_stages(seed_value: int) -> Array:
 func roll_rewards() -> void:
 	var rng = RandomNumberGenerator.new()
 	rng.seed = (str(route_seed)+":"+str(stage)+":"+str(node.get("id",""))).hash()
-	var pool = Rewards.eligible(badge_owned,roster,inventory,node.get("reward_pool","campus_rewards"),training).duplicate(true)
+	var pool = Rewards.eligible(badge_owned,roster,inventory,node.get("reward_pool","campus_rewards"),training,combat_rewards).duplicate(true)
 	shuffle_with(pool,rng)
 	reward_ids.clear()
 	reward_snapshots.clear()
@@ -145,9 +152,11 @@ var code_supplies: Dictionary = CodeCatalog.stock()
 
 func to_dict() -> Dictionary:
 	var data = _legacy_dict()
-	data.schema = 6
+	data.schema = 7
 	data.code_programs = code_programs.duplicate()
 	data.code_supplies = code_supplies.duplicate()
+	data.combat_rewards = combat_rewards.duplicate(true)
+	data.pending_reward_offer = pending_reward_offer.duplicate(true)
 	data.stages = stages.duplicate(true)
 	for layer in data.stages:
 		for place in layer:
@@ -179,10 +188,18 @@ func to_dict() -> Dictionary:
 
 func restore(data: Dictionary) -> bool:
 	var candidate = get_script().new()
-	if data.get("schema") == 6:
+	if data.get("schema") == 6 or data.get("schema") == 7:
 		if not CodeCatalog.valid_loadout(data.get("code_programs")) or not CodeCatalog.valid_stock(data.get("code_supplies")): return false
 		candidate.code_programs = data.code_programs.duplicate()
 		candidate.code_supplies = data.code_supplies.duplicate()
+		if data.get("schema") == 7:
+			if not data.get("combat_rewards") is Array or not data.get("pending_reward_offer", {}) is Dictionary: return false
+			for reward in data.combat_rewards:
+				if not Rewards.valid_snapshot(reward) or reward.operation != "combat" or candidate.combat_rewards.any(func(saved): return saved.get("target", "") == reward.target): return false
+				if not Rewards.combat_owner_valid(reward.target,reward.get("owner", ""),data.get("roster", [])): return false
+				candidate.combat_rewards.append(reward.duplicate(true))
+			if not data.pending_reward_offer.is_empty() and (not Rewards.valid_snapshot(data.pending_reward_offer) or data.pending_reward_offer.operation != "combat" or not Rewards.combat_needs_owner(data.pending_reward_offer.target)): return false
+			candidate.pending_reward_offer = data.pending_reward_offer.duplicate(true)
 		data = data.duplicate(true)
 		data.schema = 5
 	var source = data.duplicate(true)
@@ -346,7 +363,9 @@ func _restore_legacy(data: Dictionary, frozen: Array = []) -> bool:
 	if restored_seed >= 0:
 		if not data.get("reward_ids",null) is Array: return false
 		for id in data.reward_ids:
-			if not id is String or Rewards.find(id).is_empty() or reward_ids.has(id): return false
+			if not id is String: return false
+			var known: bool = not Rewards.find(id).is_empty() or (id.begins_with("combat_") and Rewards.find_combat(id.trim_prefix("combat_")) != null)
+			if not known or reward_ids.has(id): return false
 			reward_ids.append(id)
 		if not node.is_empty() and (reward_ids.is_empty() or reward_ids.size() > 3): return false
 		if node.is_empty() and not reward_ids.is_empty(): return false
@@ -415,7 +434,8 @@ func complete_node() -> bool:
 	event_done = false
 	return true
 
-func apply_reward(entry: Dictionary) -> bool:
+func apply_reward(entry: Dictionary, owner_id: String = "") -> bool:
+	if entry.get("operation") == "combat": return apply_combat_reward(entry,owner_id)
 	if not Rewards.valid_snapshot(entry) or not Rewards.allowed(entry,roster,inventory,training): return false
 	match entry.operation:
 		"gear": grant_gear(entry.target)
@@ -426,6 +446,21 @@ func apply_reward(entry: Dictionary) -> bool:
 		"points":
 			points += int(entry.amount)
 			event_points += int(entry.amount)
+	return true
+
+func apply_combat_reward(entry: Dictionary, owner_id: String = "") -> bool:
+	if not Rewards.valid_snapshot(entry) or entry.operation != "combat" or not Rewards.allowed(entry,roster,inventory,training): return false
+	var definition = Rewards.find_combat(entry.target)
+	if definition == null or combat_rewards.any(func(saved): return saved.target == entry.target): return false
+	if not definition.character_id.is_empty() and not roster.has(Content.role_index(definition.character_id)): return false
+	if Rewards.combat_needs_owner(entry.target):
+		if Content.role_index(owner_id) < 0 or not roster.has(Content.role_index(owner_id)): return false
+		if entry.target in ["lens", "backup"] and not combat_gear_available(Content.role_index(owner_id)): return false
+		var saved := entry.duplicate(true)
+		saved.owner = owner_id
+		combat_rewards.append(saved)
+	else:
+		combat_rewards.append(entry.duplicate(true))
 	return true
 
 func current_event() -> Dictionary:

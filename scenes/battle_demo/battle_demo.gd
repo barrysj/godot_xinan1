@@ -83,7 +83,7 @@ func _build_units() -> void:
 		AutoBattle.initialize(units[i])
 	simulation.reset(units)
 	var build = get("run")
-	simulation.configure_combat(code_programs if build == null else build.code_programs, code_supplies if build == null else build.code_supplies, group.maintenance_interval, group.maintenance_shield)
+	simulation.configure_combat(code_programs if build == null else build.code_programs, code_supplies if build == null else build.code_supplies, group.maintenance_interval, group.maintenance_shield, [] if build == null else build.combat_rewards)
 	finish_age = 0
 	elapsed = 0
 	accumulator = 0

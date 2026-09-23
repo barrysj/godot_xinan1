@@ -34,6 +34,11 @@ func fight(hub, choose: bool = true) -> void:
 	verify(hub.journey.data.offers == offers,"reward restore stable")
 	if choose:
 		hub._campaign_action("reward:0")
+		if hub.journey.data.screen == "reward_owner":
+			var owner: int = hub.run.roster[0]
+			if hub.journey.data.pending_offer.target in ["lens", "backup"]:
+				owner = hub.run.roster.filter(func(role): return hub.run.combat_gear_available(role))[0]
+			hub._campaign_action("reward_owner:"+hub.RunModel.Content.role_id(owner))
 		verify(hub.journey.visit.can_leave(),"reward and guard gate")
 
 func run_checks(hub) -> void:

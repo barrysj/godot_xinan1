@@ -1,6 +1,7 @@
 extends "res://game/combat/synergy_simulation.gd"
 ## Currency/commands adapter; movement, hit resolution and traits remain shared.
 const Codes = preload("res://game/combat/code_catalog.gd")
+const RewardCatalog = preload("res://game/run/reward_catalog.gd")
 var blocks := {}
 var loadout: Array = []
 var items := {}
@@ -162,7 +163,7 @@ func use_item(id: String, destination: String, source: String = "") -> bool:
 
 
 ## Attach shared rules to the original scene's roster, preserving its stats and enemies.
-func configure_combat(programs: Array, supplies: Dictionary, maintenance_interval: float = 6.0, maintenance_shield: float = 35.0) -> void:
+func configure_combat(programs: Array, supplies: Dictionary, maintenance_interval: float = 6.0, maintenance_shield: float = 35.0, combat_rewards: Array = []) -> void:
 	blocks = {}
 	for kind in Codes.RULES.types: blocks[kind] = 0
 	loadout = programs.duplicate() if Codes.valid_loadout(programs) else Array(Codes.RULES.default_loadout).duplicate()
@@ -188,6 +189,7 @@ func configure_combat(programs: Array, supplies: Dictionary, maintenance_interva
 	tag_ids.clear()
 	tags.clear()
 	upgrades.clear()
+	for reward in combat_rewards: upgrades.append(reward.get("target", ""))
 	pulse_interval = maintenance_interval
 	pulse_amount = maintenance_shield
 	next_pulse = pulse_interval
@@ -216,4 +218,11 @@ func configure_combat(programs: Array, supplies: Dictionary, maintenance_interva
 			if u.tags.has(tag):
 				var synergy = Catalog.synergy(tag)
 				install_effects(u, synergy.effects,"synergy/"+tag,synergy.display_name)
+	for reward in combat_rewards:
+		var definition = RewardCatalog.find_combat(reward.get("target", ""))
+		if definition == null: continue
+		for u in _living(0):
+			var matches_owner: bool = (definition.category == "羁绊" and u.tags.has("protect")) or (definition.category == "专属" and definition.character_id == u.get("content_id", "")) or (definition.category == "装备" and reward.get("owner", "") == u.get("content_id", ""))
+			if matches_owner:
+				install_effects(u,definition.effects,"reward/"+definition.id,definition.display_name)
 	_dispatch("battle_start")

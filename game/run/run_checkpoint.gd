@@ -11,15 +11,16 @@ static func decode(snapshot: Dictionary) -> Dictionary:
 	var model = Run.new()
 	if not model.restore(snapshot.run): return {}
 	var screen = str(snapshot.get("screen",""))
-	if not screen in ["map","battle","event","reward","report","summary"]: return {}
+	if not screen in ["map","battle","event","reward","reward_owner","report","summary"]: return {}
 	if screen == "summary":
 		if model.stage != 5 or not model.settled: return {}
 	elif model.stage >= 5 or model.settled: return {}
 	if screen == "map" and not model.node.is_empty(): return {}
-	if screen in ["battle","event","reward","report"] and model.node.is_empty(): return {}
+	if screen in ["battle","event","reward","reward_owner","report"] and model.node.is_empty(): return {}
 	if screen == "event" and (model.node.kind != "event" or model.event_done): return {}
 	if screen in ["battle","report"] and model.node.kind == "event": return {}
 	if screen == "reward" and model.reward_taken: return {}
+	if screen == "reward_owner" and (model.pending_reward_offer.is_empty() or not model.offers().any(func(offer): return offer.id == model.pending_reward_offer.id)): return {}
 	var report: Array[Dictionary] = []
 	if not snapshot.get("report",[]) is Array: return {}
 	for row in snapshot.get("report",[]):

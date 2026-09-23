@@ -1,7 +1,6 @@
 extends Node
-const Sim = preload("res://game/trial/code_trial_simulation.gd")
-const Model = preload("res://game/trial/trial_run.gd")
-const Codes = preload("res://game/trial/code_catalog.gd")
+const Sim = preload("res://game/combat/code_battle_simulation.gd")
+const Codes = preload("res://game/combat/code_catalog.gd")
 const Catalog = preload("res://game/trial/trial_catalog.gd")
 var checks := 0
 var failures := 0
@@ -28,8 +27,7 @@ func _ready() -> void:
 	_config_validation()
 	_production()
 	_commands()
-	_items_and_checkpoint()
-	_journeys()
+	_items()
 	print("CODE_CHECK checks=%d failures=%d" % [checks, failures])
 	get_tree().quit(0 if failures == 0 else 1)
 
@@ -155,7 +153,7 @@ func _commands() -> void:
 	sim.finished = true
 	expect(not sim.cast_program("repair") and not sim.use_item("supply", "red"), "post-combat commands rejected")
 
-func _items_and_checkpoint() -> void:
+func _items() -> void:
 	var sim = fresh()
 	sim.blocks.blue = 4
 	var before: Dictionary = sim.blocks.duplicate()
@@ -166,52 +164,3 @@ func _items_and_checkpoint() -> void:
 	expect(not sim.use_item("converter", "purple", "purple") and sim.items.converter == 1, "self conversion rejected")
 	expect(not sim.use_item("converter", "green", "red"), "insufficient conversion source rejected")
 	expect(sim.use_item("converter", "blue", "purple") and sim.blocks.blue == 6 and sim.blocks.purple == 1, "conversion consumes two source and generates two target")
-	var run = Model.new()
-	expect(run.set_program(0, "repair") and run.programs == ["repair","takeover"], "prebattle loadout can change")
-	expect(run.set_program(1, "repair") and run.programs == ["takeover","repair"], "choosing an equipped program swaps slots")
-	var checkpoint: Dictionary = run.snapshot()
-	run.finish(false, "retry", sim.items)
-	expect(run.supplies == Codes.stock(), "failure returns all battle consumables")
-	run.finish(true, "won", sim.items)
-	expect(run.supplies == sim.items and not run.set_program(0,"disconnect"), "victory commits remaining supplies and locks reward phase")
-	var restored = Model.new()
-	expect(restored.restore(JSON.parse_string(JSON.stringify(run.snapshot()))) and restored.supplies == sim.items, "v3 stock and loadout JSON roundtrip")
-	for bad in [{"supplies":{"supply":-1,"converter":1}}, {"supplies":{"supply":0.5,"converter":1}}, {"programs":["repair","repair"]}, {"programs":["missing","repair"]}]:
-		var candidate: Dictionary = checkpoint.duplicate(true)
-		candidate.merge(bad,true)
-		expect(not restored.restore(candidate), "invalid loadout/stock rejects atomically")
-	var old: Dictionary = checkpoint.duplicate(true)
-	old.version = 2
-	old.erase("programs")
-	old.erase("supplies")
-	expect(restored.restore(old) and restored.programs == Array(Codes.RULES.default_loadout) and restored.supplies == Codes.stock(), "v2 migration grants initial code kit")
-	old.version = 1
-	old.erase("starting_supply")
-	old.erase("claimed_rewards")
-	expect(restored.restore(old), "v1 migration also reaches v3")
-	var path := "res://.godot/code-check-%d.json" % Time.get_ticks_usec()
-	run.path = path
-	expect(run.save(), "write isolated v3 checkpoint")
-	restored.path = path
-	expect(restored.read_save() and restored.supplies == sim.items, "read actual persisted consumption")
-	var retry = Model.new()
-	retry.path = "res://.godot/absent-code-directory/checkpoint.json"
-	expect(not retry.transact(func(): return retry.finish(true,"won",sim.items)) and retry.supplies == Codes.stock() and retry.phase == "prepare", "save failure rolls back result and item consumption")
-
-func _journeys() -> void:
-	for mode in range(2):
-		var run = Model.new()
-		if mode == 1: run.programs = ["redirect","repair"]
-		for stage in range(3):
-			var sim = Sim.new()
-			sim.start(run.formation, run.battle, run.rewards, run.gear, run.trainee, run.programs, run.supplies)
-			for tick in range(1900):
-				sim.advance(0.05)
-				for id in run.programs:
-					if sim.program_error(id).is_empty(): sim.cast_program(id); break
-				if sim.finished: break
-			print("CODE_ROUTE mode=%d stage=%d won=%s time=%.1f casts=%d" % [mode,stage,sim.won,sim.elapsed,sim.casts])
-			expect(sim.finished and sim.won and sim.casts > 0, "resource build wins and uses real generated blocks")
-			run.finish(sim.won,"test",sim.items)
-			if stage < 2: expect(run.select_reward("training" if stage == 0 else "verify",3 if stage == 0 else -1), "advance after real victory")
-		expect(run.phase == "complete", "three-battle code journey unlocks completion")
