@@ -116,6 +116,30 @@ variants:
       generation_source_resolution: [1672, 941]
       native_4k: false
       runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_003:
+    stage: asset
+    version: "anomaly-003"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_basic_laboratory_building/005
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_daily_002
+      reference_variant: m1_student_activity_center/asset_anomaly_005
+      review_scope: full_location_anomaly_asset
+      sky_palette: low_saturation_ink_blue_charcoal_gray
+      anomaly_palette: localized_violet_and_cyan_fragments
+      anomaly_intensity: localized_readable
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
 integration:
   status: not_integrated
   active_variant: null

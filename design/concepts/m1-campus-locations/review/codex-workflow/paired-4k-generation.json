@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "m1-campus-locations",
   "date": "2026-09-22",
-  "state": "awaiting_anomaly_density_approval",
+  "state": "twelve_daily_twelve_anomaly_candidates_delivered_pending_asset_review",
   "latest_calibration": {
     "date": "2026-09-23",
     "sky_balance_approved": true,
@@ -266,17 +266,24 @@
       "status": "superseded_sky_saturation_not_final"
     }
   ],
-  "remaining_anomalies": [
-    "south_gate",
-    "pinxue_courtyard",
-    "pinxue_atrium",
-    "xuezi_cafeteria",
-    "west_lake_center",
-    "chengdian_auditorium_commercial_street",
-    "yinhua_halal_cafeterias",
-    "basic_laboratory_building",
-    "west_lake_entrance",
-    "sports_field",
-    "library_front"
-  ]
+  "remaining_anomalies": [],
+  "completed_anomaly_batch": {
+    "date": "2026-09-24",
+    "density_reference": "design/concepts/m1-campus-locations/m1_student_activity_center/006/anomaly.png",
+    "asset_approval": "pending",
+    "images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/006/anomaly.png"
+    ],
+    "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/remaining-anomaly-4k-review.jpg"
+  }
 }
