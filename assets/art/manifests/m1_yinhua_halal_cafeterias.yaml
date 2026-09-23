@@ -144,7 +144,11 @@ variants:
     stage: asset
     version: "anomaly-004"
     selection: unselected
-    approval: pending
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-24
+      decision: rejected_physical_ground_shards
     root: design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/006
     files:
       anomaly: anomaly.png
@@ -157,6 +161,30 @@ variants:
       source_variant: asset_anomaly_003
       review_scope: ring_free_ground_distributed_anomaly_asset
       edit_scope: angular_fissures_sparse_data_rain_ground_shards_and_projections
+      rejection_reason: physical_ground_shards_conflict_with_digital_anomaly_direction
+      sky_palette: preserve_low_saturation_ink_blue_charcoal_gray
+      anomaly_intensity: distributed_readable
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_005:
+    stage: asset
+    version: "anomaly-005"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_004
+      review_scope: single_location_no_physical_debris_calibration
+      edit_scope: remove_solid_ground_shards_keep_planar_panels_projected_fissures_data_rain
       sky_palette: preserve_low_saturation_ink_blue_charcoal_gray
       anomaly_intensity: distributed_readable
       delivery_resolution_mode: high_quality_bicubic_resample

@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：12张日常＋12张异常的3840×2160候选均已生成并登记。2026-09-24按负责人反馈重制全部12张异常：去除重复发光圆环，增添立面裂缝／少量数据雨、地面碎片与透视投影；两张西湖加入数字水面异常，图书馆作为 Boss 区提高强度。新版仍待人工评审，未提升正式包或接入游戏；旧正式资产不变。
+状态：12张日常＋12张异常的3840×2160候选均已生成并登记。2026-09-24按负责人反馈去除重复发光圆环、增加异常分布；随后仅对银桦＋清真食堂单图精修，移除地面实体碎块，保留投影裂隙、蓝色矩形面板与数据雨。新版仍待人工评审，未提升正式包或接入游戏；旧正式资产不变。
 
 ## 目标与范围
 
@@ -23,6 +23,12 @@
 用户本轮明确提供并确认了两处独立现实地点：品学楼（教学楼）单区内部庭院、品学楼组团的中庭。它们现在分别登记为 `m1_pinxue_courtyard` 与 `m1_pinxue_atrium`；由于用户尚未指定它们对应 `hall`、`end_b` 或 `end_c` 哪个运行时占位，暂不强行绑定。
 
 用户随后又明确提供并确认九处实景，分别登记为 `m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field` 与 `m1_library_front`。这些对象保留现实地点身份，但同样不擅自绑定现有运行时占位；图书馆正面候选按用户要求移除了旗帜与旗杆。
+
+## 银桦＋清真食堂单图精修（2026-09-24）
+
+- 负责人反馈：重复生成12张成本过高，先以银桦＋清真食堂为代表样图。006 中铺地上的立体晶体／实体碎块不符合数字异常设定；蓝色矩形平面光块、投影裂隙、窗内短数据雨及建筑裂缝方向认可。该反馈只否定本地点006的实体碎块，不自动否定或批准其他11张。
+- 新候选 [007异常图](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png)、[006／007并排对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/yinhua-006-007-comparison.jpg) 与 [完整提示词／来源](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/generation.md)：两步精修，移除铺地实体并恢复地砖，再保留／补强无体积、沿透视投射在砖面上的断续青紫裂隙。006 保留历史并在 Manifest 记为 `unselected + rejected`，007 为 `unselected + pending`，不推及其他地点的批准状态。
+- 代表样图选择遵循 `create-game-assets` 的先确定单张视觉目标再扩展家族；后续是否将“无实体地面碎块”推广到其余地点，须以负责人对007的反馈为依据。最终图源与并排缩图已实际查看；007通过3840×2160、RGB不透明、无透明像素检查；资源台33项测试通过，AssetCatalog扫描26对象／402登记文件、缺失0、不一致0、错误0；批次索引可解析、git diff --check通过。通用结构与任务检查为PASS_WITH_NOTES：实体碎块消失且建筑保持可辨，铺地仍整体偏湿亮，后续需负责人审美复核。技术验证不替代批准。
 
 ## 去圆环、地面分布与 Boss 区修订（2026-09-24）
 

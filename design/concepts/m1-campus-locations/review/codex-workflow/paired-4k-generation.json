@@ -307,5 +307,14 @@
       "design/concepts/m1-campus-locations/m1_sports_field/006/anomaly.png",
       "design/concepts/m1-campus-locations/m1_library_front/007/anomaly.png"
     ]
+  },
+  "latest_single_location_calibration": {
+    "date": "2026-09-24",
+    "location": "m1_yinhua_halal_cafeterias",
+    "image": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png",
+    "generation": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/generation.md",
+    "asset_approval": "pending",
+    "change": "remove_physical_ground_shards_keep_planar_projection_panels_data_rain",
+    "other_locations_unchanged": true
   }
 }
