@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：正在按“12张日常＋12张黑紫异常、全部3840×2160”重制；12张日常候选已完成。2026-09-23负责人确认活动中心天空比例，要求异常只增加一点；已制作005微增候选，待确认新增密度后扩展其余11张异常。本批尚未完成、未获整套资产批准、未接入；旧正式资产不变。
+状态：正在按“12张日常＋12张黑紫异常、全部3840×2160”重制；12张日常候选已完成。2026-09-23负责人确认活动中心天空比例，要求异常只增加一点；005微增因差异不明显被退回；已制作006可见碎光候选，待确认新增密度后扩展其余11张异常。本批尚未完成、未获整套资产批准、未接入；旧正式资产不变。
 
 ## 目标与范围
 
@@ -27,11 +27,11 @@
 ## 当前样图微调（2026-09-23）
 
 - 人工决定：004的天空比例已确认，只批准天空色调与比例，不是整张资产批准；负责人要求“再适当加一些异常元素（只加一点）”。Manifest在asset_anomaly_003的metadata中记录有限范围的sky_approval，不把整张改为approved。
-- 新候选：学生活动中心005/anomaly.png，asset_anomaly_004 / unselected + pending。保留墨蓝灰天空与双光弧，只在入口附近增加窗框错位紫光、少量碎光和微弱倒影；不增加天空异象、全景电路或泛滥悬浮面板。
-- [新候选与完整提示词](../../../design/concepts/m1-campus-locations/m1_student_activity_center/005/generation.md)、[前后对照（左004、右005）](../../../design/concepts/m1-campus-locations/review/codex-workflow/activity-anomaly-detail-comparison.jpg)。沿用create-game-assets先校准代表资产再扩展家族，本次仅微调样图，不将批准天空理解为批准新异常密度或完成24张。
+- 追加反馈：005与上一版差异不明显，asset_anomaly_004改为rejected并保留。新候选006/anomaly.png（asset_anomaly_005 / unselected + pending）在入口增加可辨认的青蓝光块、碎光与柔和地面倒影；保持墨蓝灰天空与双光弧，不增加天空异象。
+- [新候选与完整提示词](../../../design/concepts/m1-campus-locations/m1_student_activity_center/006/generation.md)、[前后对照（左005、右006）](../../../design/concepts/m1-campus-locations/review/codex-workflow/activity-anomaly-visible-comparison.jpg)。沿用create-game-assets先校准代表资产再扩展家族，本次仅微调样图，不将批准天空理解为批准新异常密度或完成24张。
 - 生成方式：内置imagegen局部编辑；实际源1672×941，最终3840×2160 RGB不透明PNG，高质量双三次重采样、非原生4K。逐图解码与尺寸检查通过；原图及最终文件前后对照已实际查看，天空没有恢复高饱和紫色，主要建筑和道路保持可读。
-- 验证基线：7ac6187加本轮工作树；不改Godot或正式运行目录。原12张日常保持不变，其余11张异常尚未按最终样图扩展。
-- 验证结果：资源台33项测试通过；AssetCatalog扫描26对象／350登记文件，缺失0、不一致0、错误0；git diff --check通过。
+- 验证基线：c1ea04a加本轮工作树；不改Godot或正式运行目录。原12张日常保持不变，其余11张异常尚未按最终样图扩展。
+- 验证结果：资源台33项测试通过；AssetCatalog扫描26对象／352登记文件，缺失0、不一致0、错误0；git diff --check通过。
 
 ## 配对4K重制与天空校准记录（2026-09-22）
 
