@@ -2,8 +2,11 @@ extends Control
 ## Disposable battle prototype: formation and automatic skill readability.
 
 const STEP = 0.05
-const Simulation = preload("res://game/combat/battle_simulation.gd")
+const Simulation = preload("res://game/combat/code_battle_simulation.gd")
 var simulation = Simulation.new()
+const CodeCatalog = preload("res://game/combat/code_catalog.gd")
+var code_programs: Array = Array(CodeCatalog.RULES.default_loadout).duplicate()
+var code_supplies: Dictionary = CodeCatalog.stock()
 var finish_age = 0.0
 var finish_duration = 0.65
 const AutoBattle = preload("res://game/combat/auto_battle.gd")
@@ -79,6 +82,8 @@ func _build_units() -> void:
 		units[i].id = i
 		AutoBattle.initialize(units[i])
 	simulation.reset(units)
+	var build = get("run")
+	simulation.configure_combat(code_programs if build == null else build.code_programs, code_supplies if build == null else build.code_supplies, group.maintenance_interval, group.maintenance_shield)
 	finish_age = 0
 	elapsed = 0
 	accumulator = 0

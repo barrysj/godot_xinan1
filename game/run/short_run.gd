@@ -15,7 +15,7 @@ const STAGES = [
 var stage = 0
 var visited: Array[String] = []
 var node: Dictionary = {}
-var roster: Array[int] = [0, 1, 2, 3]
+var roster: Array[int] = [0, 1, 2, 3, Content.role_index("analyst")]
 var formation: Array = [0, -1, 3, 2, 1, -1]
 const Content = preload("res://game/content/content_db.gd")
 var inventory: Dictionary = {"shoe": 0}
@@ -139,9 +139,15 @@ func _legacy_dict() -> Dictionary:
 		"training":saved_training, "points":points, "retries":retries, "reward_taken":reward_taken,
 		"settled":settled, "permanent_hp":permanent_hp}
 
+const CodeCatalog = preload("res://game/combat/code_catalog.gd")
+var code_programs: Array = Array(CodeCatalog.RULES.default_loadout).duplicate()
+var code_supplies: Dictionary = CodeCatalog.stock()
+
 func to_dict() -> Dictionary:
 	var data = _legacy_dict()
-	data.schema = 5
+	data.schema = 6
+	data.code_programs = code_programs.duplicate()
+	data.code_supplies = code_supplies.duplicate()
 	data.stages = stages.duplicate(true)
 	for layer in data.stages:
 		for place in layer:
@@ -173,6 +179,12 @@ func to_dict() -> Dictionary:
 
 func restore(data: Dictionary) -> bool:
 	var candidate = get_script().new()
+	if data.get("schema") == 6:
+		if not CodeCatalog.valid_loadout(data.get("code_programs")) or not CodeCatalog.valid_stock(data.get("code_supplies")): return false
+		candidate.code_programs = data.code_programs.duplicate()
+		candidate.code_supplies = data.code_supplies.duplicate()
+		data = data.duplicate(true)
+		data.schema = 5
 	var source = data.duplicate(true)
 	var items = {}
 	if data.get("schema") == 4 or data.get("schema") == 5:

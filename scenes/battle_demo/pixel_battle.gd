@@ -10,6 +10,7 @@ signal presentation_cue(event: Dictionary)
 const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd")
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 const Board = preload("res://scenes/battle_demo/battle_board.gd")
+var code_panel: Control
 var inspector: Control
 var battle_background: Texture2D
 var background_canvas: CanvasTexture
@@ -83,6 +84,9 @@ func _ready() -> void:
 	previous_auto_quit = get_tree().auto_accept_quit
 	get_tree().auto_accept_quit = false
 	_create_pause_menu()
+	code_panel = preload("res://scenes/battle_demo/code_panel.tscn").instantiate()
+	code_panel.game = self
+	add_child(code_panel)
 	deployment = preload("res://scenes/battle_demo/deployment_panel.gd").new()
 	deployment.game = self
 	add_child(deployment)
@@ -149,6 +153,7 @@ func _start() -> void:
 	if phase == "battle" and is_instance_valid(deployment): deployment.cancel()
 
 func _build_units() -> void:
+	if is_instance_valid(code_panel) and is_instance_valid(code_panel.code_fx): code_panel.code_fx.particles.clear()
 	_clear_battle_presentations()
 	super._build_units()
 	battle_background = _battle_backdrop()
@@ -266,6 +271,7 @@ func _present_action(actor: Dictionary, casts_skill: bool) -> void:
 	actor.animation.play(&"cast" if casts_skill else StringName(actor.action.get("mode", "attack")))
 
 func _present_simulation_event(event: Dictionary) -> void:
+	if is_instance_valid(code_panel): code_panel.consume(event)
 	var visual_event = event.duplicate(true)
 	visual_event.from = _project(event.from)
 	visual_event.to = _project(event.to)
@@ -293,7 +299,7 @@ func _unit_center(unit: Dictionary) -> Vector2:
 func _present_event(e: Dictionary) -> void:
 	if e.kind == "damage" and e.get("actual", 0) > 0:
 		e.target.animation.play(&"hurt")
-	var tint: Color = GOLD if e.special else (TEAL if e.actor.side == 0 else RED)
+	var tint: Color = GOLD if e.get("special",false) else (TEAL if e.actor.side == 0 else RED)
 	if e.kind == "heal": tint = Color("a3ef98")
 	elif e.kind == "shield": tint = Color("8ad8ff")
 	var occupied_lanes = {}
@@ -303,7 +309,7 @@ func _present_event(e: Dictionary) -> void:
 	while occupied_lanes.has(lane): lane += 1
 	effects.append({"from": _project(e.get("from", e.actor.position)) + Vector2(0, -6),
 		"to": _project(e.get("to", e.target.position)) + _hit_offset(e.target),
-		"kind": e.kind, "special": e.special, "value": int(e.get("actual", e.value)),
+		"kind": e.kind, "special": e.get("special",false), "value": int(e.get("actual", e.get("value",0))),
 		"color": tint, "life": 0.65, "target_id": e.target.id, "lane": lane,
 		"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false)})
 
@@ -648,6 +654,9 @@ func _gui_input(event: InputEvent) -> void:
 	super._gui_input(event)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(code_panel) and code_panel.paused:
+		if event.is_action_pressed("pause"): code_panel._close_console(); get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(deployment) and event.is_action_pressed("pause") and deployment.active() and deployment.selected_role >= 0:
 		deployment.cancel()
 		get_viewport().set_input_as_handled()
@@ -766,6 +775,8 @@ func _layout_pause_menu() -> void:
 	pause_content.position = (size - Vector2(1280, 720) * ratio) / 2
 
 func _open_pause() -> void:
+	if is_instance_valid(code_panel) and code_panel.paused:
+		code_panel._close_console()
 	if is_instance_valid(deployment): deployment.cancel()
 	paused = true
 	pending_exit = ""

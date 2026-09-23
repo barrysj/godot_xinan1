@@ -454,11 +454,12 @@ func _draw() -> void:
 		if campaign_mode == "region": heading = "%d / 4 · %s" % [journey.data.step+1,run.node.name]
 		elif campaign_mode == "finale": heading = "终局 %d / 3 · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
 		_text(Vector2(244,54),heading,PAPER,22)
-		_pixel_panel(Rect2(28,96,1208,32),Color("202027"))
+		if not is_instance_valid(code_panel) or not code_panel.visible: _pixel_panel(Rect2(28,96,1208,32),Color("202027"))
 		var goal = "目标：击败守卫，领取奖励后返回地点。青色为我方，红色为敌方。"
 		if campaign_mode == "prologue": goal = "目标：突破校门封锁。部署四名同学后开战；胜利后取回校园路线。"
 		elif campaign_mode == "finale": goal = "目标：击破核心节点，然后执行「%s」。" % OPERATIONS[journey.data.finale_phase]
-		_text(Vector2(42,118),goal,PAPER,17)
+		if is_instance_valid(code_panel) and code_panel.visible: code_panel.summary.tooltip_text = goal
+		else: _text(Vector2(42,118),goal,PAPER,17)
 
 func _finale_operation() -> void:
 	if campaign_mode != "finale" or journey.data.screen != "operation" or not journey.visit.data.guard_won: return

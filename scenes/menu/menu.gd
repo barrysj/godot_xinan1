@@ -84,21 +84,11 @@ func _ready():
 	play_button.get_parent().add_child(codex_button)
 	play_button.get_parent().move_child(codex_button,1)
 	codex_button.pressed.connect(_open_codex)
-	var trial_button = Button.new()
-	trial_button.text = "三战试炼"
-	trial_button.tooltip_text = "六人编队、双人羁绊与系统破解的独立玩法试炼。"
-	trial_button.add_theme_font_override("font", preload("res://assets/fonts/SourceHanSansSC-Medium.otf"))
-	trial_button.custom_minimum_size = Vector2(200, 70)
-	play_button.get_parent().add_child(trial_button)
-	play_button.get_parent().move_child(trial_button, 2)
-	trial_button.pressed.connect(func(): GGT.change_scene("res://scenes/trial/trial.tscn", {"show_progress_bar": true}))
 	play_button.focus_neighbor_bottom = play_button.get_path_to(codex_button)
 	play_button.focus_next = play_button.get_path_to(codex_button)
 	codex_button.focus_neighbor_top = codex_button.get_path_to(play_button)
-	codex_button.focus_neighbor_bottom = codex_button.get_path_to(trial_button)
-	trial_button.focus_neighbor_top = trial_button.get_path_to(codex_button)
-	trial_button.focus_neighbor_bottom = trial_button.get_path_to(settings_button)
-	settings_button.focus_neighbor_top = settings_button.get_path_to(trial_button)
+	codex_button.focus_neighbor_bottom = codex_button.get_path_to(settings_button)
+	settings_button.focus_neighbor_top = settings_button.get_path_to(codex_button)
 	# needed for gamepads to work
 	play_button.grab_focus()
 	if OS.has_feature('web'):

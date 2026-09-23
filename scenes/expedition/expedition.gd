@@ -124,6 +124,7 @@ func _process(delta: float) -> void:
 			for u in units:
 				if u.side == 0:
 					report.append({"name": u.name, "damage": int(u.damage), "healing": int(u.healing)})
+			if result_won: run.code_supplies = simulation.items.duplicate()
 			screen = "report"
 	else:
 		if not paused:
@@ -489,8 +490,9 @@ func _run_smoke() -> void:
 	formation = [-1, 0, 3, 1, 2, -1]
 	run.roster.append(4)
 	selected = 3
+	var expected_reserve: int = run.roster.filter(func(role): return not formation.has(role))[0]
 	_swap_reserve()
-	assert(formation.has(4) and not formation.has(3))
+	assert(formation.has(expected_reserve) and not formation.has(3))
 	_start()
 	for u in units:
 		if u.side == 0: u.hp = 1

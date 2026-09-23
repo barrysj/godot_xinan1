@@ -215,3 +215,17 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - 覆盖普攻按动作产色、护盾命中、漏洞颜色归属、上限、四程序、共享冷却、待执行指令、不可执行操作无扣费、道具转换、v1/v2迁移、v3保存与失败回滚、默认Resource数组不受装配污染。测试使用独立存档。
 
 根证书读取错误与旧图片警告为既有环境边界；故障注入预期出现备份写入失败，不代表脚本失败。脚本运行器额外检查成功标记及SCRIPT ERROR，避免解析失败被误报通过。未覆盖手机、手柄、Web或真人平衡评估。
+
+## 原主线代码战斗验证 E32
+
+2026-09-24；基线303aeb8加集成工作树，PowerShell 7 / Godot 4.7.2 Windows。直接运行原校园场景的集成夹具：
+
+```powershell
+& 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe' --path . --log-file .godot/main-code-final.log res://scenes/battle_demo/code_integration_check.tscn -- --capture --size=1920x1080
+```
+
+去掉 capture 并添加 --headless 可做无图形检查；截图仅图形模式。集成覆盖稳定身份解析、战前程序、实际鼠标道具/转码/提权、暂停退出与取消、真实胜利、schema6/旧档迁移、半场及胜利检查点恢复。最终图形检查22项 / 0失败，见 main-code-final.log。
+
+原入口回归：expedition.tscn 的 --campaign-flow-check --order=012 为124/0；--run-smoke 三路线PASS；--pause-flow-smoke PASS；deployment_check.tscn --deployment-check 为0失败。图形运行 expedition.tscn --content-check 输出 CONTENT_CHECK_COMPLETE；menu.tscn --codex-check 为36项PASS。参数均置于引擎 -- 后。原 trial runner -Check 十场景通过（代码74、UI27、内容95、效果70、存档76、三战104、表现34、准确性51以及动作/自动战斗PASS）。
+
+1920×1080、1920×1200、2560×1440实际截图尺寸和终端边界通过；截图 .godot/main-code-terminal-<尺寸>.png 和 main-code-battle.png 已查看并展示。已有根证书读取错误、Kenney原图加载告警仍存在；未据此声明导出、手机或真人趣味性验收。

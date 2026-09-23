@@ -189,3 +189,9 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 - 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。v3新增programs和supplies；旧v1/v2只读迁移，人物索引兼容限制保持。
 
 `game/trial/code_check.tscn` 覆盖规则、坏配置、道具事务、迁移及两条三战路线；`scenes/trial/code_ui_check.tscn` 通过真实Viewport鼠标事件验证终端。两者均已加入 `-Check`；完整数值与玩家规则只维护于 battle-demo.md。
+
+## 主线羁绊与代码资源接入
+
+2026-09-24：实现入口迁至 game/combat/，resources/trial/ 中的人物标签、效果、代码规则仍作为共享定义，不复制数值。原人物通过 content_id 与试炼定义 id 匹配，不能用两个清单的数组下标相互索引。原 manifest 末尾追加 analyst 和 analysis 技能，保留既有角色索引；分析员目前复用已有占位表现。
+
+Encounter 新增 maintenance_interval（1～60秒，默认6）和 maintenance_shield（1～144，默认35），加载时检查有限值及范围。原 ShortRun schema 6 新增 code_programs / code_supplies；校验合法的两种程序及库存后复用旧迁移链，schema 1～5 补默认配置，未来版本仍拒绝。校园 profile 外层版本不变，独立试炼存档不导入校园存档。

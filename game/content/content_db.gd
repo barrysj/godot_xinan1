@@ -45,6 +45,7 @@ static func validate() -> Array[String]:
 				errors.append(skill.resource_path+": 效果数值越界")
 	for group in MANIFEST.encounters:
 		if group == null: continue
+		if not is_finite(group.maintenance_interval) or group.maintenance_interval < 1 or group.maintenance_interval > 60 or not is_finite(group.maintenance_shield) or group.maintenance_shield < 1 or group.maintenance_shield > 144: errors.append(group.resource_path+": 维护参数越界")
 		if group.units.is_empty() or group.units.size() != group.slots.size(): errors.append(group.resource_path+": 敌群槽位数量不匹配")
 		var occupied = []
 		for slot in group.slots:
