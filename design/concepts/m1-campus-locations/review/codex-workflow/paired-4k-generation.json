@@ -316,5 +316,16 @@
     "asset_approval": "pending",
     "change": "remove_physical_ground_shards_keep_planar_projection_panels_data_rain",
     "other_locations_unchanged": true
+  },
+  "latest_single_location_density_calibration": {
+    "date": "2026-09-24",
+    "location": "m1_yinhua_halal_cafeterias",
+    "image": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png",
+    "generation": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/generation.md",
+    "comparison": "design/concepts/m1-campus-locations/review/codex-workflow/yinhua-007-008-comparison.jpg",
+    "previous_image": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png",
+    "asset_approval": "pending",
+    "change": "slightly_increase_nonphysical_panels_projected_fissures_sparse_data_rain",
+    "other_locations_unchanged": true
   }
 }
