@@ -172,7 +172,7 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 
 目标为 owner、lowest_ally、lowest_other_near、skill_target；附近距离读取 radius。`required_tag` 同时要求该人物带标签且开战时激活，用于“并肩防护”这样的羁绊升级。护盾默认来源自动命名空间化；只有需要共同移除同一类护盾时才显式填 source。不会默认移除其他来源护盾。
 
-运行扩展的明确边界：v3仍只有一个训练归属，训练项固定为 `training`；`lens` 是现有出发解锁的固定装备ID，必须保留。专属才能设置 character_id / mark_uses_bonus，只有训练读取 health_multiplier / attack_multiplier。新增第二项独立训练归属、可选出发补给或新的触发／效果类型，需要同步扩展存档或处理器与针对性检查，不能只填一个新字符串。
+旧独立试炼 schema v3 的历史约束：当时只有一个训练归属，`lens` 是固定装备ID；该独立短局存档已不再作为当前玩家流程。当前主线强化归属、装备限制与 ShortRun schema 由下文“原主线羁绊、战后强化与代码资源”及 CORE-05 维护。
 
 羁绊与代码内容沿用原 Resource 校验器。主线检查运行 `pwsh.exe -File ./run-battle-demo.ps1 -CodeCheck`，涵盖强化候选、存档和真实战斗；资源定义可单独运行 `res://game/trial/trial_content_check.tscn`。仅校验资源可运行 Godot `--headless --path . res://game/trial/trial_content_check.tscn`。覆盖空／重名／重复ID、非法引用／枚举／非有限数值、技能配置，以及领奖时所有选项都已持有的死路；进入试炼时同样先校验，失败不读写玩家存档。验证程序中变异外部数组资源使用 `duplicate_deep(Resource.DEEP_DUPLICATE_ALL)`，不能用普通 `duplicate(true)` 假设外部Resource已隔离。
 
