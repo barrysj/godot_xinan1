@@ -327,5 +327,28 @@
     "asset_approval": "pending",
     "change": "slightly_increase_nonphysical_panels_projected_fissures_sparse_data_rain",
     "other_locations_unchanged": true
+  },
+  "approved_density_family_extension": {
+    "date": "2026-09-24",
+    "calibration": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png",
+    "approval_scope": "anomaly_element_type_and_density_only",
+    "asset_approval": "pending",
+    "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/approved-density-12-anomaly-4k-review.jpg",
+    "new_anomaly_images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/009/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_student_activity_center/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/008/anomaly.png"
+    ],
+    "west_lake_water_reference": "E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
+    "library_window_side_density": "higher_than_normal_locations",
+    "other_assets_and_runtime_unchanged": true
   }
 }

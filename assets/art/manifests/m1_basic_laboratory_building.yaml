@@ -163,6 +163,30 @@ variants:
       generation_source_resolution: [1672, 941]
       native_4k: false
       runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_005:
+    stage: asset
+    version: "anomaly-005"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_basic_laboratory_building/007
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_004
+      reference_variant: m1_yinhua_halal_cafeterias/asset_anomaly_006
+      review_scope: approved_density_family_extension
+      edit_scope: remove_solid_debris_add_planar_panels_data_rain_ground_projection
+      sky_palette: preserve_low_saturation_ink_blue_charcoal_gray
+      anomaly_intensity: distributed_moderate
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
 integration:
   status: not_integrated
   active_variant: null

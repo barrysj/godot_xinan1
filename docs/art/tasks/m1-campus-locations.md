@@ -1,6 +1,6 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：12张日常＋12张异常的3840×2160候选均已生成并登记。2026-09-24按负责人反馈去除重复发光圆环、增加异常分布；随后仅对银桦＋清真食堂单图精修，移除地面实体碎块，并以008略增投影裂隙、蓝色矩形面板与数据雨。新版仍待人工评审，未提升正式包或接入游戏；旧正式资产不变。
+状态：12张日常＋12张异常的3840×2160候选均已生成并登记。银桦＋清真食堂008的非实体异常类型与密度获负责人确认作为生产基准；其余11处已按此基准生成新版，西湖两处保留数字水面，图书馆窗侧提高密度。方向确认不等于11张具体资产获批；新候选仍待人工评审，未提升正式包或接入游戏，旧正式资产不变。
 
 ## 目标与范围
 
@@ -24,13 +24,20 @@
 
 用户随后又明确提供并确认九处实景，分别登记为 `m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field` 与 `m1_library_front`。这些对象保留现实地点身份，但同样不擅自绑定现有运行时占位；图书馆正面候选按用户要求移除了旗帜与旗杆。
 
+## 008基准扩展至其余11处（2026-09-24）
+
+- 负责人决定：“可以了，保留这种程度的异常元素+异常密度，继续生成其他11张图”；以银桦＋清真食堂008为普通地点的强度与非实体效果基准。此决定批准生产方向，不代替新11张的具体版本资产评审；银桦008保持原文件不重生。
+- 新版分布：南门009；品学楼单区庭院／组团中庭、学子食堂、西湖中心、成电会堂＋商业街、基础实验大楼、西湖入口、操场各007；学生活动中心008；图书馆正面008。各地新增版本均为 `unselected + pending`，历史候选保持其原登记状态；12张日常和正式旧包不变。
+- 普通地点沿用薄青蓝矩形面板、局部短数据雨、角状紫色裂隙与无体积的贴地光痕，清除先前铺地实物状发光碎块。西湖中心与西湖入口以既有双数字天鹅水面图为水面语言参考，保留断续青蓝／品红波纹、碎光与倒影，不复制天鹅或建筑；该参考文件实际位于主仓库 `E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png`，当前工作树无副本。图书馆 Boss 区把更高密度集中在主体左右窗带与中央玻璃，广场则较疏，且不恢复旗帜／旗杆。
+- [12张最新版异常评审拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/approved-density-12-anomaly-4k-review.jpg)和[批次索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)可逐项追到各版本 `generation.md` 的完整提示词、参考角色和SHA-256。逐张生成源和整组缩图已目检；11张新图均为3840×2160 RGB不透明PNG，从1671～1672×941原始输出高质量双三次重采样，非原生4K。`asset_report.py` 11张全部通过；资源台33项测试通过，AssetCatalog扫描26对象／426登记文件，缺失0、不一致0、错误0；批次索引可解析。通用质检为 `PASS_WITH_NOTES`：身份、地面物理逻辑、湖水与窗侧指令均可读，但多处地面偏湿亮、部分面板偏像灯具，需负责人审美复核。技术检查不代替批准，无运行时画面修改。
+
 ## 银桦＋清真食堂单图精修（2026-09-24）
 
 - 负责人反馈：重复生成12张成本过高，先以银桦＋清真食堂为代表样图。006 中铺地上的立体晶体／实体碎块不符合数字异常设定；蓝色矩形平面光块、投影裂隙、窗内短数据雨及建筑裂缝方向认可。该反馈只否定本地点006的实体碎块，不自动否定或批准其他11张。
 - 新候选 [007异常图](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png)、[006／007并排对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/yinhua-006-007-comparison.jpg) 与 [完整提示词／来源](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/generation.md)：两步精修，移除铺地实体并恢复地砖，再保留／补强无体积、沿透视投射在砖面上的断续青紫裂隙。006 保留历史并在 Manifest 记为 `unselected + rejected`，007 为 `unselected + pending`，不推及其他地点的批准状态。
 - 负责人接着要求“再适当增多一些异常”。仅本地点生成 [008异常图](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png)，[007／008并排对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/yinhua-007-008-comparison.jpg)，[完整提示词／来源](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/generation.md)。增量集中在两侧立面的薄青蓝矩形面板、窗内短数据雨、铺地透视投影裂隙与微弱反光；不加入实体地面碎块、悬浮圆环或紫色天空。008 登记 `asset_anomaly_006 / unselected + pending`；007 仍为待评参照版本，不擅自标记拒绝或批准。
 - 008 验证：生成源与并排缩图已目检，4K PNG 解码／尺寸／RGB不透明与全画幅检查通过；资源台33项测试通过，AssetCatalog扫描26对象／404登记文件、缺失0、不一致0、错误0，批次索引可解析。通用任务质检为 `PASS_WITH_NOTES`：增量可辨、地面无实体碎块；地面仍偏湿亮，多处面板的局部强度需负责人审美复核。技术验证不代替资产批准。
-- 代表样图选择遵循 `create-game-assets` 的先确定单张视觉目标再扩展家族；后续是否将“无实体地面碎块”推广到其余地点，须以负责人对007的反馈为依据。最终图源与并排缩图已实际查看；007通过3840×2160、RGB不透明、无透明像素检查；资源台33项测试通过，AssetCatalog扫描26对象／402登记文件、缺失0、不一致0、错误0；批次索引可解析、git diff --check通过。通用结构与任务检查为PASS_WITH_NOTES：实体碎块消失且建筑保持可辨，铺地仍整体偏湿亮，后续需负责人审美复核。技术验证不替代批准。
+- 代表样图选择遵循 `create-game-assets` 的先确定单张视觉目标再扩展家族；“无实体地面碎块”已由负责人对008方向的确认推广到其余地点，具体新版本仍待评。最终图源与并排缩图已实际查看；007通过3840×2160、RGB不透明、无透明像素检查；资源台33项测试通过，AssetCatalog扫描26对象／402登记文件、缺失0、不一致0、错误0；批次索引可解析、git diff --check通过。通用结构与任务检查为PASS_WITH_NOTES：实体碎块消失且建筑保持可辨，铺地仍整体偏湿亮，后续需负责人审美复核。技术验证不替代批准。
 
 ## 去圆环、地面分布与 Boss 区修订（2026-09-24）
 
