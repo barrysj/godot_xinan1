@@ -60,3 +60,9 @@ pwsh.exe -File ./run-battle-demo.ps1 -Smoke
 - 两组程序分别真实完成三场：断链／提权每场2次；重定向／热修复为3、3、5次。该结果只证明可通关，不证明构筑平衡。
 - `-Capture` 1600×900真实通关：6次程序、实际使用两件道具、两次领奖与三次胜利；终端开启期间模拟与视觉冻结且棋盘实例不变。截图 `.godot/trial-code-prepare.png`、`trial-code-console.png`、`trial-code-reward-1.png`、`trial-code-reward-2.png`、`trial-code-complete.png` 已检查并展示。
 - 已知边界：仅固定三战切片；桌面鼠标验证通过，手机／手柄／Web及真人趣味性待验。无新美术资产；不新增道具商店或LLM API。待统筹：新v3存档与代码资源契约，未修改全局总览。
+
+## 破解终端图形化
+
+2026-09-23；基线 `b3a14d8` 加本次界面工作树。已实装，接入视觉待用户评审：复用原生Control及既有主题，不新增位图资产。`scenes/trial/code_sockets.gd` 统一绘制HUD库存、配方已具备／缺失槽位、道具产出预览；`trial.gd` 用两列程序卡与道具卡组织终端，颜色配名称和符号，按钮仅「执行」「使用」。未修改战斗规则或存档。
+
+验证：Godot 4.7.2 Windows，图形运行 `res://scenes/trial/code_ui_check.tscn -- --graphics-capture`，27 checks / 0 failures，覆盖真实鼠标补给／转码／程序扣费、库存图示一致性、配方槽数、暂停与恢复，及1920×1080、2560×1440、1920×1200真实截图尺寸／浮层边界。`.godot/code-graphics-<宽>x<高>.png` 已逐张查看并在对话展示。已修复转换箭头被自动换行挤高选择器的问题。根证书错误仍为既有环境提示；手机和手柄待验。

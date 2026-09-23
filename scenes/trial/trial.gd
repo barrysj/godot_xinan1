@@ -3,6 +3,7 @@ const Catalog = preload("res://game/trial/trial_catalog.gd")
 const Model = preload("res://game/trial/trial_run.gd")
 const Simulation = preload("res://game/trial/code_trial_simulation.gd")
 const Codes = preload("res://game/trial/code_catalog.gd")
+const Sockets = preload("res://scenes/trial/code_sockets.gd")
 const Board = preload("res://scenes/trial/trial_board.gd")
 var run = Model.new()
 var sim = Simulation.new()
@@ -303,18 +304,20 @@ func _update_hud() -> void:
 	pause_button.disabled = sim.finished
 	for group in [bank_labels, console_labels]:
 		for kind in group:
-			var data: Dictionary = Codes.RULES.types[kind]
-			group[kind].text = "%s %s  %d / %d" % [data.symbol, data.name, sim.blocks[kind], Codes.RULES.cache_cap]
+			group[kind].configure(kind, sim.blocks[kind], Codes.RULES.cache_cap)
 	for id in program_controls:
 		var error: String = sim.program_error(id)
 		program_controls[id].button.disabled = not error.is_empty()
-		program_controls[id].state.text = "可以执行" if error.is_empty() else error
+		program_controls[id].state.text = "就绪" if error.is_empty() else error
+		for kind in program_controls[id].recipe:
+			program_controls[id].recipe[kind].configure(kind, mini(sim.blocks[kind], Codes.program(id).cost[kind]), Codes.program(id).cost[kind])
 	for id in item_controls:
 		var controls: Dictionary = item_controls[id]
 		var destination: String = Codes.RULES.types.keys()[controls.destination.selected]
 		var source: String = Codes.RULES.types.keys()[controls.source.selected] if controls.has("source") else ""
 		var error: String = sim.item_error(id, destination, source)
 		controls.button.disabled = not error.is_empty()
+		controls.preview.configure(destination, Codes.item(id).amount, Codes.item(id).amount, "生成 · " + Codes.RULES.types[destination].name)
 		controls.state.text = "剩余%d次 · %s" % [sim.items[id], error if not error.is_empty() else ("%s → %d" % [Codes.RULES.types[destination].name, sim.blocks[destination] + Codes.item(id).amount])]
 	if paused: _link_console_focus()
 	var summaries: Array = [[], []]
@@ -332,7 +335,7 @@ func _process(delta: float) -> void:
 		if end_delay <= 0.0: _finish()
 		return
 	if paused:
-		console.size = Vector2(1120, 560)
+		console.size = Vector2(1120, 700)
 		console.position = (get_viewport_rect().size - console.size) / 2
 		board.advance_presentation(0.0, presentation_alpha)
 		return
@@ -350,14 +353,32 @@ func _process(delta: float) -> void:
 
 func _code_row(parent: Node) -> Dictionary:
 	var row := _row(parent)
-	var labels := {}
+	var sockets := {}
 	for kind in Codes.RULES.types:
-		var data: Dictionary = Codes.RULES.types[kind]
-		var label := _label(row, data.symbol + " " + data.name, 22)
-		label.modulate = data.color
-		labels[kind] = label
-	return labels
+		var display := Sockets.new()
+		display.configure(kind, 0, Codes.RULES.cache_cap)
+		row.add_child(display)
+		sockets[kind] = display
+	return sockets
 
+func _code_card(parent: Node) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("172b3e")
+	style.border_color = Color("38556c")
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(8)
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	panel.add_theme_stylebox_override("panel", style)
+	parent.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	panel.add_child(box)
+	return box
 func _prepare_codes() -> void:
 	var row := _row(root_box)
 	for slot in range(2):
@@ -393,8 +414,8 @@ func _build_console() -> void:
 	console_shade.hide()
 	console = PanelContainer.new()
 	console.name = "CodeConsole"
-	console.custom_minimum_size = Vector2(1120, 560)
-	console.size = Vector2(1120, 560)
+	console.custom_minimum_size = Vector2(1120, 700)
+	console.size = Vector2(1120, 700)
 	console.z_index = 3999
 	var surface := StyleBoxFlat.new()
 	surface.bg_color = Color("101f30")
@@ -415,32 +436,47 @@ func _build_console() -> void:
 	_label(heading, "代码终端 · 战斗已暂停", 26)
 	_button(heading, "继续", _close_console)
 	console_labels = _code_row(box)
-	_label(box, "执行后共享3秒编译冷却；继续战斗后计时。道具可在此补齐代码。", 18)
+	_label(box, "实心代码已备齐 · 空槽仍需收集  /  程序共享3秒冷却", 17)
+	var programs := _row(box)
 	for id in run.programs:
 		var program = Codes.program(id)
-		var row := _row(box)
-		var button := _button(row, program.display_name, func(): _cast_code(id))
-		var column := VBoxContainer.new()
-		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(column)
-		_label(column, Codes.cost_text(program.cost) + " · " + program.description, 19)
-		var state := _label(column, "", 17)
-		program_controls[id] = {"button":button, "state":state}
-	_label(box, "道具槽 · 消耗次数跨战斗保留", 22)
-	_label(box, "代码补给：目标类型+3块。转码器：来源−2块，目标+2块；空间不足不会消耗。", 18)
+		var card := _code_card(programs)
+		var header := _row(card)
+		var symbols := {"disconnect":"⌁", "redirect":"⇄", "repair":"+", "takeover":"#"}
+		_label(header, symbols[id] + "  " + program.display_name, 26)
+		var button := _button(header, "执行", func(): _cast_code(id))
+		button.tooltip_text = program.description
+		var ingredients := _row(card)
+		var recipe := {}
+		for kind in program.cost:
+			var sockets := Sockets.new()
+			sockets.configure(kind, 0, program.cost[kind])
+			ingredients.add_child(sockets)
+			recipe[kind] = sockets
+		_label(card, program.description, 17)
+		var state := _label(card, "", 17)
+		program_controls[id] = {"button":button, "state":state, "recipe":recipe}
+	var items := _row(box)
 	for entry in Codes.RULES.items:
 		var id: String = entry.id
-		var row := _row(box)
-		var button := _button(row, entry.display_name, func(): _use_code_item(id))
+		var card := _code_card(items)
+		var header := _row(card)
+		_label(header, ("⊞  " if entry.effect == "generate" else "⇄  ") + entry.display_name, 22)
+		var button := _button(header, "使用", func(): _use_code_item(id))
+		button.tooltip_text = entry.description
+		var row := _row(card)
 		var controls := {"button":button}
 		if entry.effect == "convert":
 			controls.source = _type_picker(row)
-			_label(row, "→", 20).size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			var arrow := _label(row, "−2 →", 18)
+			arrow.autowrap_mode = TextServer.AUTOWRAP_OFF
+			arrow.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		controls.destination = _type_picker(row)
 		if entry.effect == "convert": controls.destination.select(1)
-		controls.state = _label(row, "", 18)
+		controls.preview = Sockets.new()
+		card.add_child(controls.preview)
+		controls.state = _label(card, "", 17)
 		item_controls[id] = controls
-
 func _type_picker(parent: Node) -> OptionButton:
 	var picker := OptionButton.new()
 	picker.custom_minimum_size = Vector2(150, 44)

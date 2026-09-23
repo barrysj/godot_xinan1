@@ -36,6 +36,22 @@ func _ready() -> void:
 	await get_tree().process_frame
 	expect(view.paused and view.sim.elapsed == elapsed and view.board.visual_time == visual, "console freezes simulation and visuals")
 	expect(view.get_viewport_rect().encloses(view.console.get_global_rect()), "console fits logical viewport")
+	for kind in Codes.RULES.types:
+		expect(view.console_labels[kind].count == view.sim.blocks[kind], "graphical bank matches simulation")
+	for id in view.program_controls:
+		for kind in view.program_controls[id].recipe:
+			expect(view.program_controls[id].recipe[kind].capacity == Codes.program(id).cost[kind], "recipe socket count matches configured cost")
+	if "--graphics-capture" in OS.get_cmdline_user_args():
+		for resolution in [Vector2i(1920,1080), Vector2i(2560,1440), Vector2i(1920,1200)]:
+			get_window().mode = Window.MODE_WINDOWED
+			get_window().size = resolution
+			await get_tree().create_timer(0.25).timeout
+			await get_tree().process_frame
+			await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			expect(view.get_viewport_rect().encloses(view.console.get_global_rect()), "graphical console fits " + str(resolution))
+			expect(get_viewport().get_texture().get_image().get_size() == resolution, "actual capture resolution")
+			get_viewport().get_texture().get_image().save_png("res://.godot/code-graphics-%dx%d.png" % [resolution.x,resolution.y])
 	var controls: Dictionary = view.item_controls.supply
 	controls.destination.select(Codes.RULES.types.keys().find("purple"))
 	controls.destination.item_selected.emit(controls.destination.selected)
