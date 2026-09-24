@@ -187,6 +187,28 @@ variants:
       generation_source_resolution: [1671, 941]
       native_4k: false
       runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_006:
+    stage: asset
+    version: "anomaly-006"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_sports_field/008
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_005
+      reference_variant: m1_chengdian_auditorium_commercial_street/asset_anomaly_007
+      review_scope: calibrated_structure_anchored_rift_family_extension
+      edit_scope: short_forked_dark_seam_preserve_location_and_existing_effects
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1671, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
 integration:
   status: not_integrated
   active_variant: null

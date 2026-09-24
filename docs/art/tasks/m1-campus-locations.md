@@ -1,6 +1,28 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：12张日常＋12张异常的3840×2160候选均已生成并登记。银桦＋清真食堂008的非实体异常类型与密度获负责人确认作为生产基准；其余11处已按此基准生成新版，西湖两处保留数字水面，图书馆窗侧提高密度。成电会堂＋商业街另有009建筑锚定裂隙精修试样待评。方向确认不等于具体版本资产获批；新候选仍待人工评审，未提升正式包或接入游戏，旧正式资产不变。
+状态：12张日常＋12张异常的3840×2160候选均已生成并登记。银桦＋清真食堂008作为异常类型与密度基准，会堂009短分叉暗影裂隙形态获负责人确认；其余10处已按会堂裂隙形态重制，西湖两处保留数字水面，图书馆窗侧提高密度。方向确认不等于各地点具体资产获批；新候选仍待人工评审，未提升正式包或接入游戏，旧正式资产不变。
+
+## 会堂009裂隙形态扩展至其他10处（2026-09-24）
+
+- 负责人认可会堂009更短、暗影更宽的裂隙形态，要求继续生成其他10处；这确认生产基准，不自动批准其他10张具体资产。银桦＋清真食堂008与会堂009本轮未改；10张新图均为 `unselected + pending`，不提升正式包或接入游戏。
+- 统一从各地点上一版异常图精确编辑，只参考会堂009的短分叉紫色亮边＋较宽暗紫黑错位阴影；裂隙贴着当地门柱、檐口、立面转角、原有假山或远景看台，保留青蓝平面板、短数据雨、贴地投影和墨蓝灰天空，不加实体碎块／圆环。
+- 西湖中心与西湖入口继续只参考既有双数字天鹅图的断续青蓝／品红水面碎光、数字波纹和弱倒影；不复制天鹅、建筑或天空，至少半幅水面保持自然深色。图书馆 Boss 区把更高密度放在左右窗翼及邻近立面，不恢复旗帜／旗杆，中央入口和广场保留可读性。
+
+| 地点 | 新待审版本 | 本轮裂隙落点 |
+| --- | --- | --- |
+| 南门 | [010](../../../design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png) | 左校门柱 |
+| 品学楼单区庭院 | [008](../../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png) | 单区楼梯塔／廊桥节点 |
+| 品学楼组团中庭 | [008](../../../design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png) | 中庭右侧楼翼与横向连廊节点 |
+| 学子食堂 | [008](../../../design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png) | 食堂上部转角／窗带 |
+| 学生活动中心 | [009](../../../design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png) | 弧形檐口 |
+| 西湖中心 | [008](../../../design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png) | 湖边廊亭檐口；保留数字水面 |
+| 基础实验大楼 | [008](../../../design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png) | 玻璃楼梯侧屋檐／窗带 |
+| 西湖入口 | [008](../../../design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png) | 原有假山表面；保留数字水面 |
+| 操场 | [008](../../../design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png) | 远景看台檐口 |
+| 图书馆正面 | [009](../../../design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png) | Boss区左右窗翼；无旗帜 |
+
+- [10张新增候选审图拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-ten-4k-review.jpg)、[12处当前异常候选审图拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-twelve-4k-review.jpg)；各版本 `generation.md` 保留原始生成源、完整提示词、参考角色及SHA-256。首次西湖中心裂隙误入树丛的中间图已舍弃，最终廊亭檐口稿才登记。
+- 逐图原始输出和整组缩图已目检；通用质量闸门为 `PASS_WITH_NOTES`：真实地点、构图和无实体异常要求均可辨，但部分铺地偏湿亮；远景操场裂隙与西湖廊亭裂隙在缩图上较细，图书馆局部密度显著高于普通地点，仍须负责人审美评审。10张原始输出为1671～1672×941，交付为3840×2160 RGB不透明PNG，经16:9中心微裁和高质量双三次重采样，非原生4K。技术验证不替代资产批准；未改变运行画面。
 
 ## 成电会堂＋商业街裂隙缩短与阴影加宽（2026-09-24）
 

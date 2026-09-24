@@ -350,5 +350,34 @@
     "west_lake_water_reference": "E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
     "library_window_side_density": "higher_than_normal_locations",
     "other_assets_and_runtime_unchanged": true
+  },
+  "structural_rift_family_extension": {
+    "date": "2026-09-24",
+    "calibration": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png",
+    "approval_scope": "shorter_rift_with_broader_dark_shadow_morphology_only",
+    "asset_approval": "pending",
+    "resolution": "3840x2160_bicubic_resample_not_native_4k",
+    "review_sheet_ten": "design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-ten-4k-review.jpg",
+    "review_sheet_twelve": "design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-twelve-4k-review.jpg",
+    "new_anomaly_images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png"
+    ],
+    "unchanged_anomaly_images": [
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png"
+    ],
+    "west_lake_water_reference": "E:/Documents/works/godot/_xinan1/assets/art/backgrounds/m1/_main/_menu/anomaly/library-two-digital-swans.png",
+    "west_lake_constraint": "retain_dark_lake_water_with_sparse_cyan_fragments_and_reflections_no_swans_copied",
+    "library_constraint": "higher_density_on_left_and_right_window_wings_no_flags_or_flagpoles",
+    "other_assets_and_runtime_unchanged": true
   }
 }
