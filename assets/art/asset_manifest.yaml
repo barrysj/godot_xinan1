@@ -1,5 +1,6 @@
 schema_version: 3
 objects:
+  m1_player_cast: manifests/m1_player_cast.yaml
   holo_cards:
     type: holo_card
     root: assets/art/holo_cards

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "character_id": "healer",
+  "version": "008",
+  "derived_from": "../007/m1_healer_rig_master_asset_007.png",
+  "draw_order": [
+    "body_without_head",
+    "head"
+  ],
+  "source_canvas": [1086, 1448],
+  "source_cut_y": 510,
+  "head_crop": {
+    "origin": [250, 35],
+    "size": [620, 505]
+  },
+  "head_pivot_source": [555, 510],
+  "normalized_canvas": [384, 384],
+  "normalized_cut_y": 122,
+  "head_pivot_normalized": [193, 122],
+  "face_reference_rect_normalized": [158, 65, 78, 52],
+  "replacement_mode": "replace_complete_stylized_head",
+  "notes": [
+    "The face rectangle is a composition guide, not a clipping mask.",
+    "Keep the replacement head transparent and align its neck to the head pivot.",
+    "A real-person photo must be transformed into a matching stylized head and separately approved; do not paste a raw photo into the battle unit."
+  ]
+}

@@ -8,6 +8,13 @@
 
 ## 骨骼＋序列帧通用生产与预览
 
+### M1我方概念分离交付／动画停止（2026-09-25）
+
+- 交付基线main `28c8d2f`，从`art/m1-player-cast`按人工批准分离002武器方向、006四人服装概念与007／008静态种子；保留7个批准登记项、29个唯一登记文件及原有PNG导入设置。任务与路径见[我方角色样板](../art/tasks/m1-player-cast.md)和`assets/art/manifests/m1_player_cast.yaml`。
+- 用户限定的最后两轮结束：022太抽象，023带入设定角色但可见网格翻折，质量未通过。原动画试验截至`8864a77`留在美术分支；本交付无009–023目录、动画资源、播放代码或正式人物引用，不把静态批准升级为动态／真人换脸批准。
+- 验证：29文件逐一SHA256相等；`py -3 -m unittest discover -s tools/art/asset_manager/tests -q`在当前main基线33项通过；真实Manifest扫描30对象411文件、errors=[]、missing=0、mismatches=0。暂存差异检查发现旧generation.md的Markdown行末双空格／末尾空行；为保持来源文件哈希不改动，使用`git -c core.whitespace=-blank-at-eol,-blank-at-eof diff --cached --check`检查其余空白问题。与美术实验分支34项测试数量不同，未引入其额外工具改动。
+- **待统筹**：概念可供后续美术任务复用，人物动画停止；新任务需先解决遮挡绘制、蒙皮拓扑与动作设计。没有提升正式运行资产或改变游戏画面，本次仅静态交付，不重复截图；不改高层总览／Roadmap，不自动推送远程。
+
 制作契约、动作命名、运行包结构、显式导出与提升规则统一维护于[战斗动画](../battle-animation.md#hybrid-animation-package)。本档案只记录实现、验证及已知边界；通用工具与归档入口见[工具说明](../../tools/art/README.md)。
 
 ## 验证结果

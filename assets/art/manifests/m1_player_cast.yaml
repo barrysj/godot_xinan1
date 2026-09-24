@@ -1,0 +1,194 @@
+schema_version: 3
+object:
+  id: "m1_player_cast"
+  display_name: "M1我方角色统一样板"
+  type: "character"
+  subtype: "ally_family"
+variants:
+  concept_002:
+    stage: "concept"
+    version: "002"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-20"
+      decision: "approved_virtual_weapon_direction_continue"
+      quote: "可以的，请你继续推进"
+    root: "design/concepts/m1-player-cast/m1_player_cast/002"
+    files:
+      identity_reference: "m1_guard_identity_reference_002.png"
+      sword_concept: "m1_guard_sword_concept_002.png"
+      firewall_shield_concept: "m1_guard_firewall_shield_concept_002.png"
+      loadout_concept: "m1_guard_loadout_concept_002.png"
+      generation: "generation.md"
+    metadata:
+      usage: ["concept_review", "family_design_master", "battle_loadout_reference", "portrait_reference"]
+      style_layer: "battle"
+      role: "guard"
+      character_id: "guard"
+      concept_rule: "ordinary_student_with_exaggerated_virtual_weapons"
+      weapon_family: ["neon_one_handed_sword", "translucent_firewall_shield"]
+  archer_pistol_short_sleeve_concept_006:
+    stage: "concept"
+    version: "006"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-21"
+      decision: "approved_for_asset_production"
+      quote: "这一轮的概念不错，接受。可以进行资产生成了"
+    root: "design/concepts/m1-player-cast/m1_player_cast/006"
+    files:
+      concept: "m1_archer_short_sleeve_concept_006.png"
+      generation: "generation.md"
+    metadata:
+      usage: ["concept_review", "family_design_candidate", "costume_reference", "battle_weapon_reference"]
+      style_layer: "battle"
+      role: "archer"
+      character_id: "archer"
+      outfit: "single_short_sleeve_tshirt"
+      weapon: "packet_tracing_virtual_pistol"
+      accent: "cyan_acid_yellow"
+  healer_split_keyboard_long_sleeve_concept_006:
+    stage: "concept"
+    version: "006"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-21"
+      decision: "approved_for_asset_production"
+      quote: "这一轮的概念不错，接受。可以进行资产生成了"
+    root: "design/concepts/m1-player-cast/m1_player_cast/006"
+    files:
+      concept: "m1_healer_long_sleeve_concept_006.png"
+      generation: "generation.md"
+    metadata:
+      usage: ["concept_review", "family_design_candidate", "costume_reference", "battle_tool_reference"]
+      style_layer: "battle"
+      role: "healer"
+      character_id: "healer"
+      outfit: "single_long_sleeve_crewneck"
+      weapon: "dual_split_virtual_keyboards"
+      accent: "green_mint_warm_yellow"
+  striker_hoodie_concept_006:
+    stage: "concept"
+    version: "006"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-21"
+      decision: "approved_for_asset_production"
+      quote: "这一轮的概念不错，接受。可以进行资产生成了"
+    root: "design/concepts/m1-player-cast/m1_player_cast/006"
+    files:
+      concept: "m1_striker_hoodie_concept_006.png"
+      generation: "generation.md"
+    metadata:
+      usage: ["concept_review", "family_design_candidate", "costume_reference", "battle_weapon_reference"]
+      style_layer: "battle"
+      role: "striker"
+      character_id: "striker"
+      outfit: "charcoal_pullover_hoodie"
+      weapon: "paired_hotfix_blades"
+      accent: "magenta_cyan"
+  inventor_workshirt_concept_006:
+    stage: "concept"
+    version: "006"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-21"
+      decision: "approved_for_asset_production"
+      quote: "这一轮的概念不错，接受。可以进行资产生成了"
+    root: "design/concepts/m1-player-cast/m1_player_cast/006"
+    files:
+      concept: "m1_inventor_workshirt_concept_006.png"
+      generation: "generation.md"
+    metadata:
+      usage: ["concept_review", "family_design_candidate", "costume_reference", "battle_weapon_reference"]
+      style_layer: "battle"
+      role: "inventor"
+      character_id: "inventor"
+      outfit: "closed_short_sleeve_utility_shirt"
+      weapon: "modular_circuit_cannon"
+      accent: "cyan_amber"
+  healer_animation_seed_asset_007:
+    stage: "asset"
+    version: "007"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-22"
+      decision: "approved_for_animation_prototype"
+      quote: "007/008 接受，开始应援者最小动画原型。"
+    root: "design/concepts/m1-player-cast/m1_player_cast/007"
+    files:
+      battle_composite_source: "m1_healer_battle_composite_asset_007.png"
+      rig_master_source: "m1_healer_rig_master_asset_007.png"
+      split_keyboards_source: "m1_healer_split_keyboards_asset_007.png"
+      portrait_source: "m1_healer_portrait_asset_007.png"
+      battle_composite_normalized: "processed/m1_healer_battle_composite_384.png"
+      rig_master_normalized: "processed/m1_healer_rig_master_384.png"
+      portrait_normalized: "processed/m1_healer_portrait_140.png"
+      generation: "generation.md"
+      contact_preview: "review/codex-workflow/m1_healer_seed_007_contact.png"
+      native_scale_preview: "review/codex-workflow/m1_healer_seed_007_128_compare.png"
+    metadata:
+      transparent: true
+      usage: ["asset_review", "animation_seed", "battle_static_candidate", "portrait_candidate", "tool_part_reference"]
+      style_layer: "battle"
+      role: "healer"
+      character_id: "healer"
+      source_concept: "healer_split_keyboard_long_sleeve_concept_006"
+      body_proportion: "battle_4_to_4_5_head_candidate"
+      normalized_canvas: [384, 384]
+      battle_display_size: [128, 128]
+      battle_anchor: [0.5, 0.875]
+      foot_point: [192, 336]
+      portrait_size: [140, 140]
+      tool: "dual_split_virtual_keyboards"
+      rig_state: "flat_master_not_layered"
+  healer_head_socket_asset_008:
+    stage: "asset"
+    version: "008"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-22"
+      decision: "approved_for_animation_prototype"
+      quote: "007/008 接受，开始应援者最小动画原型。"
+    root: "design/concepts/m1-player-cast/m1_player_cast/008"
+    files:
+      head_complete_source: "parts/m1_healer_head_complete_source_008.png"
+      head_on_source_canvas: "parts/m1_healer_head_on_source_canvas_008.png"
+      body_without_head_source: "parts/m1_healer_body_without_head_source_008.png"
+      head_on_normalized_canvas: "parts/m1_healer_head_on_canvas_384_008.png"
+      body_without_head_normalized: "parts/m1_healer_body_without_head_384_008.png"
+      socket_metadata: "head_socket.json"
+      generation: "generation.md"
+      recomposed_review: "review/codex-workflow/m1_healer_head_socket_recomposed_384_008.png"
+      contact_preview: "review/codex-workflow/m1_healer_head_socket_008_contact.png"
+    metadata:
+      transparent: true
+      usage: ["asset_review", "animation_seed", "replaceable_head_interface", "identity_reference_slot"]
+      style_layer: "battle"
+      role: "healer"
+      character_id: "healer"
+      derived_from: "healer_animation_seed_asset_007"
+      source_canvas: [1086, 1448]
+      source_cut_y: 510
+      normalized_canvas: [384, 384]
+      normalized_cut_y: 122
+      head_pivot: [193, 122]
+      draw_order: ["body_without_head", "head"]
+      replacement_mode: "complete_stylized_head"
+integration:
+  status: "not_integrated"
+  evidence: "docs/art/tasks/m1-player-cast.md"
