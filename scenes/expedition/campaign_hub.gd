@@ -422,29 +422,6 @@ func _gui_input(event: InputEvent) -> void:
 	super._gui_input(event)
 	if campaign_enabled and screen == "base" and not campaign_panel.visible: _home()
 
-func _create_battle_presentations() -> void:
-	if campaign_mode.is_empty(): super._create_battle_presentations()
-
-func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
-	if campaign_mode.is_empty():
-		super._pawn(u,at,factor)
-		return
-	# Reuse the existing identity and idle frame without playing an animation.
-	var texture: Texture2D = u.portrait
-	var dimensions = Vector2(16,16) * factor
-	var anchor = Vector2(0.5,0.875)
-	var animation = u.battle_animation
-	if animation != null and animation.frames != null and animation.frames.has_animation("idle") and animation.frames.get_frame_count("idle") > 0:
-		texture = animation.frames.get_frame_texture("idle",0)
-		dimensions = animation.display_size * factor / 4.0
-		anchor = animation.anchor
-	var tint = Color.WHITE if u.hp > 0 else Color(0.6,0.6,0.6,0.35)
-	draw_texture_rect(texture,Rect2(at-dimensions*anchor,dimensions),false,tint)
-	var side_color = Color("4AAFD0") if u.side == 0 else Color("DF7468")
-	draw_line(at+Vector2(-26,8),at+Vector2(26,8),side_color,4)
-	if u.shield > 0 and u.hp > 0: draw_arc(at-Vector2(0,24),38,PI,TAU,24,Color("8dd7e7"),3)
-	if u.side == 0 and u.role == equipment: _tile(dungeon,8,10,at+Vector2(24,-3),1.3)
-
 func _draw_report() -> void:
 	super._draw_report()
 	if campaign_mode.is_empty(): return

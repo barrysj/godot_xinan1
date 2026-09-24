@@ -24,6 +24,7 @@
 - `expedition.tscn -- --campaign-flow-check`：`CAMPAIGN_FLOW checks=124 failures=0`；`expedition.tscn -- --run-smoke`：原短局三路线、奖励、恢复及暂停流程 PASS。
 - `game/combat/code_rules_check.tscn`：`CODE_CHECK checks=47 failures=0`；`synergy_check.tscn`：`SYNERGY_CHECK checks=69 failures=0`；`game/content/combat_content_check.tscn`：`COMBAT_CONTENT_CHECK checks=40 failures=0`。共享校验只覆盖当前主线定义；旧三战校验用例已移除。
 - 原 M1 区域流程、随机路线、暂停、部署、内容和图鉴入口沿用 E32 回归，不代表本次重新证明手机、手柄或导出。
+- 2026-09-24，基线 `d8efeb2` 加当前工作树：战役模式恢复粉笔精灵混合动画，主线原场景直接创建并驱动表现场景；`campaign_animation_check.tscn` 7/0、图形截图 8/0，校园流程 124/0、短局 smoke 和代码检查 35/0。动画资源未修改，视觉接入评审仍见 ART-02。
 
 ## 当前边界
 
