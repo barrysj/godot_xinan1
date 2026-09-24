@@ -1,6 +1,6 @@
 # 战场视觉改造候选
 
-状态：概念待评审，三套均未批准、未接入。
+状态：B 概念已由用户选择并授权使用；原生绘制接入已完成，实机效果待评审。A/C 未选用。
 
 ## 范围
 
@@ -11,7 +11,7 @@
 | 版本 | 方案 | 取舍 | 状态 |
 | --- | --- | --- | --- |
 | concept_001 / A | 校园地面 | 自然场景优先，细环部署位，边界轻，战术辨识较弱 | 待评审 |
-| concept_002 / B | 战术阵位 | 平面圆角边界、切角矩形部署位，站位最清晰，图形感较强 | 待评审 |
+| concept_002 / B | 战术阵位 | 平面圆角边界、切角矩形部署位，站位最清晰，图形感较强 | 已批准方向 |
 | concept_003 / C | 数字演算场 | 节点式部署位与边缘代码纹样，专业主题较强，需控制装饰强度 | 待评审 |
 
 Codex 推荐 B 的阵位清晰度结合 A 的克制地面；C 纹样适合作为破解时的短时效果。此建议不是人工选择。
@@ -28,4 +28,4 @@ Codex 推荐 B 的阵位清晰度结合 A 的克制地面；C 纹样适合作为
 
 使用 image-quality-check 自检，修复初稿的扇形射程、阵营错位和漏角色。最终三图可读、各含整备与战斗两状态；四名队员与三名敌人的身份和数量可辨识。结论 PASS_WITH_NOTES，仅适用于战场视觉方向比较；小字、编号和精确站位不作为验收。
 
-参考截图保存在 design/concepts/battlefield-redesign/review/codex-workflow/mainline-reference.png；完整提示词随各候选保存。对象登记为 battlefield_redesign，均 unselected / pending / not_integrated。等待用户对 A/B/C 或组合方向给出意见。
+参考截图保存在 design/concepts/battlefield-redesign/review/codex-workflow/mainline-reference.png；完整提示词随各候选保存。2026-09-25 用户决定：“就用B吧，破解特效需要非常华丽”。B 的原生绘制实现不将生成稿作为贴图，也不涉及角色资产生产；实机记录见 UI-02。实际效果截图 implemented-prepare.png、implemented-range.png 已展示，待用户评审。

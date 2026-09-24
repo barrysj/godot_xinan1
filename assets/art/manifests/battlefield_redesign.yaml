@@ -19,8 +19,13 @@ variants:
   concept_002:
     stage: concept
     version: "002"
-    selection: unselected
-    approval: pending
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/battlefield-redesign.md
+      date: 2026-09-25
+      decision: approved
+      quote: "就用B吧，破解特效需要非常华丽"
     root: design/concepts/battlefield-redesign/battlefield/002
     files:
       concept: concept-b.png
