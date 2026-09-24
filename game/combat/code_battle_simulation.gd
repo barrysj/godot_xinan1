@@ -98,10 +98,12 @@ func cast_program(id: String) -> bool:
 	var program = Codes.program(id)
 	for kind in program.cost: blocks[kind] -= program.cost[kind]
 	var actor: Dictionary = _living(0)[0]
+	var affected_ids: Array[int] = []
 	match program.effect:
 		"disconnect":
 			for foe in _living(1):
 				var amount := remove_shields(foe, "maintenance")
+				if amount > 0: affected_ids.append(foe.id)
 				if amount > 0: _emit("shield_removed", actor, foe, -1, {"actual":amount, "shield":foe.shield})
 			pending_pulse = "disconnect"
 		"redirect": pending_pulse = "redirect"
@@ -112,13 +114,14 @@ func cast_program(id: String) -> bool:
 				var target := _target({}, candidates, "low")
 				var actual := minf(target.max_hp * program.heal_ratio, target.max_hp - target.hp)
 				target.hp += actual
+				if actual > 0: affected_ids.append(target.id)
 				_emit("impact", actor, target, -1, {"effect":"heal", "actual":actual, "special":true, "hp":target.hp, "shield":target.shield})
 				candidates.erase(target)
 	casts += 1
 	ready_at = elapsed + Codes.RULES.shared_cooldown
 	_dispatch("hack_complete")
 	_note("执行破解 · " + program.display_name)
-	_emit("hack_completed", actor, actor, -1, {"choice":program.effect, "label":program.display_name + "已执行"})
+	_emit("hack_completed", actor, actor, -1, {"choice":program.effect, "label":program.display_name + "已执行", "affected_ids":affected_ids})
 	return true
 
 func item_error(id: String, destination: String, source: String = "") -> String:

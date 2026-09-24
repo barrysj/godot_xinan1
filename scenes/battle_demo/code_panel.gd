@@ -231,6 +231,11 @@ func _build_console() -> void:
 	var heading := _row(box)
 	_label(heading, "代码终端 · 战斗已暂停", 26)
 	_button(heading, "继续", _close_console)
+	var motion := CheckButton.new()
+	motion.text = "简化特效"
+	motion.button_pressed = is_instance_valid(code_fx) and code_fx.reduced_motion
+	motion.toggled.connect(func(value: bool): code_fx.reduced_motion = value)
+	heading.add_child(motion)
 	console_labels = _code_row(box)
 	_label(box, "实心代码已备齐 · 空槽仍需收集  /  程序共享3秒冷却", 17)
 	var programs := _row(box)
@@ -299,6 +304,7 @@ func _cast_code(id: String) -> void:
 	if not running or not paused or not sim.cast_program(id): return
 	_consume_pending()
 	_update_hud()
+	_close_console()
 
 func _use_code_item(id: String) -> void:
 	if not running or not paused: return

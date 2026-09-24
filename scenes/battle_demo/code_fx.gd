@@ -2,6 +2,7 @@ extends Control
 ## Visual-only particles. Resource changes are already resolved by the simulation.
 const Codes = preload("res://game/combat/code_catalog.gd")
 const FONT = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
+const Burst = preload("res://scenes/battle_demo/hack_burst.gd")
 var host
 var particles: Array[Dictionary] = []
 var reduced_motion := false
@@ -25,9 +26,7 @@ func consume(event: Dictionary) -> void:
 			_append({"kind":"drop", "type":type, "from":from, "target":target, "offset":Vector2((index-1)*24,0), "age":-index*0.07, "duration":1.15, "ui":interface_event})
 	elif kind == "hack_completed":
 		var id: String = event.choice
-		if not host.program_controls.has(id): return
-		var button: Control = host.program_controls[id].button
-		_append({"kind":"program", "id":id, "from":button.get_global_rect().get_center(), "age":0.0, "duration":1.0, "ui":true})
+		_append({"kind":"program", "id":id, "targets":event.get("affected_ids",[]).duplicate(), "age":0.0, "duration":2.2, "ui":false})
 
 func _append(particle: Dictionary) -> void:
 	if particles.size() >= 64: particles.pop_front()
@@ -78,29 +77,4 @@ func _draw_drop(p: Dictionary, t: float) -> void:
 		draw_string(FONT,destination+Vector2(20,-12),"+1",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color(color,fade))
 
 func _draw_program(p: Dictionary, t: float) -> void:
-	var palette := {"disconnect":Color("ff6e66"),"redirect":Color("59b3ff"),"repair":Color("66e6a3"),"takeover":Color("c287ff")}
-	var color: Color = palette.get(p.id,Color.WHITE)
-	color.a = minf(1,(1-t)*3)
-	var at: Vector2 = p.from
-	var radius: float = 28 + t*100 if not reduced_motion else 40
-	if t < 0.35:
-		for i in range(6):
-			var q: Vector2 = at + Vector2.from_angle(i*TAU/6)*(90*(1-t/0.35)+25)
-			draw_rect(Rect2(q-Vector2(4,4),Vector2(8,8)),color)
-	draw_arc(at,radius,0,TAU,48,color,3,true)
-	match p.id:
-		"disconnect":
-			for side in [-1,1]:
-				draw_line(at+Vector2(side*(10+t*20),-18),at+Vector2(side*(32+t*20),18),color,5,true)
-		"redirect":
-			for side in [-1,1]:
-				var q := at+Vector2(0,side*12)
-				draw_line(q-Vector2(28,0),q+Vector2(28,0),color,4,true)
-				draw_line(q+Vector2(side*28,0),q+Vector2(side*15,-side*10),color,4,true)
-		"repair":
-			draw_line(at-Vector2(23,0),at+Vector2(23,0),color,7,true)
-			draw_line(at-Vector2(0,23),at+Vector2(0,23),color,7,true)
-		"takeover":
-			var points := PackedVector2Array([at+Vector2(-24,-25),at+Vector2(24,-25),at+Vector2(24,9),at+Vector2(0,32),at+Vector2(-24,9),at+Vector2(-24,-25)])
-			draw_polyline(points,color,4,true)
-	draw_string(FONT,at+Vector2(-85,60),"执行成功",HORIZONTAL_ALIGNMENT_CENTER,170,22,color)
+	Burst.draw(self,host.game,p,t,reduced_motion)

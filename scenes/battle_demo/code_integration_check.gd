@@ -93,6 +93,7 @@ func _ready() -> void:
 	await click(conversion.button)
 	await click(panel.program_controls.takeover.button)
 	verify(game.simulation.system_taken and game.simulation.casts == 1, "real mouse conversion and takeover execute in main battle")
+	verify(not panel.paused and not panel.console.visible,"successful program returns to the battle for its visual feedback")
 	var saved: Dictionary = game.run.to_dict()
 	var restored = game.RunModel.new()
 	verify(restored.restore(saved) and restored.code_programs == game.run.code_programs and restored.combat_rewards.size() == 6, "schema7 restores programs and combat rewards")
@@ -117,6 +118,7 @@ func _ready() -> void:
 	verify(journey_copy.restore(journey.snapshot()) and journey_copy.data.screen == "reward_owner", "campaign owner selection resumes from saved checkpoint")
 	if "--capture" in OS.get_cmdline_user_args():
 		get_window().mode = Window.MODE_WINDOWED
+		panel._open_console()
 		var capture_size := Vector2i(1920,1080)
 		for arg in OS.get_cmdline_user_args():
 			if arg.begins_with("--size="):

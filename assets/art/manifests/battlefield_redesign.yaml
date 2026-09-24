@@ -47,3 +47,4 @@ variants:
       note: "生成式概念示意，非实机截图；角色不在设计范围内"
 integration:
   status: not_integrated
+  evidence: "候选 PNG 未作为资产接入；B 的原生绘制已实现于 scenes/battle_demo/battle_floor.gd，实机效果待评审，见 docs/art/tasks/battlefield-redesign.md。"
