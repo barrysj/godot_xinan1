@@ -34,15 +34,15 @@ variants:
   asset_daily_001:
     stage: asset
     version: "daily-001"
-    selection: selected
+    selection: unselected
     approval: approved
     approval_evidence:
       source: docs/art/tasks/m1-campus-locations.md
       date: 2026-09-21
       decision: user_authorized_promotion_of_approved_concept
-    root: assets/art/backgrounds/m1_campus_locations/library_front
+    root: design/concepts/m1-campus-locations/m1_library_front/001
     files:
-      daily: daily.png
+      daily: concept.png
     metadata:
       asset_type: campaign_environment_background
       resolution: [1672, 941]
@@ -50,6 +50,7 @@ variants:
       state: daily
       source_variant: concept_001
       promotion_mode: exact_copy
+      superseded_by: asset_daily_003
       usage: [campaign_library_front]
   asset_anomaly_001:
     stage: asset
@@ -104,7 +105,11 @@ variants:
     stage: asset
     version: "daily-002"
     selection: unselected
-    approval: pending
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_as_daily_4k_source_for_unified_promotion
     root: design/concepts/m1-campus-locations/m1_library_front/004
     files:
       daily: daily.png
@@ -219,7 +224,11 @@ variants:
     stage: asset
     version: "anomaly-007"
     selection: unselected
-    approval: pending
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_as_anomaly_4k_source_for_unified_promotion
     root: design/concepts/m1-campus-locations/m1_library_front/009
     files:
       anomaly: anomaly.png
@@ -235,6 +244,52 @@ variants:
       edit_scope: left_and_right_window_wing_boss_rifts
       delivery_resolution_mode: high_quality_bicubic_resample
       generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_daily_003:
+    stage: asset
+    version: "m1-campus-daily-4k-v1"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_and_promoted_as_unified_daily_4k_release
+    root: assets/art/backgrounds/m1_campus_locations/library_front
+    files:
+      daily: daily.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [3840, 2160]
+      transparent: false
+      state: daily
+      source_variant: asset_daily_002
+      release_version: m1-campus-daily-4k-v1
+      promotion_mode: exact_copy
+      delivery_resolution_mode: high_quality_bicubic_resample
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_009:
+    stage: asset
+    version: "m1-campus-anomaly-4k-v1"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_and_promoted_as_unified_anomaly_4k_release
+    root: assets/art/backgrounds/m1_campus_locations/library_front
+    files:
+      anomaly: anomaly.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_007
+      release_version: m1-campus-anomaly-4k-v1
+      promotion_mode: exact_copy
+      delivery_resolution_mode: high_quality_bicubic_resample
       native_4k: false
       runtime_mapping_status: pending_runtime_location_binding
 integration:

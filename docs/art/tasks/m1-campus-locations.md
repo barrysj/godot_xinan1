@@ -1,6 +1,30 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：12张日常＋12张异常的3840×2160候选均已生成并登记。银桦＋清真食堂008作为异常类型与密度基准，会堂009短分叉暗影裂隙形态获负责人确认；其余10处已按会堂裂隙形态重制，西湖两处保留数字水面，图书馆窗侧提高密度。方向确认不等于各地点具体资产获批；新候选仍待人工评审，未提升正式包或接入游戏，旧正式资产不变。
++状态：负责人于2026-09-25批准当前12张日常＋12张异常候选并要求统一版本，已逐字节提升为两组正式4K背景。正式日常共用 `asset_daily_003 / m1-campus-daily-4k-v1`，正式异常共用 `asset_anomaly_009 / m1-campus-anomaly-4k-v1`；每处试稿编号保留历史，不视作不同正式版本。正式资产尚未接入Godot，接入效果未验收。
+
+## 24张背景资产批准与统一版本提升（2026-09-25）
+
+- 负责人决定：“可以了，都提升为正式资产，注意他们应该属于同一个版本（正常和异常可以分为两个版本）”。本次批准绑定下表各地点当时的最新具体候选；各图SHA-256、正式路径与逐字节拷贝关系见[提升审计清单](../../../design/concepts/m1-campus-locations/review/codex-workflow/campus-formal-promotion-2026-09-25.json)。
+- 12处正式日常统一为 `asset_daily_003`（`m1-campus-daily-4k-v1`），12处正式异常统一为 `asset_anomaly_009`（`m1-campus-anomaly-4k-v1`）。地点专属候选ID及目录编号仅用于追溯生成历程，不再作为这两组正式发布的版本号；不为每张图另开发布版本。
+- 正式文件稳定落在 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png` 与同目录 `anomaly.png`，只存干净运行PNG。旧低分辨率日常正式稿的批准历史仍保留，原图与旧正式包逐字节一致，Manifest 改指对应概念源并标为已被日常4K版替代；没有把旧稿错误记为拒绝。候选原图、提示词和审图材料继续留在 `design/concepts/`。
+
+| 地点对象 | 批准的日常源 | 批准的异常源 |
+| --- | --- | --- |
+| `m1_campus_locations` | [daily.png](../../../design/concepts/m1-campus-locations/m1_campus_locations/006/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png) |
+| `m1_pinxue_courtyard` | [daily.png](../../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png) |
+| `m1_pinxue_atrium` | [daily.png](../../../design/concepts/m1-campus-locations/m1_pinxue_atrium/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png) |
+| `m1_xuezi_cafeteria` | [daily.png](../../../design/concepts/m1-campus-locations/m1_xuezi_cafeteria/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png) |
+| `m1_student_activity_center` | [daily.png](../../../design/concepts/m1-campus-locations/m1_student_activity_center/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png) |
+| `m1_west_lake_center` | [daily.png](../../../design/concepts/m1-campus-locations/m1_west_lake_center/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png) |
+| `m1_chengdian_auditorium_commercial_street` | [daily.png](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png) |
+| `m1_yinhua_halal_cafeterias` | [daily.png](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png) |
+| `m1_basic_laboratory_building` | [daily.png](../../../design/concepts/m1-campus-locations/m1_basic_laboratory_building/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png) |
+| `m1_west_lake_entrance` | [daily.png](../../../design/concepts/m1-campus-locations/m1_west_lake_entrance/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png) |
+| `m1_sports_field` | [daily.png](../../../design/concepts/m1-campus-locations/m1_sports_field/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png) |
+| `m1_library_front` | [daily.png](../../../design/concepts/m1-campus-locations/m1_library_front/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png) |
+
+- 两组正式图均为3840×2160、RGB不透明PNG，由约1671～1672×941生成源高质量双三次重采样，**不是原生4K生成**。本次仅资产批准与文件提升，不等于运行时地点映射或Godot接入效果批准；12处对象均保持 `not_integrated`，旧步道／篮球场候选不在本次范围。
+- [24张正式文件成对总览](../../../design/concepts/m1-campus-locations/review/codex-workflow/formal-24-4k-contact-sheet.jpg)由正式目录实际PNG制作，按每处“日常／异常”并排，已逐图检查身份、顺序与状态未串位。
 
 ## 会堂009裂隙形态扩展至其他10处（2026-09-24）
 
@@ -114,7 +138,7 @@
 
 ## 既有版本与方案（截至2026-09-21，现行修订见上节）
 
-- 当前正式资产：十二处日常背景已按批准概念逐字节提升到 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png`。首轮异常态（南门 `004`、其余地点 `002`）因全景赛博化与异常覆盖过强，登记为 `asset_anomaly_001 / unselected + rejected` 并保留作反例。收敛版异常态为南门 `005`、其余地点 `003`，登记为 `asset_anomaly_002 / unselected + pending`，均为 3840×2160 候选，尚未提升到正式运行目录。
+- 当时正式资产（2026-09-21）：十二处日常背景曾按批准概念逐字节提升到 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png`；该稳定路径现已更新为2026-09-25批准的4K日常版。首轮异常态（南门 `004`、其余地点 `002`）因全景赛博化与异常覆盖过强，登记为 `asset_anomaly_001 / unselected + rejected` 并保留作反例。收敛版异常态为南门 `005`、其余地点 `003`，当时是3840×2160待评候选，并非本次获批异常源。
 - 当前概念基准：`concept_003`；[南门远景修订概念](../../design/concepts/m1-campus-locations/m1_campus_locations/003/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_locations/003/generation.md)。原始 `concept_001`、`concept_002` 保留用于回溯与对比。
 - 当前已确认部分与后续待决事项：负责人确认南门概念可以，`concept_003` 作为已选概念基准；其远景主楼通过缩小门窗、降低细节和空气透视表达距离，南门近景结构、右上补全及四个热点锚点保持不变。十二张日常态已获得正式资产提升授权；首轮异常态已因“过于夸张”被否决。收敛版除图书馆外以保留 75%–85% 日常画面、单一局部异常为目标，图书馆保留全组最高但局部化的异常密度；这些新版仍需逐张或整批确认，且任何资产批准均不等同于 Godot 接入授权。
 - 新增地点候选：`m1_campus_walk/concept_001`；[校园湖畔步道概念](../../design/concepts/m1-campus-locations/m1_campus_walk/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_walk/001/generation.md)。该候选使用校园平面图的大关系，不宣称具体现实步道身份，状态为 `unselected + pending`。
@@ -123,7 +147,7 @@
 - 已批准明确地点概念：`m1_pinxue_atrium/concept_001`；[品学楼组团中庭概念](../../design/concepts/m1-campus-locations/m1_pinxue_atrium/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_pinxue_atrium/001/generation.md)。该版本基于用户提供的中庭实景、校园平面图和已批准日常方向，状态为 `selected + approved`，运行时地点绑定待确认。
 - 已批准九处明确实景概念：`m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field`、`m1_library_front` 的 `concept_001`。每处均使用对应用户实景作为身份参考、南门 `concept_003` 作为画风参考；全部为 `selected + approved`，运行时地点绑定待确认，图书馆版本额外记录 `remove_flags_and_flagpoles`。
 - 复用的批准方向／资产及原评审记录：沿用 v0.3 清爽理工校园 × 轻数字美术 × 局部赛博强化方向，以及已批准图书馆环境的日常层渲染纪律；不复制图书馆几何，不修改图书馆任务。
-- 技术依据：已批准日常资产为 1672×941、不透明 RGB PNG；收敛版异常候选由 1672×941 生成源以高质量双三次插值交付为 3840×2160、24bpp RGB、不透明 PNG，属于重采样 4K 而非原生 4K。日常状态使用 `data/visual/colors.json` 的日常层；间距与安全区按 `data/visual/spacing.json` 的 4px 倍数原则在后续原生 UI 接入中处理。本轮不生成 Godot 资源、不改运行时代码。
+- 当时技术依据（2026-09-21）：旧正式日常资产为 1672×941、不透明 RGB PNG；收敛版异常候选由 1672×941 生成源以高质量双三次插值交付为 3840×2160、24bpp RGB、不透明 PNG，属于重采样 4K 而非原生 4K。日常状态使用 `data/visual/colors.json` 的日常层；间距与安全区按 `data/visual/spacing.json` 的 4px 倍数原则在后续原生 UI 接入中处理。当轮未生成 Godot 资源或修改运行时代码。
 - 接入要求：未来背景不烘焙文字、按钮、侧栏、热点图标或路线线条；需在 1920×1080、2560×1440、1920×1200 三种桌面视口验证四角与底部操作区不压关键建筑。
 
 ## 阶段评审
@@ -146,10 +170,12 @@
 | 概念 | `m1_west_lake_entrance/concept_001/concept.png` · `A7B3AF56903EA047EEDCF7C4A271FD4EADCE32A4FB684D72707514DF1410BC7B` | 已批准 | 西湖入口；前广场、湖面与右侧假山喷泉通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 概念 | `m1_sports_field/concept_001/concept.png` · `7C09249556773ED8DDA0C390E14B3CDDABE274BCE3958CDE18AC4D0E67688A2E` | 已批准 | 操场；球场尺度、球门、树列与远处拱形看台通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 概念 | `m1_library_front/concept_001/concept.png` · `9A1149B2E7071D13AC43F0BC6452085AA23F9C97E76EBF04DB5908C2D09D2C1C` | 已批准 | 图书馆正面；旗帜与旗杆移除、正立面对称、玻璃中轴与前广场通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
-| 资产 | 十二处 `asset_daily_001`；对应 `assets/art/backgrounds/m1_campus_locations/*/daily.png` | 已批准并提升 | 完全复用已批准概念像素，不重绘；候选与正式文件 SHA-256 逐项一致。仅为日常态正式资产，尚未接入。 | 2026-09-21，负责人要求“将这12张都提升为资产” |
+| 资产 | 十二处 `asset_daily_001`；当时对应 `assets/art/backgrounds/m1_campus_locations/*/daily.png` | 历史已批准，现被4K版替代 | 完全复用已批准概念像素，不重绘；旧文件与概念源 SHA-256 逐项一致，批准证据保留。 | 2026-09-21，负责人要求“将这12张都提升为资产” |
 | 资产 | 十二处异常态 `asset_anomaly_001`；南门 `004`、其余地点 `002` | 已拒绝 | 异常覆盖与霓虹／数据元素密度过高，削弱现实校园识别和地点差异；保留文件与记录作反例，不提升、不接入。 | 2026-09-21，负责人反馈“过于夸张”，并要求按质量建议重新生成 |
 | 资产 | 十二处收敛版异常态 `asset_anomaly_002`；南门 `005`、其余地点 `003` | 已拒绝（日光方向不符） | 普通地点只保留一种局部异常，维持白天、自然材质和大部分日常画面；图书馆仍为全组最高异常密度，但将书页、档案框与知识图谱集中在中央玻璃中轴和内圈广场，继续保持无旗帜／旗杆。最终文件均为 3840×2160 重采样交付。 | 2026-09-21，按负责人要求重新生成并提升交付分辨率；等待资产批准 |
-| 资产 | 十二处 `asset_daily_002`；南门006、其余004的daily.png | 待评审 | 新生成日常4K候选，未沿用旧资产批准；来源与哈希见各目录generation.md。 | 2026-09-22，负责人要求重制12日常＋12异常 |
+| 资产 | 十二处 `asset_daily_002`；南门006、其余004的daily.png | 2026-09-25已批准为正式日常源 | 新生成日常4K候选，未沿用旧资产批准；具体来源与哈希见各目录generation.md及提升审计清单。 | 2026-09-25，负责人要求整批提升为正式资产 |
+| 资产 | 十二处当前异常候选；具体目录见提升审计清单 | 2026-09-25已批准为正式异常源 | 西湖水面与图书馆窗翼约束保留；不同试稿编号不代表不同正式发布版本。 | 2026-09-25，负责人要求整批提升为正式资产 |
+| 资产 | 十二处 `asset_daily_003 / m1-campus-daily-4k-v1`、十二处 `asset_anomaly_009 / m1-campus-anomaly-4k-v1` | 两组正式版本已批准并提升 | 24张正式文件与具体获批源逐字节一致，仍未接入Godot。 | 2026-09-25，负责人要求“同一个版本（正常和异常可以分为两个版本）” |
 | 资产 | 活动中心 `asset_anomaly_003`；004/anomaly.png | 待天空校准评审 | 墨蓝灰天空、局部紫色异象；其余11张异常待此样图确认后制作。 | 2026-09-22，负责人反馈“天空过于紫色了” |
 | 接入效果 | 未接入 | 不适用 | 正式资产批准并提升后才接入 Godot。 | 待负责人决定 |
 
