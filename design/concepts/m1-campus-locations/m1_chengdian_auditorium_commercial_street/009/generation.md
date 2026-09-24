@@ -1,0 +1,11 @@
+# 成电会堂＋商业街异常态 009：缩短主裂隙、加宽阴影
+
+- 状态：单图精修候选，`unselected + pending`；具体资产未获负责人批准，也未接入 Godot。
+- 严格编辑源：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-30cc9dfd-c25b-489e-b068-95bb67f18849.png`（本地点008的模型原始输出）。
+- 原始生成结果：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-b2318647-68dc-49f4-ba6a-d35282d673d3.png`。先前一次过度缩短的未登记试稿不作为候选；此图是从008重新编辑。
+- 交付：`anomaly.png`，3840×2160、RGB不透明PNG；约1672×941原始模型输出经高质量双三次重采样，非原生4K；SHA-256 `3AC036CED8709CE8A70F0C3592DFF82302EB1247D00409C96957235959C4EB39`。
+- 质量闸门：`PASS_WITH_NOTES`。主裂隙保留檐口分叉和窗带中段，末端不再贯到地面；暗紫黑错位阴影更宽，亮边较细。建筑、地面与其他异常元素仍可读。相较008仍是显著的局部变化，需负责人审美复核。
+
+## 完整提示词
+
+Use case: precise-object-edit. Image 1 is the edit target, the existing Chengdian auditorium anomaly scene. Make a SUBTLE correction to the primary branching violet dimensional fissure on the LEFT auditorium, not a redesign. The current crack starts at roof/eave near x=480,y=180, crosses the red fascia and upper facade, and runs to the ground near x=850,y=660. Keep the first roughly 70-75% of its existing route, including the initial roof fork and central diagonal segment across the upper window area; shorten only its LOWER 25-30%: taper it out naturally at the facade around x=760-800,y=480-520, ABOVE the stair/ground, and seamlessly restore just the lower corner, stair and wall under that endpoint. Do not truncate the crack at the roof or before the upper windows. Along the retained length, broaden the adjacent dark purple-black displaced seam/shadow by roughly 1.5-2x while retaining a thin magenta-violet irregular luminous edge; reduce the pure bright filament slightly so it reads as an actual deep dimensional tear rather than a lightning bolt. Keep a few short branching nicks. Crucially keep everything else EXACTLY as Image 1: facade geometry and red masonry texture, original horizontal purple strips over windows, cyan rectangular panels, data rain, right-hand shop crack, warm windows, trees, slate blue night sky, paving and its projections and reflections, framing and lens. Do not remove other purple effects; do not add new anomaly effects. No physical debris, no ring, no blue/purple sky changes, no annotations. 16:9 game background.
