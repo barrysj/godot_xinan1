@@ -4,6 +4,7 @@ signal action(id: String)
 const MEMORY_TERMINAL_VIEW = preload("res://scenes/expedition/memory_terminal_view.gd")
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
+const CampusLocationSkin = preload("res://scenes/expedition/campus_location_skin.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
 const LIBRARY_ENVIRONMENT_STATE := "anomaly"
 const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
@@ -21,6 +22,12 @@ var environment_preview_state := "anomaly"
 var environment_preview_viewpoint := "atrium-down"
 var environment_preview_state_buttons: Array[Button] = []
 var environment_preview_viewpoint_buttons: Array[Button] = []
+var campus_preview_image: TextureRect
+var campus_preview_status: Label
+var campus_preview_location := 0
+var campus_preview_state := "daily"
+var campus_preview_state_buttons: Array[Button] = []
+var campus_preview_selector: OptionButton
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -57,6 +64,10 @@ func _clear_column() -> void:
 	environment_preview_status = null
 	environment_preview_state_buttons.clear()
 	environment_preview_viewpoint_buttons.clear()
+	campus_preview_image = null
+	campus_preview_status = null
+	campus_preview_state_buttons.clear()
+	campus_preview_selector = null
 
 func text(value: String, font_size: int = 22, parent: Control = null) -> void:
 	var label = Label.new()
@@ -264,6 +275,51 @@ func library_environment_preview() -> void:
 	_update_environment_preview()
 	button("返回基地","base")
 
+func campus_environment_preview() -> void:
+	_clear_column()
+	campus_preview_location = 0
+	campus_preview_state = "daily"
+	text("校园地点环境预览",32)
+	text("只读预览 · 十二处已批准实景，日常与异常各一张。除南门外，战役地点映射仍待确定。",19)
+	var controls := row()
+	_preview_group_label("地点",controls)
+	var selector := OptionButton.new()
+	selector.custom_minimum_size = Vector2(310,48)
+	selector.add_theme_font_size_override("font_size",19)
+	for location in CampusLocationSkin.LOCATIONS:
+		selector.add_item(location.label)
+	selector.item_selected.connect(func(index: int): campus_preview_location = index; _update_campus_preview())
+	controls.add_child(selector)
+	campus_preview_selector = selector
+	_preview_group_label("状态",controls)
+	for state in CampusLocationSkin.STATES:
+		var state_button := _preview_button("日常" if state == "daily" else "异常","campus:"+state,controls)
+		campus_preview_state_buttons.append(state_button)
+	campus_preview_status = _exploration_label("",17)
+	campus_preview_status.custom_minimum_size.y = 30
+	campus_preview_status.add_theme_color_override("font_color",Color(palette.text_primary))
+	column.add_child(campus_preview_status)
+	var stage := Control.new()
+	stage.custom_minimum_size = Vector2(820,680)
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stage.clip_contents = true
+	column.add_child(stage)
+	campus_preview_image = TextureRect.new()
+	campus_preview_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	campus_preview_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	campus_preview_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	campus_preview_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stage.add_child(campus_preview_image)
+	_update_campus_preview()
+	button("返回基地","campus_preview_base")
+
+func _update_campus_preview() -> void:
+	if not is_instance_valid(campus_preview_image): return
+	var location: Dictionary = CampusLocationSkin.LOCATIONS[campus_preview_location]
+	var image_path := CampusLocationSkin.path(location.id,campus_preview_state)
+	campus_preview_image.texture = ExplorationSkin.texture(image_path)
+	campus_preview_status.text = "%02d / 12 · %s · %s · 3840×2160" % [campus_preview_location + 1,location.label,"日常" if campus_preview_state == "daily" else "异常"]
+
 func _preview_group_label(label: String, parent: Control) -> void:
 	var item := _exploration_label(label,18)
 	item.add_theme_color_override("font_color",Color(palette.text_primary))
@@ -292,6 +348,11 @@ func _preview_button(label: String, id: String, parent: Control) -> Button:
 
 func _preview_action(id: String) -> void:
 	var parts := id.split(":",false,1)
+	if parts.size() == 2 and parts[0] == "campus" and is_instance_valid(campus_preview_image):
+		if CampusLocationSkin.STATES.has(parts[1]):
+			campus_preview_state = parts[1]
+			_update_campus_preview()
+		return
 	if parts.size() != 2 or not is_instance_valid(environment_preview_board):
 		return
 	if parts[0] == "state": environment_preview_state = parts[1]

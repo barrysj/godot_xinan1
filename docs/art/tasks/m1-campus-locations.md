@@ -1,6 +1,14 @@
 # 美术任务：M1 校园探索地点环境
 
-+状态：负责人于2026-09-25批准当前12张日常＋12张异常候选并要求统一版本，已逐字节提升为两组正式4K背景。正式日常共用 `asset_daily_003 / m1-campus-daily-4k-v1`，正式异常共用 `asset_anomaly_009 / m1-campus-anomaly-4k-v1`；每处试稿编号保留历史，不视作不同正式版本。正式资产尚未接入Godot，接入效果未验收。
+状态：负责人于2026-09-25批准当前12张日常＋12张异常候选并要求统一版本，已逐字节提升为两组正式4K背景。正式日常共用 `asset_daily_003 / m1-campus-daily-4k-v1`，正式异常共用 `asset_anomaly_009 / m1-campus-anomaly-4k-v1`；每处试稿编号保留历史，不视作不同正式版本。南门异常态已接入战役，全部24张已提供只读游戏内预览；其余11处尚未绑定战役节点，接入效果未验收。
+
+## Godot 接入与映射边界（2026-09-25，待负责人评审）
+
+- 战役的 `gate` 身份由实景证实为南门，序章与后续同名地点使用正式异常态 `asset_anomaly_009`，沿用既有热点、守卫、奖励与离开流程；没有改存档字段。日常态不自动进入战役，因为游戏尚无日常／异常时间或区域状态切换规则。
+- 12处共24张均可通过 `--campus-environment-preview` 打开游戏内只读预览，按地点和日常／异常切换；按需加载当前单张4K，避免一次常驻全部背景。预览不是可游玩地点，也不写入存档。南门 Manifest 为 `authorized_active`，其余11处保持 `not_integrated`，待真实地点与战役节点的映射决定。
+- 现有 `walk`、`court`、`hall`、`end_b`、`end_c` 是逻辑占位，不能凭画面外观替换成具体实景；图书馆关卡当前是室内图书馆，不应被图书馆正面外景静默覆盖。真实地点与现有四站路线数量也不同，若要求12处全部可游玩，需单独决定路线／节点分配。
+- 运行入口：`scenes/expedition/campus_location_skin.gd`、`campaign_board.gd`、`campaign_panel.gd`、`campaign_hub.gd`。真实截图：[南门序章热点](../../../design/concepts/m1-campus-locations/review/codex-workflow/runtime-integration/gate-gameplay-1920x1200.png)、[图书馆正面异常预览](../../../design/concepts/m1-campus-locations/review/codex-workflow/runtime-integration/library-front-anomaly-preview-1920x1080.png)、[西湖中心日常预览](../../../design/concepts/m1-campus-locations/review/codex-workflow/runtime-integration/west-lake-center-daily-preview-2560x1440.png)。另有三种桌面尺寸、四个代表地点和两种状态的完整可重建捕获，保存在 `.godot/m1-campus-preview-*` 缓存，不作为长期唯一证据。
+- Godot 图形检查 `--campaign-flow-check --campus-environment-preview-capture`：149 checks / 0 failures，逐张确认24张正式PNG存在且为3840×2160，三分辨率切换、预览退出不写存档、南门真实战役画面通过；常规 `--campaign-flow-check`：124 checks / 0 failures。资源台33项测试通过；AssetCatalog 扫描26对象／462登记文件、缺失0、不一致0。技术接入通过不等于负责人对接入效果批准。
 
 ## 24张背景资产批准与统一版本提升（2026-09-25）
 
@@ -181,7 +189,7 @@
 
 ## 历史验证与结果（截至2026-09-21）
 
-- 本任务验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 均为 `selected + approved`；旧步道与篮球场仍为 `unselected + pending`；所有对象集成状态保持 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。
+- 2026-09-21 概念阶段验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 均为 `selected + approved`；旧步道与篮球场仍为 `unselected + pending`；当时所有对象均 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。后续接入状态以本文件顶部 2026-09-25 接入章节为准。
 - 技术检查结果：PowerShell 7 使用 `System.Drawing.Image` 核对十二张收敛版异常态均为 3840×2160、24bpp RGB、不透明且可解码；生成源为 1672×941，交付文件使用高质量双三次重采样，不宣称原生 4K。十二张生成源均经实际画面检查与通用图片质量闸门检查为 `PASS_WITH_NOTES`：地点身份、主要建筑／景观和底部可用区域保持可读，异常集中于地点专属区域，未使用全景夜化、霓虹铺地、数据雨或泛滥悬浮面板；图书馆异常密度高于其余地点且未恢复旗帜或旗杆。由于 4K PNG 体积较大，`view_image` 对最终文件返回 Base64 解码限制；最终文件以 `System.Drawing.Image` 完成逐张可解码、尺寸、格式与透明度技术核验，视觉内容则以同源生成输出逐张检查。
 - Manifest 回写：十二个 `asset_daily_001` 保持 `selected + approved`；十二个 `asset_anomaly_001` 改为 `unselected + rejected` 并记录强度过高的拒绝证据；新增十二个 `asset_anomaly_002`，均为 `unselected + pending`，来源指向对应日常资产并记录地点专属局部异常、生成源尺寸和重采样交付方式。图书馆登记 `anomaly_intensity: medium_high_localized`、日常保留目标 55%–65% 与保持移除旗帜／旗杆要求。旧步道与篮球场不在本次批准范围，继续保持 `unselected + pending`。不填写正式生效文件，全部对象集成均为 `not_integrated`。
 - 一致性检查：十二张日常正式资产与批准概念逐项 SHA-256 一致；正式目录只保存运行 PNG，概念、参考图与 generation.md 继续留在 `design/concepts/`。当前没有 Godot 引用或生效文件。

@@ -35,6 +35,8 @@ func _ready() -> void:
 	_home()
 	if "--library-environment-preview" in OS.get_cmdline_user_args() or "--library-environment-preview-capture" in OS.get_cmdline_user_args():
 		_show_library_environment_preview()
+	if "--campus-environment-preview" in OS.get_cmdline_user_args() or "--campus-environment-preview-capture" in OS.get_cmdline_user_args():
+		_show_campus_environment_preview()
 	if debug_enabled:
 		debug_panel = preload("res://scenes/expedition/debug_panel.gd").new()
 		debug_panel.hub = self
@@ -57,6 +59,14 @@ func _show_library_environment_preview() -> void:
 	screen = "campaign"
 	campaign_panel.show()
 	campaign_panel.library_environment_preview()
+
+func _show_campus_environment_preview() -> void:
+	if not campaign_enabled or not is_instance_valid(campaign_panel): return
+	paused = false
+	pause_overlay.hide()
+	screen = "campaign"
+	campaign_panel.show()
+	campaign_panel.campus_environment_preview()
 
 func _home() -> void:
 	reset_pending = false
@@ -287,7 +297,9 @@ func _campaign_action(id: String) -> void:
 	if paused: return
 	if _profile_action(id): return
 	if progress.load_blocked: return
-	if id == "base":
+	if id == "campus_preview_base":
+		_home()
+	elif id == "base":
 		if _checkpoint(): _home()
 	elif id == "continue": _continue_run()
 	elif id == "prologue": _request_campaign_start("library","prologue")

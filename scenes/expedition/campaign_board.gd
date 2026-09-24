@@ -2,18 +2,24 @@ extends Control
 ## Semantic schematic, not a reconstruction of the real campus.
 signal picked(index: int)
 const Content = preload("res://game/content/content_db.gd")
+const CampusLocationSkin = preload("res://scenes/expedition/campus_location_skin.gd")
+const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 var mode = "location"
 var journey
 var selected = 0
 var font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 var points: Array[Vector2] = []
 var controls: Array[Control] = []
+var location_background: Texture2D
 const INK = Color("17202B")
 const BLUE = Color("4AAFD0")
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(600,360)
+	custom_minimum_size = Vector2(820,680) if mode == "location" and journey != null and journey.visit.data.place == "gate" else Vector2(600,360)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if mode == "location" and journey != null and journey.visit.data.place == "gate":
+		location_background = ExplorationSkin.texture(CampusLocationSkin.path("south_gate", "anomaly"))
+		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	resized.connect(_layout)
 	_build()
 
@@ -66,7 +72,15 @@ func _label(at: Vector2, value: String, color: Color = INK, pixels: int = 17) ->
 	draw_string(font,at,value,HORIZONTAL_ALIGNMENT_LEFT,-1,pixels,color)
 
 func _draw() -> void:
-	draw_style_box(_surface(),Rect2(Vector2.ZERO,size))
+	if location_background != null:
+		var image_size := location_background.get_size()
+		var scale := maxf(size.x / image_size.x, size.y / image_size.y)
+		var source_size := size / scale
+		var source := Rect2((image_size - source_size) * 0.5, source_size)
+		draw_texture_rect_region(location_background, Rect2(Vector2.ZERO,size), source)
+		draw_rect(Rect2(Vector2.ZERO,size),Color(0.02,0.025,0.065,0.30))
+	else:
+		draw_style_box(_surface(),Rect2(Vector2.ZERO,size))
 	if journey == null: return
 	if mode == "route":
 		for step in range(3):
@@ -90,8 +104,8 @@ func _draw() -> void:
 				var shelf = Rect2(Vector2(size.x*(0.10+i*0.17),64),Vector2(size.x*0.12,46))
 				draw_rect(shelf,Color("A7BDC5"))
 				for book in range(6): draw_line(shelf.position+Vector2(9+book*12,5),shelf.position+Vector2(9+book*12,40),Color("E6F0F4"),3)
-		else: _site(journey.visit.data.place)
-		_label(Vector2(20,30),"阅览室 · 场景示意" if library else journey.Regions.PLACES[journey.visit.data.place]+" · 场景示意")
+		elif location_background == null: _site(journey.visit.data.place)
+		_label(Vector2(20,30),"阅览室 · 场景示意" if library else ("南门 · 异常态" if location_background != null else journey.Regions.PLACES[journey.visit.data.place]+" · 场景示意"),Color.WHITE if location_background != null else INK)
 		var desk = Rect2(size*Vector2(0.42,0.38),size*Vector2(0.22,0.16))
 		if library:
 			draw_rect(desk,Color("CFBDA2"))
@@ -102,13 +116,13 @@ func _draw() -> void:
 			var at = size*points[i]
 			var done: bool = journey.visit.data.guard_won if spot.kind == "battle" else journey.visit.data.viewed.has(spot.id)
 			if i == selected: draw_rect(Rect2(at-Vector2(72,30),Vector2(144,60)),BLUE,false,3)
-			_label(at+Vector2(-52,48),"已解除" if spot.kind == "battle" and done else ("已查看" if done else ("主线必经" if spot.kind == "battle" else "可选调查")))
+			_label(at+Vector2(-52,48),"已解除" if spot.kind == "battle" and done else ("已查看" if done else ("主线必经" if spot.kind == "battle" else "可选调查")),Color.WHITE if location_background != null else INK)
 			if spot.kind == "person": draw_texture_rect(Content.character(4).portrait,Rect2(at-Vector2(24,84),Vector2(48,48)),false)
 			if spot.kind == "battle":
 				var shield = PackedVector2Array([at+Vector2(-18,-72),at+Vector2(18,-72),at+Vector2(18,-48),at+Vector2(0,-37),at+Vector2(-18,-48)])
 				draw_colored_polygon(shield,Color("3D8F78") if done else Color("B76560"))
 				_label(at+Vector2(-9,-49),"✓" if done else "!",Color.WHITE,23)
-		_label(Vector2(20,size.y-20),"出口已开放 · 可以离开，也可以继续调查" if journey.visit.can_leave() else "出口封锁 · 击败守卫并领取奖励后开放",BLUE)
+		_label(Vector2(20,size.y-20),"出口已开放 · 可以离开，也可以继续调查" if journey.visit.can_leave() else "出口封锁 · 击败守卫并领取奖励后开放",Color.WHITE if location_background != null else BLUE)
 
 func _site(place: String) -> void:
 	var middle = size.x*0.52
