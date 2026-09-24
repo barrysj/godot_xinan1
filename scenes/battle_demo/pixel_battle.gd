@@ -172,7 +172,7 @@ func _build_units() -> void:
 	banner_time = 0
 
 func _process(delta: float) -> void:
-	if paused or leaving:
+	if paused or leaving or (is_instance_valid(code_panel) and code_panel.hover_paused()):
 		queue_redraw()
 		return
 	if not paused:
@@ -607,7 +607,7 @@ func _draw() -> void:
 		_center(Vector2(822, 697), "PIXEL DEMO / 02", Color("a9b393"), 11)
 
 func _gui_input(event: InputEvent) -> void:
-	if paused or leaving:
+	if paused or leaving or (is_instance_valid(code_panel) and code_panel.hover_paused()):
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var point: Vector2 = (event.position - origin) / scale_factor
@@ -649,9 +649,6 @@ func _gui_input(event: InputEvent) -> void:
 	super._gui_input(event)
 
 func _input(event: InputEvent) -> void:
-	if is_instance_valid(code_panel) and code_panel.paused:
-		if event.is_action_pressed("pause"): code_panel._close_console(); get_viewport().set_input_as_handled()
-		return
 	if is_instance_valid(deployment) and event.is_action_pressed("pause") and deployment.active() and deployment.selected_role >= 0:
 		deployment.cancel()
 		get_viewport().set_input_as_handled()
@@ -770,8 +767,6 @@ func _layout_pause_menu() -> void:
 	pause_content.position = (size - Vector2(1280, 720) * ratio) / 2
 
 func _open_pause() -> void:
-	if is_instance_valid(code_panel) and code_panel.paused:
-		code_panel._close_console()
 	if is_instance_valid(deployment): deployment.cancel()
 	paused = true
 	pending_exit = ""

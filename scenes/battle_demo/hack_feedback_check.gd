@@ -34,7 +34,7 @@ func _ready() -> void:
 		for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 		var panel = game.code_panel
 		panel._process(0)
-		panel._open_console()
+		# Flat HUD is already visible.
 		await get_tree().process_frame
 		var fx = panel.code_fx
 		fx.particles.clear()
@@ -47,8 +47,8 @@ func _ready() -> void:
 			event.position = button.get_global_rect().get_center()
 			get_viewport().push_input(event,true)
 			await get_tree().process_frame
-		verify(game.simulation.casts == 1,"actual terminal click executes "+id)
-		verify(not panel.paused and not game.paused and not panel.console.visible,"terminal closes into battlefield feedback")
+		verify(game.simulation.casts == 1,"actual HUD click executes "+id)
+		verify(not game.paused and panel.programs.visible,"flat HUD stays available after casting")
 		var programs: Array = fx.particles.filter(func(p): return p.kind == "program")
 		verify(programs.size() == 1,"one program event creates one burst")
 		if programs.is_empty(): continue

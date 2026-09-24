@@ -55,7 +55,7 @@ func _ready() -> void:
 	for actor in game.simulation.units:
 		if actor.get("content_id", "") == "analyst" and actor.side == 0:
 			var proc = load("res://resources/combat/synergies/analysis.tres").effects[0]
-			game.simulation._apply_proc({"proc":proc,"label":"解析"},actor,{})
+			game.simulation._apply_proc({"proc":proc,"label":"瑙ｆ瀽"},actor,{})
 			verify(game.simulation.blocks.blue == 1, "analysis proc uses main roster identity instead of trial index")
 	var panel = game.code_panel
 	await get_tree().process_frame
@@ -67,16 +67,16 @@ func _ready() -> void:
 	await get_tree().process_frame
 	game.paused = false
 	panel._process(0)
-	panel._open_console()
+	panel._process(0)
 	await get_tree().process_frame
-	verify(game.paused and panel.paused, "original combat pauses for terminal")
-	verify(panel.program_controls.has("disconnect"), "terminal uses current preparation")
+	verify(panel.programs.visible and not game.paused, "flat HUD remains visible during combat")
+	verify(panel.program_controls.has("disconnect"), "flat HUD uses current preparation")
 	game._request_exit("quit")
-	verify(game.paused and not panel.paused and not panel.console.visible and game.confirm_actions.visible, "window exit replaces terminal with original confirmation")
+	verify(game.paused and game.confirm_actions.visible, "window exit opens original confirmation")
 	game._open_pause()
 	game._resume_battle()
 	verify(not game.paused and game.pending_exit.is_empty(), "cancel exit resumes original battle")
-	panel._open_console()
+	panel._process(0)
 	await get_tree().process_frame
 	var before: Dictionary = game.simulation.blocks.duplicate()
 	panel.item_controls.supply.destination.select(3)
@@ -93,7 +93,7 @@ func _ready() -> void:
 	await click(conversion.button)
 	await click(panel.program_controls.takeover.button)
 	verify(game.simulation.system_taken and game.simulation.casts == 1, "real mouse conversion and takeover execute in main battle")
-	verify(not panel.paused and not panel.console.visible,"successful program returns to the battle for its visual feedback")
+	verify(panel.programs.visible and not game.paused,"successful program keeps the flat battle HUD visible")
 	var saved: Dictionary = game.run.to_dict()
 	var restored = game.RunModel.new()
 	verify(restored.restore(saved) and restored.code_programs == game.run.code_programs and restored.combat_rewards.size() == 6, "schema7 restores programs and combat rewards")
@@ -118,7 +118,7 @@ func _ready() -> void:
 	verify(journey_copy.restore(journey.snapshot()) and journey_copy.data.screen == "reward_owner", "campaign owner selection resumes from saved checkpoint")
 	if "--capture" in OS.get_cmdline_user_args():
 		get_window().mode = Window.MODE_WINDOWED
-		panel._open_console()
+		panel._process(0)
 		var capture_size := Vector2i(1920,1080)
 		for arg in OS.get_cmdline_user_args():
 			if arg.begins_with("--size="):
@@ -128,9 +128,11 @@ func _ready() -> void:
 		await get_tree().create_timer(0.3).timeout
 		await RenderingServer.frame_post_draw
 		verify(get_viewport().get_texture().get_image().get_size() == capture_size, "actual capture size")
-		verify(panel.get_viewport_rect().encloses(panel.console.get_global_rect()), "terminal fits viewport")
-		get_viewport().get_texture().get_image().save_png("res://.godot/main-code-terminal-%dx%d.png" % [capture_size.x,capture_size.y])
-	panel._close_console()
+		verify(panel.get_viewport_rect().encloses(panel.programs.get_global_rect()), "flat skills fit viewport")
+		get_viewport().get_texture().get_image().save_png("res://.godot/main-code-hud-%dx%d.png" % [capture_size.x,capture_size.y])
+	var motion := InputEventMouseMotion.new()
+	motion.position = Vector2(640,600)
+	get_viewport().push_input(motion,true)
 	verify(not game.paused, "resume returns original battle")
 	if "--capture" in OS.get_cmdline_user_args():
 		await get_tree().process_frame

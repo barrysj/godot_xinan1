@@ -16,12 +16,12 @@ func consume(event: Dictionary) -> void:
 	var kind: String = event.get("kind", "")
 	if kind == "code_generated":
 		var type: String = event.code_type
-		var interface_event: bool = host.paused and event.reason in ["代码补给", "转码器"]
+		var interface_event: bool = event.reason in ["代码补给", "转码器"]
 		var from: Vector2 = host.code_origin(event) if host.has_method("code_origin") else host.board.global_position + host.board.point(event.from) - Vector2(0,45)
-		var target: Control = host.console_labels[type] if interface_event else host.bank_labels[type]
+		var target: Control = host.bank_labels[type]
 		if interface_event:
 			var item: String = "supply" if event.reason == "代码补给" else "converter"
-			from = host.item_controls[item].preview.get_global_rect().get_center()
+			from = host.item_controls[item].button.get_global_rect().get_center()
 		for index in range(int(event.actual)):
 			_append({"kind":"drop", "type":type, "from":from, "target":target, "offset":Vector2((index-1)*24,0), "age":-index*0.07, "duration":1.15, "ui":interface_event})
 	elif kind == "hack_completed":
@@ -45,7 +45,6 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	for p in particles:
 		if p.age < 0: continue
-		if not p.ui and is_instance_valid(host.console) and host.console.visible: continue
 		var t: float = p.age / p.duration
 		if p.kind == "drop": _draw_drop(p, t)
 		else: _draw_program(p, t)
@@ -54,7 +53,7 @@ func _draw_drop(p: Dictionary, t: float) -> void:
 	if not is_instance_valid(p.target): return
 	var data: Dictionary = Codes.RULES.types[p.type]
 	var color: Color = data.color
-	var destination: Vector2 = p.target.get_global_rect().position + Vector2(40,48)
+	var destination: Vector2 = p.target.get_global_rect().get_center()
 	var from: Vector2 = p.from + p.offset
 	var at: Vector2
 	if reduced_motion: at = destination

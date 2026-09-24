@@ -134,7 +134,7 @@ func _process(delta: float) -> void:
 		if not paused:
 			visual_time += delta
 		queue_redraw()
-	if not paused and screen in ["map","battle","event","reward","reward_owner","report"]:
+	if not paused and not (is_instance_valid(code_panel) and code_panel.hover_paused()) and screen in ["map","battle","event","reward","reward_owner","report"]:
 		expedition_seconds += delta
 
 func _after_report() -> void:

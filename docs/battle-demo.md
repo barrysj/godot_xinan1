@@ -42,7 +42,7 @@ Godot 按 F5 后从模板主菜单的 Start 进入正式探索；独立实验室
 
 ### 破解演出
 
-在原代码终端成功执行后自动收起终端并恢复战斗，播放约 2.2 秒的分层演出：代码汇聚、程序环、释放光芒、扩散波、渐隐。程序共用视觉节奏，以颜色和独立图标区分。只有立即受影响的角色获得连接光束；重定向的提示明确说明等待下次维护。终端“简化特效”可关闭移动光束与粒子，仅保留静态程序提示；设置在当前场景内保留。暂停冻结演出，不改变战斗判定与模拟时间。
+在平铺破解图标成功执行后生成演出，鼠标离开悬停区域恢复战斗并播放约 2.2 秒的分层演出：代码汇聚、程序环、释放光芒、扩散波、渐隐。程序共用视觉节奏，以颜色和独立图标区分。只有立即受影响的角色获得连接光束；重定向的提示明确说明等待下次维护。HUD“简化特效”可关闭移动光束与粒子，仅保留静态程序提示；设置在当前场景内保留。暂停冻结演出，不改变战斗判定与模拟时间。
 
 验证入口：scenes/battle_demo/battlefield_visual_check.tscn -- --capture 和 hack_feedback_check.tscn -- --capture --frames。二者均实例化原 expedition.tscn，不提供平行战斗玩法入口。检查项和已知边界见 UI-02 / CORE-05。
 - 固定 0.05 秒模拟，暂停冻结位置与计时，1×／2×只改变推进速度；重新编队恢复初始位置。原有装备、技能计数、奖励和胜负结算继续生效。
@@ -116,9 +116,9 @@ Demo 与正式冒险共用 `game/combat/battle_simulation.gd`，固定 0.05 秒�
 
 ## 原主线羁绊、破解与战后强化（2026-09-24）
 
-当前玩家从原主菜单进入校园流程，战斗仍使用 expedition → pixel_battle → battle_demo。战前选择两个程序，战中点击「破解」暂停并使用程序或道具；Esc 沿用原暂停操作。原场景、部署、人物动画、装备及结算继续复用。
+当前玩家从原主菜单进入校园流程，战斗仍使用 expedition → pixel_battle → battle_demo。战前选择两个程序，战中两个破解程序始终平铺于顶部，图标下显示带颜色和类型名的资源消耗；满足资源和释放条件时高亮，缺资源或冷却时变暗并提供原因提示。道具平铺于左侧，图标角标显示剩余次数；颜色选项直接选择生成类型，转码器分别选择消耗与生成类型。悬停图标、消耗栏或类型选项会暂停模拟与战斗演出，移开恢复；道具收集反馈仍可播放。手动暂停和 Esc 菜单独立，移开鼠标不会解除手动暂停。原场景、部署、人物动画、装备及结算继续复用。
 
-规则实现统一维护于 `game/combat/code_battle_simulation.gd`、`synergy_simulation.gd`、`code_catalog.gd`；终端组件和只读特效位于 `scenes/battle_demo/code_panel.tscn`、`code_panel.gd`、`code_sockets.gd`、`code_fx.gd`。共享资源路径为 `resources/combat/`，其内容校验入口为 `game/content/combat_content_check.tscn`。
+规则实现统一维护于 `game/combat/code_battle_simulation.gd`、`synergy_simulation.gd`、`code_catalog.gd`；平铺 HUD 组件和只读特效位于 `scenes/battle_demo/code_panel.tscn`、`code_panel.gd`、`code_sockets.gd`、`code_fx.gd`。共享资源路径为 `resources/combat/`，其内容校验入口为 `game/content/combat_content_check.tscn`。
 
 四种颜色代码由不同人物类别产出；库存容量、产出频率、程序配方和道具均以 `resources/combat/code_rules.tres` 为准。战前装配两个程序，战中消耗对应组合发动效果；使用道具会消耗库存道具并生成指定代码块。当前羁绊效果在模拟层触发，代码掉落、吸收及破解释放由原战斗界面播放。
 
