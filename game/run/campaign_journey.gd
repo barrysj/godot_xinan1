@@ -51,7 +51,7 @@ func restore(source: Variant) -> bool:
 	if not source.get("temporary") is Array: return false
 	for id in source.temporary:
 		if id != "inventor": return false
-	if not source.get("screen") in ["route","visit","battle","report","reward","operation","complete"]: return false
+	if not source.get("screen") in ["route","visit","battle","report","reward","reward_owner","operation","complete"]: return false
 	if source.screen == "report" and not source.get("won") is bool: return false
 	if source.screen == "report":
 		if not source.get("report",[]) is Array: return false
@@ -65,14 +65,17 @@ func restore(source: Variant) -> bool:
 		for offer in source.offers:
 			if not preload("res://game/run/reward_catalog.gd").valid_snapshot(offer): return false
 	if source.screen == "reward" and not source.has("offers"): return false
+	if source.screen == "reward_owner":
+		if not source.has("pending_offer") or not preload("res://game/run/reward_catalog.gd").valid_snapshot(source.pending_offer) or source.pending_offer.operation != "combat" or not preload("res://game/run/reward_catalog.gd").combat_needs_owner(source.pending_offer.target): return false
+		if not source.get("offers", []).any(func(offer): return offer.id == source.pending_offer.id): return false
 	if not source.get("visit") is Dictionary: return false
 	var restored = Visit.new()
 	if not source.visit.is_empty():
 		if source.finished or not restored.restore(source.visit): return false
 		if not source.map[int(source.step)].has(source.visit.place): return false
-	if (source.screen in ["visit","battle","report","reward","operation"]) != (not source.visit.is_empty()): return false
+	if (source.screen in ["visit","battle","report","reward","reward_owner","operation"]) != (not source.visit.is_empty()): return false
 	if (source.screen == "complete") != source.finished: return false
-	if source.screen in ["reward","operation"] and not restored.data.guard_won: return false
+	if source.screen in ["reward","reward_owner","operation"] and not restored.data.guard_won: return false
 	data = source.duplicate(true)
 	data.erase("visit")
 	data.schema = 1

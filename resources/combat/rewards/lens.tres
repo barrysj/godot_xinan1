@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CampusCombatReward" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/combat_reward_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "lens"
+trigger = "skill_impact"
+effect = "mark"
+target = "skill_target"
+duration = 4
+[resource]
+script = ExtResource("s")
+id = "lens"
+display_name = "调试镜片"
+description = "佩戴者每场首次技能生效后暴露漏洞。战前可转移，每人一件。"
+category = "装备"
+effects = Array[ExtResource("p")]([SubResource("p0")])

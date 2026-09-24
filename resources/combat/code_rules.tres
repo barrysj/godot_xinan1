@@ -1,0 +1,59 @@
+[gd_resource type="Resource" load_steps=10 format=3]
+[ext_resource type="Script" path="res://game/content/code_rules.gd" id="rules"]
+[ext_resource type="Script" path="res://game/content/code_program_def.gd" id="program"]
+[ext_resource type="Script" path="res://game/content/code_item_def.gd" id="item"]
+[sub_resource type="Resource" id="disconnect"]
+script = ExtResource("program")
+id = "disconnect"
+display_name = "断链"
+description = "清除敌方剩余系统护盾，阻止下一次维护脉冲。"
+cost = {"red":2,"purple":1}
+effect = "disconnect"
+[sub_resource type="Resource" id="redirect"]
+script = ExtResource("program")
+id = "redirect"
+display_name = "重定向"
+description = "下一次维护脉冲转给我方生命比例最低者。"
+cost = {"blue":2,"green":1}
+effect = "redirect"
+[sub_resource type="Resource" id="repair"]
+script = ExtResource("program")
+id = "repair"
+display_name = "热修复"
+description = "治疗两名生命比例最低的受伤友军，各恢复25%最大生命。"
+cost = {"green":2,"blue":1}
+effect = "repair"
+heal_ratio = 0.25
+[sub_resource type="Resource" id="takeover"]
+script = ExtResource("program")
+id = "takeover"
+display_name = "提权"
+description = "永久接管本场维护系统。保留敌方已有盾，后续脉冲保护我方；每场一次。"
+cost = {"purple":2,"blue":2}
+effect = "takeover"
+[sub_resource type="Resource" id="supply"]
+script = ExtResource("item")
+id = "supply"
+display_name = "代码补给"
+description = "选择一种代码，立即生成3块。"
+effect = "generate"
+amount = 3
+starting_count = 1
+[sub_resource type="Resource" id="converter"]
+script = ExtResource("item")
+id = "converter"
+display_name = "转码器"
+description = "将2块同色代码转成另一类型的2块。"
+effect = "convert"
+amount = 2
+starting_count = 1
+[resource]
+script = ExtResource("rules")
+types = {
+"red":{"name":"指令","symbol":">","color":Color(1,0.43,0.4,1)},
+"blue":{"name":"数据","symbol":"{}","color":Color(0.35,0.7,1,1)},
+"green":{"name":"协议","symbol":"↔","color":Color(0.4,0.9,0.64,1)},
+"purple":{"name":"权限","symbol":"#","color":Color(0.76,0.53,1,1)}
+}
+programs = Array[Resource]([SubResource("disconnect"),SubResource("redirect"),SubResource("repair"),SubResource("takeover")])
+items = Array[Resource]([SubResource("supply"),SubResource("converter")])

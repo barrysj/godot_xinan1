@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusSynergy" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/synergy_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "primary"
+trigger = "hack_complete"
+effect = "attack_speed"
+value = 0.75
+duration = 8
+[resource]
+script = ExtResource("s")
+id = "makers"
+display_name = "创客社"
+description = "本场首次执行破解后，成员攻击间隔缩短25%，持续8秒。"
+effects = Array[ExtResource("p")]([SubResource("p0")])

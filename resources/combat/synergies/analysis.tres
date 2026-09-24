@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusSynergy" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/synergy_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "primary"
+trigger = "skill_impact"
+effect = "hack"
+[resource]
+script = ExtResource("s")
+id = "analysis"
+display_name = "解析"
+description = "成员首次技能生效，各额外产出1块自身类型代码。"
+effects = Array[ExtResource("p")]([SubResource("p0")])

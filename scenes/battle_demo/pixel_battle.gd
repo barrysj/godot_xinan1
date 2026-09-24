@@ -10,6 +10,8 @@ signal presentation_cue(event: Dictionary)
 const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd")
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 const Board = preload("res://scenes/battle_demo/battle_board.gd")
+const Floor = preload("res://scenes/battle_demo/battle_floor.gd")
+var code_panel: Control
 var inspector: Control
 var battle_background: Texture2D
 var background_canvas: CanvasTexture
@@ -83,6 +85,9 @@ func _ready() -> void:
 	previous_auto_quit = get_tree().auto_accept_quit
 	get_tree().auto_accept_quit = false
 	_create_pause_menu()
+	code_panel = preload("res://scenes/battle_demo/code_panel.tscn").instantiate()
+	code_panel.game = self
+	add_child(code_panel)
 	deployment = preload("res://scenes/battle_demo/deployment_panel.gd").new()
 	deployment.game = self
 	add_child(deployment)
@@ -149,6 +154,7 @@ func _start() -> void:
 	if phase == "battle" and is_instance_valid(deployment): deployment.cancel()
 
 func _build_units() -> void:
+	if is_instance_valid(code_panel) and is_instance_valid(code_panel.code_fx): code_panel.code_fx.particles.clear()
 	_clear_battle_presentations()
 	super._build_units()
 	battle_background = _battle_backdrop()
@@ -166,7 +172,7 @@ func _build_units() -> void:
 	banner_time = 0
 
 func _process(delta: float) -> void:
-	if paused or leaving:
+	if paused or leaving or (is_instance_valid(code_panel) and code_panel.hover_paused()):
 		queue_redraw()
 		return
 	if not paused:
@@ -266,6 +272,7 @@ func _present_action(actor: Dictionary, casts_skill: bool) -> void:
 	actor.animation.play(&"cast" if casts_skill else StringName(actor.action.get("mode", "attack")))
 
 func _present_simulation_event(event: Dictionary) -> void:
+	if is_instance_valid(code_panel): code_panel.consume(event)
 	var visual_event = event.duplicate(true)
 	visual_event.from = _project(event.from)
 	visual_event.to = _project(event.to)
@@ -293,7 +300,7 @@ func _unit_center(unit: Dictionary) -> Vector2:
 func _present_event(e: Dictionary) -> void:
 	if e.kind == "damage" and e.get("actual", 0) > 0:
 		e.target.animation.play(&"hurt")
-	var tint: Color = GOLD if e.special else (TEAL if e.actor.side == 0 else RED)
+	var tint: Color = GOLD if e.get("special",false) else (TEAL if e.actor.side == 0 else RED)
 	if e.kind == "heal": tint = Color("a3ef98")
 	elif e.kind == "shield": tint = Color("8ad8ff")
 	var occupied_lanes = {}
@@ -303,7 +310,7 @@ func _present_event(e: Dictionary) -> void:
 	while occupied_lanes.has(lane): lane += 1
 	effects.append({"from": _project(e.get("from", e.actor.position)) + Vector2(0, -6),
 		"to": _project(e.get("to", e.target.position)) + _hit_offset(e.target),
-		"kind": e.kind, "special": e.special, "value": int(e.get("actual", e.value)),
+		"kind": e.kind, "special": e.get("special",false), "value": int(e.get("actual", e.get("value",0))),
 		"color": tint, "life": 0.65, "target_id": e.target.id, "lane": lane,
 		"blocked": e.get("blocked", 0), "shield_break": e.get("shield_break", false)})
 
@@ -431,7 +438,7 @@ func _draw_unit(u: Dictionary) -> void:
 	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected and (not is_instance_valid(deployment) or deployment.selected_role == u.role)
 	var swap_source: bool = phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.is_swap_source(u.role)
 	# Small base, not a character card: the actor stands on the map.
-	draw_rect(Rect2(p + Vector2(-29, -3), Vector2(58, 12)), Color(0.15, 0.23, 0.20, 0.3))
+	Floor.draw_shadow(self, p+Vector2(0,3))
 	if swap_source:
 		draw_rect(Rect2(p + Vector2(-45, -11), Vector2(90, 28)), Color(GOLD, 0.18))
 		draw_rect(Rect2(p + Vector2(-43, -9), Vector2(86, 24)), Color("fff0a8"), false, 4)
@@ -552,34 +559,28 @@ func _draw() -> void:
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
+	Floor.draw_stage(self)
 	if phase == "prepare":
-		for entry in [["我后", 260], ["我前", 450], ["敌前", 810], ["敌后", 1000]]:
-			draw_rect(Rect2(Vector2(entry[1] - 28, 106), Vector2(56, 26)), Color(DARK, 0.78))
-			_center(Vector2(entry[1], 125), entry[0], PAPER, 15)
+		for entry in [["我后", 260], ["我前", 507], ["敌前", 753], ["敌后", 1000]]:
+			draw_rect(Rect2(Vector2(entry[1] - 28, 154), Vector2(56, 24)), Color(DARK, 0.60))
+			_center(Vector2(entry[1], 172), entry[0], PAPER, 13)
 	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
 	for u in units:
 		if u.hp <= 0: continue
 		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): continue
 		if not is_instance_valid(inspector) or inspector.observed.is_empty(): continue
 		if u.id != inspector.observed.id: continue
-		var ring = PackedVector2Array()
-		for i in range(65):
-			var logical_offset = Vector2.from_angle(TAU * i / 64.0) * u.attack_range
-			var point = _project(u.position + logical_offset)
-			ring.append(point.clamp(Vector2(40, 150), Vector2(1240, 580)))
-		draw_polyline(ring, GOLD, 1.5, true)
+		Floor.draw_reach(self, u.position, u.attack_range)
 		if phase == "battle" and u.target_id >= 0 and units[u.target_id].hp > 0:
 			draw_dashed_line(_unit_center(u), _unit_center(units[u.target_id]), GOLD, 1.5, 5)
 	for side in range(2):
 		for slot in range(6):
 			var rect = _slot_rect(side, slot)
 			if phase == "prepare":
-				var tint = Color(0.65, 0.26, 0.36, 0.12) if side == 1 else Color(0.22, 0.44, 0.36, 0.15)
-				draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), tint)
+				Floor.draw_pad(self,rect,side == 1)
 				if side == 0:
-					draw_rect(Rect2(rect.position + Vector2(5,14), rect.size - Vector2(10,20)), inspector.theme_accent, false, 2)
 					if formation[slot] < 0:
-						_center(rect.get_center() + Vector2(0,10), "+", Color("728369"), 24)
+						_center(rect.get_center() + Vector2(0,-18), "+", Color("#80dceb"), 24)
 					if selected == 0 and inspected_enemy_slot < 0 and (not is_instance_valid(deployment) or deployment.selected_role == 0) and not (is_instance_valid(deployment) and deployment.previews_unit(0)):
 						var guard_slot = formation.find(0)
 						if guard_slot >= 0 and Vector2(slot % 3 - guard_slot % 3, int(slot / 3) - int(guard_slot / 3)).length() <= 1.025:
@@ -606,7 +607,7 @@ func _draw() -> void:
 		_center(Vector2(822, 697), "PIXEL DEMO / 02", Color("a9b393"), 11)
 
 func _gui_input(event: InputEvent) -> void:
-	if paused or leaving:
+	if paused or leaving or (is_instance_valid(code_panel) and code_panel.hover_paused()):
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var point: Vector2 = (event.position - origin) / scale_factor

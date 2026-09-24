@@ -588,8 +588,16 @@ func rewards(offers: Array) -> void:
 		card.add_child(picture)
 		text(offer.title,26,card)
 		text(offer.description,21,card)
-		text("存入背包 · 整备时装备" if offer.operation == "gear" else "对应同学 · 立即生效",18,card)
+		text("选择强化对象" if offer.operation == "combat" and preload("res://game/run/reward_catalog.gd").combat_needs_owner(offer.target) else ("羁绊或专属效果 · 后续战斗生效" if offer.operation == "combat" else ("存入背包 · 整备时装备" if offer.operation == "gear" else "对应同学 · 立即生效")),18,card)
 		button("选取","reward:"+str(i),true,card)
+
+func reward_owner(offer: Dictionary, roster: Array, run) -> void:
+	clear("选择强化对象",offer.title+"\n"+offer.description)
+	var db = preload("res://game/content/content_db.gd")
+	for role in roster:
+		var available: bool = offer.target not in ["lens", "backup"] or run.combat_gear_available(role)
+		button(db.character(role).display_name,"reward_owner:"+db.role_id(role),available)
+	button("返回奖励","reward_back")
 
 func _empty(box: Control) -> void:
 	for child in box.get_children():

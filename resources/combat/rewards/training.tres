@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CampusCombatReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/combat_reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "training"
+display_name = "集中训练"
+description = "选择一人，本局生命与攻击提高15%；候补保留。"
+category = "训练"
+health_multiplier = 1.15
+attack_multiplier = 1.15

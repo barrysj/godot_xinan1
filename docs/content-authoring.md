@@ -139,3 +139,58 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 ## 维护边界
 
 新增内容需要加入资源引用清单，导出由引用关系打包，不依赖编辑器文件扫描。不要修改共享 Resource 来记录运行状态。描述文字要与配置保持一致；图鉴读取同一份资源，但不会把自然语言解析为技能。一次新增少量内容并实战检查，通常比先录入几十条再集中修错更省力。
+
+## 羁绊、强化与代码内容
+
+校园主线使用 `resources/combat/manifest.tres` 中的人物标签、羁绊和六项强化定义；六项强化与原奖励共用校园战利品候选池。`game/combat/combat_content_catalog.gd` 提供按稳定 ID 查找和内容校验；人物的战斗数值、技能与敌人阵容沿用原主线资源。运行计数、护盾、标记、攻速时限保存在模拟器，不写回 `.tres`。
+
+| 资源 | 主要字段与职责 |
+| --- | --- |
+| `CampusCombatCharacter` | 稳定ID、名称、标签ID数组、个人效果和代码颜色；按 `content_id` 对应主线人物 |
+| `CampusSynergy` | 稳定ID、说明、激活人数2～4、效果数组；只统计上阵人物，每个ID当前只有一档门槛 |
+| `CampusCombatReward` | 羁绊／装备／训练／专属类别、人物ID、效果；装备仅持有者生效，专属仅指定人物生效 |
+| `CampusBattleProc` | 一个触发点、效果、目标、次数作用域及参数；不是任意脚本或自然语言技能 |
+
+追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物先加入主线人物清单，再以相同稳定 ID 追加战斗标签定义；跨清单按 ID 对应，不按数组位置对应。
+
+触发点和去重约定：
+
+| trigger | 时间与上下文 |
+| --- | --- |
+| `battle_start` | 开战建好实例后，各绑定人物触发 |
+| `skill_emit` | 技能成功释放、弹道尚未命中；提供主目标和本次效果数组，用于穿透 |
+| `before_damage_skill` | 有效伤害技能命中、进入共享伤害批次之前；用于一次伤害加成 |
+| `skill_impact` | 每个实际有效技能效果结算后；代码效果按资源limit去重 |
+| `half_health` | 第一次结算后存活且不高于半血；没有符合目标也不会推迟到后续补触发 |
+| `verify` | 另一队友的有效普攻兑现漏洞后；team效果使用验证者作为来源 |
+| `hack_complete` | 玩家成功执行任一配方程序后 |
+
+`limit=owner` 为此来源效果每个人每场一次；`team` 为全队共享一次；`action` 为每个人每个动作一次；`none` 为每次匹配事件。计数键为来源ID、效果ID和作用域，跨羁绊／角色／奖励不串用；重试全部清零。`skill_target` 和 `action` 只允许三个技能触发点，其他事件没有目标／动作上下文。效果不递归触发新的技能事件，避免“护盾触发护盾”无限循环。
+
+支持效果：shield / heal 读取固定值与目标最大生命比例；hack 读取 `code_amount` 产出代码块；mark 读取时限（0时沿用manifest默认）并支持专属额外验证次数；attack_speed 是**攻击间隔倍率**（0.75为更快，1.5为更慢），要求正倍率和正持续时间；damage_bonus 只用于伤害技能命中前；pierce 只用于技能发射时，倍率作用于主目标技能伤害。射线、到期、冷却和护盾来源语义见 battle-demo.md。
+
+目标为 owner、lowest_ally、lowest_other_near、skill_target；附近距离读取 radius。`required_tag` 同时要求该人物带标签且开战时激活，用于“并肩防护”这样的羁绊升级。护盾默认来源自动命名空间化；只有需要共同移除同一类护盾时才显式填 source。不会默认移除其他来源护盾。
+
+共享内容校验运行 `res://game/content/combat_content_check.tscn`，检查人物、羁绊、强化定义的稳定 ID、引用和参数。主线流程另运行 `pwsh.exe -File ./run-battle-demo.ps1 -CodeCheck`，涵盖强化候选、存档和真实战斗；两类验证共同覆盖资源与玩家流程。
+
+`pwsh.exe -File ./run-battle-demo.ps1 -CodeCapture` 从原校园流程验证战斗、混合战利品卡和强化对象页并输出截图。共享内容资源和校验入口继续保留。
+
+### 四色代码内容
+
+`resources/combat/code_rules.tres` 是代码类型、容量、产出频率、程序、道具和默认装配的事实源；`code_catalog.gd` 校验后供模拟与界面共用。`code_rules.gd`、`code_program_def.gd`、`code_item_def.gd` 是显式Resource类型，不接受随意拼装的其他Resource。
+
+- 人物 `code_type` 指向类型ID。类型包含名称、符号、Color；校验允许3～5种，当前编辑器枚举为四色，增加第五种须同步扩展人物枚举和测试。
+- 程序包含稳定ID、名称、说明、cost字典、effect及治疗比例。消耗须为已注册颜色的正整数且不超过容量；新增配方可复用四种现有效果，新效果需实现处理器。
+- 两种道具定义amount和starting_count，运行库存不能超过初始数量。当前保存契约固定两槽，扩展槽位或补充库存需同步修改迁移与验证。
+- `CampusBattleProc.effect=hack` 以 `code_amount` 产出代码，`code_type` 为空时使用本人颜色。
+- 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。主线 ShortRun schema 7 保存装配与库存；旧 schema 由主线迁移处理。
+
+`game/combat/code_rules_check.tscn` 覆盖代码类型、坏配方、程序和道具事务；`scenes/battle_demo/code_integration_check.tscn` 通过原校园流程验证点击、存档及真实胜利。完整数值与玩家规则只维护于 battle-demo.md。
+
+## 原主线羁绊、战后强化与代码资源
+
+2026-09-24起，`resources/combat/` 内的数据作为原校园玩法的共享定义。人物按稳定 `content_id` 对应，禁止跨清单按数组下标映射。所有强化按原战利品候选资格抽取、单局限领一次；训练、镜片和备份奖励先选本局人物，选择状态可写入恢复检查点。
+
+主线 Encounter 提供维护间隔（1～60秒，默认6）和护盾值（1～144，默认35）。ShortRun schema 7 保存程序装配、道具库存和已领取强化；schema 1～6 旧构筑迁移获得默认破解配置及空强化清单，profile 外层版本不变。人物特定强化只对已进入本局 roster 的人物开放。
+
+程序、类型、人物颜色仍由 `resources/combat/code_rules.tres` 与人物资源定义；模拟、界面、验证入口归 `game/combat/` 和 `scenes/battle_demo/`。不要再创建第二个战斗场景或独立试炼存档。分析员为原 manifest 追加角色，旧活动存档保留原名单。

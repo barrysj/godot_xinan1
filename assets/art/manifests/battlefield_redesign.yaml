@@ -1,0 +1,50 @@
+schema_version: 3
+object:
+  id: battlefield_redesign
+  display_name: "战场视觉改造候选"
+  type: ui
+variants:
+  concept_001:
+    stage: concept
+    version: "001"
+    selection: unselected
+    approval: pending
+    root: design/concepts/battlefield-redesign/battlefield/001
+    files:
+      concept: concept-a.png
+      generation: generation.md
+    metadata:
+      usage: [concept_review]
+      note: "生成式概念示意，非实机截图；角色不在设计范围内"
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/battlefield-redesign.md
+      date: 2026-09-25
+      decision: approved
+      quote: "就用B吧，破解特效需要非常华丽"
+    root: design/concepts/battlefield-redesign/battlefield/002
+    files:
+      concept: concept-b.png
+      generation: generation.md
+    metadata:
+      usage: [concept_review]
+      note: "生成式概念示意，非实机截图；角色不在设计范围内"
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: unselected
+    approval: pending
+    root: design/concepts/battlefield-redesign/battlefield/003
+    files:
+      concept: concept-c.png
+      generation: generation.md
+    metadata:
+      usage: [concept_review]
+      note: "生成式概念示意，非实机截图；角色不在设计范围内"
+integration:
+  status: not_integrated
+  evidence: "候选 PNG 未作为资产接入；B 的原生绘制已实现于 scenes/battle_demo/battle_floor.gd，实机效果待评审，见 docs/art/tasks/battlefield-redesign.md。"

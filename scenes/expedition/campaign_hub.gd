@@ -232,6 +232,8 @@ func _show_journey() -> void:
 		_settle_campaign()
 	elif journey.data.screen == "reward":
 		campaign_panel.rewards(journey.data.offers)
+	elif journey.data.screen == "reward_owner":
+		campaign_panel.reward_owner(journey.data.pending_offer,run.roster,run)
 	elif journey.visit.data.is_empty(): campaign_panel.route(journey)
 	else:
 		campaign_panel.location(journey,campaign_mode == "prologue")
@@ -271,12 +273,20 @@ func _victory() -> void:
 		return
 	journey.data.screen = "reward"
 	if not journey.data.has("offers"):
-		var pool = RunModel.Rewards.eligible(run.badge_owned,run.roster,run.inventory,"campus_rewards",run.training)
+		var pool = RunModel.Rewards.eligible(run.badge_owned,run.roster,run.inventory,"campus_rewards",run.training,run.combat_rewards)
 		pool = pool.filter(func(offer): return offer.operation != "recruit")
 		var rng = RandomNumberGenerator.new()
 		rng.seed = (journey.data.id+journey.visit.data.place+"reward").hash()
 		RunModel.shuffle_with(pool,rng)
 		journey.data.offers = pool.slice(0,3).duplicate(true)
+	if _save_campaign(): _show_journey()
+
+func _finish_journey_reward(offer: Dictionary, owner_id: String = "") -> void:
+	journey.data.last_reward = offer.title+"："+offer.description
+	if not owner_id.is_empty(): journey.data.last_reward += "\n强化对象："+RunModel.Content.character(RunModel.Content.role_index(owner_id)).display_name
+	journey.visit.data.reward_taken = true
+	journey.data.screen = "visit"
+	journey.data.erase("pending_offer")
 	if _save_campaign(): _show_journey()
 
 func _settle_campaign() -> void:
@@ -350,11 +360,22 @@ func _campaign_action(id: String) -> void:
 		var index = int(id.trim_prefix("reward:"))
 		if journey.data.screen != "reward" or journey.visit.data.reward_taken: return
 		if index < 0 or index >= journey.data.offers.size(): return
-		if run.apply_reward(journey.data.offers[index]):
-			journey.data.last_reward = journey.data.offers[index].title+"："+journey.data.offers[index].description
-			journey.visit.data.reward_taken = true
-			journey.data.screen = "visit"
+		var offer: Dictionary = journey.data.offers[index]
+		if offer.operation == "combat" and RunModel.Rewards.combat_needs_owner(offer.target):
+			journey.data.pending_offer = offer.duplicate(true)
+			journey.data.screen = "reward_owner"
 			if _save_campaign(): _show_journey()
+		elif run.apply_reward(offer): _finish_journey_reward(offer)
+	elif id.begins_with("reward_owner:"):
+		if journey.data.screen != "reward_owner": return
+		if run.apply_reward(journey.data.pending_offer,id.trim_prefix("reward_owner:")):
+			var offer: Dictionary = journey.data.pending_offer
+			journey.data.erase("pending_offer")
+			_finish_journey_reward(offer,id.trim_prefix("reward_owner:"))
+	elif id == "reward_back":
+		journey.data.erase("pending_offer")
+		journey.data.screen = "reward"
+		if _save_campaign(): _show_journey()
 	elif id == "visit": _show_journey()
 	elif id == "photo":
 		var memory = preload("res://resources/content/library_memory.tres")
@@ -430,29 +451,6 @@ func _gui_input(event: InputEvent) -> void:
 	super._gui_input(event)
 	if campaign_enabled and screen == "base" and not campaign_panel.visible: _home()
 
-func _create_battle_presentations() -> void:
-	if campaign_mode.is_empty(): super._create_battle_presentations()
-
-func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
-	if campaign_mode.is_empty():
-		super._pawn(u,at,factor)
-		return
-	# Reuse the existing identity and idle frame without playing an animation.
-	var texture: Texture2D = u.portrait
-	var dimensions = Vector2(16,16) * factor
-	var anchor = Vector2(0.5,0.875)
-	var animation = u.battle_animation
-	if animation != null and animation.frames != null and animation.frames.has_animation("idle") and animation.frames.get_frame_count("idle") > 0:
-		texture = animation.frames.get_frame_texture("idle",0)
-		dimensions = animation.display_size * factor / 4.0
-		anchor = animation.anchor
-	var tint = Color.WHITE if u.hp > 0 else Color(0.6,0.6,0.6,0.35)
-	draw_texture_rect(texture,Rect2(at-dimensions*anchor,dimensions),false,tint)
-	var side_color = Color("4AAFD0") if u.side == 0 else Color("DF7468")
-	draw_line(at+Vector2(-26,8),at+Vector2(26,8),side_color,4)
-	if u.shield > 0 and u.hp > 0: draw_arc(at-Vector2(0,24),38,PI,TAU,24,Color("8dd7e7"),3)
-	if u.side == 0 and u.role == equipment: _tile(dungeon,8,10,at+Vector2(24,-3),1.3)
-
 func _draw_report() -> void:
 	super._draw_report()
 	if campaign_mode.is_empty(): return
@@ -483,11 +481,12 @@ func _draw() -> void:
 		if campaign_mode == "region": heading = "%d / 4 · %s" % [journey.data.step+1,run.node.name]
 		elif campaign_mode == "finale": heading = "终局 %d / 3 · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
 		_text(Vector2(244,54),heading,PAPER,22)
-		_pixel_panel(Rect2(28,96,1208,32),Color("202027"))
+		if not is_instance_valid(code_panel) or not code_panel.visible: _pixel_panel(Rect2(28,96,1208,32),Color("202027"))
 		var goal = "目标：击败守卫，领取奖励后返回地点。青色为我方，红色为敌方。"
 		if campaign_mode == "prologue": goal = "目标：突破校门封锁。部署四名同学后开战；胜利后取回校园路线。"
 		elif campaign_mode == "finale": goal = "目标：击破核心节点，然后执行「%s」。" % OPERATIONS[journey.data.finale_phase]
-		_text(Vector2(42,118),goal,PAPER,17)
+		if is_instance_valid(code_panel) and code_panel.visible: code_panel.summary.tooltip_text = goal
+		else: _text(Vector2(42,118),goal,PAPER,17)
 
 func _finale_operation() -> void:
 	if campaign_mode != "finale" or journey.data.screen != "operation" or not journey.visit.data.guard_won: return

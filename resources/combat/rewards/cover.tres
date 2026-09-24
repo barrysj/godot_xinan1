@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampusCombatReward" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/combat_reward_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "cover"
+trigger = "half_health"
+effect = "shield"
+target = "lowest_other_near"
+value = 45
+required_tag = "protect"
+[resource]
+script = ExtResource("s")
+id = "cover"
+display_name = "并肩防护"
+description = "守护成员触发半血保护时，同时保护两格内生命比例最低的另一名友军。"
+category = "羁绊"
+effects = Array[ExtResource("p")]([SubResource("p0")])

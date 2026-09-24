@@ -18,15 +18,14 @@ static func in_range(actor: Dictionary, target: Dictionary) -> bool:
 	return target.hp > 0 and distance(actor, target) <= actor.attack_range + 0.001
 
 static func advance(actor: Dictionary, units: Array[Dictionary], delta: float) -> Dictionary:
+	if actor.hp <= 0: return {}
 	actor.timer = maxf(0, actor.timer - delta)
 	if actor.moving:
-		actor.position = actor.position.move_toward(Vector2(actor.destination), actor.move_speed * delta)
-		if actor.position.is_equal_approx(Vector2(actor.destination)):
-			actor.cell = actor.destination
-			actor.moving = false
-		return {}
+		advance_movement(actor, delta)
+		if actor.moving: return {}
 	var foes: Array[Dictionary] = units.filter(func(u): return u.side != actor.side and u.hp > 0)
 	if foes.is_empty(): return {}
+	foes.sort_custom(func(a, b): return a.id < b.id)
 	# Keep a valid target in reach; otherwise prefer the nearest enemy in reach.
 	for foe in foes:
 		if foe.id == actor.target_id and in_range(actor, foe): return foe
@@ -64,3 +63,12 @@ static func advance(actor: Dictionary, units: Array[Dictionary], delta: float) -
 			first_step[next] = next if cell == actor.cell else first_step[cell]
 			frontier.append(next)
 	return {}
+
+## Simulation advances every mover before any actor tests a target's range.
+## Kept separate from intent selection so roster array order cannot move time.
+static func advance_movement(actor: Dictionary, delta: float) -> void:
+	if actor.hp <= 0 or not actor.moving: return
+	actor.position = actor.position.move_toward(Vector2(actor.destination), maxf(0, actor.move_speed) * maxf(0, delta))
+	if actor.position.is_equal_approx(Vector2(actor.destination)):
+		actor.cell = actor.destination
+		actor.moving = false

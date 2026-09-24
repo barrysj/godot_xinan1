@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CampusCombatCharacter" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/combat_character_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "striker"
+display_name = "冲刺手"
+description = "技能追击射程内生命比例最低的敌人。"
+tags = Array[String](["makers","assault"])
+code_type = "red"

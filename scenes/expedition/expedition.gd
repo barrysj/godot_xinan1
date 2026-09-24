@@ -104,6 +104,10 @@ func _ally_unit(role: int, slot: int) -> Dictionary:
 	for id in run.inventory:
 		if id != "shoe" and run.inventory[id] == role:
 			RunModel.Content.gear(id).apply(unit)
+	for reward in run.combat_rewards:
+		if reward.target == "training" and reward.get("owner", "") == RunModel.Content.role_id(role):
+			unit.max_hp = roundf(unit.max_hp * 1.15)
+			unit.atk = roundf(unit.atk * 1.15)
 	unit.hp = unit.max_hp
 	return unit
 
@@ -124,12 +128,13 @@ func _process(delta: float) -> void:
 			for u in units:
 				if u.side == 0:
 					report.append({"name": u.name, "damage": int(u.damage), "healing": int(u.healing)})
+			if result_won: run.code_supplies = simulation.items.duplicate()
 			screen = "report"
 	else:
 		if not paused:
 			visual_time += delta
 		queue_redraw()
-	if not paused and screen in ["map","battle","event","reward","report"]:
+	if not paused and not (is_instance_valid(code_panel) and code_panel.hover_paused()) and screen in ["map","battle","event","reward","reward_owner","report"]:
 		expedition_seconds += delta
 
 func _after_report() -> void:
@@ -151,9 +156,23 @@ func _choose_reward(index: int) -> void:
 	if screen != "reward":
 		return
 	var offers = run.offers()
-	if index < 0 or index >= offers.size() or not run.take_reward(offers[index].id):
+	if index < 0 or index >= offers.size(): return
+	if offers[index].get("operation", "") == "combat" and RunModel.Rewards.combat_needs_owner(offers[index].get("target", "")):
+		run.pending_reward_offer = offers[index].duplicate(true)
+		screen = "reward_owner"
 		return
+	if not run.take_reward(offers[index].id): return
 	notice = "已获得「" + offers[index].title + "」。可以继续选择路线。"
+	run.complete_node()
+	chosen_node = 0
+	screen = "map"
+
+func _choose_reward_owner(role: int) -> void:
+	if screen != "reward_owner" or not run.apply_combat_reward(run.pending_reward_offer,Content.role_id(role)): return
+	var title: String = run.pending_reward_offer.title
+	run.pending_reward_offer.clear()
+	run.reward_taken = true
+	notice = "已获得「"+title+"」，强化对象："+Content.character(role).display_name+"。"
 	run.complete_node()
 	chosen_node = 0
 	screen = "map"
@@ -244,6 +263,7 @@ func _draw() -> void:
 		"map": _draw_map()
 		"event": _draw_event()
 		"reward": _draw_rewards()
+		"reward_owner": _draw_reward_owner()
 		"report": _draw_report()
 		"summary": _draw_summary()
 
@@ -358,7 +378,20 @@ func _draw_rewards() -> void:
 			_text(Vector2(x + 24, y), line, DARK, 17)
 			y += 27
 		_flow_button(Rect2(x + 26, 493, 294, 52), "选择")
-	_text(Vector2(60, 635), "每次只选一份：训练立即生效；装备下场分配；新同学进入候补。", PAPER, 19)
+	_text(Vector2(60, 635), "每次只选一份：强化会保留到本次探索结束。", PAPER, 19)
+
+func _draw_reward_owner() -> void:
+	_header("选择强化对象",run.pending_reward_offer.title+"\n"+run.pending_reward_offer.description)
+	for i in range(run.roster.size()):
+		var role: int = run.roster[i]
+		var x := 90.0 + float(i % 3) * 380.0
+		var y := 190.0 + float(i / 3) * 170.0
+		var available: bool = run.pending_reward_offer.target not in ["lens", "backup"] or run.combat_gear_available(role)
+		_pixel_panel(Rect2(x,y,320,130),PAPER)
+		draw_texture_rect(Content.character(role).portrait,Rect2(x+20,y+18,80,90),false)
+		_center(Vector2(x+205,y+58),Content.character(role).display_name,DARK,23)
+		_flow_button(Rect2(x+110,y+76,180,42),"选择" if available else "装备已满",available)
+	_flow_button(Rect2(956,582,266,64),"返回奖励")
 
 func _book_icon(p: Vector2, width: float) -> void:
 	draw_rect(Rect2(p, Vector2(width, width)), DARK)
@@ -430,6 +463,16 @@ func _gui_input(event: InputEvent) -> void:
 				if Rect2(84 + i * 409, 493, 294, 52).has_point(p):
 					_choose_reward(i)
 					break
+		"reward_owner":
+			for i in range(run.roster.size()):
+				var x := 90.0 + float(i % 3) * 380.0
+				var y := 190.0 + float(i / 3) * 170.0
+				if Rect2(x+110,y+76,180,42).has_point(p):
+					_choose_reward_owner(run.roster[i])
+					break
+			if Rect2(956,582,266,64).has_point(p):
+				run.pending_reward_offer.clear()
+				screen = "reward"
 		"report":
 			if Rect2(405, 587, 470, 66).has_point(p): _after_report()
 		"summary":
@@ -489,8 +532,9 @@ func _run_smoke() -> void:
 	formation = [-1, 0, 3, 1, 2, -1]
 	run.roster.append(4)
 	selected = 3
+	var expected_reserve: int = run.roster.filter(func(role): return not formation.has(role))[0]
 	_swap_reserve()
-	assert(formation.has(4) and not formation.has(3))
+	assert(formation.has(expected_reserve) and not formation.has(3))
 	_start()
 	for u in units:
 		if u.side == 0: u.hp = 1

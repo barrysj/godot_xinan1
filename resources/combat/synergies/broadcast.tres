@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CampusSynergy" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/synergy_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/battle_proc.gd" id="p"]
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("p")
+id = "primary"
+trigger = "verify"
+effect = "heal"
+target = "lowest_ally"
+limit = "team"
+value = 45
+[resource]
+script = ExtResource("s")
+id = "broadcast"
+display_name = "广播站"
+description = "首次验证漏洞时，治疗生命比例最低的队友45点。"
+effects = Array[ExtResource("p")]([SubResource("p0")])

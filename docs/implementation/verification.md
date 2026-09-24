@@ -238,3 +238,37 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 | `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v` | 资源台 33 tests 通过；Manifest `asset_002` 文件和审批结构可读取 |
 
 截图写入 `.godot/m1-main-menu-<尺寸>-<state>-<index>.png`。质量闸门为 `PASS_WITH_NOTES`：六张达到精确 4K 像素尺寸并保持既有构图约束，但增强细节不视作原生 4K 摄影采样。Godot 仍有既有根证书、旧像素图动态加载和退出泄漏警告，不属于本功能失败。
+
+## 羁绊与破解试炼验证 E30
+
+2026-09-22；基线 `f6b79df` → 共享战斗 `599ea0d` 加本轮试炼工作树。PowerShell 7 / Godot 4.7.2 Windows，详情与已知边界见 [CORE-05](core-05.md)、[COMBAT-02](combat-02.md)。
+
+- 历史独立试炼检查（运行器已退役）：八个入口全部退出0；内容95、效果70、存档76、三战104、表现34、准确性51项均无失败，原动作与自动战斗检查PASS。
+- 历史独立试炼截图（运行器已退役）：1600×900真实三战、两次领奖、破解选择、暂停冻结、通关解锁PASS；独立`.godot`存档，截图已查看并在对话展示。
+- `pwsh.exe -File ./run-battle-demo.ps1 -Smoke`：两敌阵、四装备归属与倍速一致PASS；探索场景`-- --campaign-flow-check --order=012` 124/0，`-- --run-smoke`三路线与输入／存档／恢复／重试PASS。
+
+存档故障注入有一条预期备份写入错误；根证书及旧Kenney原图加载警告仍存在。没有据此扩展为Web、手机或平衡性验收。
+
+## 四色代码与消耗道具验证 E31
+
+2026-09-22；基线 `fce306c` 加四色代码工作树，PowerShell 7 / Godot 4.7.2 Windows。当前规则见 battle-demo.md，实施入口与边界见 CORE-05。
+
+- 历史独立试炼检查（运行器已退役）：十场景通过，规则最终74/0（最后三项配置类型检查另行重跑）、真实鼠标UI13/0；内容95、效果70、存档76、旧三战104、表现34、准确性51均0失败；动作／自动战斗PASS。
+- 历史独立试炼截图（运行器已退役）：真实三战获胜、6次程序、两件道具消耗、暂停冻结与终端视口内断言PASS；截图为 `.godot/trial-code-*.png`，已查看并在对话展示。
+- 覆盖普攻按动作产色、护盾命中、漏洞颜色归属、上限、四程序、共享冷却、待执行指令、不可执行操作无扣费、道具转换、v1/v2迁移、v3保存与失败回滚、默认Resource数组不受装配污染。测试使用独立存档。
+
+根证书读取错误与旧图片警告为既有环境边界；故障注入预期出现备份写入失败，不代表脚本失败。脚本运行器额外检查成功标记及SCRIPT ERROR，避免解析失败被误报通过。未覆盖手机、手柄、Web或真人平衡评估。
+
+## 原主线代码战斗验证 E32
+
+2026-09-24；基线 `b4b091e` 加奖励接入工作树，PowerShell 7 / Godot 4.7.2 Windows。直接运行原校园场景的集成夹具：
+
+```powershell
+& 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe' --path . --log-file .godot/main-code-final.log res://scenes/battle_demo/code_integration_check.tscn -- --capture --size=1920x1080
+```
+
+去掉 capture 并添加 --headless 可做无图形检查；截图仅图形模式。2026-09-24本次图形检查 37 项 / 0失败，无图检查35项 / 0失败。集成覆盖主线奖励池六项强化候选、实际混合奖励卡和强化对象页、程序／道具、真实鼠标道具／转码／提权、暂停退出与取消、真实胜利、schema7及schema5迁移、半场及胜利检查点恢复；日志 `.godot/main-code-integration.log`，截图见 `.godot/main-code-rewards.png`、`main-code-reward-owner.png`、`main-code-terminal-1920x1080.png` 和 `main-code-battle.png`。旧E32图形截图轮次22项 / 0失败为历史证据。
+
+原入口回归：expedition.tscn 的 --campaign-flow-check --order=012 为124/0；--run-smoke 三路线PASS；--pause-flow-smoke PASS；deployment_check.tscn --deployment-check 为0失败。图形运行 expedition.tscn --content-check 输出 CONTENT_CHECK_COMPLETE；menu.tscn --codex-check 为36项PASS。参数均置于引擎 -- 后。原 trial runner -Check 十场景通过（代码74、UI27、内容95、效果70、存档76、三战104、表现34、准确性51以及动作/自动战斗PASS）。
+
+1920×1080、1920×1200、2560×1440实际截图尺寸和终端边界通过；截图 .godot/main-code-terminal-<尺寸>.png 和 main-code-battle.png 已查看并展示。已有根证书读取错误、Kenney原图加载告警仍存在；未据此声明导出、手机或真人趣味性验收。
