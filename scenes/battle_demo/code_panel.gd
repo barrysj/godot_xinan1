@@ -2,6 +2,7 @@ extends Control
 ## Flat combat HUD. Hover pause never owns or clears the player's manual pause.
 const Codes = preload("res://game/combat/code_catalog.gd")
 const Sockets = preload("res://scenes/battle_demo/code_sockets.gd")
+const Chip = preload("res://scenes/battle_demo/code_resource_chip.gd")
 const Icon = preload("res://scenes/battle_demo/code_action_icon.gd")
 const Picker = preload("res://scenes/battle_demo/code_type_picker.gd")
 var game
@@ -75,9 +76,11 @@ func _ready() -> void:
 		card.add_child(button)
 		var controls := {"card":card.get_parent(),"button":button}
 		if entry.effect == "convert":
-			_label(card,"消耗 2",11)
+			controls.source_preview = Chip.new()
+			card.add_child(controls.source_preview)
 			controls.source = _picker(card)
-		_label(card,"生成 %d" % entry.amount,11)
+		controls.destination_preview = Chip.new()
+		card.add_child(controls.destination_preview)
 		controls.destination = _picker(card)
 		if entry.effect == "convert": controls.destination.select(1)
 		item_controls[entry.id] = controls
@@ -173,7 +176,10 @@ func _process(_delta: float) -> void:
 			card.add_child(cost)
 			var recipe := {}
 			for kind in data.cost:
-				recipe[kind] = _label(cost,"%s %d" % [Codes.RULES.types[kind].name,data.cost[kind]],12)
+				var chip := Chip.new()
+				chip.configure(kind, data.cost[kind], false)
+				cost.add_child(chip)
+				recipe[kind] = chip
 			program_controls[id] = {"card":card.get_parent(),"button":button,"recipe":recipe}
 	_update_hud()
 
@@ -197,13 +203,15 @@ func _update_hud() -> void:
 		controls.button.queue_redraw()
 		controls.card.tooltip_text = Codes.program(id).description+"\n"+("就绪 · 点击释放" if error.is_empty() else error)+"\n悬停暂停 · 移开继续"
 		for kind in controls.recipe:
-			var color: Color = Codes.RULES.types[kind].color
-			controls.recipe[kind].modulate = color if sim.blocks.get(kind,0) >= Codes.program(id).cost[kind] else Color(color,0.42)
+			controls.recipe[kind].configure(kind, Codes.program(id).cost[kind], sim.blocks.get(kind,0) >= Codes.program(id).cost[kind])
 	for id in item_controls:
 		var controls: Dictionary = item_controls[id]
 		var destination: String = Codes.RULES.types.keys()[controls.destination.selected]
 		var source: String = Codes.RULES.types.keys()[controls.source.selected] if controls.has("source") else ""
 		var error: String = sim.item_error(id,destination,source)
+		if controls.has("source_preview"):
+			controls.source_preview.configure(source, 2, sim.blocks.get(source,0) >= 2, "−")
+		controls.destination_preview.configure(destination, Codes.item(id).amount, sim.blocks.get(destination,0) + Codes.item(id).amount <= Codes.RULES.cache_cap, "+")
 		controls.button.disabled = not error.is_empty() or game.paused
 		controls.button.available = error.is_empty()
 		controls.button.remaining = sim.items.get(id,0)

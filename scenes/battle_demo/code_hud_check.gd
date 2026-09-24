@@ -34,9 +34,12 @@ func _ready() -> void:
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 0
 	panel._update_hud()
 	verify(panel.program_controls.takeover.button.disabled,"unaffordable program disabled")
+	verify(not panel.program_controls.takeover.recipe.purple.enough and panel.program_controls.takeover.recipe.purple.amount == 2,"recipe icon shows unaffordable permission cost")
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 	panel._update_hud()
 	verify(panel.program_controls.takeover.button.available and not panel.program_controls.takeover.button.disabled,"affordable legal program highlights")
+	verify(panel.program_controls.takeover.recipe.purple.enough and panel.program_controls.takeover.recipe.blue.enough,"recipe icons brighten as costs become affordable")
+	verify(panel.item_controls.converter.source_preview.kind == "red" and panel.item_controls.converter.destination_preview.kind == "blue","item input and output previews use resource icons")
 	for controls in [panel.program_controls.takeover,panel.item_controls.supply,panel.item_controls.converter]:
 		move(controls.button.get_global_rect().get_center())
 		verify(panel.hover_paused(),"action hover pauses")
@@ -67,6 +70,8 @@ func _ready() -> void:
 	verify(panel.hover_paused(),"inline type selection pauses")
 	game.simulation.blocks.red = 0
 	panel.item_controls.supply.destination.select(0)
+	panel._update_hud()
+	verify(panel.item_controls.supply.destination_preview.kind == "red" and panel.item_controls.supply.destination_preview.amount == 3,"supply output icon follows selected resource")
 	panel._use_code_item("supply")
 	verify(game.simulation.blocks.red == 3 and panel.item_controls.supply.button.remaining == 0,"item updates bank and count badge")
 	verify(panel.hover_paused(),"using item preserves hover pause")

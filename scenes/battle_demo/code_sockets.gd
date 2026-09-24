@@ -1,6 +1,7 @@
 extends Control
 ## Read-only code sockets shared by the HUD, recipes and item preview.
 const Codes = preload("res://game/combat/code_catalog.gd")
+const Glyph = preload("res://scenes/battle_demo/code_resource_glyph.gd")
 var kind := "red"
 var count := 0
 var capacity := 6
@@ -30,6 +31,6 @@ func _draw() -> void:
 		draw_rect(rect, Color(tint, 0.22) if filled else Color("142334"))
 		draw_rect(rect, tint if filled else Color("536071"), false, 1.5)
 		if filled:
-			draw_string(font, rect.position + Vector2(4,22), data.symbol, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x-8, 18, tint)
+			Glyph.draw_icon(self, kind, rect.get_center(), tint, 8)
 		else:
 			draw_line(rect.position + Vector2(6,24), rect.end - Vector2(6,24), Color("536071"), 1)

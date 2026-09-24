@@ -1,16 +1,14 @@
 extends HBoxContainer
 const Codes = preload("res://game/combat/code_catalog.gd")
+const TypeButton = preload("res://scenes/battle_demo/code_resource_button.gd")
 signal item_selected(index: int)
 var selected := 0
 func _ready() -> void:
 	add_theme_constant_override("separation",3)
 	for kind in Codes.RULES.types:
 		var index := get_child_count()
-		var button := Button.new()
-		button.text = ["指","数","协","权"][index]
-		button.custom_minimum_size = Vector2(21,23)
-		button.add_theme_font_size_override("font_size",12)
-		button.tooltip_text = Codes.RULES.types[kind].name
+		var button := TypeButton.new()
+		button.kind = kind
 		button.pressed.connect(func(): select(index); item_selected.emit(index))
 		add_child(button)
 	select(selected)
