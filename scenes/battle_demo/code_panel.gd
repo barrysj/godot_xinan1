@@ -15,6 +15,8 @@ var code_fx: Control
 var canvas: Control
 var programs: HBoxContainer
 var items: VBoxContainer
+var item_details: Control
+var selected_item := ""
 var summary: Label
 var selectors: Array[OptionButton] = []
 var selection_box: HBoxContainer
@@ -65,16 +67,26 @@ func _ready() -> void:
 		selectors.append(picker)
 	items = VBoxContainer.new()
 	items.position = Vector2(12,206)
-	items.add_theme_constant_override("separation",12)
+	items.add_theme_constant_override("separation",8)
 	canvas.add_child(items)
+	item_details = Control.new()
+	item_details.position = Vector2(76,206)
+	item_details.mouse_filter = MOUSE_FILTER_IGNORE
+	canvas.add_child(item_details)
 	for entry in Codes.RULES.items:
-		var card := _card(items)
-		_label(card,entry.display_name,12)
-		var button = Icon.new()
-		button.action_id = entry.id
-		button.pressed.connect(func(): _use_code_item(entry.id))
-		card.add_child(button)
-		var controls := {"card":card.get_parent(),"button":button}
+		var icon := Icon.new()
+		icon.action_id = entry.id
+		icon.toggle_mode = true
+		icon.pressed.connect(func(): _select_item(entry.id))
+		items.add_child(icon)
+		var card := _card(item_details)
+		card.get_parent().custom_minimum_size.x = 182
+		card.get_parent().visible = false
+		_label(card,entry.display_name,15)
+		var effect := _label(card,entry.description,12)
+		effect.custom_minimum_size.x = 170
+		effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var controls := {"card":card.get_parent(),"icon":icon}
 		if entry.effect == "convert":
 			controls.source_preview = Chip.new()
 			card.add_child(controls.source_preview)
@@ -83,6 +95,13 @@ func _ready() -> void:
 		card.add_child(controls.destination_preview)
 		controls.destination = _picker(card)
 		if entry.effect == "convert": controls.destination.select(1)
+		controls.state = _label(card,"",11)
+		var use_button := Button.new()
+		use_button.text = "使用"
+		use_button.custom_minimum_size.y = 34
+		use_button.pressed.connect(func(): _use_code_item(entry.id))
+		card.add_child(use_button)
+		controls.button = use_button
 		item_controls[entry.id] = controls
 	var motion := CheckButton.new()
 	motion.text = "简化特效"
@@ -143,14 +162,18 @@ func _select_program(slot: int,index: int) -> void:
 func _process(_delta: float) -> void:
 	var screen = game.get("screen")
 	visible = (screen == null or screen == "battle") and game.phase in ["prepare","battle"]
-	if not visible: return
+	if not visible:
+		if not selected_item.is_empty(): _select_item("")
+		return
 	sim = game.simulation
 	running = game.phase == "battle"
+	if not running and not selected_item.is_empty(): _select_item("")
 	var factor: float = minf(game.size.x/1280.0,game.size.y/720.0)
 	canvas.scale = Vector2.ONE*factor
 	canvas.position = (game.size-Vector2(1280,720)*factor)/2
 	programs.visible = running
 	items.visible = running
+	item_details.visible = running
 	selection_box.visible = not running
 	for slot in range(selectors.size()):
 		for index in range(Codes.RULES.programs.size()):
@@ -186,11 +209,21 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouse: pointer = event.position
 
+func _select_item(id: String) -> void:
+	if not id.is_empty() and (not running or game.paused): return
+	selected_item = "" if id == selected_item else id
+	for item_id in item_controls:
+		item_controls[item_id].card.visible = item_id == selected_item
+		item_controls[item_id].icon.button_pressed = item_id == selected_item
+	_update_hud()
+
 func hover_paused() -> bool:
 	if not is_visible_in_tree() or game.phase != "battle" or game.get("screen") not in [null,"battle"]: return false
-	for group in [program_controls,item_controls]:
-		for controls in group.values():
-			if controls.card.is_visible_in_tree() and controls.card.get_global_rect().has_point(pointer): return true
+	for controls in program_controls.values():
+		if controls.card.is_visible_in_tree() and controls.card.get_global_rect().has_point(pointer): return true
+	for controls in item_controls.values():
+		if controls.icon.is_visible_in_tree() and controls.icon.get_global_rect().has_point(pointer): return true
+		if controls.card.is_visible_in_tree() and controls.card.get_global_rect().has_point(pointer): return true
 	return false
 
 func _update_hud() -> void:
@@ -213,10 +246,11 @@ func _update_hud() -> void:
 			controls.source_preview.configure(source, 2, sim.blocks.get(source,0) >= 2, "−")
 		controls.destination_preview.configure(destination, Codes.item(id).amount, sim.blocks.get(destination,0) + Codes.item(id).amount <= Codes.RULES.cache_cap, "+")
 		controls.button.disabled = not error.is_empty() or game.paused
-		controls.button.available = error.is_empty()
-		controls.button.remaining = sim.items.get(id,0)
-		controls.button.queue_redraw()
-		controls.card.tooltip_text = Codes.item(id).description+"\n"+("就绪 · 点击使用" if error.is_empty() else error)+"\n悬停暂停 · 移开继续"
+		controls.state.text = "就绪" if error.is_empty() else error
+		controls.icon.available = sim.items.get(id,0) > 0
+		controls.icon.remaining = sim.items.get(id,0)
+		controls.icon.tooltip_text = Codes.item(id).display_name+" · 点击查看"
+		controls.icon.queue_redraw()
 	summary.text = ("悬停暂停  ·  " if hover_paused() and not game.paused else "")+"羁绊："+("、".join(sim.tags) if not sim.tags.is_empty() else "未激活")+"  ·  "+sim.system_status()+"  ·  下次维护 %.1f秒" % maxf(0,sim.next_pulse-sim.elapsed)
 
 func code_origin(event: Dictionary) -> Vector2:
@@ -230,11 +264,13 @@ func _cast_code(id: String) -> void:
 	_consume_pending()
 	_update_hud()
 func _use_code_item(id: String) -> void:
-	if not running or game.paused: return
+	if not running or game.paused or selected_item != id: return
 	var controls: Dictionary = item_controls[id]
 	var destination: String = Codes.RULES.types.keys()[controls.destination.selected]
 	var source: String = Codes.RULES.types.keys()[controls.source.selected] if controls.has("source") else ""
-	if sim.use_item(id,destination,source): _consume_pending()
+	if sim.use_item(id,destination,source):
+		_consume_pending()
+		_select_item("")
 	_update_hud()
 func feedback_frozen() -> bool:
 	return game.paused or hover_paused()

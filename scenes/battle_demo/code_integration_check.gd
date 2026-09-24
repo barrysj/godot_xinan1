@@ -79,6 +79,8 @@ func _ready() -> void:
 	panel._process(0)
 	await get_tree().process_frame
 	var before: Dictionary = game.simulation.blocks.duplicate()
+	await click(panel.item_controls.supply.icon)
+	verify(panel.item_controls.supply.card.visible, "item icon opens its effect and use controls")
 	panel.item_controls.supply.destination.select(3)
 	panel._update_hud()
 	await click(panel.item_controls.supply.button)
@@ -87,6 +89,8 @@ func _ready() -> void:
 	var retry_state = game.CampaignSave.decode(game.progress.active_run)
 	verify(not retry_state.is_empty() and retry_state.build.code_supplies.supply == 1, "interrupted battle reload retains unspent checkpoint inventory")
 	var conversion: Dictionary = panel.item_controls.converter
+	await click(conversion.icon)
+	verify(conversion.card.visible and not panel.item_controls.supply.card.visible, "selecting another item switches detail")
 	conversion.source.select(3)
 	conversion.destination.select(1)
 	panel._update_hud()

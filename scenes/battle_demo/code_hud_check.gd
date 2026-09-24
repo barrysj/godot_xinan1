@@ -10,6 +10,13 @@ func move(at: Vector2) -> void:
 	event.position = at
 	event.global_position = at
 	get_viewport().push_input(event,true)
+func click(button: Button) -> void:
+	for pressed in [true,false]:
+		var event := InputEventMouseButton.new()
+		event.position = button.get_global_rect().get_center()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = pressed
+		get_viewport().push_input(event,true)
 func _ready() -> void:
 	var game = Campaign.instantiate()
 	game.progress.path = "res://.godot/code-hud-check.json"
@@ -40,7 +47,11 @@ func _ready() -> void:
 	verify(panel.program_controls.takeover.button.available and not panel.program_controls.takeover.button.disabled,"affordable legal program highlights")
 	verify(panel.program_controls.takeover.recipe.purple.enough and panel.program_controls.takeover.recipe.blue.enough,"recipe icons brighten as costs become affordable")
 	verify(panel.item_controls.converter.source_preview.kind == "red" and panel.item_controls.converter.destination_preview.kind == "blue","item input and output previews use resource icons")
-	for controls in [panel.program_controls.takeover,panel.item_controls.supply,panel.item_controls.converter]:
+	verify(not panel.item_controls.supply.card.visible and not panel.item_controls.converter.card.visible,"item rail initially shows icons and count badges only")
+	var initial_supply: int = game.simulation.items.supply
+	panel._use_code_item("supply")
+	verify(game.simulation.items.supply == initial_supply,"collapsed item cannot be used")
+	for controls in [panel.program_controls.takeover,{"button":panel.item_controls.supply.icon,"card":panel.item_controls.supply.icon},{"button":panel.item_controls.converter.icon,"card":panel.item_controls.converter.icon}]:
 		move(controls.button.get_global_rect().get_center())
 		verify(panel.hover_paused(),"action hover pauses")
 		var before: float = game.simulation.elapsed
@@ -66,6 +77,19 @@ func _ready() -> void:
 	move(Vector2(640,600))
 	verify(game.paused and game.pause_overlay.visible,"pause menu survives hover exit")
 	game._resume_battle()
+	click(panel.item_controls.supply.icon)
+	verify(panel.selected_item == "supply" and panel.item_controls.supply.card.visible and not panel.item_controls.converter.card.visible,"first click opens selected item effect and use controls")
+	game.screen = "campaign"
+	panel._process(0)
+	verify(panel.selected_item.is_empty(),"leaving battle clears selected item detail")
+	game.screen = "battle"
+	panel._process(0)
+	click(panel.item_controls.supply.icon)
+	click(panel.item_controls.converter.icon)
+	verify(panel.selected_item == "converter" and panel.item_controls.converter.card.visible and not panel.item_controls.supply.card.visible,"other icon switches detail")
+	click(panel.item_controls.converter.icon)
+	verify(panel.selected_item.is_empty() and not panel.item_controls.converter.card.visible,"second click collapses detail")
+	click(panel.item_controls.supply.icon)
 	move(panel.item_controls.supply.destination.get_global_rect().get_center())
 	verify(panel.hover_paused(),"inline type selection pauses")
 	game.simulation.blocks.red = 0
@@ -73,8 +97,8 @@ func _ready() -> void:
 	panel._update_hud()
 	verify(panel.item_controls.supply.destination_preview.kind == "red" and panel.item_controls.supply.destination_preview.amount == 3,"supply output icon follows selected resource")
 	panel._use_code_item("supply")
-	verify(game.simulation.blocks.red == 3 and panel.item_controls.supply.button.remaining == 0,"item updates bank and count badge")
-	verify(panel.hover_paused(),"using item preserves hover pause")
+	verify(game.simulation.blocks.red == 3 and panel.item_controls.supply.icon.remaining == 0,"item updates bank and count badge")
+	verify(panel.selected_item.is_empty() and not panel.item_controls.supply.card.visible,"using item closes detail")
 	var fx = panel.code_fx
 	fx.set_process(false)
 	var drops: Array = fx.particles.filter(func(p): return p.kind == "drop" and p.ui)
@@ -88,6 +112,7 @@ func _ready() -> void:
 	game.screen = "battle"
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 	game.simulation.blocks.purple = 1
+	game.simulation.blocks.blue = 1
 	panel._update_hud()
 	fx.particles.clear()
 	move(panel.program_controls.takeover.button.get_global_rect().get_center())
@@ -104,6 +129,12 @@ func _ready() -> void:
 			verify(panel.get_viewport_rect().encloses(panel.programs.get_global_rect()),"skills fit viewport")
 			verify(panel.get_viewport_rect().encloses(panel.items.get_global_rect()),"items fit viewport")
 			get_viewport().get_texture().get_image().save_png("res://.godot/code-hud-%dx%d.png" % [resolution.x,resolution.y])
+			click(panel.item_controls.converter.icon)
+			move(panel.item_controls.converter.card.get_global_rect().position+Vector2(20,16))
+			await RenderingServer.frame_post_draw
+			verify(panel.item_controls.converter.card.visible and panel.get_viewport_rect().encloses(panel.item_controls.converter.card.get_global_rect()),"item detail fits viewport")
+			get_viewport().get_texture().get_image().save_png("res://.godot/code-hud-detail-%dx%d.png" % [resolution.x,resolution.y])
+			click(panel.item_controls.converter.icon)
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 	panel._update_hud()
 	move(panel.program_controls.takeover.button.get_global_rect().get_center())
