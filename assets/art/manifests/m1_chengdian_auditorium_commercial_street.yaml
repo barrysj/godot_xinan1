@@ -187,6 +187,28 @@ variants:
       generation_source_resolution: [1672, 941]
       native_4k: false
       runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_006:
+    stage: asset
+    version: "anomaly-006"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/008
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_005
+      reference_variant: m1_yinhua_halal_cafeterias/asset_anomaly_006
+      review_scope: single_location_structure_anchored_rift_calibration
+      edit_scope: branching_violet_rift_across_auditorium_eave_and_facade
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
 integration:
   status: not_integrated
   active_variant: null
