@@ -1,5 +1,7 @@
 extends RefCounted
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
+const CampusLocationSkin = preload("res://scenes/expedition/campus_location_skin.gd")
+const CampaignBoard = preload("res://scenes/expedition/campaign_board.gd")
 var failures = 0
 var checks = 0
 
@@ -52,6 +54,10 @@ func run_checks(hub) -> void:
 		return
 	if "--hub-icon-capture" in OS.get_cmdline_user_args():
 		await capture_hub_icons(hub)
+		hub.get_tree().quit(1 if failures else 0)
+		return
+	if "--campus-environment-preview-capture" in OS.get_cmdline_user_args():
+		await capture_campus_environment_preview(hub)
 		hub.get_tree().quit(1 if failures else 0)
 		return
 	if "--readability-capture" in OS.get_cmdline_user_args():
@@ -400,6 +406,48 @@ func capture_library_environment_preview(hub) -> void:
 			picture.save_png("res://.godot/m1-library-preview-%s-%s-1920x1080.png" % [ExplorationSkin.LIBRARY_ENVIRONMENT_STATES[state_index],ExplorationSkin.LIBRARY_ENVIRONMENT_VIEWPOINTS[viewpoint_index]])
 	verify(hub.progress.active_run == before,"preview leaves active run unchanged")
 	print("LIBRARY_ENVIRONMENT_PREVIEW_CAPTURE checks=%d failures=%d" % [checks,failures])
+
+func capture_campus_environment_preview(hub) -> void:
+	hub.get_window().mode = Window.MODE_WINDOWED
+	await hub.get_tree().process_frame
+	var panel = hub.campaign_panel
+	verify(is_instance_valid(panel.campus_preview_image),"campus preview opens in game")
+	verify(panel.campus_preview_state_buttons.size() == 2,"campus preview has two state buttons")
+	var before: Dictionary = hub.progress.active_run.duplicate(true)
+	for location in CampusLocationSkin.LOCATIONS:
+		for state in CampusLocationSkin.STATES:
+			var path := CampusLocationSkin.path(location.id,state)
+			verify(FileAccess.file_exists(path),"approved campus background exists %s/%s" % [location.id,state])
+			var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+			verify(image != null and image.get_size() == Vector2i(3840,2160),"approved campus background is 4K %s/%s" % [location.id,state])
+	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		hub.get_window().size = resolution
+		await hub.get_tree().process_frame
+		for location_index in range(CampusLocationSkin.LOCATIONS.size()):
+			panel.campus_preview_selector.select(location_index)
+			panel.campus_preview_selector.item_selected.emit(location_index)
+			for state_index in range(CampusLocationSkin.STATES.size()):
+				panel.campus_preview_state_buttons[state_index].pressed.emit()
+				verify(panel.campus_preview_image.texture != null,"campus preview loads selected texture")
+				await RenderingServer.frame_post_draw
+				if location_index in [0,5,10,11]:
+					var picture = hub.get_viewport().get_texture().get_image()
+					verify(picture.get_size() == resolution,"campus preview matches viewport")
+					picture.save_png("res://.godot/m1-campus-preview-%s-%s-%dx%d.png" % [CampusLocationSkin.LOCATIONS[location_index].id,CampusLocationSkin.STATES[state_index],resolution.x,resolution.y])
+	verify(hub.progress.active_run == before,"campus preview leaves active run unchanged")
+	hub._campaign_action("campus_preview_base")
+	verify(hub.progress.active_run == before,"leaving campus preview does not checkpoint")
+	hub.journey.begin("library",0)
+	hub.journey.enter(0,[])
+	hub.campaign_panel.location(hub.journey,true)
+	await RenderingServer.frame_post_draw
+	var gate_board: Control
+	for child in hub.campaign_panel.column.get_children():
+		if child is CampaignBoard: gate_board = child
+	verify(gate_board != null and gate_board.location_background != null,"south gate gameplay uses approved anomaly background")
+	var gate_picture = hub.get_viewport().get_texture().get_image()
+	gate_picture.save_png("res://.godot/m1-campus-gate-gameplay-1920x1200.png")
+	print("CAMPUS_ENVIRONMENT_PREVIEW_CAPTURE checks=%d failures=%d" % [checks,failures])
 
 func capture_page(hub, label: String, resolution: Vector2i) -> void:
 	hub.queue_redraw()

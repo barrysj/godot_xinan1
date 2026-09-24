@@ -1,6 +1,72 @@
 # 美术任务：M1 校园探索地点环境
 
-状态：十二处明确现实地点概念已批准；旧步道与篮球场两个未确认现实身份候选仍待评审。任务草案与版本记录遵循[美术工作流](../WORKFLOW.md)；本任务不修改校园大地图、路线、地点 Resource 或运行时代码。
+状态：负责人于2026-09-25批准当前12张日常＋12张异常候选并要求统一版本，已逐字节提升为两组正式4K背景。正式日常共用 `asset_daily_003 / m1-campus-daily-4k-v1`，正式异常共用 `asset_anomaly_009 / m1-campus-anomaly-4k-v1`；每处试稿编号保留历史，不视作不同正式版本。南门异常态已接入战役，全部24张已提供只读游戏内预览；其余11处尚未绑定战役节点，接入效果未验收。
+
+## Godot 接入与映射边界（2026-09-25，待负责人评审）
+
+- 战役的 `gate` 身份由实景证实为南门，序章与后续同名地点使用正式异常态 `asset_anomaly_009`，沿用既有热点、守卫、奖励与离开流程；没有改存档字段。日常态不自动进入战役，因为游戏尚无日常／异常时间或区域状态切换规则。
+- 12处共24张均可通过 `--campus-environment-preview` 打开游戏内只读预览，按地点和日常／异常切换；按需加载当前单张4K，避免一次常驻全部背景。预览不是可游玩地点，也不写入存档。南门 Manifest 为 `authorized_active`，其余11处保持 `not_integrated`，待真实地点与战役节点的映射决定。
+- 现有 `walk`、`court`、`hall`、`end_b`、`end_c` 是逻辑占位，不能凭画面外观替换成具体实景；图书馆关卡当前是室内图书馆，不应被图书馆正面外景静默覆盖。真实地点与现有四站路线数量也不同，若要求12处全部可游玩，需单独决定路线／节点分配。
+- 运行入口：`scenes/expedition/campus_location_skin.gd`、`campaign_board.gd`、`campaign_panel.gd`、`campaign_hub.gd`。真实截图：[南门序章热点](../../../design/concepts/m1-campus-locations/review/codex-workflow/runtime-integration/gate-gameplay-1920x1200.png)、[图书馆正面异常预览](../../../design/concepts/m1-campus-locations/review/codex-workflow/runtime-integration/library-front-anomaly-preview-1920x1080.png)、[西湖中心日常预览](../../../design/concepts/m1-campus-locations/review/codex-workflow/runtime-integration/west-lake-center-daily-preview-2560x1440.png)。另有三种桌面尺寸、四个代表地点和两种状态的完整可重建捕获，保存在 `.godot/m1-campus-preview-*` 缓存，不作为长期唯一证据。
+- Godot 图形检查 `--campaign-flow-check --campus-environment-preview-capture`：149 checks / 0 failures，逐张确认24张正式PNG存在且为3840×2160，三分辨率切换、预览退出不写存档、南门真实战役画面通过；常规 `--campaign-flow-check`：124 checks / 0 failures。资源台33项测试通过；AssetCatalog 扫描26对象／462登记文件、缺失0、不一致0。技术接入通过不等于负责人对接入效果批准。
+
+## 24张背景资产批准与统一版本提升（2026-09-25）
+
+- 负责人决定：“可以了，都提升为正式资产，注意他们应该属于同一个版本（正常和异常可以分为两个版本）”。本次批准绑定下表各地点当时的最新具体候选；各图SHA-256、正式路径与逐字节拷贝关系见[提升审计清单](../../../design/concepts/m1-campus-locations/review/codex-workflow/campus-formal-promotion-2026-09-25.json)。
+- 12处正式日常统一为 `asset_daily_003`（`m1-campus-daily-4k-v1`），12处正式异常统一为 `asset_anomaly_009`（`m1-campus-anomaly-4k-v1`）。地点专属候选ID及目录编号仅用于追溯生成历程，不再作为这两组正式发布的版本号；不为每张图另开发布版本。
+- 正式文件稳定落在 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png` 与同目录 `anomaly.png`，只存干净运行PNG。旧低分辨率日常正式稿的批准历史仍保留，原图与旧正式包逐字节一致，Manifest 改指对应概念源并标为已被日常4K版替代；没有把旧稿错误记为拒绝。候选原图、提示词和审图材料继续留在 `design/concepts/`。
+
+| 地点对象 | 批准的日常源 | 批准的异常源 |
+| --- | --- | --- |
+| `m1_campus_locations` | [daily.png](../../../design/concepts/m1-campus-locations/m1_campus_locations/006/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png) |
+| `m1_pinxue_courtyard` | [daily.png](../../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png) |
+| `m1_pinxue_atrium` | [daily.png](../../../design/concepts/m1-campus-locations/m1_pinxue_atrium/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png) |
+| `m1_xuezi_cafeteria` | [daily.png](../../../design/concepts/m1-campus-locations/m1_xuezi_cafeteria/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png) |
+| `m1_student_activity_center` | [daily.png](../../../design/concepts/m1-campus-locations/m1_student_activity_center/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png) |
+| `m1_west_lake_center` | [daily.png](../../../design/concepts/m1-campus-locations/m1_west_lake_center/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png) |
+| `m1_chengdian_auditorium_commercial_street` | [daily.png](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png) |
+| `m1_yinhua_halal_cafeterias` | [daily.png](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png) |
+| `m1_basic_laboratory_building` | [daily.png](../../../design/concepts/m1-campus-locations/m1_basic_laboratory_building/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png) |
+| `m1_west_lake_entrance` | [daily.png](../../../design/concepts/m1-campus-locations/m1_west_lake_entrance/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png) |
+| `m1_sports_field` | [daily.png](../../../design/concepts/m1-campus-locations/m1_sports_field/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png) |
+| `m1_library_front` | [daily.png](../../../design/concepts/m1-campus-locations/m1_library_front/004/daily.png) | [anomaly.png](../../../design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png) |
+
+- 两组正式图均为3840×2160、RGB不透明PNG，由约1671～1672×941生成源高质量双三次重采样，**不是原生4K生成**。本次仅资产批准与文件提升，不等于运行时地点映射或Godot接入效果批准；12处对象均保持 `not_integrated`，旧步道／篮球场候选不在本次范围。
+- [24张正式文件成对总览](../../../design/concepts/m1-campus-locations/review/codex-workflow/formal-24-4k-contact-sheet.jpg)由正式目录实际PNG制作，按每处“日常／异常”并排，已逐图检查身份、顺序与状态未串位。
+
+## 会堂009裂隙形态扩展至其他10处（2026-09-24）
+
+- 负责人认可会堂009更短、暗影更宽的裂隙形态，要求继续生成其他10处；这确认生产基准，不自动批准其他10张具体资产。银桦＋清真食堂008与会堂009本轮未改；10张新图均为 `unselected + pending`，不提升正式包或接入游戏。
+- 统一从各地点上一版异常图精确编辑，只参考会堂009的短分叉紫色亮边＋较宽暗紫黑错位阴影；裂隙贴着当地门柱、檐口、立面转角、原有假山或远景看台，保留青蓝平面板、短数据雨、贴地投影和墨蓝灰天空，不加实体碎块／圆环。
+- 西湖中心与西湖入口继续只参考既有双数字天鹅图的断续青蓝／品红水面碎光、数字波纹和弱倒影；不复制天鹅、建筑或天空，至少半幅水面保持自然深色。图书馆 Boss 区把更高密度放在左右窗翼及邻近立面，不恢复旗帜／旗杆，中央入口和广场保留可读性。
+
+| 地点 | 新待审版本 | 本轮裂隙落点 |
+| --- | --- | --- |
+| 南门 | [010](../../../design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png) | 左校门柱 |
+| 品学楼单区庭院 | [008](../../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png) | 单区楼梯塔／廊桥节点 |
+| 品学楼组团中庭 | [008](../../../design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png) | 中庭右侧楼翼与横向连廊节点 |
+| 学子食堂 | [008](../../../design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png) | 食堂上部转角／窗带 |
+| 学生活动中心 | [009](../../../design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png) | 弧形檐口 |
+| 西湖中心 | [008](../../../design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png) | 湖边廊亭檐口；保留数字水面 |
+| 基础实验大楼 | [008](../../../design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png) | 玻璃楼梯侧屋檐／窗带 |
+| 西湖入口 | [008](../../../design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png) | 原有假山表面；保留数字水面 |
+| 操场 | [008](../../../design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png) | 远景看台檐口 |
+| 图书馆正面 | [009](../../../design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png) | Boss区左右窗翼；无旗帜 |
+
+- [10张新增候选审图拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-ten-4k-review.jpg)、[12处当前异常候选审图拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-twelve-4k-review.jpg)；各版本 `generation.md` 保留原始生成源、完整提示词、参考角色及SHA-256。首次西湖中心裂隙误入树丛的中间图已舍弃，最终廊亭檐口稿才登记。
+- 逐图原始输出和整组缩图已目检；通用质量闸门为 `PASS_WITH_NOTES`：真实地点、构图和无实体异常要求均可辨，但部分铺地偏湿亮；远景操场裂隙与西湖廊亭裂隙在缩图上较细，图书馆局部密度显著高于普通地点，仍须负责人审美评审。10张原始输出为1671～1672×941，交付为3840×2160 RGB不透明PNG，经16:9中心微裁和高质量双三次重采样，非原生4K。技术验证不替代资产批准；未改变运行画面。
+
+## 成电会堂＋商业街裂隙缩短与阴影加宽（2026-09-24）
+
+- 负责人评价008主裂隙稍长，要求缩短长度、适当加宽裂隙阴影。仅精修此地点，不批量修改其他10处。一次过短试稿经并排查看发现偏离“稍微”，已舍弃；最终009从008原始生成图重新编辑。
+- [009待审异常图](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png)、[008／009对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/chengdian-008-009-rift-comparison.jpg)：檐口分叉仍向下延伸至上层窗带，但不再落至楼梯；裂口内部的暗紫黑错位阴影加宽，发亮边缘相对变细。既有青蓝面板、短数据雨、横向光痕、地面投影、商业街次裂隙与墨蓝灰天空继续保留。
+- [来源、完整提示词和哈希](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/generation.md)。009登记为 `asset_anomaly_007 / unselected + pending`；008保留历史待评版本，不擅自标记拒绝。交付3840×2160 RGB不透明PNG，属约1672×941生成源高质量双三次重采样，非原生4K；无运行时改动。
+
+## 成电会堂＋商业街建筑裂隙单图校准（2026-09-24）
+
+- 负责人指出其余11张未清楚呈现银桦＋清真食堂008那种沿建筑檐口、立面转角分叉的次元裂隙，要求先以一张图试验。选成电会堂＋商业街007作严格编辑源，银桦＋清真食堂008仅作裂隙形态参考。
+- [008待审异常图](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/008/anomaly.png)及[007／008对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/chengdian-007-008-rift-comparison.jpg)现有从成电会堂檐口贯至立面／入口转角的分叉紫色主裂隙，右侧商业建筑有较小次裂隙；建筑、墨蓝灰天空、青蓝平面板、短数据雨和地面光痕保留。主裂隙偏亮，可能接近闪电效果，需负责人判断。未把此方向批量推广至另10处。
+- [来源、完整提示词与哈希](../../../design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/008/generation.md)；008登记 `asset_anomaly_006 / unselected + pending`，007仍为待审历史候选。最终3840×2160 RGB不透明PNG为约1672×941生成源的高质量双三次重采样，非原生4K；无运行时改动。
 
 ## 目标与范围
 
@@ -24,18 +90,72 @@
 
 用户随后又明确提供并确认九处实景，分别登记为 `m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field` 与 `m1_library_front`。这些对象保留现实地点身份，但同样不擅自绑定现有运行时占位；图书馆正面候选按用户要求移除了旗帜与旗杆。
 
-## 当前版本与方案
+## 008基准扩展至其余11处（2026-09-24）
 
-- 当前使用版：无；`m1_campus_locations` 未接入，`integration.status` 为 `not_integrated`。
+- 负责人决定：“可以了，保留这种程度的异常元素+异常密度，继续生成其他11张图”；以银桦＋清真食堂008为普通地点的强度与非实体效果基准。此决定批准生产方向，不代替新11张的具体版本资产评审；银桦008保持原文件不重生。
+- 新版分布：南门009；品学楼单区庭院／组团中庭、学子食堂、西湖中心、成电会堂＋商业街、基础实验大楼、西湖入口、操场各007；学生活动中心008；图书馆正面008。各地新增版本均为 `unselected + pending`，历史候选保持其原登记状态；12张日常和正式旧包不变。
+- 普通地点沿用薄青蓝矩形面板、局部短数据雨、角状紫色裂隙与无体积的贴地光痕，清除先前铺地实物状发光碎块。西湖中心与西湖入口以既有双数字天鹅水面图为水面语言参考，保留断续青蓝／品红波纹、碎光与倒影，不复制天鹅或建筑；该参考文件实际位于主仓库 `E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png`，当前工作树无副本。图书馆 Boss 区把更高密度集中在主体左右窗带与中央玻璃，广场则较疏，且不恢复旗帜／旗杆。
+- [12张最新版异常评审拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/approved-density-12-anomaly-4k-review.jpg)和[批次索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)可逐项追到各版本 `generation.md` 的完整提示词、参考角色和SHA-256。逐张生成源和整组缩图已目检；11张新图均为3840×2160 RGB不透明PNG，从1671～1672×941原始输出高质量双三次重采样，非原生4K。`asset_report.py` 11张全部通过；资源台33项测试通过，AssetCatalog扫描26对象／426登记文件，缺失0、不一致0、错误0；批次索引可解析。通用质检为 `PASS_WITH_NOTES`：身份、地面物理逻辑、湖水与窗侧指令均可读，但多处地面偏湿亮、部分面板偏像灯具，需负责人审美复核。技术检查不代替批准，无运行时画面修改。
+
+## 银桦＋清真食堂单图精修（2026-09-24）
+
+- 负责人反馈：重复生成12张成本过高，先以银桦＋清真食堂为代表样图。006 中铺地上的立体晶体／实体碎块不符合数字异常设定；蓝色矩形平面光块、投影裂隙、窗内短数据雨及建筑裂缝方向认可。该反馈只否定本地点006的实体碎块，不自动否定或批准其他11张。
+- 新候选 [007异常图](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png)、[006／007并排对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/yinhua-006-007-comparison.jpg) 与 [完整提示词／来源](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/generation.md)：两步精修，移除铺地实体并恢复地砖，再保留／补强无体积、沿透视投射在砖面上的断续青紫裂隙。006 保留历史并在 Manifest 记为 `unselected + rejected`，007 为 `unselected + pending`，不推及其他地点的批准状态。
+- 负责人接着要求“再适当增多一些异常”。仅本地点生成 [008异常图](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png)，[007／008并排对照（左旧右新）](../../../design/concepts/m1-campus-locations/review/codex-workflow/yinhua-007-008-comparison.jpg)，[完整提示词／来源](../../../design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/generation.md)。增量集中在两侧立面的薄青蓝矩形面板、窗内短数据雨、铺地透视投影裂隙与微弱反光；不加入实体地面碎块、悬浮圆环或紫色天空。008 登记 `asset_anomaly_006 / unselected + pending`；007 仍为待评参照版本，不擅自标记拒绝或批准。
+- 008 验证：生成源与并排缩图已目检，4K PNG 解码／尺寸／RGB不透明与全画幅检查通过；资源台33项测试通过，AssetCatalog扫描26对象／404登记文件、缺失0、不一致0、错误0，批次索引可解析。通用任务质检为 `PASS_WITH_NOTES`：增量可辨、地面无实体碎块；地面仍偏湿亮，多处面板的局部强度需负责人审美复核。技术验证不代替资产批准。
+- 代表样图选择遵循 `create-game-assets` 的先确定单张视觉目标再扩展家族；“无实体地面碎块”已由负责人对008方向的确认推广到其余地点，具体新版本仍待评。最终图源与并排缩图已实际查看；007通过3840×2160、RGB不透明、无透明像素检查；资源台33项测试通过，AssetCatalog扫描26对象／402登记文件、缺失0、不一致0、错误0；批次索引可解析、git diff --check通过。通用结构与任务检查为PASS_WITH_NOTES：实体碎块消失且建筑保持可辨，铺地仍整体偏湿亮，后续需负责人审美复核。技术验证不替代批准。
+
+## 去圆环、地面分布与 Boss 区修订（2026-09-24）
+
+- 负责人指出上一批发光圆环在各地点重复、地面异常分布不足。该批12张异常旧候选保留历史文件，但相应 Manifest 版本标为 `unselected + rejected`；新12张另立版本，状态均为 `unselected + pending`。本次修订不影响12张日常候选或既有正式包。
+- 新版目录：南门008；品学楼单区庭院、组团中庭、学子食堂、西湖中心、成电会堂＋商业街、银桦＋清真食堂、基础实验楼、西湖入口、操场各006；学生活动中心007；图书馆正面007。去除的是悬浮发光圆环，真实弧形建筑（食堂门厅、体育馆屋顶等）保持。
+- 视觉方案：地点特有的角状霓虹裂缝和窗内短数据雨，配合前中景分散的青蓝／紫色碎片、透视正确的断续投影与弱倒影。西湖两张的水面仅参考 `E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png` 的断续数字波纹与青蓝／品红碎光，不移植天鹅、图书馆建筑或天空。图书馆正面作为 Boss 区，立面裂缝、窗内数据雨和广场碎片显著增加，同时保留入口与建筑轮廓可读，且不恢复旗帜／旗杆。
+- [新版12张评审拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/ring-free-ground-anomaly-4k-review.jpg)与[批次索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)；每张的两步编辑提示词、来源、交付哈希在对应 `generation.md`。生成源已逐张目检；最终图像为3840×2160 RGB不透明PNG，由1671～1672×941的模型输出高质量双三次重采样，不宣称原生4K。12张解码、尺寸、RGB与不透明检查通过；资源台33项测试通过；AssetCatalog扫描26对象／400登记文件，缺失0、不一致0、错误0；批次索引可解析，git diff --check通过。通用图像质量闸门判为 `PASS_WITH_NOTES`：画面核心任务、地点身份、地面接触与构图可读性通过；广场表面整体偏湿亮、个别投影近似几何线框，需负责人审美复核。技术与通用质检不替代风格或正式资产批准。
+
+## 其余11处异常扩展（2026-09-24）
+
+- 人工决定：“可以了，继续其它地点的生成”视为学生活动中心006天空与局部异常密度可作为扩展基准；仅批准生产方向，不替代本批12张异常的逐张或整批资产批准。
+- 新候选：南门007、品学楼单区庭院／组团中庭、学子食堂、西湖中心、成电会堂＋商业街、银桦＋清真食堂、基础实验楼、西湖入口和操场各005的 `anomaly.png`，分别登记 `asset_anomaly_003 / unselected + pending`。图书馆正面005因主题性不足保留为rejected，006加入少量档案残页，登记 `asset_anomaly_004 / unselected + pending`；活动中心006维持 `asset_anomaly_005 / unselected + pending`。12张新版日常均维持 `asset_daily_002 / unselected + pending`。
+- [11张4K评审拼图](../../../design/concepts/m1-campus-locations/review/codex-workflow/remaining-anomaly-4k-review.jpg)、[完整批次索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)。拼图按对象ID字母顺序排列，仅用于审图；各地点正式候选路径、完整提示词、来源与哈希见各自 `generation.md`。
+- 视觉检查：所有天空为低饱和墨蓝灰；青蓝碎光与淡倒影集中在门柱、塔芯／廊桥、食堂入口、湖岸廊架、假山、远处看台等各自地标。图书馆006在玻璃中轴及相邻窗格加入略多碎光和少量档案残页，前广场留空，旗帜和旗杆没有恢复。逐张生成源与整组缩小图已查看；水面与地面反光、窗格局部效果仍需负责人审美复核。
+- 技术处理：内置imagegen逐地点编辑，原生生成源均为1672×941；交付为3840×2160、RGB不透明PNG。源上下各裁0.25像素后使用高质量双三次重采样，属于非原生4K。11张均通过解码、尺寸、格式及透明度检查。无Godot运行画面改动；运行时地点绑定仍待定。
+- 验证：最新版12日常＋12异常共24张全部通过3840×2160解码、RGB与不透明检查；资源台33项测试通过；AssetCatalog扫描26对象／376登记文件，缺失0、不一致0、错误0；批次索引可解析、11张最新异常路径齐全；git diff --check通过。此技术验证不替代正式资产审批。
+
+## 当前样图微调（2026-09-23）
+
+- 人工决定：004的天空比例已确认，只批准天空色调与比例，不是整张资产批准；负责人要求“再适当加一些异常元素（只加一点）”。Manifest在asset_anomaly_003的metadata中记录有限范围的sky_approval，不把整张改为approved。
+- 追加反馈：005与上一版差异不明显，asset_anomaly_004改为rejected并保留。新候选006/anomaly.png（asset_anomaly_005 / unselected + pending）在入口增加可辨认的青蓝光块、碎光与柔和地面倒影；保持墨蓝灰天空与双光弧，不增加天空异象。
+- [新候选与完整提示词](../../../design/concepts/m1-campus-locations/m1_student_activity_center/006/generation.md)、[前后对照（左005、右006）](../../../design/concepts/m1-campus-locations/review/codex-workflow/activity-anomaly-visible-comparison.jpg)。沿用create-game-assets先校准代表资产再扩展家族，本次仅微调样图，不将批准天空理解为批准新异常密度或完成24张。
+- 生成方式：内置imagegen局部编辑；实际源1672×941，最终3840×2160 RGB不透明PNG，高质量双三次重采样、非原生4K。逐图解码与尺寸检查通过；原图及最终文件前后对照已实际查看，天空没有恢复高饱和紫色，主要建筑和道路保持可读。
+- 验证基线：c1ea04a加本轮工作树；不改Godot或正式运行目录。原12张日常保持不变，其余11张异常尚未按最终样图扩展。
+- 验证结果：资源台33项测试通过；AssetCatalog扫描26对象／352登记文件，缺失0、不一致0、错误0；git diff --check通过。
+
+## 配对4K重制与天空校准记录（2026-09-22）
+
+- 用户明确纠正：异常需要第一版类似的黑紫氛围，但削减异常元素数量；不是维持白天只叠加少量异常。第二轮 `asset_anomaly_002` 因日光方向不符改为 `unselected + rejected`。
+- 第三轮已生成12张日常、9张黑紫异常中间稿；负责人随后指出“天空过于紫色了”。这9张紫天中间稿不作为最终交付；生成路径、完整提示词及参考用途保存在 [批次生成索引](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-generation.json)，不宣称已完成12张新版异常。
+- 按负责人指定的 `create-game-assets`，先以天空占比大的学生活动中心做代表样图，确认后才扩展家族。天空改为低饱和墨蓝／蓝黑、灰蓝云层，紫色留在建筑暗部和局部異象；保留双光弧，不新增异常，不改机位与建筑结构。本任务不重定义全局Token或风格规范。
+- 12张日常新版为 `asset_daily_002 / unselected + pending`：南门目录006，其余地点004，文件名 `daily.png`。活动中心同目录的 `anomaly.png` 登记 `asset_anomaly_003 / unselected + pending`，用途仅为天空校准样图。
+- 已落盘13张均为3840×2160、RGB、不透明PNG。原始生成尺寸全部1672×941，采用System.Drawing HighQualityBicubic，源上下各裁0.25像素以适配16:9再放大；属于重采样4K，不是原生4K或AI超分，不能增加真实细节。
+- 当前待决只是一项：活动中心样图的“墨蓝灰天空＋建筑暗紫＋局部紫色异象”比例是否合适。确认后修订其余11张异常，包括图书馆（书页／记忆异常较多但集中，继续去除旗帜／旗杆），再做最终24张配对验收。
+- 技术与QA：`create-game-assets/scripts/asset_report.py --expect-size 3840x2160 --json` 13张通过；按 `image-quality-check` 的技术、身份、物理、提示词、可读性、伪影顺序检查，结果 `PASS_WITH_NOTES`。详见 [技术属性与哈希](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-technical.json)、[质量报告](../../../design/concepts/m1-campus-locations/review/codex-workflow/paired-4k-quality.json)、[前后对照（左修订、右紫天中间稿）](../../../design/concepts/m1-campus-locations/review/codex-workflow/sky-calibration-comparison.jpg)。
+- 来源：Codex内置imagegen，未回报可核实模型版本；原生输出和来源路径保留，不推定为“image 2.5”。公开／商业再分发许可仍未单独核验。
+- 修正南门Manifest历史登记错误：首轮异常拒绝意见此前误写到了 `concept_001`；现按既有阶段表恢复其 `pending`，将拒绝证据归还 `asset_anomaly_001`，不改变已批准 `concept_003` 和日常001。
+- 验证基线：`art/m1-campus-locations` 的 `70105e7` 加本轮工作树；不改变运行时代码、正式生效路径或接入状态。
+- 资源校验：33项资源台测试通过；`AssetCatalog.scan()` 为26对象／348文件，缺失0、哈希不一致0、错误0；`git diff --check` 通过。仅保存和登记本轮候选，不修改旧正式资产。
+
+## 既有版本与方案（截至2026-09-21，现行修订见上节）
+
+- 当时正式资产（2026-09-21）：十二处日常背景曾按批准概念逐字节提升到 `assets/art/backgrounds/m1_campus_locations/<地点>/daily.png`；该稳定路径现已更新为2026-09-25批准的4K日常版。首轮异常态（南门 `004`、其余地点 `002`）因全景赛博化与异常覆盖过强，登记为 `asset_anomaly_001 / unselected + rejected` 并保留作反例。收敛版异常态为南门 `005`、其余地点 `003`，当时是3840×2160待评候选，并非本次获批异常源。
 - 当前概念基准：`concept_003`；[南门远景修订概念](../../design/concepts/m1-campus-locations/m1_campus_locations/003/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_locations/003/generation.md)。原始 `concept_001`、`concept_002` 保留用于回溯与对比。
-- 当前已确认部分与后续待决事项：负责人确认南门概念可以，`concept_003` 作为已选概念基准；其远景主楼通过缩小门窗、降低细节和空气透视表达距离，南门近景结构、右上补全及四个热点锚点保持不变。后续地点仍需逐一确认现实身份；概念批准不等同于正式资产批准或 Godot 接入授权。
+- 当前已确认部分与后续待决事项：负责人确认南门概念可以，`concept_003` 作为已选概念基准；其远景主楼通过缩小门窗、降低细节和空气透视表达距离，南门近景结构、右上补全及四个热点锚点保持不变。十二张日常态已获得正式资产提升授权；首轮异常态已因“过于夸张”被否决。收敛版除图书馆外以保留 75%–85% 日常画面、单一局部异常为目标，图书馆保留全组最高但局部化的异常密度；这些新版仍需逐张或整批确认，且任何资产批准均不等同于 Godot 接入授权。
 - 新增地点候选：`m1_campus_walk/concept_001`；[校园湖畔步道概念](../../design/concepts/m1-campus-locations/m1_campus_walk/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_walk/001/generation.md)。该候选使用校园平面图的大关系，不宣称具体现实步道身份，状态为 `unselected + pending`。
 - 新增地点候选：`m1_campus_court/concept_001`；[校园篮球场概念](../../design/concepts/m1-campus-locations/m1_campus_court/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_campus_court/001/generation.md)。该候选使用校园平面图的运动场组团大关系，不宣称具体现实球场身份，状态为 `unselected + pending`。
 - 已批准明确地点概念：`m1_pinxue_courtyard/concept_001`；[品学楼单区内部庭院概念](../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_pinxue_courtyard/001/generation.md)。该版本基于用户提供的庭院实景、校园平面图和已批准日常方向，状态为 `selected + approved`，运行时地点绑定待确认。
 - 已批准明确地点概念：`m1_pinxue_atrium/concept_001`；[品学楼组团中庭概念](../../design/concepts/m1-campus-locations/m1_pinxue_atrium/001/concept.png)，生成记录见同目录 [generation.md](../../design/concepts/m1-campus-locations/m1_pinxue_atrium/001/generation.md)。该版本基于用户提供的中庭实景、校园平面图和已批准日常方向，状态为 `selected + approved`，运行时地点绑定待确认。
 - 已批准九处明确实景概念：`m1_xuezi_cafeteria`、`m1_student_activity_center`、`m1_west_lake_center`、`m1_chengdian_auditorium_commercial_street`、`m1_yinhua_halal_cafeterias`、`m1_basic_laboratory_building`、`m1_west_lake_entrance`、`m1_sports_field`、`m1_library_front` 的 `concept_001`。每处均使用对应用户实景作为身份参考、南门 `concept_003` 作为画风参考；全部为 `selected + approved`，运行时地点绑定待确认，图书馆版本额外记录 `remove_flags_and_flagpoles`。
 - 复用的批准方向／资产及原评审记录：沿用 v0.3 清爽理工校园 × 轻数字美术 × 局部赛博强化方向，以及已批准图书馆环境的日常层渲染纪律；不复制图书馆几何，不修改图书馆任务。
-- 技术依据：1672 × 941、不透明 RGB PNG；日常状态使用 `data/visual/colors.json` 的日常层；间距与安全区按 `data/visual/spacing.json` 的 4px 倍数原则在后续原生 UI 接入中处理。本轮不生成 Godot 资源、不改运行时代码。
+- 当时技术依据（2026-09-21）：旧正式日常资产为 1672×941、不透明 RGB PNG；收敛版异常候选由 1672×941 生成源以高质量双三次插值交付为 3840×2160、24bpp RGB、不透明 PNG，属于重采样 4K 而非原生 4K。日常状态使用 `data/visual/colors.json` 的日常层；间距与安全区按 `data/visual/spacing.json` 的 4px 倍数原则在后续原生 UI 接入中处理。当轮未生成 Godot 资源或修改运行时代码。
 - 接入要求：未来背景不烘焙文字、按钮、侧栏、热点图标或路线线条；需在 1920×1080、2560×1440、1920×1200 三种桌面视口验证四角与底部操作区不压关键建筑。
 
 ## 阶段评审
@@ -58,17 +178,23 @@
 | 概念 | `m1_west_lake_entrance/concept_001/concept.png` · `A7B3AF56903EA047EEDCF7C4A271FD4EADCE32A4FB684D72707514DF1410BC7B` | 已批准 | 西湖入口；前广场、湖面与右侧假山喷泉通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 概念 | `m1_sports_field/concept_001/concept.png` · `7C09249556773ED8DDA0C390E14B3CDDABE274BCE3958CDE18AC4D0E67688A2E` | 已批准 | 操场；球场尺度、球门、树列与远处拱形看台通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
 | 概念 | `m1_library_front/concept_001/concept.png` · `9A1149B2E7071D13AC43F0BC6452085AA23F9C97E76EBF04DB5908C2D09D2C1C` | 已批准 | 图书馆正面；旗帜与旗杆移除、正立面对称、玻璃中轴与前广场通过概念验收。 | 2026-09-21，负责人确认本批地点概念验收通过 |
-| 资产 | 未制作 | 不适用 | 概念批准后才制作正式背景。 | 待负责人决定 |
+| 资产 | 十二处 `asset_daily_001`；当时对应 `assets/art/backgrounds/m1_campus_locations/*/daily.png` | 历史已批准，现被4K版替代 | 完全复用已批准概念像素，不重绘；旧文件与概念源 SHA-256 逐项一致，批准证据保留。 | 2026-09-21，负责人要求“将这12张都提升为资产” |
+| 资产 | 十二处异常态 `asset_anomaly_001`；南门 `004`、其余地点 `002` | 已拒绝 | 异常覆盖与霓虹／数据元素密度过高，削弱现实校园识别和地点差异；保留文件与记录作反例，不提升、不接入。 | 2026-09-21，负责人反馈“过于夸张”，并要求按质量建议重新生成 |
+| 资产 | 十二处收敛版异常态 `asset_anomaly_002`；南门 `005`、其余地点 `003` | 已拒绝（日光方向不符） | 普通地点只保留一种局部异常，维持白天、自然材质和大部分日常画面；图书馆仍为全组最高异常密度，但将书页、档案框与知识图谱集中在中央玻璃中轴和内圈广场，继续保持无旗帜／旗杆。最终文件均为 3840×2160 重采样交付。 | 2026-09-21，按负责人要求重新生成并提升交付分辨率；等待资产批准 |
+| 资产 | 十二处 `asset_daily_002`；南门006、其余004的daily.png | 2026-09-25已批准为正式日常源 | 新生成日常4K候选，未沿用旧资产批准；具体来源与哈希见各目录generation.md及提升审计清单。 | 2026-09-25，负责人要求整批提升为正式资产 |
+| 资产 | 十二处当前异常候选；具体目录见提升审计清单 | 2026-09-25已批准为正式异常源 | 西湖水面与图书馆窗翼约束保留；不同试稿编号不代表不同正式发布版本。 | 2026-09-25，负责人要求整批提升为正式资产 |
+| 资产 | 十二处 `asset_daily_003 / m1-campus-daily-4k-v1`、十二处 `asset_anomaly_009 / m1-campus-anomaly-4k-v1` | 两组正式版本已批准并提升 | 24张正式文件与具体获批源逐字节一致，仍未接入Godot。 | 2026-09-25，负责人要求“同一个版本（正常和异常可以分为两个版本）” |
+| 资产 | 活动中心 `asset_anomaly_003`；004/anomaly.png | 待天空校准评审 | 墨蓝灰天空、局部紫色异象；其余11张异常待此样图确认后制作。 | 2026-09-22，负责人反馈“天空过于紫色了” |
 | 接入效果 | 未接入 | 不适用 | 正式资产批准并提升后才接入 Godot。 | 待负责人决定 |
 
-## 验证与结果
+## 历史验证与结果（截至2026-09-21）
 
-- 本任务验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 均为 `selected + approved`；旧步道与篮球场仍为 `unselected + pending`；所有对象集成状态保持 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。
-- 技术检查结果：PowerShell 7 使用 `System.Drawing.Image` 核对南门 `concept_003`、步道、球场、两个品学楼地点及本轮九处实景候选均为 1672 × 941、24bpp RGB、不透明；九张新增候选均经 `view_image` 实际查看与通用图片质量闸门检查通过。概念无可见全景控件、浏览器 chrome、按钮、热点图标、水印、学校 logo 或可读招牌；图书馆正面的旗帜、旗杆、底座和阴影均已移除，玻璃中轴、天空与前广场连续。本轮 `git diff --check` 通过，资源台 33 项测试通过。
-- Manifest 回写：南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 共十二个具体版本均登记为 `selected + approved`，批准证据指向本任务与 2026-09-21 负责人确认；旧步道与篮球场不在本次批准范围，继续保持 `unselected + pending`。不填写正式生效文件，全部对象集成均为 `not_integrated`。
-- 一致性检查：当前没有正式资产、Godot 引用或生效文件；概念文件与 generation.md 位于同一候选根目录，参考原图位于任务 references 目录，不进入正式资产路径。
-- 资源目录扫描：`AssetCatalog.scan()` 通过；全局 26 个对象、263 个文件，缺失 0、哈希不一致 0；南门、两个品学楼地点与本轮九处实景共十二个具体版本均为 `matched + selected + approved`，运行时地点绑定仍为 `pending_runtime_location_binding`，集成均为 `not_integrated`；旧步道与篮球场仍为 `matched + unselected + pending`。
-- 适用的布局／动画验证结果：本轮为静态概念，不执行 Godot 接入、动画或运行截图；概念原图已在对话展示。
-- 实际截图／动作预览证据：南门、步道、球场、两个品学楼候选及本轮学子食堂、学生活动中心、西湖中心、成电会堂+商业街、银桦食堂+清真食堂、基础实验大楼、西湖入口、操场、图书馆正面九张候选原图均已在对话展示；无运行时截图。
-- 未解决问题：旧步道候选仍缺具体路径照片和地图标记；旧篮球场候选仍缺指定场地照片和地图标记；教学走廊仍缺走廊实景；十二处已批准概念的运行时 ID 映射尚未确认；两个终点仍未获得独立身份资料；用户提供原图的公开／商业再分发许可未单独核验；概念批准不等于正式资产批准，全部尚未制作正式资产或接入 Godot。
+- 2026-09-21 概念阶段验收条件：用户参考副本与概念候选均可追溯；对象 Manifest 能发现实际文件；南门 `concept_003`、两个品学楼 `concept_001` 与本轮九处实景 `concept_001` 均为 `selected + approved`；旧步道与篮球场仍为 `unselected + pending`；当时所有对象均 `not_integrated`；未获得身份资料的地点不被虚构为已确认现实地点。后续接入状态以本文件顶部 2026-09-25 接入章节为准。
+- 技术检查结果：PowerShell 7 使用 `System.Drawing.Image` 核对十二张收敛版异常态均为 3840×2160、24bpp RGB、不透明且可解码；生成源为 1672×941，交付文件使用高质量双三次重采样，不宣称原生 4K。十二张生成源均经实际画面检查与通用图片质量闸门检查为 `PASS_WITH_NOTES`：地点身份、主要建筑／景观和底部可用区域保持可读，异常集中于地点专属区域，未使用全景夜化、霓虹铺地、数据雨或泛滥悬浮面板；图书馆异常密度高于其余地点且未恢复旗帜或旗杆。由于 4K PNG 体积较大，`view_image` 对最终文件返回 Base64 解码限制；最终文件以 `System.Drawing.Image` 完成逐张可解码、尺寸、格式与透明度技术核验，视觉内容则以同源生成输出逐张检查。
+- Manifest 回写：十二个 `asset_daily_001` 保持 `selected + approved`；十二个 `asset_anomaly_001` 改为 `unselected + rejected` 并记录强度过高的拒绝证据；新增十二个 `asset_anomaly_002`，均为 `unselected + pending`，来源指向对应日常资产并记录地点专属局部异常、生成源尺寸和重采样交付方式。图书馆登记 `anomaly_intensity: medium_high_localized`、日常保留目标 55%–65% 与保持移除旗帜／旗杆要求。旧步道与篮球场不在本次批准范围，继续保持 `unselected + pending`。不填写正式生效文件，全部对象集成均为 `not_integrated`。
+- 一致性检查：十二张日常正式资产与批准概念逐项 SHA-256 一致；正式目录只保存运行 PNG，概念、参考图与 generation.md 继续留在 `design/concepts/`。当前没有 Godot 引用或生效文件。
+- 资源目录扫描：`AssetCatalog.scan()` 通过；全局 26 个对象、323 个文件，缺失 0、哈希不一致 0。十二个日常资产为 `matched + selected + approved`，首轮异常态为 `matched + unselected + rejected`，收敛版异常态为 `matched + unselected + pending`；运行时地点绑定仍为 `pending_runtime_location_binding`，集成均为 `not_integrated`。`git diff --check` 与资源台 33 项测试通过。
+- 适用的布局／动画验证结果：本轮为静态资产候选，不执行 Godot 接入、动画或运行截图；十二张异常态原图已在对话展示。
+- 实际截图／动作预览证据：南门、两个品学楼地点、学子食堂、学生活动中心、西湖中心、成电会堂+商业街、银桦食堂+清真食堂、基础实验大楼、西湖入口、操场、图书馆正面共十二张异常态均已在对话展示；无运行时截图。
+- 未解决问题：十二处收敛版异常态资产仍待人工资产批准与正式提升；旧步道候选仍缺具体路径照片和地图标记；旧篮球场候选仍缺指定场地照片和地图标记；教学走廊仍缺走廊实景；十二处正式日常资产的运行时 ID 映射尚未确认；两个终点仍未获得独立身份资料；用户提供原图的公开／商业再分发许可未单独核验；全部尚未接入 Godot。
 - 本地提交：资源台、差异检查与图像检查通过后按项目规则提交；不自动推送远程。

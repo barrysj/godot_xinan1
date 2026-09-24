@@ -1,0 +1,14 @@
+# 图书馆正面异常候选 009
+
+- 日期：2026-09-24；状态：`unselected + pending`，非正式批准、未接入 Godot。
+- 模式：Codex 内置 imagegen 精确编辑。Image 1 严格地点／机位：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-ded1c5ee-bae9-4182-a8f6-5fa5e746a603.png`（上一版 008 生成源）；Image 2 只取会堂009短分叉暗影裂隙形态：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-b2318647-68dc-49f4-ba6a-d35282d673d3.png`，不移植建筑。
+- 最终生成源：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-b44b5329-3d84-4898-b71c-73c3c8617b0a.png`；底层模型版本未披露。
+- 交付：`anomaly.png`，原始 1672×941，按16:9中心微裁并高质量双三次重采样至3840×2160，RGB不透明PNG；非原生4K、非AI超分。SHA-256：`925C371E5196950C55E17D2F7E337A624C88654CEA50EC52CEE11235CD6CD60C`。
+- QA：`PASS_WITH_NOTES`；真实地点、构图与墨蓝灰天空可辨；无新增实体碎块、圆环或紫天。Boss 区左右窗翼的暗影裂隙与窗内数据雨明显高于普通地点；中央入口及建筑轮廓可读，未恢复旗帜／旗杆。广场仍偏湿亮。 技术检查与人工批准分开。
+- 来源权利：沿用用户实景参考链；未额外核验公开／商业再分发权利。
+
+## 完整提示词
+
+```text
+Use case: precise-object-edit. Image 1 is the STRICT identity/composition edit target: the symmetrical real campus LIBRARY FRONT boss-area anomaly scene, long left and right window wings, central tall glazed entrance tower, low side steps, trees and very broad foreground plaza, 16:9. Image 2 is reference ONLY for a shortened architecturally attached dimensional rift with a wider near-black violet displaced/shadowed interior, narrow magenta luminous lips, few short branches; never copy the auditorium. This LIBRARY is the BOSS site and should have clearly greater anomaly density ON BOTH LEFT AND RIGHT WINDOW-SIDE FACADES than an ordinary location, while the central entrance and architectural symmetry remain identifiable. Put one medium but bounded dark-bodied forked rift over the LEFT wing's upper window-band / masonry junction, ending within that wing; put a separate short but clearly visible dark-bodied forked rift over the RIGHT wing's upper window-band / roof-masonry junction, ending within that wing. Integrate several more slender cyan rectangular panes within existing window bays and a few short broken cyan data-rain clusters BEHIND glass across BOTH wings, not mainly at the center. Existing large central glass tower may retain modest interference but do not obscure its doors or replace window grids. Keep rifts localized, spatially attached to roof and window joints, with dark void/shadow wider than bright edge; avoid long roof-to-ground lightning. Keep the very broad foreground plaza mostly readable, existing thin perspective-following flat projected lines and weak reflections only, no solid fragments. Preserve all actual architecture, roofline, floor count, window rhythm, tree positions, stairs, distant wings, warm lights and low-saturation slate charcoal-blue sky. Absolutely NO flags or flagpoles, no physical debris, floating rocks, large portal/halo/ring, purple sky, new buildings, fake text/signage or UI.
+```

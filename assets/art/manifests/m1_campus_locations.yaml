@@ -74,7 +74,249 @@ variants:
       source_identity: edited_concept_002_for_far_main_building
       concept_basis: concept_002
       edit_scope: "distant main building facade scale and atmospheric perspective only"
+  asset_daily_001:
+    stage: asset
+    version: "daily-001"
+    selection: unselected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: user_authorized_promotion_of_approved_concept
+    root: design/concepts/m1-campus-locations/m1_campus_locations/003
+    files:
+      daily: concept.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [1672, 941]
+      transparent: false
+      state: daily
+      source_variant: concept_003
+      promotion_mode: exact_copy
+      superseded_by: asset_daily_003
+      usage: [campaign_gate]
+  asset_anomaly_001:
+    stage: asset
+    version: "anomaly-001"
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-21
+      decision: rejected_over_intense_anomaly_direction
+    root: design/concepts/m1-campus-locations/m1_campus_locations/004
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [1672, 941]
+      transparent: false
+      state: anomaly
+      source_variant: asset_daily_001
+      edit_scope: location_specific_data_corridor
+      anomaly_intensity: medium
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_002:
+    stage: asset
+    version: "anomaly-002"
+    selection: unselected
+    approval: rejected
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-22
+      decision: rejected_daylight_instead_of_dark_anomaly
+    root: design/concepts/m1-campus-locations/m1_campus_locations/005
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_daily_001
+      edit_scope: localized_data_seam_and_distant_threshold
+      anomaly_intensity: low_localized
+      daily_preservation_target: "75-85%"
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_daily_002:
+    stage: asset
+    version: "daily-002"
+    selection: unselected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_as_daily_4k_source_for_unified_promotion
+    root: design/concepts/m1-campus-locations/m1_campus_locations/006
+    files:
+      daily: daily.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: daily
+      source_variant: asset_daily_001
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_003:
+    stage: asset
+    version: "anomaly-003"
+    selection: unselected
+    approval: rejected
+    root: design/concepts/m1-campus-locations/m1_campus_locations/007
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_daily_002
+      reference_variant: m1_student_activity_center/asset_anomaly_005
+      review_scope: full_location_anomaly_asset
+      sky_palette: low_saturation_ink_blue_charcoal_gray
+      anomaly_palette: localized_violet_and_cyan_fragments
+      anomaly_intensity: localized_readable
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_004:
+    stage: asset
+    version: "anomaly-004"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_campus_locations/008
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_003
+      review_scope: ring_free_ground_distributed_anomaly_asset
+      edit_scope: angular_fissures_sparse_data_rain_ground_shards_and_projections
+      sky_palette: preserve_low_saturation_ink_blue_charcoal_gray
+      anomaly_intensity: distributed_readable
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_005:
+    stage: asset
+    version: "anomaly-005"
+    selection: unselected
+    approval: pending
+    root: design/concepts/m1-campus-locations/m1_campus_locations/009
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_004
+      reference_variant: m1_yinhua_halal_cafeterias/asset_anomaly_006
+      review_scope: approved_density_family_extension
+      edit_scope: remove_solid_debris_add_planar_panels_data_rain_ground_projection
+      sky_palette: preserve_low_saturation_ink_blue_charcoal_gray
+      anomaly_intensity: distributed_moderate
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_006:
+    stage: asset
+    version: "anomaly-006"
+    selection: unselected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_as_anomaly_4k_source_for_unified_promotion
+    root: design/concepts/m1-campus-locations/m1_campus_locations/010
+    files:
+      anomaly: anomaly.png
+      generation: generation.md
+    metadata:
+      asset_type: campaign_environment_background_candidate
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_005
+      reference_variant: m1_chengdian_auditorium_commercial_street/asset_anomaly_007
+      review_scope: calibrated_structure_anchored_rift_family_extension
+      edit_scope: short_forked_dark_seam_preserve_location_and_existing_effects
+      delivery_resolution_mode: high_quality_bicubic_resample
+      generation_source_resolution: [1672, 941]
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_daily_003:
+    stage: asset
+    version: "m1-campus-daily-4k-v1"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_and_promoted_as_unified_daily_4k_release
+    root: assets/art/backgrounds/m1_campus_locations/south_gate
+    files:
+      daily: daily.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [3840, 2160]
+      transparent: false
+      state: daily
+      source_variant: asset_daily_002
+      release_version: m1-campus-daily-4k-v1
+      promotion_mode: exact_copy
+      delivery_resolution_mode: high_quality_bicubic_resample
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
+  asset_anomaly_009:
+    stage: asset
+    version: "m1-campus-anomaly-4k-v1"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-campus-locations.md
+      date: 2026-09-25
+      decision: approved_and_promoted_as_unified_anomaly_4k_release
+    root: assets/art/backgrounds/m1_campus_locations/south_gate
+    files:
+      anomaly: anomaly.png
+    metadata:
+      asset_type: campaign_environment_background
+      resolution: [3840, 2160]
+      transparent: false
+      state: anomaly
+      source_variant: asset_anomaly_006
+      release_version: m1-campus-anomaly-4k-v1
+      promotion_mode: exact_copy
+      delivery_resolution_mode: high_quality_bicubic_resample
+      native_4k: false
+      runtime_mapping_status: pending_runtime_location_binding
 integration:
-  status: not_integrated
-  active_variant: null
+  status: authorized_active
+  active_variant: asset_anomaly_009
+  root: assets/art/backgrounds/m1_campus_locations/south_gate
+  files:
+    anomaly: anomaly.png
+  mapping:
+    campaign_place: gate
+    gameplay_state: anomaly
+    preview_states: [daily, anomaly]
+  visual_review: pending
   evidence: docs/art/tasks/m1-campus-locations.md

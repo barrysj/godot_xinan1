@@ -1,0 +1,291 @@
+{
+  "quality_result": {
+    "schema_version": 1,
+    "task_id": "m1-campus-locations-4k-sky-calibration",
+    "status": "PASS_WITH_NOTES",
+    "eligible_for_style_validation": true,
+    "checks": {
+      "technical_integrity": "PASS",
+      "subject_and_identity": "PASS",
+      "anatomy_and_physics": "PASS",
+      "prompt_and_content": "PASS",
+      "composition_and_readability": "PASS",
+      "generation_artifacts": "PASS"
+    },
+    "failures": [],
+    "notes": [
+      "仅覆盖已完成的12张日常和1张活动中心天空校准图，不代表24张全部完成。",
+      "13张最终图均经asset_report逐一解码，为3840×2160 RGB不透明PNG；来源1672×941，经高质量双三次重采样，不是原生4K或AI超分。",
+      "日常图保留对应地点构图与主要结构；异常样图天空为墨蓝灰，建筑暗部和两道局部光弧保留紫色，未增加异常数量。",
+      "已检查生成原图和由最终4K样图制作的前后对照；尚未在Godot内验收，生成源分辨率限制细节清晰度。",
+      "通过不等于风格匹配或人工批准；等待样图颜色确认再制作其余11张异常。"
+    ],
+    "repair_directives": [],
+    "next_step": "accept"
+  },
+  "raster_report": {
+    "ok": true,
+    "assets": [
+      {
+        "path": "design/concepts/m1-campus-locations/m1_campus_locations/006/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 16907509,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_pinxue_courtyard/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 16242576,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_pinxue_atrium/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 17645306,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 17878635,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_student_activity_center/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 16339208,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_west_lake_center/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 18727222,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 16047301,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 18400285,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_basic_laboratory_building/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 16916769,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_west_lake_entrance/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 15741480,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_sports_field/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 16366789,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_library_front/004/daily.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 15675451,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      },
+      {
+        "path": "design/concepts/m1-campus-locations/m1_student_activity_center/004/anomaly.png",
+        "format": "PNG",
+        "mode": "RGB",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 14254240,
+        "color_count": ">65535",
+        "has_alpha": false,
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "transparent_pixels": 0,
+        "content_bounds": [
+          0,
+          0,
+          3840,
+          2160
+        ],
+        "problems": []
+      }
+    ]
+  }
+}

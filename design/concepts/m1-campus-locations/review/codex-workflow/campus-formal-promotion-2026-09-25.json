@@ -1,0 +1,143 @@
+{
+  "date": "2026-09-25",
+  "decision_source": "user request in current Codex task",
+  "decision_quote": "可以了，都提升为正式资产，注意他们应该属于同一个版本（正常和异常可以分为两个版本）",
+  "scope": "12 approved campus locations x daily and anomaly, exact-copy promotion; no Godot integration",
+  "resolution": [
+    3840,
+    2160
+  ],
+  "delivery_resolution_mode": "high_quality_bicubic_resample_not_native_4k",
+  "versions": {
+    "daily": {
+      "variant": "asset_daily_003",
+      "version": "m1-campus-daily-4k-v1"
+    },
+    "anomaly": {
+      "variant": "asset_anomaly_009",
+      "version": "m1-campus-anomaly-4k-v1"
+    }
+  },
+  "locations": [
+    {
+      "id": "m1_campus_locations",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/south_gate/daily.png",
+      "daily_sha256": "AA5A235FC16A7CB49BBB2E4439F742D3F4DB72E0946AD4E5C255845E75D92ACE",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/south_gate/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_campus_locations/006/daily.png",
+      "anomaly_sha256": "376FFB053882DAC0D57B3120F2F1F81AFB85BC03F2E1E82F76BFC3024EC67888"
+    },
+    {
+      "id": "m1_pinxue_courtyard",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/pinxue_courtyard/daily.png",
+      "daily_sha256": "C2D2045263D750ED6E2C501C46A7046AEA16056C2F74935918DE232D5169513A",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/pinxue_courtyard/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_pinxue_courtyard/004/daily.png",
+      "anomaly_sha256": "B020F820C449C10E87A5DF636DB742B17C9E5882F400497A9F430B30396ABC2C"
+    },
+    {
+      "id": "m1_pinxue_atrium",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/pinxue_atrium/daily.png",
+      "daily_sha256": "A58308FE8D9CBAE263E291142216D04F4B459288F56A715D9AB309622ED5C311",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/pinxue_atrium/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_pinxue_atrium/004/daily.png",
+      "anomaly_sha256": "7B616094DA76165ADE30C3A493A40FBB633067495B2777D323559602891C4F5A"
+    },
+    {
+      "id": "m1_xuezi_cafeteria",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/xuezi_cafeteria/daily.png",
+      "daily_sha256": "7C61C646936DF650D241EDBDA6F75B72A1D829730DC42C1AB73F894C74FD58FF",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/xuezi_cafeteria/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/004/daily.png",
+      "anomaly_sha256": "322501E0B925F144D77DE8AD3F55D053282CDAFA04116E28529C5323B071C4E9"
+    },
+    {
+      "id": "m1_student_activity_center",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/student_activity_center/daily.png",
+      "daily_sha256": "29E723AD9E07E5C3A3A192660EB2810FD9EC0B0A8B1EFB309FC4C0468D67204F",
+      "anomaly_source_variant": "asset_anomaly_008",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/student_activity_center/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_student_activity_center/004/daily.png",
+      "anomaly_sha256": "5BABC18D2F293E40BD739051A618A7AD0085FC4D7ADAD6AD4CF2D161C3F4D46B"
+    },
+    {
+      "id": "m1_west_lake_center",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/west_lake_center/daily.png",
+      "daily_sha256": "D5D01837172887A83232D4126D5BAE77E4936AD1CD2F0430FE3E8BBA32335CB3",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/west_lake_center/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_west_lake_center/004/daily.png",
+      "anomaly_sha256": "6A4B4C905DA3C4E1082F5E81DF7B52B7BB820C7EDBAF6E67A00F64A6119E9819"
+    },
+    {
+      "id": "m1_chengdian_auditorium_commercial_street",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/chengdian_auditorium_commercial_street/daily.png",
+      "daily_sha256": "B615510A1AF54A1A45C250BD70E3507300790CA7C06EB888354489B0B8BBAFDE",
+      "anomaly_source_variant": "asset_anomaly_007",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/chengdian_auditorium_commercial_street/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/004/daily.png",
+      "anomaly_sha256": "3AC036CED8709CE8A70F0C3592DFF82302EB1247D00409C96957235959C4EB39"
+    },
+    {
+      "id": "m1_yinhua_halal_cafeterias",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/yinhua_halal_cafeterias/daily.png",
+      "daily_sha256": "D4A5A4CB9F3AC9E5D7D396DA5CB6E8E50D846D2314B500ADCB256168FA684FAE",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/yinhua_halal_cafeterias/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/004/daily.png",
+      "anomaly_sha256": "9881EB8B831537F48D6A835D2251BEB2D5B6384818A4A706D9FFC315AD9C4ECF"
+    },
+    {
+      "id": "m1_basic_laboratory_building",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/basic_laboratory_building/daily.png",
+      "daily_sha256": "76A96AFDA2F449D423B8EC9E3002DE2BA43804709D937B9EA699292E7FFAC5F5",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/basic_laboratory_building/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_basic_laboratory_building/004/daily.png",
+      "anomaly_sha256": "F881282DA8868201A9650BBDAAD4B9C89AB745CB48891B13D6F4B65F98FA1430"
+    },
+    {
+      "id": "m1_west_lake_entrance",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/west_lake_entrance/daily.png",
+      "daily_sha256": "33911512C2410DCEBBFEFB300E2938D32420CC50CD8240DD1935D12A4101A9E2",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/west_lake_entrance/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_west_lake_entrance/004/daily.png",
+      "anomaly_sha256": "FA0F081F350B632C9145D9F8F260E1320C5A69EA930D023FBF53B45E7635D9A6"
+    },
+    {
+      "id": "m1_sports_field",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/sports_field/daily.png",
+      "daily_sha256": "A0956325545A2D4915C00F2C9223A4E6ADA355ABBC42C497AFBCDD15E20932F6",
+      "anomaly_source_variant": "asset_anomaly_006",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/sports_field/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_sports_field/004/daily.png",
+      "anomaly_sha256": "3CE0D7E0A3475C835B47CC75680259B40F22F2C58B5056EB18F9BC857E039788"
+    },
+    {
+      "id": "m1_library_front",
+      "daily_formal": "assets/art/backgrounds/m1_campus_locations/library_front/daily.png",
+      "daily_sha256": "AC79DE853DF79AEFBD6606FF3248CEFF3E1F0791D6280D524E377D505737AA8C",
+      "anomaly_source_variant": "asset_anomaly_007",
+      "anomaly_formal": "assets/art/backgrounds/m1_campus_locations/library_front/anomaly.png",
+      "anomaly_candidate": "design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png",
+      "daily_candidate": "design/concepts/m1-campus-locations/m1_library_front/004/daily.png",
+      "anomaly_sha256": "925C371E5196950C55E17D2F7E337A624C88654CEA50EC52CEE11235CD6CD60C"
+    }
+  ]
+}

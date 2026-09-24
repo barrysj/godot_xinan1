@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "task_id": "m1-campus-locations",
+  "date": "2026-09-22",
+  "state": "twelve_daily_twelve_anomaly_candidates_delivered_pending_asset_review",
+  "latest_calibration": {
+    "date": "2026-09-23",
+    "sky_balance_approved": true,
+    "asset_approval": "pending",
+    "image": "design/concepts/m1-campus-locations/m1_student_activity_center/006/anomaly.png",
+    "generation": "design/concepts/m1-campus-locations/m1_student_activity_center/006/generation.md"
+  },
+  "expected_daily_count": 12,
+  "expected_anomaly_count": 12,
+  "target_resolution": [
+    3840,
+    2160
+  ],
+  "delivered_entries": [
+    {
+      "id": "south_gate",
+      "object": "m1_campus_locations",
+      "name": "南门",
+      "root": "design/concepts/m1-campus-locations/m1_campus_locations/006",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-3a0ad631-e579-4f46-bf0e-438e83456283.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 南门. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. symmetrical pale concrete entrance pillars and guardhouses, tree-lined central road, far small main building, crosswalk foreground. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/south_gate/daily.png"
+      ]
+    },
+    {
+      "id": "pinxue_courtyard",
+      "object": "m1_pinxue_courtyard",
+      "name": "品学楼单区内部庭院",
+      "root": "design/concepts/m1-campus-locations/m1_pinxue_courtyard/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-3e63929b-8a52-4c9a-b5a7-57d178a8494c.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 品学楼单区内部庭院. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. enclosed five-story teaching courtyard, projecting slim central stair tower, open balconies, brick paving, leafy left tree and right access ramp. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/pinxue_courtyard/daily.png"
+      ]
+    },
+    {
+      "id": "pinxue_atrium",
+      "object": "m1_pinxue_atrium",
+      "name": "品学楼组团中庭",
+      "root": "design/concepts/m1-campus-locations/m1_pinxue_atrium/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-7681661c-62d0-4605-a396-932b1cab7488.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 品学楼组团中庭. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. symmetrical pale teaching wings, elevated enclosed skybridge on tall columns, descending broad foreground stairs and trimmed planters. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/pinxue_atrium/daily.png"
+      ]
+    },
+    {
+      "id": "xuezi_cafeteria",
+      "object": "m1_xuezi_cafeteria",
+      "name": "学子食堂",
+      "root": "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-f133d3a3-a841-40fd-9edb-ed4085b5e4b0.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 学子食堂. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. large red brick and beige rectangular cafeteria at forked roads, central tall glass shaft, tree canopy framing, distant dorms. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/xuezi_cafeteria/daily.png"
+      ]
+    },
+    {
+      "id": "student_activity_center",
+      "object": "m1_student_activity_center",
+      "name": "学生活动中心",
+      "root": "design/concepts/m1-campus-locations/m1_student_activity_center/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-e0b5e4bd-be39-4fc7-b2b1-f425fd369851.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 学生活动中心. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. low red brick rounded facade on the left, central glazed entrance, generous paved plaza, road receding on right. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/student_activity_center/daily.png"
+      ]
+    },
+    {
+      "id": "west_lake_center",
+      "object": "m1_west_lake_center",
+      "name": "西湖中心",
+      "root": "design/concepts/m1-campus-locations/m1_west_lake_center/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-a27ea41a-d374-4515-8079-3eb071567978.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 西湖中心. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. wooden boardwalk with diagonal cross railings leading to dark wooden pavilion, tall narrow trees and pergola across lake at right. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/west_lake_center/daily.png"
+      ]
+    },
+    {
+      "id": "chengdian_auditorium_commercial_street",
+      "object": "m1_chengdian_auditorium_commercial_street",
+      "name": "成电会堂与商业街",
+      "root": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-cc8996c8-2fa9-467c-84cc-48b19fc7378b.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 成电会堂与商业街. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. broad red and beige auditorium facade on left with long access ramp, smaller commercial buildings at back right, broad open paved plaza. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/chengdian_auditorium_commercial_street/daily.png"
+      ]
+    },
+    {
+      "id": "yinhua_halal_cafeterias",
+      "object": "m1_yinhua_halal_cafeterias",
+      "name": "银桦食堂与清真食堂",
+      "root": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-0870d9e4-e6c6-43c7-9366-d6a8651cfc54.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 银桦食堂与清真食堂. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. rectangular red beige cafeteria on left, low broad curved colonnaded dining hall on right, trees left, brick forecourt. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/yinhua_halal_cafeterias/daily.png"
+      ]
+    },
+    {
+      "id": "basic_laboratory_building",
+      "object": "m1_basic_laboratory_building",
+      "name": "基础实验大楼",
+      "root": "design/concepts/m1-campus-locations/m1_basic_laboratory_building/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-52a6aaf1-9914-45b3-b6cb-def1a3fc5cb7.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 基础实验大楼. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. long pale modern laboratory on right, tall central glass shaft, square windows, grass and a small bridge left, wide stone plaza. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/basic_laboratory_building/daily.png"
+      ]
+    },
+    {
+      "id": "west_lake_entrance",
+      "object": "m1_west_lake_entrance",
+      "name": "西湖入口",
+      "root": "design/concepts/m1-campus-locations/m1_west_lake_entrance/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-775d6f74-d55e-465c-8718-3be9c508a131.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 西湖入口. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. broad lakeside stone plaza, large circular basin and natural rockery right, lake and distant library left, trees and pergola right. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/west_lake_entrance/daily.png"
+      ]
+    },
+    {
+      "id": "sports_field",
+      "object": "m1_sports_field",
+      "name": "操场",
+      "root": "design/concepts/m1-campus-locations/m1_sports_field/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-9eb1619d-37ad-48be-81ba-b9d371ff5d2e.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 操场. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. wide green football field, visible center-circle markings, goals and tree-lined red running track, small arched-roof sports hall at distant center. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/sports_field/daily.png"
+      ]
+    },
+    {
+      "id": "library_front",
+      "object": "m1_library_front",
+      "name": "图书馆正面",
+      "root": "design/concepts/m1-campus-locations/m1_library_front/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-77ba3078-e429-4389-9520-2be681cb95b1.png",
+      "state": "daily",
+      "prompt": "Use case: precise-object-edit. Produce ONE standalone finished 16:9 campus game background, requested output resolution 3840x2160 pixels, highest available detail, not a collage. Image 1 is the approved daily background and the strict composition/identity edit target. Restore and refine it into a detailed clean daily master. Location: 图书馆正面. Preserve exactly its camera, vanishing point, building silhouettes, floor count, window spacing, trees, paths, ramps, landscape placement and the apparent distance of far buildings. broad symmetrical pale library frontage, tall central glass entrance shaft, low right wing, trees and lawn flanking stairs, expansive circular paved plaza, no flags or flagpoles. Keep the same polished 2D illustrated campus environment style and existing sunny daytime color palette: blue sky, natural green foliage, pale cream masonry, delicate clean architectural lines, soft ambient shadows. Refine fine material and edge detail without inventing structural features. Far windows remain small. No new people, cars, signs, readable text, school logo, flags, flagpoles, UI, watermark, neon, glowing seams or supernatural effects. Keep the lower foreground open. Match the existing wide framing, no zoom or recompose. Save one full-frame PNG, 3840x2160 requested.",
+      "references": [
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/assets/art/backgrounds/m1_campus_locations/library_front/daily.png"
+      ]
+    },
+    {
+      "id": "student_activity_center",
+      "object": "m1_student_activity_center",
+      "name": "学生活动中心",
+      "root": "design/concepts/m1-campus-locations/m1_student_activity_center/004",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-ad6294a1-65a4-4d5c-8a87-ab2e5bb940d0.png",
+      "state": "anomaly",
+      "prompt": "Use case: precise-object-edit / color correction. Edit this ONE existing campus student activity center anomaly background. The user's correction is specifically \"the sky is too purple.\" Produce one standalone 16:9 image, requested native 3840x2160 or maximum available resolution.\n\nCHANGE: The entire SKY ONLY must become a quiet, low-saturation near-black navy night sky, midnight ink-blue #0B1423 to charcoal steel-blue #243144, with subdued neutral slate-gray clouds. Reduce sky saturation greatly and make the cloud/horizon glow much dimmer. No lavender, purple, violet, magenta or pink colored cloud banks, no purple horizon gradient, no bright Milky Way, no aurora, no sky rift or celestial fantasy display. A few very faint neutral stars are fine. The sky should recede into the background rather than be the biggest colorful feature.\n\nPRESERVE: the exact rounded brick facade on the left, all architecture, windows, entrances, plaza paving perspective, trees, receding road on the right, camera angle, framing and illustration rendering. Retain a restrained black-plum atmosphere in building shadows and foreground, warm ordinary window lights, and the same TWO small violet transmission arcs just above the central entrance. These localized arcs are the brightest violet accents. Keep their size and location; do not add any effects. The building and plaza should remain clearly visible with muted cool-neutral moonlight; only minimally reduce purple skylight spill so the new sky physically fits. Do NOT turn the whole scene uniformly blue or remove the anomaly state. Do NOT redesign buildings, foliage or pavement. No new people, text, UI, logos, flags, watermarks. No side-by-side or collage. Requested final resolution 3840x2160.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-479985b8-1ebd-49f2-af69-840e149a537f.png"
+      ]
+    }
+  ],
+  "intermediate_anomalies": [
+    {
+      "id": "south_gate",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-e2eec651-80eb-494d-9ea1-403c5de99d62.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 南门: symmetrical pale concrete entrance pillars and guardhouses, tree-lined central road, far small main building, crosswalk foreground. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: one short fractured violet threshold beyond the gate with a faint cyan seam following only the central road, no giant portal. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-3a0ad631-e579-4f46-bf0e-438e83456283.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_campus_locations/004/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "pinxue_courtyard",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-1176010d-2ca7-453a-b5f5-6f2a0fe8fcc3.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 品学楼单区内部庭院: enclosed five-story teaching courtyard, projecting slim central stair tower, open balconies, brick paving, leafy left tree and right access ramp. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: a narrow displaced echo along the central stair tower and three small broken light segments, no levitating facade. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-3e63929b-8a52-4c9a-b5a7-57d178a8494c.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_pinxue_courtyard/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "pinxue_atrium",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-a14042b0-3f2a-499f-aa71-ba3aa260331b.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 品学楼组团中庭: symmetrical pale teaching wings, elevated enclosed skybridge on tall columns, descending broad foreground stairs and trimmed planters. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: a single faint phase boundary between the two central columns underneath the skybridge, slightly misaligned column shadow, no giant portal. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-7681661c-62d0-4605-a396-932b1cab7488.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_pinxue_atrium/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "xuezi_cafeteria",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-b2fcbb43-9466-4e20-8022-b183c8b3b236.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 学子食堂: large red brick and beige rectangular cafeteria at forked roads, central tall glass shaft, tree canopy framing, distant dorms. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: three locally offset panes in central glass shaft with a very thin cyan scan seam and a small violet echo at the doorway. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-f133d3a3-a841-40fd-9edb-ed4085b5e4b0.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_xuezi_cafeteria/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "student_activity_center",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-479985b8-1ebd-49f2-af69-840e149a537f.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 学生活动中心: low red brick rounded facade on the left, central glazed entrance, generous paved plaza, road receding on right. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: two small transparent broadcast wave arcs immediately above the central entrance only, no full-building halo. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-e0b5e4bd-be39-4fc7-b2b1-f425fd369851.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_student_activity_center/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "west_lake_center",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-9dd55d61-7fd4-4f64-b25d-b761406e14ec.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 西湖中心: wooden boardwalk with diagonal cross railings leading to dark wooden pavilion, tall narrow trees and pergola across lake at right. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: one small impossible violet pavilion reflection in the right lake surface, faint submerged circuit roots, keep wood and trees ordinary. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-a27ea41a-d374-4515-8079-3eb071567978.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_west_lake_center/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "chengdian_auditorium_commercial_street",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-71f3866f-4704-45a8-a9e4-2dbffc152a72.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 成电会堂与商业街: broad red and beige auditorium facade on left with long access ramp, smaller commercial buildings at back right, broad open paved plaza. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: two short thin acoustic echo arcs near the auditorium door, one small duplicated window edge; commercial street undistorted. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-cc8996c8-2fa9-467c-84cc-48b19fc7378b.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "yinhua_halal_cafeterias",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-f5d9ceed-33ae-4c91-9fb5-237df65164c2.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 银桦食堂与清真食堂: rectangular red beige cafeteria on left, low broad curved colonnaded dining hall on right, trees left, brick forecourt. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: one narrow violet phase fracture at the junction of the two building volumes with two small cyan edge echoes. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-0870d9e4-e6c6-43c7-9366-d6a8651cfc54.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    },
+    {
+      "id": "basic_laboratory_building",
+      "source": "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-d6f2c275-f3d5-4f1d-b63b-01c0e6a9475c.png",
+      "prompt": "Use case: lighting-weather with restrained environmental anomaly editing. ONE standalone 16:9 illustration game background, requested actual PNG resolution 3840x2160. Image 1 is the new daily background: STRICT CAMERA, GEOMETRY, SCALE and identity edit target. Image 2 is the FIRST anomaly iteration: use ONLY its dark black-purple color mood; its huge amount of neon clutter is the thing to remove. Location 基础实验大楼: long pale modern laboratory on right, tall central glass shaft, square windows, grass and a small bridge left, wide stone plaza. Re-light the ENTIRE scene into deep black-violet and plum-indigo nightlike anomaly ambience, visibly purple rather than daylight or mainly bright blue. Keep building facades, paving, vegetation and distant silhouettes clearly legible in muted lavender ambient fill, with restrained violet rim lighting and a few warm uncorrupted windows. Calm dark sky. No sun or bright daylight. Reduce the number and coverage of supernatural effects by about 75-85% compared with Image 2. The effect plan is ONLY: one localized soft diagnostic waveform behind the central glass shaft with two misaligned pane reflections; no pavement circuitry. Only one small localized phenomenon plus at most one tiny secondary echo. Tiny cyan highlights allowed, violet is dominant. No luminous outlines over whole buildings, no sky data rain, floating HUD rectangles, giant vortex, giant portal, broad ground circuit grid, glitter everywhere or mirror-neon flooded pavement. Normal grounded architecture is intact; preserve exact number/placement of wings, pillars, stairs, railings and openings from Image 1. Preserve original rendering style, background depth and composition. Full-scene purple relighting is required even where no anomaly objects occur. Quiet lower 20% foreground for UI, no UI actually painted. No people, text, logos, signatures, flags or flagpoles. Output a complete clean scene, never side-by-side or collage. Request 3840x2160 pixels.",
+      "references": [
+        "C:\\Users\\SongJun\\.codex\\generated_images\\01a0b584-23fa-7182-a86e-e1a6a75e0d64\\exec-52a6aaf1-9914-45b3-b6cb-def1a3fc5cb7.png",
+        "C:/Users/SongJun/.codex/worktrees/6e21/godot_xinan1/design/concepts/m1-campus-locations/m1_basic_laboratory_building/002/anomaly.png"
+      ],
+      "status": "superseded_sky_saturation_not_final"
+    }
+  ],
+  "remaining_anomalies": [],
+  "completed_anomaly_batch": {
+    "date": "2026-09-24",
+    "density_reference": "design/concepts/m1-campus-locations/m1_student_activity_center/006/anomaly.png",
+    "asset_approval": "pending",
+    "images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/005/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/006/anomaly.png"
+    ],
+    "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/remaining-anomaly-4k-review.jpg"
+  },
+  "latest_ring_free_ground_revision": {
+    "date": "2026-09-24",
+    "asset_approval": "pending",
+    "source_resolution_mode": "1671-1672x941 imagegen; high-quality bicubic to 3840x2160; non-native-4k",
+    "water_style_reference": "E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
+    "water_reference_scope": "segmented_cyan_magenta_ripples_and_reflections_only",
+    "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/ring-free-ground-anomaly-4k-review.jpg",
+    "images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_student_activity_center/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/006/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/007/anomaly.png"
+    ]
+  },
+  "latest_single_location_calibration": {
+    "date": "2026-09-24",
+    "location": "m1_yinhua_halal_cafeterias",
+    "image": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png",
+    "generation": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/generation.md",
+    "asset_approval": "pending",
+    "change": "remove_physical_ground_shards_keep_planar_projection_panels_data_rain",
+    "other_locations_unchanged": true
+  },
+  "latest_single_location_density_calibration": {
+    "date": "2026-09-24",
+    "location": "m1_yinhua_halal_cafeterias",
+    "image": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png",
+    "generation": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/generation.md",
+    "comparison": "design/concepts/m1-campus-locations/review/codex-workflow/yinhua-007-008-comparison.jpg",
+    "previous_image": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/007/anomaly.png",
+    "asset_approval": "pending",
+    "change": "slightly_increase_nonphysical_panels_projected_fissures_sparse_data_rain",
+    "other_locations_unchanged": true
+  },
+  "approved_density_family_extension": {
+    "date": "2026-09-24",
+    "calibration": "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png",
+    "approval_scope": "anomaly_element_type_and_density_only",
+    "asset_approval": "pending",
+    "review_sheet": "design/concepts/m1-campus-locations/review/codex-workflow/approved-density-12-anomaly-4k-review.jpg",
+    "new_anomaly_images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/009/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_student_activity_center/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/007/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/008/anomaly.png"
+    ],
+    "west_lake_water_reference": "E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png",
+    "library_window_side_density": "higher_than_normal_locations",
+    "other_assets_and_runtime_unchanged": true
+  },
+  "structural_rift_family_extension": {
+    "date": "2026-09-24",
+    "calibration": "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png",
+    "approval_scope": "shorter_rift_with_broader_dark_shadow_morphology_only",
+    "asset_approval": "pending",
+    "resolution": "3840x2160_bicubic_resample_not_native_4k",
+    "review_sheet_ten": "design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-ten-4k-review.jpg",
+    "review_sheet_twelve": "design/concepts/m1-campus-locations/review/codex-workflow/structural-rift-twelve-4k-review.jpg",
+    "new_anomaly_images": [
+      "design/concepts/m1-campus-locations/m1_campus_locations/010/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_courtyard/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_pinxue_atrium/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_xuezi_cafeteria/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_student_activity_center/009/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_center/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_basic_laboratory_building/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_west_lake_entrance/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_sports_field/008/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_library_front/009/anomaly.png"
+    ],
+    "unchanged_anomaly_images": [
+      "design/concepts/m1-campus-locations/m1_chengdian_auditorium_commercial_street/009/anomaly.png",
+      "design/concepts/m1-campus-locations/m1_yinhua_halal_cafeterias/008/anomaly.png"
+    ],
+    "west_lake_water_reference": "E:/Documents/works/godot/_xinan1/assets/art/backgrounds/m1/_main/_menu/anomaly/library-two-digital-swans.png",
+    "west_lake_constraint": "retain_dark_lake_water_with_sparse_cyan_fragments_and_reflections_no_swans_copied",
+    "library_constraint": "higher_density_on_left_and_right_window_wings_no_flags_or_flagpoles",
+    "other_assets_and_runtime_unchanged": true
+  }
+}

@@ -1,0 +1,14 @@
+# 西湖入口异常候选 008
+
+- 日期：2026-09-24；状态：`unselected + pending`，非正式批准、未接入 Godot。
+- 模式：Codex 内置 imagegen 精确编辑。Image 1 严格地点／机位：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-9c964e4c-bc03-4fc2-9da0-f1e961452a7a.png`（上一版 007 生成源）；Image 2 只取会堂009短分叉暗影裂隙形态：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-b2318647-68dc-49f4-ba6a-d35282d673d3.png`，不移植建筑。Image 3 只取既有双数字天鹅图的水面碎光与波纹：`E:/Documents/works/godot_xinan1/assets/art/backgrounds/m1_main_menu/anomaly/library-two-digital-swans.png`，不移植天鹅、图书馆或天空。
+- 最终生成源：`C:/Users/SongJun/.codex/generated_images/01a0b584-23fa-7182-a86e-e1a6a75e0d64/exec-829eec37-8c57-48a0-aa63-cb11115ace58.png`；底层模型版本未披露。
+- 交付：`anomaly.png`，原始 1672×941，按16:9中心微裁并高质量双三次重采样至3840×2160，RGB不透明PNG；非原生4K、非AI超分。SHA-256：`FA0F081F350B632C9145D9F8F260E1320C5A69EA930D023FBF53B45E7635D9A6`。
+- QA：`PASS_WITH_NOTES`；真实地点、构图与墨蓝灰天空可辨；无新增实体碎块、圆环或紫天。西湖入口裂隙附着原有假山表面，不新增实体碎块；湖面保留断续数字波纹、碎光与深色自然水。 技术检查与人工批准分开。
+- 来源权利：沿用用户实景参考链；未额外核验公开／商业再分发权利。
+
+## 完整提示词
+
+```text
+Use case: precise-object-edit. Image 1 is the STRICT site-identity and camera edit target for West Lake entrance with broad paved plaza, genuine existing sculptural rockery inside a shallow round pool on the right, larger lake and distant academic buildings to the left. Image 2 is ONLY the Chengdian reference for a short architecturally/material-anchored branching dimensional tear: broader dark purple-black displaced interior, narrow violet glowing lips, short irregular child branches. Do not copy its auditorium. Image 3 is WATER EFFECT REFERENCE ONLY: preserve Image 1's lake and strengthen, where needed, broken cyan and magenta digital ripples, tiny broken horizontal scanline glints, fragmented luminous reflections and slightly displaced mirror streaks across a few patches of water. Do NOT copy the swans, library, sky, scene geometry or circular ripples as a full ring from Image 3. Keep at least half of visible water dark, natural and continuous; never make solid tiles/shards or fissures in water. Add the localized rift here: one restrained dark-shadowed branching violet tear on the SURFACE of the existing large rockery landmark, following a real rock facet and stopping above its base; do not add, break apart, or turn the rockery into floating solid shards; if useful one tiny short nick at the lake-side stone pool rim, but not a full ring. Preserve all Image 1 real structures, railings/paving/rockery, perspective, warm lights, existing cyan planar accents, sparse local data-rain, weak ground projections and low-saturation dark slate blue-gray sky. Overall ordinary-location anomaly density matches Chengdian, not a boss region. No physical debris, floating rocks, portals, halos, circular rings, purple sky, invented structures, text, UI, annotation. 16:9 polished game background.
+```
