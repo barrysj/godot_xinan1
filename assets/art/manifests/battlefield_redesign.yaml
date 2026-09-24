@@ -1,0 +1,44 @@
+schema_version: 3
+object:
+  id: battlefield_redesign
+  display_name: "战场视觉改造候选"
+  type: ui
+variants:
+  concept_001:
+    stage: concept
+    version: "001"
+    selection: unselected
+    approval: pending
+    root: design/concepts/battlefield-redesign/battlefield/001
+    files:
+      concept: concept-a.png
+      generation: generation.md
+    metadata:
+      usage: [concept_review]
+      note: "生成式概念示意，非实机截图；角色不在设计范围内"
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: unselected
+    approval: pending
+    root: design/concepts/battlefield-redesign/battlefield/002
+    files:
+      concept: concept-b.png
+      generation: generation.md
+    metadata:
+      usage: [concept_review]
+      note: "生成式概念示意，非实机截图；角色不在设计范围内"
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: unselected
+    approval: pending
+    root: design/concepts/battlefield-redesign/battlefield/003
+    files:
+      concept: concept-c.png
+      generation: generation.md
+    metadata:
+      usage: [concept_review]
+      note: "生成式概念示意，非实机截图；角色不在设计范围内"
+integration:
+  status: not_integrated
