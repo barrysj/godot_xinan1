@@ -17,6 +17,13 @@ func click(button: Button) -> void:
 		event.button_index = MOUSE_BUTTON_LEFT
 		event.pressed = pressed
 		get_viewport().push_input(event,true)
+func touch(at: Vector2) -> void:
+	for pressed in [true,false]:
+		var event := InputEventScreenTouch.new()
+		event.position = at
+		event.index = 0
+		event.pressed = pressed
+		get_viewport().push_input(event,true)
 func _ready() -> void:
 	var game = Campaign.instantiate()
 	game.progress.path = "res://.godot/code-hud-check.json"
@@ -40,11 +47,16 @@ func _ready() -> void:
 	await get_tree().process_frame
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 0
 	panel._update_hud()
-	verify(panel.program_controls.takeover.button.disabled,"unaffordable program disabled")
+	verify(not panel.program_controls.takeover.button.available and not panel.program_controls.takeover.button.disabled,"unaffordable program can still be inspected")
+	move(panel.program_controls.takeover.button.get_global_rect().get_center())
+	panel._process(0)
+	verify(panel.program_preview.visible and panel.preview_release.disabled and game.simulation.casts == 0,"hover reveals effect but cannot spend missing resources")
 	verify(not panel.program_controls.takeover.recipe.purple.enough and panel.program_controls.takeover.recipe.purple.amount == 2,"recipe icon shows unaffordable permission cost")
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 	panel._update_hud()
 	verify(panel.program_controls.takeover.button.available and not panel.program_controls.takeover.button.disabled,"affordable legal program highlights")
+	panel._process(0)
+	verify(not panel.preview_release.disabled,"release becomes available after collecting resources")
 	verify(panel.program_controls.takeover.recipe.purple.enough and panel.program_controls.takeover.recipe.blue.enough,"recipe icons brighten as costs become affordable")
 	verify(panel.item_controls.converter.source_preview.kind == "red" and panel.item_controls.converter.destination_preview.kind == "blue","item input and output previews use resource icons")
 	verify(not panel.item_controls.supply.card.visible and not panel.item_controls.converter.card.visible,"item rail initially shows icons and count badges only")
@@ -53,6 +65,7 @@ func _ready() -> void:
 	verify(game.simulation.items.supply == initial_supply,"collapsed item cannot be used")
 	for controls in [panel.program_controls.takeover,{"button":panel.item_controls.supply.icon,"card":panel.item_controls.supply.icon},{"button":panel.item_controls.converter.icon,"card":panel.item_controls.converter.icon}]:
 		move(controls.button.get_global_rect().get_center())
+		panel._process(0)
 		verify(panel.hover_paused(),"action hover pauses")
 		var before: float = game.simulation.elapsed
 		var journey_time: float = game.expedition_seconds
@@ -63,7 +76,9 @@ func _ready() -> void:
 		move(controls.card.get_global_rect().end-Vector2(3,3))
 		verify(panel.hover_paused(),"cost and picker remain in hover pause region")
 		move(Vector2(640,600))
+		panel._process(0)
 		verify(not panel.hover_paused(),"leaving action restores hover pause")
+		if controls.button == panel.program_controls.takeover.button: verify(not panel.program_preview.visible,"hover preview closes after leaving skill and detail")
 		game._process(0.2)
 		verify(game.simulation.elapsed > before,"leaving resumes combat")
 	game.paused = true
@@ -116,7 +131,8 @@ func _ready() -> void:
 	panel._update_hud()
 	fx.particles.clear()
 	move(panel.program_controls.takeover.button.get_global_rect().get_center())
-	verify(panel.hover_paused(),"disabled icon still pauses for inspection")
+	panel._process(0)
+	verify(panel.hover_paused() and panel.program_preview.visible and panel.preview_release.disabled,"unaffordable icon still opens an inspectable preview")
 	if "--capture" in OS.get_cmdline_user_args():
 		for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
 			get_window().size = resolution
@@ -124,11 +140,13 @@ func _ready() -> void:
 			await get_tree().process_frame
 			panel._process(0)
 			move(panel.program_controls.takeover.button.get_global_rect().get_center())
+			panel._process(0)
 			panel._update_hud()
 			await RenderingServer.frame_post_draw
 			verify(panel.get_viewport_rect().encloses(panel.programs.get_global_rect()),"skills fit viewport")
 			verify(panel.get_viewport_rect().encloses(panel.items.get_global_rect()),"items fit viewport")
-			get_viewport().get_texture().get_image().save_png("res://.godot/code-hud-%dx%d.png" % [resolution.x,resolution.y])
+			verify(panel.program_preview.visible and panel.get_viewport_rect().encloses(panel.program_preview.get_global_rect()),"skill effect preview fits viewport")
+			get_viewport().get_texture().get_image().save_png("res://.godot/code-program-preview-%dx%d.png" % [resolution.x,resolution.y])
 			click(panel.item_controls.converter.icon)
 			move(panel.item_controls.converter.card.get_global_rect().position+Vector2(20,16))
 			await RenderingServer.frame_post_draw
@@ -137,18 +155,29 @@ func _ready() -> void:
 			click(panel.item_controls.converter.icon)
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 	panel._update_hud()
+	if "--capture" in OS.get_cmdline_user_args():
+		move(panel.program_controls.takeover.button.get_global_rect().get_center())
+		panel._process(0)
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/code-program-ready-1920x1200.png")
+	touch(panel.program_controls.disconnect.button.get_global_rect().get_center())
+	verify(panel.preview_pinned and panel.preview_program_id == "disconnect" and game.simulation.casts == 0,"touch selects skill without releasing")
+	move(Vector2(640,600))
+	panel._process(0)
+	verify(panel.program_preview.visible and panel.hover_paused(),"touch selected preview stays open and pauses combat")
+	touch(Vector2(640,600))
+	verify(not panel.program_preview.visible and game.simulation.casts == 0,"touch outside dismisses preview without spending")
 	move(panel.program_controls.takeover.button.get_global_rect().get_center())
-	for pressed in [true,false]:
-		var event := InputEventMouseButton.new()
-		event.position = panel.program_controls.takeover.button.get_global_rect().get_center()
-		event.button_index = MOUSE_BUTTON_LEFT
-		event.pressed = pressed
-		get_viewport().push_input(event,true)
-	verify(game.simulation.system_taken and panel.hover_paused(),"real skill click executes and keeps hover pause")
+	click(panel.program_controls.takeover.button)
+	verify(panel.preview_pinned and panel.preview_program_id == "takeover" and game.simulation.casts == 0,"mouse click selects skill without releasing")
+	click(panel.preview_release)
+	verify(game.simulation.system_taken and game.simulation.casts == 1 and not panel.program_preview.visible,"only release button executes skill and closes preview")
 	var bursts: Array = fx.particles.filter(func(p): return p.kind == "program")
 	verify(bursts.size() == 1,"skill creates a burst")
 	if not bursts.is_empty():
 		var age: float = bursts[0].age
+		move(panel.program_controls.takeover.button.get_global_rect().get_center())
+		panel._process(0)
 		fx._process(0.05)
 		verify(bursts[0].age == age,"hover freezes battle effects")
 		move(Vector2(640,600))

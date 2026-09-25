@@ -45,9 +45,13 @@ func _ready() -> void:
 			event.button_index = MOUSE_BUTTON_LEFT
 			event.pressed = pressed
 			event.position = button.get_global_rect().get_center()
+			event.global_position = event.position
 			get_viewport().push_input(event,true)
 			await get_tree().process_frame
-		verify(game.simulation.casts == 1,"actual HUD click executes "+id)
+		verify(game.simulation.casts == 0 and panel.preview_program_id == id,"HUD click previews without casting "+id)
+		# Interaction clicks are covered by code_hud_check; this check isolates each effect burst.
+		panel.preview_release.pressed.emit()
+		verify(game.simulation.casts == 1,"release button executes "+id)
 		verify(not game.paused and panel.programs.visible,"flat HUD stays available after casting")
 		var programs: Array = fx.particles.filter(func(p): return p.kind == "program")
 		verify(programs.size() == 1,"one program event creates one burst")

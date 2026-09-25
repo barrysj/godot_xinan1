@@ -14,6 +14,13 @@ var item_controls := {}
 var code_fx: Control
 var canvas: Control
 var programs: HBoxContainer
+var program_preview: PanelContainer
+var preview_title: Label
+var preview_effect: Label
+var preview_state: Label
+var preview_release: Button
+var preview_program_id := ""
+var preview_pinned := false
 var items: VBoxContainer
 var item_details: Control
 var selected_item := ""
@@ -55,6 +62,7 @@ func _ready() -> void:
 	programs.position = Vector2(770,81)
 	programs.add_theme_constant_override("separation",14)
 	canvas.add_child(programs)
+	_build_program_preview()
 	selection_box = HBoxContainer.new()
 	selection_box.position = Vector2(770,91)
 	canvas.add_child(selection_box)
@@ -142,6 +150,40 @@ func _picker(parent: Node) -> HBoxContainer:
 	picker.item_selected.connect(func(_index): _update_hud())
 	return picker
 
+func _build_program_preview() -> void:
+	program_preview = PanelContainer.new()
+	program_preview.custom_minimum_size.x = 218
+	program_preview.z_index = 4
+	program_preview.visible = false
+	var surface := StyleBoxFlat.new()
+	surface.bg_color = Color(0.05,0.11,0.18,0.82)
+	surface.border_color = Color("76e5cb",0.85)
+	surface.set_border_width_all(2)
+	surface.set_corner_radius_all(6)
+	for side in ["left","right","top","bottom"]: surface.set("content_margin_"+side,9.0)
+	program_preview.add_theme_stylebox_override("panel",surface)
+	canvas.add_child(program_preview)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation",5)
+	program_preview.add_child(content)
+	preview_title = _label(content,"",16)
+	preview_effect = _label(content,"",12)
+	preview_effect.custom_minimum_size.x = 196
+	preview_effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	preview_state = _label(content,"",11)
+	preview_release = Button.new()
+	preview_release.text = "释放"
+	preview_release.custom_minimum_size.y = 35
+	for state in ["normal","hover","pressed","disabled"]:
+		var button_style := StyleBoxFlat.new()
+		button_style.bg_color = Color("248979") if state == "normal" else Color("35b59b") if state == "hover" else Color("176c60") if state == "pressed" else Color("263a45",0.75)
+		button_style.set_corner_radius_all(4)
+		preview_release.add_theme_stylebox_override(state,button_style)
+	preview_release.add_theme_color_override("font_color",Color.WHITE)
+	preview_release.add_theme_color_override("font_hover_color",Color.WHITE)
+	preview_release.pressed.connect(func(): _cast_code(preview_program_id))
+	content.add_child(preview_release)
+
 func _select_program(slot: int,index: int) -> void:
 	if game.phase != "prepare": return
 	var before: Array = sim.loadout.duplicate()
@@ -163,10 +205,12 @@ func _process(_delta: float) -> void:
 	var screen = game.get("screen")
 	visible = (screen == null or screen == "battle") and game.phase in ["prepare","battle"]
 	if not visible:
+		_hide_program_preview()
 		if not selected_item.is_empty(): _select_item("")
 		return
 	sim = game.simulation
 	running = game.phase == "battle"
+	if not running: _hide_program_preview()
 	if not running and not selected_item.is_empty(): _select_item("")
 	var factor: float = minf(game.size.x/1280.0,game.size.y/720.0)
 	canvas.scale = Vector2.ONE*factor
@@ -188,8 +232,9 @@ func _process(_delta: float) -> void:
 			var card := _card(programs)
 			var button = Icon.new()
 			button.action_id = id
+			button.toggle_mode = true
 			button.custom_minimum_size = Vector2(160,34)
-			button.pressed.connect(func(): _cast_code(id))
+			button.pressed.connect(func(): _show_program_preview(id,true))
 			card.add_child(button)
 			button.custom_minimum_size = Vector2(160,34)
 			var name_label := _label(button,data.display_name,13)
@@ -204,10 +249,72 @@ func _process(_delta: float) -> void:
 				cost.add_child(chip)
 				recipe[kind] = chip
 			program_controls[id] = {"card":card.get_parent(),"button":button,"recipe":recipe}
+	_sync_program_preview()
 	_update_hud()
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouse: pointer = event.position
+	if event is InputEventMouse:
+		pointer = event.position
+		if event is InputEventMouseButton and event.pressed and preview_pinned and not _pointer_on_program_area(pointer):
+			_hide_program_preview()
+	elif event is InputEventScreenTouch and event.pressed:
+		if not running or game.paused: return
+		var at: Vector2 = event.position
+		if program_preview.visible and preview_release.get_global_rect().has_point(at):
+			_cast_code(preview_program_id)
+			get_viewport().set_input_as_handled()
+			return
+		for id in program_controls:
+			if program_controls[id].card.get_global_rect().has_point(at):
+				_show_program_preview(id,true)
+				get_viewport().set_input_as_handled()
+				return
+		if preview_pinned and not _pointer_on_program_area(at): _hide_program_preview()
+
+func _pointer_on_program_area(at: Vector2) -> bool:
+	if program_preview.visible and program_preview.get_global_rect().has_point(at): return true
+	for controls in program_controls.values():
+		if controls.card.is_visible_in_tree() and controls.card.get_global_rect().has_point(at): return true
+	return false
+
+func _show_program_preview(id: String, pin: bool) -> void:
+	if not running or game.paused or not program_controls.has(id): return
+	preview_program_id = id
+	preview_pinned = pin
+	program_preview.visible = true
+	var data = Codes.program(id)
+	preview_title.text = data.display_name
+	preview_effect.text = data.description
+	for program_id in program_controls:
+		program_controls[program_id].button.button_pressed = program_id == id
+	_position_program_preview()
+	_update_hud()
+
+func _hide_program_preview() -> void:
+	if preview_program_id.is_empty(): return
+	preview_program_id = ""
+	preview_pinned = false
+	program_preview.visible = false
+	for controls in program_controls.values(): controls.button.button_pressed = false
+
+func _sync_program_preview() -> void:
+	if not running or not is_visible_in_tree(): return
+	if preview_pinned:
+		_position_program_preview()
+		return
+	for id in program_controls:
+		if program_controls[id].card.get_global_rect().has_point(pointer):
+			if preview_program_id != id: _show_program_preview(id,false)
+			else: _position_program_preview()
+			return
+	if program_preview.visible and program_preview.get_global_rect().has_point(pointer): return
+	_hide_program_preview()
+
+func _position_program_preview() -> void:
+	if not program_controls.has(preview_program_id): return
+	var card: Control = program_controls[preview_program_id].card
+	var x: float = programs.position.x + card.position.x
+	program_preview.position = Vector2(minf(x, 1230 - maxf(program_preview.size.x,218)), programs.position.y + maxf(card.size.y,66) - 1)
 
 func _select_item(id: String) -> void:
 	if not id.is_empty() and (not running or game.paused): return
@@ -219,8 +326,10 @@ func _select_item(id: String) -> void:
 
 func hover_paused() -> bool:
 	if not is_visible_in_tree() or game.phase != "battle" or game.get("screen") not in [null,"battle"]: return false
+	if preview_pinned and program_preview.visible: return true
 	for controls in program_controls.values():
 		if controls.card.is_visible_in_tree() and controls.card.get_global_rect().has_point(pointer): return true
+	if program_preview.visible and program_preview.get_global_rect().has_point(pointer): return true
 	for controls in item_controls.values():
 		if controls.icon.is_visible_in_tree() and controls.icon.get_global_rect().has_point(pointer): return true
 		if controls.card.is_visible_in_tree() and controls.card.get_global_rect().has_point(pointer): return true
@@ -231,12 +340,15 @@ func _update_hud() -> void:
 	for id in program_controls:
 		var controls: Dictionary = program_controls[id]
 		var error: String = sim.program_error(id)
-		controls.button.disabled = not error.is_empty() or game.paused
+		controls.button.disabled = game.paused
 		controls.button.available = error.is_empty()
 		controls.button.queue_redraw()
-		controls.card.tooltip_text = Codes.program(id).description+"\n"+("就绪 · 点击释放" if error.is_empty() else error)+"\n悬停暂停 · 移开继续"
 		for kind in controls.recipe:
 			controls.recipe[kind].configure(kind, Codes.program(id).cost[kind], sim.blocks.get(kind,0) >= Codes.program(id).cost[kind])
+	if not preview_program_id.is_empty():
+		var preview_error: String = sim.program_error(preview_program_id)
+		preview_state.text = "就绪" if preview_error.is_empty() else preview_error
+		preview_release.disabled = not preview_error.is_empty() or game.paused
 	for id in item_controls:
 		var controls: Dictionary = item_controls[id]
 		var destination: String = Codes.RULES.types.keys()[controls.destination.selected]
@@ -251,7 +363,7 @@ func _update_hud() -> void:
 		controls.icon.remaining = sim.items.get(id,0)
 		controls.icon.tooltip_text = Codes.item(id).display_name+" · 点击查看"
 		controls.icon.queue_redraw()
-	summary.text = ("悬停暂停  ·  " if hover_paused() and not game.paused else "")+"羁绊："+("、".join(sim.tags) if not sim.tags.is_empty() else "未激活")+"  ·  "+sim.system_status()+"  ·  下次维护 %.1f秒" % maxf(0,sim.next_pulse-sim.elapsed)
+	summary.text = (("操作暂停  ·  " if preview_pinned else "悬停暂停  ·  ") if hover_paused() and not game.paused else "")+"羁绊："+("、".join(sim.tags) if not sim.tags.is_empty() else "未激活")+"  ·  "+sim.system_status()+"  ·  下次维护 %.1f秒" % maxf(0,sim.next_pulse-sim.elapsed)
 
 func code_origin(event: Dictionary) -> Vector2:
 	return game.origin+(game._project(event.from)-Vector2(0,35))*game.scale_factor
@@ -260,8 +372,9 @@ func consume(event: Dictionary) -> void:
 func _consume_pending() -> void:
 	for event in sim.drain_events(): game._present_simulation_event(event)
 func _cast_code(id: String) -> void:
-	if not running or game.paused or not sim.cast_program(id): return
+	if not running or game.paused or not program_preview.visible or preview_program_id != id or not sim.cast_program(id): return
 	_consume_pending()
+	_hide_program_preview()
 	_update_hud()
 func _use_code_item(id: String) -> void:
 	if not running or game.paused or selected_item != id: return

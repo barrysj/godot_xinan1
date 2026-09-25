@@ -96,6 +96,8 @@ func _ready() -> void:
 	panel._update_hud()
 	await click(conversion.button)
 	await click(panel.program_controls.takeover.button)
+	verify(panel.preview_program_id == "takeover" and game.simulation.casts == 0,"skill icon opens effect preview without casting")
+	await click(panel.preview_release)
 	verify(game.simulation.system_taken and game.simulation.casts == 1, "real mouse conversion and takeover execute in main battle")
 	verify(panel.programs.visible and not game.paused,"successful program keeps the flat battle HUD visible")
 	var saved: Dictionary = game.run.to_dict()
