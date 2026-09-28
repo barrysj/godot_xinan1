@@ -78,12 +78,10 @@ func _texture_for(id: String) -> Texture2D:
 	if textures.has(id): return textures[id]
 	var path: String = TEXTURE_PATHS.get(id, "")
 	if path.is_empty(): return null
-	var bytes := FileAccess.get_file_as_bytes(path)
-	var image := Image.new()
-	if bytes.is_empty() or image.load_png_from_buffer(bytes) != OK:
+	var texture := load(path) as Texture2D
+	if texture == null:
 		push_warning("记忆终端纹理读取失败：" + path)
 		return null
-	var texture: Texture2D = ImageTexture.create_from_image(image)
 	textures[id] = texture
 	return texture
 

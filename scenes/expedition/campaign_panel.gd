@@ -214,10 +214,7 @@ func home(progress, chosen_supply: bool) -> void:
 	_show_home_page()
 	var backdrop := TextureRect.new()
 	backdrop.name = "HomeBackground"
-	var image := Image.new()
-	var bytes := FileAccess.get_file_as_bytes("res://assets/art/backgrounds/m1_campus_hub/lecture-hall.png")
-	if image.load_png_from_buffer(bytes) == OK:
-		backdrop.texture = ImageTexture.create_from_image(image)
+	backdrop.texture = load("res://assets/art/backgrounds/m1_campus_hub/lecture-hall.png") as Texture2D
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED

@@ -17,6 +17,8 @@
 - CI 从 Godot 官方发布下载引擎与模板并验证 SHA-512，只安装 Web 单线程模板，随后缓存。
 - 使用 Compatibility 渲染器、单线程 Web 导出、默认相对资源路径；PWA 未启用。
 - 中文字体随游戏打包：Google Fonts Noto Sans SC，许可证见 `assets/fonts/OFL.txt`。
+- Web 预设保持全部正式运行资源，但排除 `design/*` 概念与评审资料；`assets/art/holo_cards` 必须保留，供图鉴动态发现。基地、图书馆和记忆终端使用导入纹理，不依赖导出包中的原 PNG 字节。
+- 本地构建和 Actions 上传前均检查整站体积，达到 900 MB 就失败，以留出 Pages 1 GB 限额余量。
 - 上传 `builds/web` 为官方 Pages artifact，再通过 `actions/deploy-pages` 发布。
 - `builds` 和 `.godot` 不提交。首次 CI 下载完整模板较大，后续命中缓存会更快。
 

@@ -272,3 +272,12 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 原入口回归：expedition.tscn 的 --campaign-flow-check --order=012 为124/0；--run-smoke 三路线PASS；--pause-flow-smoke PASS；deployment_check.tscn --deployment-check 为0失败。图形运行 expedition.tscn --content-check 输出 CONTENT_CHECK_COMPLETE；menu.tscn --codex-check 为36项PASS。参数均置于引擎 -- 后。原 trial runner -Check 十场景通过（代码74、UI27、内容95、效果70、存档76、三战104、表现34、准确性51以及动作/自动战斗PASS）。
 
 1920×1080、1920×1200、2560×1440实际截图尺寸和终端边界通过；截图 .godot/main-code-terminal-<尺寸>.png 和 main-code-battle.png 已查看并展示。已有根证书读取错误、Kenney原图加载告警仍存在；未据此声明导出、手机或真人趣味性验收。
+
+## Web 缩包与资源完整性验证 E33
+
+2026-09-29；基线 `main` `06ad4e6`，分支 `codex/web-export-size`；Windows PowerShell 7、Godot 4.7.2 标准版、Codex 应用内浏览器本地 HTTP。Web 预设仅排除 `design/*`，保留 `all_resources` 及闪卡活动目录。
+
+- `pwsh.exe -File ./build-web.ps1`：导出成功，整站 296.75 MiB（原包 1,299.91 MiB），其中 `index.pck` 258.74 MiB；导出记录无 `res://design/` 项。脚本与 Pages CI 均有 900 MB 整站体积门槛。
+- 正式 `builds/web/index.html`：主菜单、基地阶梯教室背景、图鉴闪卡列表及详情实际显示；截图 `.godot/web-export-home.jpg`、`.godot/web-export-card.jpg`。浏览器隔离 HTML 副本加入 `--campaign-flow-check` 后全战役 124 checks / 0 failures；副本已移除，正式包不带测试入口。
+- 图形场景 `res://scenes/expedition/expedition.tscn -- --campaign-flow-check --library-environment-preview-capture`：31 checks / 0 failures，覆盖九张环境图切换。
+- 边界：线上 Pages、手机未测；自动 Web 全战役日志有两条 `_focus_home_action` 延迟调用错误。原生 `--memory-terminal-capture` 输出 12 checks / 3 failures（终局节点数量断言），不列为通过。Godot 导入过程仍有既有根证书与编辑器设置保存提示。
