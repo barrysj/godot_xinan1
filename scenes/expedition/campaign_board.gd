@@ -13,10 +13,15 @@ var controls: Array[Control] = []
 var location_background: Texture2D
 const INK = Color("17202B")
 const BLUE = Color("4AAFD0")
+const MAP_TEXTURES = {
+	"day": preload("res://assets/art/campus_map/day.png"),
+	"night": preload("res://assets/art/campus_map/night.png"),
+	"anomaly": preload("res://assets/art/campus_map/anomaly.png")}
+var map_state = "anomaly"
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(820,680) if mode == "location" and journey != null and journey.visit.data.place == "gate" else Vector2(600,360)
-	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	custom_minimum_size = Vector2(960,544) if mode == "route" else (Vector2(820,680) if mode == "location" and journey != null and journey.visit.data.place == "gate" else Vector2(600,360))
+	size_flags_horizontal = Control.SIZE_SHRINK_CENTER if mode == "route" else Control.SIZE_EXPAND_FILL
 	if mode == "location" and journey != null and journey.visit.data.place == "gate":
 		location_background = ExplorationSkin.texture(CampusLocationSkin.path("south_gate", "anomaly"))
 		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -79,6 +84,12 @@ func _draw() -> void:
 		var source := Rect2((image_size - source_size) * 0.5, source_size)
 		draw_texture_rect_region(location_background, Rect2(Vector2.ZERO,size), source)
 		draw_rect(Rect2(Vector2.ZERO,size),Color(0.02,0.025,0.065,0.30))
+	elif mode == "route":
+		var texture: Texture2D = MAP_TEXTURES.get(map_state,MAP_TEXTURES.anomaly)
+		draw_texture_rect(texture,Rect2(Vector2.ZERO,size),false)
+		var veil_alpha: float = {"day":0.05,"night":0.0,"anomaly":0.12}.get(map_state,0.12)
+		draw_rect(Rect2(Vector2.ZERO,size),Color(0.04,0.08,0.13,veil_alpha))
+		draw_rect(Rect2(Vector2.ONE,size-Vector2(2,2)),Color("6BC8DF"),false,2)
 	else:
 		draw_style_box(_surface(),Rect2(Vector2.ZERO,size))
 	if journey == null: return
@@ -88,14 +99,18 @@ func _draw() -> void:
 				for b in range(journey.data.map[step+1].size()):
 					var from = size*Vector2(0.14+step*0.24,0.50 if journey.data.map[step].size() == 1 else 0.35+a*0.35)
 					var to = size*Vector2(0.14+(step+1)*0.24,0.50 if journey.data.map[step+1].size() == 1 else 0.35+b*0.35)
-					draw_line(from,to,Color("A3BFCB"),4)
+					draw_line(from,to,Color(0.05,0.10,0.16,0.72),8)
+					draw_line(from,to,Color("79D2E5"),4)
 					var arrow = from.lerp(to,0.62)
-					draw_line(arrow-Vector2(9,7),arrow,Color("677482"),2)
-					draw_line(arrow-Vector2(9,-7),arrow,Color("677482"),2)
+					draw_line(arrow-Vector2(9,7),arrow,Color("79D2E5"),3)
+					draw_line(arrow-Vector2(9,-7),arrow,Color("79D2E5"),3)
 		for step in range(4):
 			var state = "已通过" if step < journey.data.step else ("选择下一站" if step == journey.data.step else "尚未到达")
-			_label(Vector2(size.x*(0.14+step*0.24)-50,44),"%d · %s" % [step+1,state],BLUE if step == journey.data.step else INK)
-		_label(Vector2(20,size.y-20),"路线示意 · 每站胜利后继续前进，终点取得记忆终端")
+			var label_at = Vector2(size.x*(0.14+step*0.24)-58,18)
+			draw_rect(Rect2(label_at-Vector2(8,2),Vector2(132,34)),Color(0.96,0.98,0.99,0.86))
+			_label(label_at+Vector2(8,24),"%d · %s" % [step+1,state],BLUE if step == journey.data.step else INK)
+		draw_rect(Rect2(10,size.y-42,size.x-20,32),Color(0.96,0.98,0.99,0.88))
+		_label(Vector2(20,size.y-20),"路线示意 · 底图来自真实校园模型；节点仍待地点坐标确认")
 	else:
 		var library: bool = journey.visit.data.place == "library"
 		# Readable floor plan assembled with native geometry, with no new bitmap assets.

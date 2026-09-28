@@ -1,0 +1,32 @@
+{
+  "source_sha256": {
+    "core": "61b20bce5299b80d142f523ae56c05d7d7259bc54067ec81a5b0a5bc7e2d8ca6",
+    "north": "fc68062bd9014bab1f57dcd0bb76bc6625bda4f4caaf38e47c3c2f5872669bfb",
+    "southeast": "9f3f95ad4e13e3292f1068586b3a3703a9dc3e18d177f4a56036991f1a3a44e8"
+  },
+  "southeast_glb_sha256": "bf3fa475f98c5419803f91e08b09f3eb8427aef09d7339e97e13a29fc431c1be",
+  "comparisons": {
+    "core": {
+      "matching_outline_pairs": 79,
+      "unique_anchor_outlines": 77,
+      "unique_southeast_outlines": 77,
+      "translation_southeast_to_anchor_m": [
+        176.88917778449832,
+        -262.414031310007,
+        0.0
+      ],
+      "maximum_xy_residual_m": 9.5367431640625e-07
+    }
+  },
+  "translation_southeast_to_core_m": [
+    176.88917778449832,
+    -262.414031310007,
+    0.0
+  ],
+  "core_local_origin_m": [
+    487.238728951721,
+    506.594165236689,
+    528.0
+  ],
+  "boundary": "Building-outline registration only; mesh crop and seams require independent review."
+}

@@ -5,6 +5,12 @@
 
 ## 当前状态
 
+- 2026-09-28 二次收尾（待统筹）：用户明确授权asset_031重编号asset_001、删除001～053全部目录及手工副本；地图Manifest新增reference_topoexport／reference_images登记原始参考，旧运行源图迁移后更新登记。资产库协议和界面不变；参考stage为reference，不伪造approved状态。基线0144849，验证E53；下方E52为前一轮历史记录。
+
+- 2026-09-28 美术留存流程整理（待统筹）：美术微调不逐次提交或登记正式Manifest；阶段末询问留存、按tmp／concept／asset三位编号收尾，一次验证提交；美术合入main只用授权的squash。项目技能、WORKFLOW、AGENTS及任务模板同步。地图对象清单精简为有效证据和运行依赖；最新三态源文件同属asset_031，仍review。不改主Manifest协议、浏览器代码或其他对象。基线`3d16ad3`，验证与已知边界见E52。
+
+- 2026-09-26 开发工具集整合（待统筹）：原美术资源台桌面控制器扩展为“美术资源／地图编辑”双卡，统一入口 `run-tool-suite-control.ps1`，原 `run-art-manager-control.ps1` 兼容转发；沿用原 EXE 文件名，源码改为 `ToolSuiteControl.cs`。每项独立显示状态、PID 与运行目录，并提供“启动／打开／停止”。地图服务由 `tools/campus-map-editor/run-server.ps1` 启动，`/api/health` 回报应用 ID、PID 与项目根；控制器在启动／停止前核验同一工作树，拒绝操作同端口的其他服务。地图服务依赖 Node.js，资源台仍依赖 Python；关闭窗口不停止后台服务。验证：控制器构建、三态启动脚本回归、双服务生命周期自检、实际窗口截图及后端测试，详见 E48。未改变 Manifest 或资源台网页协议。
+
 - 2026-09-16（基线32387d4）：按用户要求，控制器构建输出改为与 ArtManagerControl.cs 同目录的 `tools/art/asset_manager/control/ArtManagerControl.exe`，根启动入口同步，EXE 加入精确 Git 忽略项；不再受 .godot 清理影响。旧路径的记录仅作历史验证。待统筹：控制器构建位置变化，不改资源台协议或功能。
 
 - 2026-09-16（基线 fad0254）启动恢复：复现清除 .godot/art-manager-control/ArtManagerControl.exe 后根入口抛出 Controller is not built。run-art-manager-control.ps1 现会在 EXE 缺失或 C#／构建脚本较新时自动编译，构建错误终止启动并提示关闭占用窗口；无需清缓存后另跑构建。直接运行的 EXE 仍须先构建并保留项目内位置，以便向上定位项目根。
@@ -14,7 +20,7 @@
 - 2026-09-16（基线 b9daea3）：新增 `holo_card` 集合目录登记，自动发现直接子目录的卡资源；详情读取同份 `.tres` 文案，展示 review/原图并将同份资源传入 Godot 预览。入口为 catalog.py、server.py、static/app.js；普通对象规则不变。验证：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`，25 项通过（含 9 项卡片测试）；JavaScript 语法检查通过。目录约束、缺图、缺截图、恶意路径、文案刷新和启动参数均覆盖。待统筹：Manifest 允许显式卡片集合扫描，卡片不走阶段审批。
 
 - 状态：Manifest v3 与 Windows 桌面控制器已实现并完成验收。
-- 功能入口：运行 `pwsh.exe -NoProfile -File .\run-art-manager-control.ps1`，首次或源码更新时自动补建控制器；直接启动服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
+- 功能入口：运行 `pwsh.exe -NoProfile -File .\run-tool-suite-control.ps1`，首次或源码更新时自动补建控制器；旧 `run-art-manager-control.ps1` 仍可用。直接启动资源台服务使用 `pwsh.exe -NoProfile -File .\tools\art\asset_manager\run-server.ps1`，本地页面为 `http://127.0.0.1:8765/`。
 - 管理入口：[主 Manifest](../../assets/art/asset_manifest.yaml)及 `assets/art/manifests/` 对象清单；格式见[工具说明](../../tools/art/asset_manager/README.md)。
 - 范围：只处理当前项目登记对象；不兼容任意目录，不提供跨项目预览，不承担审批、编辑、生图或运行时内容加载。
 
@@ -29,7 +35,7 @@
 7. 详情内容用响应式网格适配可用宽度；不同 stage 不再纵向平铺。版本默认折叠为摘要，展开后分为图集、动画、其他三个子页。
 8. 概念与资产页可独立筛选选用和批准状态；生效版本及关联对象支持带返回入口的详情跳转。
 9. 校验状态只描述版本文件和 Godot 引用的实时完整性，由管理器计算而非 Manifest 字段，并以颜色标签显示；不从校验结果推断 `selection` 或 `approval`。
-10. Windows 桌面控制器只包含“启动服务”“打开页面”“停止服务”三个动作按钮，并显示实时服务状态、PID 和当前工作目录。健康接口返回服务 PID 与项目根；控制器核对应用 ID 和项目根后才允许停止，避免误杀同端口程序或其他工作树服务。
+10. Windows 开发工具集分别为美术资源台与地图编辑器提供“启动／打开／停止”，并显示实时服务状态、PID 和当前工作目录。健康接口返回服务 PID 与项目根；控制器核对应用 ID 和项目根后才允许停止，避免误杀同端口程序或其他工作树服务。
 11. 资源台只消费 Manifest 已登记的预生成 GIF，并可启动无写入的统一动作预览；点击动作、展开版本或启动 Godot 均不得隐式生成预览文件。通用 GIF 导出属于 [ART-03](art-03.md#骨骼序列帧通用生产与预览) 的显式生产入口，已完成并通过单动作及七动作导出验证。
 
 ## 验证入口

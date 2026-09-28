@@ -1,0 +1,43 @@
+{
+  "source_sha256": {
+    "core": "61b20bce5299b80d142f523ae56c05d7d7259bc54067ec81a5b0a5bc7e2d8ca6",
+    "north": "fc68062bd9014bab1f57dcd0bb76bc6625bda4f4caaf38e47c3c2f5872669bfb",
+    "southeast": "9f3f95ad4e13e3292f1068586b3a3703a9dc3e18d177f4a56036991f1a3a44e8",
+    "east": "0d486fbf82a14a04695146c57912071fde38ca1813b2457a138cf329abf9aeae",
+    "west": "29c02686099026f6761df16cb7ed191a5666e9917ecb6f9b0d7c48905481996b"
+  },
+  "west_glb_sha256": "f81b7c63a22d2d0ec9fb08661177d6bbf810b051a500086f9538ccdfc167402c",
+  "comparisons": {
+    "core": {
+      "pairs": 28,
+      "unique_anchor": 28,
+      "translation_to_anchor_m": [
+        -426.5789036300266,
+        -185.61944804992527
+      ],
+      "translation_to_core_m": [
+        -426.5789036300266,
+        -185.61944804992527
+      ],
+      "maximum_residual_m": 1.3486991523486091e-06
+    },
+    "north": {
+      "pairs": 13,
+      "unique_anchor": 9,
+      "translation_to_anchor_m": [
+        -560.4052923011477,
+        -921.7037276108749
+      ],
+      "translation_to_core_m": [
+        -426.5789036300266,
+        -185.61944804992527
+      ],
+      "maximum_residual_m": 1.3187942844627548e-06
+    }
+  },
+  "translation_west_to_core_m": [
+    -426.5789036300266,
+    -185.61944804992527,
+    0
+  ]
+}

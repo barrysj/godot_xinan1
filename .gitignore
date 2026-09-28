@@ -24,3 +24,7 @@ builds/**/*
 
 # OSX 
 .DS_Store
+
+# Art candidates are promoted only at phase closeout.
+/design/concepts/**/tmp_[0-9][0-9][0-9]/
+/assets/art/**/tmp_[0-9][0-9][0-9]/

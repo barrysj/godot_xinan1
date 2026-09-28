@@ -1,10 +1,12 @@
 # 美术资源台
 
-## 桌面控制器启动
+## 开发工具集启动
 
-PowerShell 7 在项目根运行 `./run-art-manager-control.ps1`：缺少 EXE 或控制器源码更新时自动构建，再打开窗口。EXE 与 C# 源码同目录，清理 .godot 不会移除它；构建产物被 Git 忽略。需系统 .NET Framework C# 编译器；若重新编译时报文件占用，关闭控制器窗口后重试，不需要停止已启动的浏览服务。
+PowerShell 7 在项目根运行 `./run-tool-suite-control.ps1`：缺少 EXE 或控制器源码更新时自动构建，再打开窗口。旧入口 `./run-art-manager-control.ps1` 也会打开同一个工具集。EXE 与 C# 源码同目录，清理 .godot 不会移除它；构建产物被 Git 忽略。需系统 .NET Framework C# 编译器；若重新编译时报文件占用，关闭控制器窗口后重试，不需要停止已启动的服务。
 
-可直接双击项目内 `tools/art/asset_manager/control/ArtManagerControl.exe`；也可执行 `& './tools/art/asset_manager/control/ArtManagerControl.exe'`。EXE 从自身目录向上查找项目，不依赖启动时的当前目录；不要单独搬到项目外。直接运行 EXE 不自动编译，新工作树首次请先用根启动脚本。窗口内“启动服务”启动本地后台服务，“打开页面”打开默认浏览器，“停止服务”只停止核验属于此工作目录的服务；关闭控制器窗口不会停止服务。
+可直接双击项目内 `tools/art/asset_manager/control/ArtManagerControl.exe`；也可执行 `& './tools/art/asset_manager/control/ArtManagerControl.exe'`。EXE 从自身目录向上查找项目，不依赖启动时的当前目录；不要单独搬到项目外。直接运行 EXE 不自动编译，新工作树首次请先用根启动脚本。窗口分别管理“美术资源”和“地图编辑”，显示服务状态、PID 和运行目录，各有“启动／打开／停止”按钮。资源台默认使用 `127.0.0.1:8765`，地图编辑器默认使用 `127.0.0.1:8767`。关闭工具集窗口不会停止服务。
+
+工具集只会停止健康接口核验为当前工作树、且 PID 未变化的服务；同端口若被其他程序或工作树占用，显示“端口占用”并禁用对应操作。地图编辑器需要 Node.js；美术资源台需要 Python。
 
 本工具只读取用户指定的主 Manifest。普通对象由对象清单登记；`holo_card` 集合允许在显式登记的目录内发现卡片，不扫描其他目录，也不提供跨项目预览。
 
@@ -93,14 +95,13 @@ integration:
 
 ## 运行与验证
 
-推荐使用桌面控制器：
+推荐使用开发工具集：
 
 ```powershell
-pwsh.exe -NoProfile -File .\tools\art\asset_manager\control\build-control.ps1
-pwsh.exe -NoProfile -File .\run-art-manager-control.ps1
+pwsh.exe -NoProfile -File .\run-tool-suite-control.ps1
 ```
 
-构建脚本用 Windows 自带的 .NET Framework C# 编译器，在源码同目录生成 `tools/art/asset_manager/control/ArtManagerControl.exe`。根启动脚本在缺失或源码／构建脚本内容哈希变化时自动构建，同目录 `.exe.sources` 保存签名，两者均不入库。窗口只提供“启动服务”“打开页面”“停止服务”三个按钮，并实时显示服务状态、进程 ID 与当前项目目录。停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
+构建脚本用 Windows 自带的 .NET Framework C# 编译器，在源码同目录生成兼容原名称的 `tools/art/asset_manager/control/ArtManagerControl.exe`。根启动脚本在缺失或源码／构建脚本内容哈希变化时自动构建，同目录 `.exe.sources` 保存签名，两者均不入库。两张工具卡独立检测、启停；停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
 
 也可以直接启动服务：
 

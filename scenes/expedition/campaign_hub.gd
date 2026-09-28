@@ -234,7 +234,7 @@ func _show_journey() -> void:
 		campaign_panel.rewards(journey.data.offers)
 	elif journey.data.screen == "reward_owner":
 		campaign_panel.reward_owner(journey.data.pending_offer,run.roster,run)
-	elif journey.visit.data.is_empty(): campaign_panel.route(journey)
+	elif journey.visit.data.is_empty(): campaign_panel.route(journey,progress.campaign.restored)
 	else:
 		campaign_panel.location(journey,campaign_mode == "prologue")
 
@@ -411,6 +411,31 @@ func _campaign_action(id: String) -> void:
 		campaign_panel.hide()
 		screen = id
 	elif id == "menu": _request_exit("menu")
+	elif id == "map_region": _open_map_region()
+	elif id == "route_preview":
+		campaign_panel.close_home_overlay(false)
+		var preview = preload("res://scenes/expedition/campus_route_preview.tscn").instantiate()
+		add_child(preview)
+		campaign_panel.hide()
+		preview.closed.connect(func():
+			preview.queue_free()
+			_home())
+
+func _open_map_region() -> void:
+	if not progress.campaign.routes_acquired: return
+	var preview = preload("res://scenes/expedition/expanded_campus_preview.tscn").instantiate()
+	preview.name = "CampaignMapRegionPreview"
+	preview.campaign_selectable = true
+	add_child(preview)
+	campaign_panel.hide()
+	preview.board.set_state("day" if progress.campaign.restored else "anomaly")
+	preview.closed.connect(func():
+		preview.queue_free()
+		_home())
+	preview.region_picked.connect(func(region: String):
+		preview.queue_free()
+		campaign_panel.show()
+		_request_campaign_start(region, "region"))
 
 func _request_campaign_start(region: String, mode: String) -> void:
 	if not progress.active_run.is_empty():

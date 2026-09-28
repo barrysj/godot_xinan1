@@ -272,3 +272,287 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 原入口回归：expedition.tscn 的 --campaign-flow-check --order=012 为124/0；--run-smoke 三路线PASS；--pause-flow-smoke PASS；deployment_check.tscn --deployment-check 为0失败。图形运行 expedition.tscn --content-check 输出 CONTENT_CHECK_COMPLETE；menu.tscn --codex-check 为36项PASS。参数均置于引擎 -- 后。原 trial runner -Check 十场景通过（代码74、UI27、内容95、效果70、存档76、三战104、表现34、准确性51以及动作/自动战斗PASS）。
 
 1920×1080、1920×1200、2560×1440实际截图尺寸和终端边界通过；截图 .godot/main-code-terminal-<尺寸>.png 和 main-code-battle.png 已查看并展示。已有根证书读取错误、Kenney原图加载告警仍存在；未据此声明导出、手机或真人趣味性验收。
+## M1 校园路线底图试接入 E23
+
+2026-09-21；基线6bff72b后。PowerShell 7调用Godot 4.7.2 Mono；测试档位于`.godot`，不覆盖玩家档。
+
+- `--headless --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：128 checks / 0 failures；新增三条未恢复路线异常态和一条恢复后日间态断言。
+- 图形模式追加`--exploration-capture`：102 checks / 0 failures；实际输出基地、路线、地点、奖励、开放出口、结算的1920×1080、2560×1440、1920×1200截图，像素尺寸断言通过。
+- 路线页实际目视16:9与16:10：1200×680异常底图未变形，原生节点、双层连线、选中态、详情和操作按钮可读；证据固化于地图027评审目录。
+- `tools/art/campus_map/build_runtime_textures.py`校验三张源图均为1600×1200并按同框输出1200×680；日间、夜间、异常像素坐标对齐。
+
+边界：未重新运行Web导出、Android或真人测试；夜间状态未绑定；节点仍是机制示意而非真实地点坐标。首次导入需要`design/.gdignore`排除Blender制作源；编辑器仍报告既有GGT设置脚本兼容错误，但专项运行退出码0且上述断言全部通过。
+
+## M1 校园地图日间修订与三态预览 E24
+
+2026-09-21；基线6a6fa2e后。PowerShell 7调用Blender 4.5.3与Godot 4.7.2 Mono；测试档位于`.godot`，不覆盖玩家档。
+
+- Blender后台运行028/`build_daylight.py`，从015源模型生成日间修订；`verify_daylight.py` PASS：5584个受检原始对象的网格、变换和渲染可见性一致，相机一致，843棵树数量一致，PNG为1600×1200。
+- `tools/art/campus_map/build_runtime_textures.py`重建三态1200×680运行纹理；日间来自028，夜间来自016，异常来自026，同框对齐。
+- `--headless --path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：128 checks / 0 failures。
+- 图形模式追加`--exploration-capture`：108 checks / 0 failures；日间、夜间、异常分别输出1920×1080、2560×1440、1920×1200截图并断言实际像素尺寸。
+- `create-game-assets`的`asset_report.py --expect-size 1920x1080`检查三张固化评审图，结果PASS。实际目视确认：日间具有蓝天、暖直射光与明确阴影；夜间路线与步骤文字可读；异常态保持原有侵入区域且交互叠层可读。
+
+边界：028与三态接入效果仍待人工视觉批准；夜间仅有组件预览能力，没有剧情触发；异常沿用026资产，未随日间重新打光。未验证Web、Android、HDR显示或陌生玩家体验。
+
+## M1 校园地图全场异常色域 E25
+
+2026-09-22；基线ec98ea5后。PowerShell 7调用Blender 4.5.14与Godot 4.7.2 Mono。
+
+- Blender后台运行029/`build_anomaly_palette.py`，从026可编辑异常模型生成全场异常色域；`verify_anomaly_palette.py` PASS：5584个受检非灯光对象的网格、变换与可见性一致，相机一致，843棵树、14控制器及14个区域节点组一致。
+- `tools/art/campus_map/build_runtime_textures.py`重建异常1200×680运行纹理，来源切换至029；日间028与夜间016不变。
+- `asset_report.py`检查1600×1200 RGB整图及1920×1080 RGBA游戏截图，均PASS。
+- 图形模式`--exploration-capture`：108 checks / 0 failures；三态各自通过1920×1080、2560×1440、1920×1200实际像素断言。目视确认异常色域覆盖正常区域，同时原生路线、节点、步骤和按钮可读。
+- `--headless --campaign-flow-check`：128 checks / 0 failures。
+
+边界：029资产和接入效果均为review；异常状态有意比其他状态更暗，HDR与低亮度屏幕未测；夜间剧情触发、真实地点坐标、Web、Android及陌生玩家体验仍未验证。
+
+## M1 校园三尺度异常光效 E26
+
+2026-09-22；基线776b329。Blender 4.5.14与Godot 4.7.2 Mono，所有命令PowerShell 7。美术评审与重建命令见地图任务030及030/generation.md。
+
+- 030/verify_lighting.py，Blender禁autoexec、python-exit-code 1：PASS／退出码0。5602原对象矩阵／可见性、5584网格实际顶点及拓扑摘要、相机、843树、银杏27+27与14控制器一致；新增24屋顶灯带和10局部灯；42条原属性驱动与10灯能量驱动有效。
+- 030/core-anomaly.png的1600×1200 RGB与1920×1080游戏截图通过asset_report.py实际解码／尺寸检查。
+- Godot `--path . --log-file .godot/campus-030-capture.log res://scenes/expedition/expedition.tscn -- --campaign-flow-check --exploration-capture`：108 checks / 0 failures／退出码0；三态各完成1920×1080、2560×1440、1920×1200实际像素断言。实看1080截图，异常窗光、局部光晕与路线可读，证据固化030/review/codex-workflow。
+
+仅修改源资产与运行纹理来源，未改玩法代码；本轮未重复完整战役或资源台单测。既有证书／原图警告和导入时编辑器设置写权限警告仍在。未重测Web／Android、真机性能或HDR；后续视觉批准见地图任务030。
+
+## 两路线区域高亮验证 E27
+
+2026-09-22；起点56e7053，Godot 4.7.2 Mono，PowerShell 7。实现与边界见CORE-02两路线预览。
+
+- `--path . --log-file .godot/route-preview-check.log res://scenes/expedition/campus_route_preview.tscn -- --route-preview-check`：246 checks／0 failures，退出码0。真实GUI事件分发覆盖悬停、地图点击、按钮鼠标点击、键盘确认、移开恢复、清除、三态坐标与选择保持；三尺寸每态两路线共18张截图，实际像素尺寸断言通过。首次测试发现测试注入未处理缩放，改用项目既有viewport-local输入方式后通过，并非绕过控件命中。
+- `--headless --path . --log-file .godot/route-preview-regression.log res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：132／0，退出码0，含基地预览打开／关闭、选择不改变campaign与active_run、原战役回归。
+- 资源台实际扫描10对象／176文件，missing=0、mismatches=0；`git diff --check`通过。目视日间东湖路线、异常银杏路线与16:10夜间截图，无标签遮挡核心操作。代表截图保存在`design/concepts/m1-campus-map/review/codex-workflow/route-preview-*.png`。
+
+未验证Web／Android及手柄实机；区域轮廓与连接线待用户视觉确认，不代表精确导航。保留既有证书／原图加载警告，未增加脚本错误。
+
+## 连续区域聚焦验证 E28
+
+2026-09-23；基线3a4ebbe。Godot 4.7.2 Mono，PowerShell 7。
+
+- `--path . --log-file .godot/route-area-check.log res://scenes/expedition/campus_route_preview.tscn -- --route-preview-check`：318／0，退出码0。沿用E27三态／三尺寸／两路线输入测试，新增区域内非建筑绿地悬停、截图像素确认区域外变暗／区域内变亮、清除后恢复原图像素。输出18张实际截图，目视032日间东湖、异常银杏与16:10布局。
+- `--headless --path . --log-file .godot/route-area-regression.log res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：132／0，退出码0。
+- 保留031证据，032代表截图为`design/concepts/m1-campus-map/review/codex-workflow/route-area-032-*.png`。无新增PNG底图或几何变动。未测Web／移动设备与性能预算。
+
+运行环境仍报告根证书读取问题；图形运行另报告GLES shader缓存写入失败（`_save_to_cache`），实际shader编译、图像捕获和像素断言通过。未将缓存写入问题冒称为零错误。连续区域为可评审选择范围，非真实导航边界。
+
+## 地点详情与三站顺序预览 E29
+
+2026-09-23；实现起点747da4d，032人工批准5d5e633。引擎沿用E28，PowerShell 7。
+
+- Godot `--path . --log-file .godot/route-walk-check.log res://scenes/expedition/campus_route_preview.tscn -- --route-preview-check`：577／0，退出码0。保留E28全量输入与像素检查；新增纯内存状态边界、真实GUI开始／顺序推进／完成／返回／提前结束、按钮和地图查看不推进、禁用其他路线、三态切换保留当前位置、当前标记及操作按钮边界。两路线×三态×三尺寸均走完三站。运行图包含中间站与完成状态。
+- Godot `--headless --path . --log-file .godot/route-walk-regression.log res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：133／0，退出码0，含基地进入预览、走到第二站后campaign与active_run仍不变、返回销毁页面及原战役流程。
+- 证据：`design/concepts/m1-campus-map/review/codex-workflow/route-walk-033-*.png`。未测Web、手机、实体手柄。保留既有证书和战斗原图加载警告，无新增脚本错误。
+
+此验证证明预览闭环，不表示正式战役节点已改为真实地标，不验证校园实景导航或真实照片内容。
+
+## 当前地点显著性验证 E30
+
+2026-09-24；基线c68d2d5，PowerShell 7，Godot 4.7.2 Mono。
+
+- `--path . --log-file .godot/route-location-marker-check.log res://scenes/expedition/campus_route_preview.tscn -- --route-preview-check`：595／0，退出码0。保留E29两路线×三态×三尺寸的真实GUI与像素检查；新增到达第三站后当前位置标记仍在、右侧明确写出终点名称的断言。
+- `--headless --path . --log-file .godot/route-location-marker-regression.log res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：133／0，退出码0。
+- 已目视日间东湖、异常银杏大道和异常品学楼终点实际截图；持久评审证据为`design/concepts/m1-campus-map/review/codex-workflow/route-location-034-*.png`，对应任务034。旧033截图保留供对比。
+
+本次只改原生UI标识，未改三态源图、地点坐标或战役规则。既有根证书／战斗原图警告仍在；未测Web、手机、手柄及真人辨识速度。
+
+## 下一站方向提示验证 E31
+
+2026-09-24；基线8004d36，PowerShell 7，Godot 4.7.2 Mono。
+
+- `--path . --log-file .godot/route-next-035-check.log res://scenes/expedition/campus_route_preview.tscn -- --route-preview-check`：667／0，退出码0。两路线×三态×1920×1080／2560×1440／1920×1200真实GUI走完三站；新增第一站、第二站右侧下一站名称与地图状态同步，第三站及完成态下一站清空的断言。既有路线选择、跨状态保持及区域像素检查保留。
+- `--headless --path . --log-file .godot/route-next-035-regression.log res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：133／0，退出码0。
+- 实际目视日间东湖、夜间／异常银杏大道；评审截图保存于`design/concepts/m1-campus-map/review/codex-workflow/route-next-035-*.png`，034旧图保留比较。
+
+未修改源位图、地标坐标或战役规则，未将示意线当作可行走导航。既有根证书／战斗原图警告仍在；Web、手机、手柄和真人辨识未测。
+
+## 北部地图拼接概念验证 E32
+
+2026-09-24；PowerShell 7、Blender 4.5.14；候选036，未改运行时。
+
+- `derive_alignment.py --deps .godot/dxf-research-deps`：两份2D DXF的34对重合建筑轮廓，北部到核心区平移 `(133.8263886711211, 736.0842795609497)` 米，最大XY残差约 `1.35e-6` 米；见 `036/alignment.json`。
+- Blender后台运行 `build_north_preview.py` 与 `verify_saved.py`：构建、保存重开均PASS；旧核心区5584个网格的几何和变换不变；新增148建筑、184道路、67绿地、6水面、1地面、353树位；见 `036/build-validation.json` 与 `reopen-validation.json`。
+- 日间实际渲染 `036/north-day-preview.png` 已目视检查，1800×1500；仅为北部拼接与建筑关系样片。未验证北部真实建筑高度、商铺身份、行道银杏、完整校园边界、夜间／异常或Godot内交互；035当前路线预览不变。
+
+## 东南地图拼接概念验证 E33
+
+2026-09-24；PowerShell 7、Blender 4.5.14；候选037，未改运行时。
+
+- `derive_alignment.py --deps .godot/dxf-research-deps`：东南与核心区DXF中79对重合建筑轮廓，平移 `(176.88917778449832, -262.414031310007)` 米，最大XY残差约 `9.54e-7` 米；见 `037/alignment.json`。
+- Blender后台运行 `build_southeast_preview.py` 与 `verify_saved.py`：构建及保存重开PASS；036已有6696网格的几何、变换不变；新增45建筑、42绿地、2地形、75道路路带及270树位；见 `037/build-validation.json`、`reopen-validation.json`。
+- 实际日间渲染 `037/core-north-southeast-day.png` 已目视，1800×1500。GLB道路只有线，路带宽度为概念示意。未覆盖范围仍呈背景；未核验实测路宽、建筑身份、夜间／异常或Godot交互。
+
+## 右侧中部及运动场概念验证 E34
+
+2026-09-24；PowerShell 7、Blender 4.5.14；概念038，尚未接入Godot。
+
+- `inspect_dxf.py --deps .godot/dxf-research-deps`：与核心／北部／东南分别有11／34／29对匹配建筑，换算到核心区的平移一致；最大单组XY残差约 `1.35e-6` 米。
+- Blender后台 `build_middle_east.py`、`add_sports_fields.py`、`verify_saved.py`：全部PASS。037已有7400网格不变；右块新增43建筑、72道路路带、168树位等；运动场新增96个可编辑对象，16个树网格有意隐藏，除此之外场景已有7955网格的几何与变换不变。来源与对象统计见038的JSON验证记录。
+- 实际目视 `038/four-tile-sports-day.png`（1800×1500）和 `sports-detail-day.png`（1200×900）；球场细分与颜色为示意，未验证球场用途、真实赛线或Godot运行效果。
+
+## 左侧第五分块概念验证 E35
+
+2026-09-24；PowerShell 7、Blender 4.5.14；概念039，未改运行时。
+
+- `align_west.py --deps .godot/dxf-research-deps`：与核心／北部分别28／13对重合建筑，变换到核心坐标一致；最大XY残差约 `1.35e-6` 米。
+- Blender后台 `build_west.py`、`verify_saved.py`：构建、保存重开PASS，旧8051网格的几何／变换／可见性不变；新增205建筑、167道路路带及180树位等；结果见039的JSON报告。
+- 实际日间渲染 `039/five-tile-day.png` 已目视，1800×1500；左下建筑内侧阴影偏黑，后续统一日间打光须修。尚未验证多态、游戏运行时、真实边界或五块之外的校园。
+
+## 五分块三态概念验证 E36
+
+2026-09-24；PowerShell 7、Blender 4.5.14；候选040，未改运行时。
+
+- `build_states.py` 分别生成日／夜／异常三份可编辑场景与1800×1500实际渲染。`verify_states.py` 保存重开PASS：三态均8817个同名网格、同顶点数及世界位置，镜头位置和尺度相同；异常态新增5个可移动控制点。结果见040的 `reopen-validation.json`。
+- 三张图已目视：日间补光减轻西南庭院过黑，夜间保留建筑及银杏大道轮廓，异常沿用030核心区异变并在扩展区稀疏增加光斑。新增异变光斑尚未逐栋核对，三态组合仍待人工视觉评审；未验证运行时交互或完整真实校园边界。
+
+## 五分块全图试接入验证 E37
+
+2026-09-24；Godot 4.7.2 Mono、PowerShell 7；041可选试用页，未替换战役地图。
+
+- `expanded_campus_preview.tscn -- --expanded-map-check`：117／0。三路线×三态×1920×1080／2560×1440／1920×1200真实GUI截图与像素尺寸、按钮选择、地图区域悬停及地点点击检查通过。
+- 原`campus_route_preview.tscn -- --route-preview-check`：670／0，含“全图”打开／返回；`expedition.tscn -- --campaign-flow-check`：133／0，战役流程未回归。实际目视041的日间西侧线、夜间北部线、异常东湖线引擎截图。
+- 临时路线和地点仅供交互试验；未核验所有新落点与现实身份，不作为导航、剧情或存档事实。既有根证书与GLES缓存警告仍在；未测Web、手机、实体手柄及显卡性能预算。
+
+## 右侧运动区几何纠错验证 E38
+
+2026-09-24；Blender 4.5.14、PowerShell 7；042三态概念，未改游戏运行时。
+
+- `repair_sports.py -- --state day/night/anomaly`：基于040三态、038 DXF场地和用户新增参考图，输出实际渲染与可编辑场景；仅隐藏20个场内误判屋顶和96个旧通用场地网格，原8817网格的几何与变换不变。
+- `verify_saved.py`：三态保存重开均PASS，每态新增233个同名同形运动场网格；20／96隐藏对象状态一致。日间运动区近景已目视，训练馆保留，跑道与四类球场无遮挡；夜间、异常全图已目视。
+- 2D轮廓可核实用地位置；具体单场划分仍是示意，不作为测绘数据。左下另一处足球场未在本次右侧地块独立定位。042待人工视觉评审，尚未验证Godot交互。
+
+## 运动区纠错试接入验证 E39
+
+2026-09-24；Godot 4.7.2 Mono、PowerShell 7；043仅更新041可选全图试用页的三张底图。
+
+- 三态PNG与042产物SHA256逐一一致，Godot资源重新导入。全图GUI `--expanded-map-check` 117／0，核心路线GUI `--route-preview-check` 670／0，战役无头 `--campaign-flow-check` 133／0。
+- 实际运行截图已目视：043日间、夜间、异常1920×1080东湖线；场地底图已更新，路线选中时的非选定区域依设计被压暗。未改地点／路线数据；正式战役地图未替换。
+- 旧有日志写入、系统根证书及编辑器设置环境警告仍在；未做Web、手机及性能预算验证。
+
+## 全图缩放交互验证 E40
+
+2026-09-24；Godot 4.7.2 Mono、PowerShell 7；044可选全图试用页。
+
+- GUI `--expanded-map-check`：144／0，覆盖三尺寸三态三路线及缩放后的投影往返、地点／区域命中、滚轮、按钮、拖动平移、复位与三态切换；保存并目视1920×1080异常态156%实际截图。
+- 原核心预览GUI `--route-preview-check`：670／0；战役无头 `--campaign-flow-check`：133／0。未触及旧核心路线的缩放行为或正式战役地图。
+- 键盘／手柄快捷缩放、手机触控手势和高倍纹理画质尚未验证；地图标记和路线的身份仍为试用数据。
+
+## 全图战役选区接入验证 E41
+
+2026-09-24；Godot 4.7.2 Mono、PowerShell 7；045可选战役首页入口。
+
+- GUI `--campaign-flow-check`：148／0，无头147／0。新增覆盖地图选区开启／取消、取消后存档不变、缩放后地点命中、三视觉路线到已有战役ID映射、选中后悬停不误改出发区域、进入原战役流程、恢复后日间视图、1920×1080实际截图尺寸。
+- GUI `--expanded-map-check`：144／0；原核心路线GUI `--route-preview-check`：670／0。已目视045战役选区截图。旧直达入口、战役四站逻辑及正式战役底图未移除。
+- 映射和地点落点为可替换的试用数据；未验证三路线对应真实校园路网或完整导航，也未验收触控手势与小屏表现。
+
+## 全图布局数据化验证 E42
+
+2026-09-25；Godot 4.7.2 Mono、PowerShell 7。GUI `res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：144／0。布局 JSON 继承原坐标及视觉结果，新增数字范围、路线地点引用、顶点数和战役 ID 校验。无运行画面变化；编辑指南见`docs/campus-map-layout.md`。
+
+## 全屏选区交互验证 E43
+
+2026-09-25；Godot 4.7.2 Mono、PowerShell 7。GUI `res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：156／0，覆盖三尺寸三态、地图区域直点出现“选择”、聚焦缩放、双操作和返回复位；实际截图保存在`.godot/expanded-map-day-1-1920x1080.png`、`.godot/expanded-map-focused-1920x1080.png`。GUI `res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：149／0，战役选择后探索进入既有流程；原核心路线GUI `--route-preview-check`：670／0。图像已目视，未验证触控、小屏或新区域战役逻辑。
+
+## 全图可视化编辑器验证 E44
+
+2026-09-25；Node 22、PowerShell 7。本机 `node tools/campus-map-editor/server.mjs`；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs`：9／0，覆盖坐标投影、顶点与边线命中、校验、自交拒绝、并发冲突、隔离目录真实保存及备份。应用内浏览器实操区域顶点拖动、地点拖动、路线加删点、地点文字修改和新增地点，撤销后全部恢复；截图`.godot/campus-map-editor-preview.png`。Godot 4.7.2 GUI `--expanded-map-check`：156／0。工具未改实际布局 JSON；人工改图后仍需运行Godot预览核对地理准确性。
+
+## 全图边缘连续化验证 E45
+
+2026-09-25；Blender 4.5.14、Godot 4.7.2 Mono、PowerShell 7；049三态边缘视觉试接入。三态构建时确认042的9050个原网格顶点数与世界变换不变，仅新增2个视觉网格；保存后各态重开PASS，PNG均1800×1500且相机尺度2200不变。三态运行PNG与049产物SHA256一致。
+
+- Godot资源导入退出码0；图形 `res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：183／0，新增三态×三路线×三尺寸侧边像素连续性断言。日／夜／异常1920×1080实际运行截图在049目录，地图侧边与界面背景取样RGB差为0。
+- 战役无头 `res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：148／0。交互区域、坐标、路线与探索映射未修改，正式战役旧底图未替换。
+- 边界：退隐区不是测绘补全；窄屏、触控、HDR和真人视觉体验尚未验证。既有证书及编辑器设置／旧图集警告仍存在；049资产及接入效果仍待负责人视觉评审。
+
+## 全图边缘清晰度修订验证 E46
+
+2026-09-25；Blender 4.5.14、Godot 4.7.2 Mono、PowerShell 7；050为049反馈修订。三态从042重新构建，原9050网格顶点数／世界变换在构建时锁定，保存重开各为9050＋2视觉网格，PNG 1800×1500且相机尺度2200不变。运行三态PNG与050输出SHA256一致。
+
+- Godot资源导入退出码0；图形 `res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：192／0，含三态×三尺寸未选路和选路时的宽屏接缝像素断言。日间、夜间、异常1920×1080无路线选中截图及日间选路截图存于050目录，已目视。
+- 战役无头 `res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：148／0。固定地图坐标与路线逻辑未修改，正式战役旧底图未替换。
+- 已知边界：为保住边缘建筑辨识度，五分块阶梯轮廓较049更明显；校外渐暗不代表真实校界。触控、HDR、真人体验未验证；050资产及接入继续待人工评审。
+
+## 可编辑地图亮区边界验证 E47
+
+2026-09-26；基线a3c656c，PowerShell 7／Blender 4.5.14／Godot 4.7.2 Mono／Node。051从050三态场景移除固定退隐层，并恢复连续地面中性材质；原9050校园网格的顶点数／世界变换构建断言通过，源图和运行图均1800×1500且各态SHA256相同。布局新增独立`light_boundary`，含12点闭合亮区、12像素过渡和三态默认校外亮度0.82，路线多边形与地点保持不变。
+
+- 本机编辑器服务运行时`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs`：10／0，含边界越界／自交／亮度校验、保存备份与路线数据不受边界编辑影响。实际浏览器切到“亮区边界”，拖动顶点后“未保存”，撤销后“已同步”；三态亮度控件可见。编辑器仅日间近似预览，不显示羽化。
+- Godot `--headless --editor --path . --quit`资源导入退出码0；图形 `res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：194／0，三态×三尺寸及独立改动shader亮区后校外像素恢复／复原。战役 `res://scenes/expedition/expedition.tscn -- --campaign-flow-check`：148／0。
+- 实际游戏三态1920×1080截图及选路截图、源`.blend`与脚本见`design/concepts/m1-campus-map/campus-map/051/`。已目视对照050并把默认亮度校回接近旧版；宽屏侧边颜色在三态均通过接缝断言。既有Godot用户日志／证书／旧图集警告未由此功能引入。
+- 已知边界：亮区为视觉遮罩而非真实校界；边界编辑不能生成导出块外建筑，原数据分块的暗线仍可能可见。触控、HDR和游戏导出包未验证，资产和接入均待人工评审；影响地图美术资源管线，待统筹。
+
+## 开发工具集整合验证 E48
+
+2026-09-26；基线`b69c1d1`，PowerShell 7／Windows WinForms／Node.js／Python。项目根`run-tool-suite-control.ps1`自动构建并打开工具集；旧`run-art-manager-control.ps1`兼容。控制器两张工具卡分别显示美术资源台与地图编辑器的实时状态、PID、运行目录，按钮独立启停；健康接口核对应用ID与项目根，停止前再次核对PID。两个服务端口分别为8765、8767，关闭窗口不停止服务。
+
+- `pwsh.exe -NoProfile -File tools/art/asset_manager/control/test-launcher.ps1`：缺失／缓存／源码过期三种构建入口均通过；控制器`--self-test`分别验证两服务启动、按钮状态与停止，美术资源台未启动时也能识别已运行的地图服务。`--screenshot`实际截图存于`.godot/tool-suite-running-map.png`并在对话展示。
+- `node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs`：11／0，新增健康接口应用ID、PID、项目根断言；`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`：33／0。地图服务脚本在独立8877端口实测启动与健康响应；默认8767端口以同工作树服务实测识别。自检修正了启动后按钮启用态的取样时序，连续两次双服务生命周期复测通过；`git diff --check`通过。
+- 边界：工具集为Windows桌面开发工具，需PowerShell 7与.NET Framework C#编译器；地图服务需要Node.js，美术资源台需要Python。自定义地图端口可用独立脚本，但工具集固定监控8767；不支持远程服务或跨工作树控制。待统筹：开发工具入口更新，不影响正式游戏地图资源或导出包。
+
+## 右下角第六分块拼接验证 E49
+
+2026-09-26；基线`bc9e776`，Blender 4.5.14／Godot 4.7.2 Mono／PowerShell 7。来源`topoexport-5FC002`，三态源场景051，制作与验证脚本位于`design/concepts/m1-campus-map/campus-map/052/`。本次使用用户工作区的未提交布局，其SHA256在施工前后均为`06cae23aec801e70847ed9bd61a93c6da6c884b507a6101230c54f8bb3280437`，未改写或提交该文件。
+
+- `align_corner.py --deps .godot/dxf-research-deps`：核心／旧东南／右侧运动区20／48／7对建筑一致平移，最大二维轮廓残差约1.35e-6米；体育场GLB锚点XY包围框最大差3.81e-6米。数字反映数据配准一致性，不代表现实测绘精度。
+- `build_corner.py --state <day|night|anomaly>`：新增57建筑、53路带、2水面、4地形，共116网格；无树。新接缝40米内向旧地形高度渐接，最大Z校正1.08米，XY不动。三态重开`verify_saved.py`PASS：原9051网格的几何摘要／变换／材质／可见性不变，新增几何三态相同，相机及1800×1500分辨率不变。
+- `verify_assets.py --layout-hash <上述哈希>`PASS：三态PNG与运行资源逐字节相同且图像不同；编辑器`/api/map-image`响应SHA256与新日间一致；`node --test tools/campus-map-editor/editor-core.test.mjs`：6／0。
+- Godot资源导入退出码0；图形`res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：194／0，覆盖三态、三种分辨率、路线命中、缩放、聚焦、可调明暗边界和宽屏接缝。三态1920×1080实际截图已保存于052并目视、在对话展示。既有证书存储、用户编辑器设置和shader缓存写入警告仍存在；检查退出码0。
+- 边界：新分块未推测补树，没有新增异常控制点；相机不扩幅，导出中更南的校外部分保存在源场景但可能落在画面外。正式战役旧底图未修改；资产及接入为review，待负责人视觉评审与统筹。
+
+## 编辑器坐标拾取验证 E50
+
+2026-09-27；基线`e63f4b4`，PowerShell 7／Node.js／内置浏览器。入口`tools/campus-map-editor/`，说明`docs/campus-map-layout.md`。
+
+- `node --check tools/campus-map-editor/editor.mjs`通过；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs`：11／0。
+- 浏览器实际点击取点、复制、缩放、清除、Shift点击和Delete；拾取坐标在缩放后不变，保存与撤销保持禁用，清除后复制禁用。首次复制文本由PowerShell `Get-Clipboard`核实；浏览器剪贴板接口读取为空，不能用该接口判断系统剪贴板。实际截图`.godot/campus-editor-coordinates.png`已在对话展示。
+- 用户布局文件施工前后SHA256均为`6e931f8741d5284227ed31ebb1f7f770e2c777100b8b2e3c770c05a4737a2c92`；未保存地图、未提交该文件。
+- 边界：单点临时标记，刷新不保留；原图坐标而非地理坐标。剪贴板权限被拒时选中文本供手动复制；未新增玩家功能。待统筹：开发工具能力更新。
+
+## 全图缩放与平移平滑 E54
+
+2026-09-28；基线4b23e5d，Godot4.7.2／PowerShell7。入口scenes/expedition/expanded_campus_map.gd，测试expanded_campus_preview_check.gd。目标zoom／map_offset仍接收累加输入，displayed_zoom／displayed_offset供绘制和命中；指数响应18/s、拖动32/s，无超调或速度惯性。约0.17秒／0.09秒消除95%距离，最终小误差收敛为精确目标。
+
+- 图形 `--path . res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check` 202／0：三态、三尺寸、地点／路线命中、拖动／聚焦／返回；新增无瞬跳、中间帧、非中心缩放锚点、30与120fps一致、连续输入累加／上限和中断收敛。实际截图 `.godot/expanded-map-zoom-1920x1080.png`已目视展示；静态图仅验证最终布局，不代替上述时序断言。
+- 无头 `--path . res://scenes/expedition/expedition.tscn -- --campaign-flow-check`148／0。git diff --check通过；布局SHA256仍为6e931f8741d5284227ed31ebb1f7f770e2c777100b8b2e3c770c05a4737a2c92，用户编辑不提交。现有日志／证书／shader缓存权限警告、旧像素图直读警告仍存在，测试退出0。
+- 仅游戏内扩展地图（战役和独立预览共用），不改变网页编辑器；边缘约束优先于鼠标锚点，地图小于视口的轴保持居中。未新增触控或3D；手感仍可由负责人实机调整，待统筹。
+
+## 校园旧目录清除与参考登记 E53
+
+2026-09-28；基线`0144849`。按负责人明确授权，将整套asset_031重编号为asset_001；001～053范围实际存在的45目录全部删除，含未跟踪手工副本。迁出34个文件，删除剩余218文件、34,998,119字节。副本不能从Git恢复；已跟踪旧资料可从本基线恢复。E52保留为上一轮历史记录，其中asset_031现已改名，不是当前入口。
+
+- `design/references/m1-campus-map/`保存6 DXF、5 GLB、4配准JSON、3许可证及6截图；地图Manifest的两组reference逐文件登记24项，不改变视觉批准。旧战役源图移至`design/concepts/m1-campus-map/runtime-sources/`，必要批准证据归review，其余历史脚本链交给Git。
+- Blender `-b -t 2 --python-exit-code 1 --python design/concepts/m1-campus-map/campus-map/asset_001/verify_bundle.py` PASS；三态重开、依赖、1800×1500及运行图一致性通过。34个迁移文件、除说明文档外全部整套文件、9张在用运行PNG与迁移前SHA256一致；布局哈希仍为`6e931f8741d5284227ed31ebb1f7f770e2c777100b8b2e3c770c05a4737a2c92`。
+- 旧构建器`tools/art/campus_map/build_runtime_textures.py`在隔离临时输出目录实跑：三张full图逐字节一致，三张裁切图像素一致；没有覆盖正式运行图。AssetCatalog扫描155登记文件、0缺失／不一致，reference登记24文件全部可读。
+- `py -3 -B -m unittest discover -s tools/art/asset_manager/tests`33／0；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs`11／0。`git diff --check`通过；tools／scenes／game／Manifest中不存在数字旧目录或asset_031活动引用。
+- 当前地图目录仅asset_001；目录／文档变更未改变运行画面，依项目规则不新渲染截图。待统筹：源资产路径与编号变更，不改布局接口或批准边界；无历史重写、main合并或远程推送。
+
+## 校园全图三态高清替换 E55
+
+2026-09-29；基线`e700f4f`，PowerShell 7／Blender 4.5.14／Godot 4.7.2 Mono／Node。`asset_001`三份Blend未保存或改动，使用同目录`render_hd.py -- --state <day|night|anomaly>`在内存中将画幅设为5400×4500；日间沿用先前评审通过的同源试渲染，夜间与异常态本轮重渲染。三张PNG替换到`asset_001`及`assets/art/campus_map/expanded_neutral`，对应SHA256分别为`297dd260…106936`、`c745081a…b86251`、`d0da4483…25fb0a`；`verify_bundle.py`验证三态源场景仍为1800×1500、无缺失外链，高清源图与运行图逐字节相同。`game/run/expanded_campus_layout.json`未改写／提交，SHA256为`6e931f87…05a4737a2c92`。
+
+- Godot `--headless --editor --path . --import`退出0；图形`--path . res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：202／0。实拍截图`.godot/expanded-map-unselected-{day,night,anomaly}-1920x1080.png`已目视检查；三态地点、路线、选择、缩放和返回通过。导入与图形测试仍有编辑器设置／日志／证书写入权限警告，但退出状态和地图断言正常。
+- `node --test tools/campus-map-editor/editor-core.test.mjs`：6／0；启动本地编辑器后`node --test tools/campus-map-editor/server.test.mjs`：5／0，编辑器`/api/map-image`返回高清日间图完整字节数。`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`：33／0；AssetCatalog扫描10对象／155登记文件／0缺失／0不一致，`git diff --check`通过。
+- 三态正式导入启用mipmap，视觉与坐标保持现有契约；低显存设备、多纹理驻留成本尚未实测。试验目录`tmp_001`的13个临时文件约98.8MB已在正式替换后删除，不进入Git。批准状态仍为review，高清替换与本地squash合并由负责人本轮明确授权。影响纹理内存与美术交付，待统筹。
+
+合入main前隔离squash树补测：保留main的新基地、奖励归属与重开存档，并将“探索”接到高清全图、将“路线预览”放入基地菜单。Godot导入退出0（既有GGT设置脚本警告）；战役无界面148／0、图形149／0，全图图形202／0，旧派遣`--run-smoke`通过，合并图形截图`.godot/campaign-map-select-1920x1080.png`已目视。编辑器核心6／0、资产管理33／0，AssetCatalog合并树32对象／667文件／0缺失／0不一致。未覆盖低显存设备与Web导出。
+
+## 素材收尾与最新三态归档 E52
+
+2026-09-28；基线`3d16ad3`，PowerShell7／Blender4.5.14。项目美术技能、WORKFLOW、AGENTS、任务模板和tmp忽略规则同步；本轮不改变运行画面，依纯目录／规范整理规则不重跑截图。
+
+- 最新053的14个Blender／PNG／JSON文件逐字节迁移到`design/concepts/m1-campus-map/campus-map/asset_031/`。删除154个已跟踪废弃文件（含43份历史Blender），1,860,802,587字节；保留未跟踪026手工副本及原始DXF／GLB／真实参考。删除项可从基线恢复，不清除Git历史。旧001～053命令与图片引用标记为历史复现，不再是活动入口。
+- Blender `-b -t 2 --python-exit-code 1 --python design/concepts/m1-campus-map/campus-map/asset_031/verify_bundle.py` PASS：三态重开无缺失依赖，1800×1500，三张PNG互异且与运行图相同。搬迁前确认三态无外部贴图／链接模型；迁移14文件哈希全部一致。
+- 9张现行运行PNG与清理前SHA256一致；用户`expanded_campus_layout.json`仍为`6e931f8741d5284227ed31ebb1f7f770e2c777100b8b2e3c770c05a4737a2c92`，不纳入提交。
+- `py -3 -B -m unittest discover -s tools/art/asset_manager/tests`：33／0；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs`：11／0。AssetCatalog全库扫描131登记文件、0缺失／不一致，地图10个有效登记。`git check-ignore`确认tmp_001／tmp_999被忽略，asset／concept不被忽略；`git diff --check`通过。
+- 技能`quick_validate.py`检查通过；校验器所需PyYAML仅安装在忽略的`.godot/skill-check-deps`，需具备该缓存读取权限，未改全局Python。最新三态批准仍review。影响留存／提交／合并规则，待统筹；无main合并、远程推送或历史重写。
+
+## 北部道路可渲染修复 E51
+
+2026-09-27；基线`256b846`，Blender4.5.14／OptiX／Godot4.7.2／PowerShell7。命令、源场景、渲染与实际截图位于`design/concepts/m1-campus-map/campus-map/053/`，详见其中`generation.md`。
+
+- `verify_roads.py --version 052`红灯：`missing=24, nonrenderable=184`。修复后三態默认`verify_roads.py`通过：每态208路面／7428中心线采样全部命中，8983个其他网格与镜头不变，三态道路几何摘要相同。构建／测试均排除不足5厘米的退化边。
+- `build_roads.py --state <day|night|anomaly>`三态生成；`verify_assets.py`确认运行图逐字节一致、1800×1500尺寸、HTTP编辑器底图一致，用户布局SHA256仍为`6e931f8741d5284227ed31ebb1f7f770e2c777100b8b2e3c770c05a4737a2c92`。未提交用户布局。
+- Godot `--headless --editor --path . --import`退出0；图形`--path . res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：194／0，三态三尺寸、缩放、选路及亮区通过。053实际游戏截图已目视并在对话展示；既有日志／证书／shader缓存权限警告仍存在。
+- `node --test tools/campus-map-editor/editor-core.test.mjs`：6／0；AssetCatalog扫描无Manifest错误。仅北部路面修复，未改变地图交互、其他几何或光照；路宽仍为示意，资产和接入效果review，待统筹。

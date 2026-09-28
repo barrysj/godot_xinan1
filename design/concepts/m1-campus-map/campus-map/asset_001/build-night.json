@@ -1,0 +1,10 @@
+{
+  "state": "night",
+  "renderable_roads": 208,
+  "restored_cross_seam_roads": 24,
+  "unchanged_other_meshes": 8983,
+  "camera_unchanged": true,
+  "road_width_m": 4.6,
+  "maximum_lift_m": 0.9381576538085934,
+  "seam_y": 506.5941652366893
+}

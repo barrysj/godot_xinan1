@@ -1,0 +1,183 @@
+{
+  "translation_corner_to_core_m": [
+    478.74055319360923,
+    -509.27731361426413,
+    0
+  ],
+  "comparisons": {
+    "core": {
+      "matched_outlines": 20,
+      "maximum_residual_m": 9.5367431640625e-07,
+      "translation_to_core_m": [
+        478.74055319360923,
+        -509.27731361426413
+      ],
+      "largest_anchors": [
+        {
+          "anchor_handle": "5E0E",
+          "corner_handle": "1B00",
+          "area_m2": 5522.030777934277
+        },
+        {
+          "anchor_handle": "5DEC",
+          "corner_handle": "1ADE",
+          "area_m2": 996.5226478797558
+        },
+        {
+          "anchor_handle": "5E65",
+          "corner_handle": "1B8E",
+          "area_m2": 679.7642963647668
+        },
+        {
+          "anchor_handle": "5E2F",
+          "corner_handle": "1B22",
+          "area_m2": 399.6418923906658
+        },
+        {
+          "anchor_handle": "5E6C",
+          "corner_handle": "1B95",
+          "area_m2": 281.33774401262053
+        },
+        {
+          "anchor_handle": "5DE3",
+          "corner_handle": "1AD5",
+          "area_m2": 249.2371216245083
+        },
+        {
+          "anchor_handle": "5DD5",
+          "corner_handle": "1AC7",
+          "area_m2": 240.20059292707083
+        },
+        {
+          "anchor_handle": "5DCC",
+          "corner_handle": "1ABE",
+          "area_m2": 197.77088648366043
+        }
+      ]
+    },
+    "southeast": {
+      "matched_outlines": 48,
+      "maximum_residual_m": 1.3486991523486091e-06,
+      "translation_to_core_m": [
+        478.74055319360923,
+        -509.27731361426413
+      ],
+      "largest_anchors": [
+        {
+          "anchor_handle": "5404",
+          "corner_handle": "1A6C",
+          "area_m2": 7644.47913043978
+        },
+        {
+          "anchor_handle": "5488",
+          "corner_handle": "1B00",
+          "area_m2": 5522.030768249708
+        },
+        {
+          "anchor_handle": "5428",
+          "corner_handle": "1AA0",
+          "area_m2": 1522.7796181567537
+        },
+        {
+          "anchor_handle": "54A3",
+          "corner_handle": "1B1B",
+          "area_m2": 1227.2372117237974
+        },
+        {
+          "anchor_handle": "54D3",
+          "corner_handle": "1B4B",
+          "area_m2": 1220.544221144337
+        },
+        {
+          "anchor_handle": "5466",
+          "corner_handle": "1ADE",
+          "area_m2": 996.5226478797558
+        },
+        {
+          "anchor_handle": "54BB",
+          "corner_handle": "1B33",
+          "area_m2": 945.98464937885
+        },
+        {
+          "anchor_handle": "57B8",
+          "corner_handle": "1C7F",
+          "area_m2": 855.5563285315438
+        }
+      ]
+    },
+    "east": {
+      "matched_outlines": 7,
+      "maximum_residual_m": 9.5367431640625e-07,
+      "translation_to_core_m": [
+        478.74055319360923,
+        -509.27731361426413
+      ],
+      "largest_anchors": [
+        {
+          "anchor_handle": "2EAF",
+          "corner_handle": "1C62",
+          "area_m2": 318.3613865919706
+        },
+        {
+          "anchor_handle": "2ABE",
+          "corner_handle": "1B95",
+          "area_m2": 281.33772809638504
+        },
+        {
+          "anchor_handle": "2E9F",
+          "corner_handle": "1C3D",
+          "area_m2": 215.5685554160591
+        },
+        {
+          "anchor_handle": "2C89",
+          "corner_handle": "1BA8",
+          "area_m2": 195.74158469781833
+        },
+        {
+          "anchor_handle": "2E94",
+          "corner_handle": "1BC5",
+          "area_m2": 160.12794505995862
+        },
+        {
+          "anchor_handle": "2EA6",
+          "corner_handle": "1C59",
+          "area_m2": 74.83672636476877
+        },
+        {
+          "anchor_handle": "2EB6",
+          "corner_handle": "1C69",
+          "area_m2": 46.996018541950434
+        }
+      ]
+    }
+  },
+  "core_local_origin_m": [
+    487.238728951721,
+    506.594165236689,
+    528
+  ],
+  "layers": {
+    "TPX_FRAME_PROJECT": 1,
+    "TPX_WATERWAYS": 17,
+    "TPX_WATERWAYS_HATCH": 4,
+    "TPX_ROADS_CONTOURS": 51,
+    "TPX_ROADS_HATCH": 7,
+    "TPX_ROADS_AXES": 114,
+    "TPX_RAILWAYS_AXES": 3,
+    "TPX_BUILDINGS_SHADOWS_OUTLINES": 160,
+    "TPX_BUILDINGS_SHADOWS_HATCH": 160,
+    "TPX_BUILDINGS": 127,
+    "TPX_BUILDINGS_HATCH": 127,
+    "TPX_BUILDING_HEIGHTS_TEXT": 126,
+    "TPX_BUILDING_AREAS_TEXT": 126,
+    "TPX_CONTOUR_LINES_5M": 10,
+    "TPX_CONTOUR_LINES_5M_TEXT": 10
+  },
+  "source_sha256": {
+    "core": "61b20bce5299b80d142f523ae56c05d7d7259bc54067ec81a5b0a5bc7e2d8ca6",
+    "southeast": "9f3f95ad4e13e3292f1068586b3a3703a9dc3e18d177f4a56036991f1a3a44e8",
+    "east": "0d486fbf82a14a04695146c57912071fde38ca1813b2457a138cf329abf9aeae",
+    "corner": "6eb6fed204c62a73786606444749971aecd45cad089b283c1623bb9b15b43fd0"
+  },
+  "glb_sha256": "1d363e4c84a90774b5aaaf5345eda65e5e4f99f0420efe8c4a5f540113a70603"
+}

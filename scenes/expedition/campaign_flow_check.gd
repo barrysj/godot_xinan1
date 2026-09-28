@@ -81,12 +81,71 @@ func run_checks(hub) -> void:
 		await capture_library_environment(hub)
 		hub.get_tree().quit()
 		return
+	hub._home()
+	var campaign_before = JSON.stringify(hub.progress.campaign)
+	var run_before = JSON.stringify(hub.progress.active_run)
+	hub._campaign_action("route_preview")
+	var route_preview = hub.get_node_or_null("CampusRoutePreview")
+	verify(route_preview != null and not hub.campaign_panel.visible, "route preview opens from base")
+	if route_preview != null:
+		route_preview.board.select_route(1)
+		route_preview._advance()
+		route_preview._advance()
+		verify(route_preview.walk.step == 1, "standalone walk advances without battle")
+		verify(JSON.stringify(hub.progress.campaign) == campaign_before and JSON.stringify(hub.progress.active_run) == run_before, "route selection leaves campaign and save unchanged")
+		route_preview.closed.emit()
+		verify(hub.campaign_panel.visible, "preview returns to base")
+		await hub.get_tree().process_frame
+		verify(not is_instance_valid(route_preview), "preview removed on return")
 	hub._begin_region("library","prologue")
 	fight(hub)
 	hub._campaign_action("leave")
 	verify(hub.progress.campaign.prologue_done,"prologue settled")
 	hub._campaign_action("tutorial")
 	verify(hub.progress.campaign.routes_acquired,"tutorial settled")
+	var saved_before_map = JSON.stringify(hub.progress.active_run)
+	var map_button: Button
+	for candidate in hub.campaign_panel.find_children("*", "Button", true, false):
+		if candidate.text == "探索" and candidate.get_meta("action_id", "") == "map_region": map_button = candidate
+	verify(map_button != null, "campaign base shows map selection button")
+	if map_button != null: map_button.pressed.emit()
+	var map_selector = hub.get_node_or_null("CampaignMapRegionPreview")
+	verify(map_selector != null and not hub.campaign_panel.visible, "expanded map opens for campaign selection")
+	if map_selector != null:
+		await hub.get_tree().process_frame
+		await hub.get_tree().process_frame
+		verify(map_selector.campaign_selectable and not map_selector.action_panel.visible, "campaign entry awaits route selection")
+		verify(map_selector.campaign_region_for_route(0) == "library" and map_selector.campaign_region_for_route(1) == "region_b" and map_selector.campaign_region_for_route(2) == "region_c", "three visual routes map to existing campaign regions")
+		map_selector.board.set_zoom(1.5)
+		verify(map_selector.board.place_at(map_selector.board.project(map_selector.board.layout.PLACES["library"].point)) == "library", "campaign map keeps place hit after zoom")
+		map_selector.closed.emit()
+		await hub.get_tree().process_frame
+		verify(hub.campaign_panel.visible and hub.get_node_or_null("CampaignMapRegionPreview") == null, "map cancel returns to campaign base")
+		verify(JSON.stringify(hub.progress.active_run) == saved_before_map, "map cancel does not change campaign save")
+		hub._campaign_action("map_region")
+		map_selector = hub.get_node_or_null("CampaignMapRegionPreview")
+		verify(map_selector != null, "map can reopen after cancel")
+	if map_selector != null:
+		map_selector.board.select_route(2)
+		verify(map_selector.select_button.visible and map_selector.action_panel.visible, "selected route offers select")
+		map_selector.board.preview(0)
+		verify(map_selector.board.active_route() == 2, "campaign selection stays visible when another route is hovered")
+		map_selector.board.preview(-1)
+		if DisplayServer.get_name() != "headless" and not OS.has_feature("web"):
+			hub.get_window().mode = Window.MODE_WINDOWED
+			hub.get_window().size = Vector2i(1920, 1080)
+			await hub.get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			var map_capture = hub.get_viewport().get_texture().get_image()
+			verify(map_capture.get_size() == Vector2i(1920, 1080), "campaign map screenshot size")
+			map_capture.save_png("res://.godot/campaign-map-select-1920x1080.png")
+		map_selector._focus_selected()
+		verify(map_selector.focused_route == 2 and map_selector.explore_button.visible and map_selector.back_button.visible, "selection focuses route before exploration")
+		map_selector._explore()
+		verify(hub.campaign_mode == "region" and hub.journey.data.region == "region_c", "map selection enters existing campaign flow")
+		verify(hub.campaign_panel.visible, "campaign panel returns after selecting map route")
+		await hub.get_tree().process_frame
+		verify(hub.get_node_or_null("CampaignMapRegionPreview") == null, "campaign map closes after entry")
 	var order = ["library","region_b","region_c"]
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--order="):
@@ -94,6 +153,8 @@ func run_checks(hub) -> void:
 			for index in arg.trim_prefix("--order="): order.append(["library","region_b","region_c"][int(index)])
 	for region in order:
 		hub._begin_region(region)
+		var route_map = hub.campaign_panel.find_child("RouteMap",true,false)
+		verify(route_map != null and route_map.map_state == "anomaly","unrestored route uses anomaly map")
 		while not hub.campaign_mode.is_empty():
 			if hub.journey.visit.data.is_empty(): hub._campaign_action("enter:0")
 			var saved = hub.progress.active_run.duplicate(true)
@@ -131,6 +192,17 @@ func run_checks(hub) -> void:
 		hub._campaign_action("operation")
 		verify(hub.progress.campaign.finale_stage == stage+1,"operation committed")
 	verify(hub.progress.campaign.restored,"permanent campus restoration")
+	hub._home()
+	hub._campaign_action("map_region")
+	var restored_selector = hub.get_node_or_null("CampaignMapRegionPreview")
+	verify(restored_selector != null and restored_selector.board.map_state == "day", "restored campaign map opens in day state: selector=%s paused=%s" % [restored_selector != null, hub.paused])
+	if restored_selector != null:
+		restored_selector.closed.emit()
+		await hub.get_tree().process_frame
+	hub.campaign_panel.route(hub.journey,true)
+	var restored_map = hub.campaign_panel.find_child("RouteMap",true,false)
+	verify(restored_map != null and restored_map.map_state == "day","restored route uses day map")
+	hub._ending()
 	if DisplayServer.get_name() != "headless" and not OS.has_feature("web"):
 		for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
 			hub.get_window().mode = Window.MODE_WINDOWED
@@ -208,7 +280,7 @@ func verify_hub_layout(hub) -> void:
 	var mission: Control = panel.find_child("HomeMission",true,false)
 	verify(mission.size.y < 320,"default mission remains compact")
 	var rects: Array[Rect2] = []
-	for id in ["choose_region","growth","dispatch","memories","codex","hub_menu"]:
+	for id in ["map_region","growth","dispatch","memories","codex","hub_menu"]:
 		var item: Button = panel.action_button(id)
 		var rect := item.get_global_rect()
 		verify(panel.get_global_rect().encloses(rect),"home button in bounds: "+id)
@@ -221,20 +293,30 @@ func verify_hub_layout(hub) -> void:
 
 func verify_hub_overlays(hub) -> void:
 	var panel = hub.campaign_panel
-	var explore: Button = panel.action_button("choose_region")
+	var explore: Button = panel.action_button("map_region")
 	explore.grab_focus()
 	explore.pressed.emit()
 	await hub.get_tree().process_frame
-	verify(is_instance_valid(panel.home_overlay),"explore opens region overlay")
-	verify(panel.action_button("region:library") != null,"region choice reachable")
-	verify(explore.focus_mode == Control.FOCUS_NONE,"background excluded from modal focus")
+	var map = hub.get_node_or_null("CampaignMapRegionPreview")
+	verify(map != null and not panel.visible,"explore opens full map")
+	if map != null:
+		map.closed.emit()
+		await hub.get_tree().process_frame
+		await hub.get_tree().process_frame
+	verify(panel.visible and panel.action_button("map_region") != null,"map close returns to hub")
+	var menu: Button = panel.action_button("hub_menu")
+	menu.grab_focus()
+	menu.pressed.emit()
+	await hub.get_tree().process_frame
+	verify(is_instance_valid(panel.home_overlay),"menu opens overlay")
+	verify(panel.action_button("route_preview") != null,"route preview available in menu")
+	verify(menu.focus_mode == Control.FOCUS_NONE,"background excluded from modal focus")
 	var cancel := InputEventAction.new()
 	cancel.action = "ui_cancel"
 	cancel.pressed = true
 	hub._input(cancel)
 	await hub.get_tree().process_frame
-	verify(not is_instance_valid(panel.home_overlay) and explore.has_focus(),"cancel restores explore focus")
-	var menu: Button = panel.action_button("hub_menu")
+	verify(not is_instance_valid(panel.home_overlay) and menu.has_focus(),"cancel restores menu focus")
 	menu.grab_focus()
 	menu.pressed.emit()
 	await hub.get_tree().process_frame
@@ -279,7 +361,12 @@ func capture_exploration(hub) -> void:
 		hub._home()
 		await capture_page(hub,"home",resolution)
 		hub._begin_region("library")
-		await capture_page(hub,"route",resolution)
+		var route_map = hub.campaign_panel.find_child("RouteMap",true,false)
+		for state in ["day","night","anomaly"]:
+			route_map.map_state = state
+			route_map.queue_redraw()
+			await capture_page(hub,"route-"+state,resolution)
+		route_map.map_state = "anomaly"
 		for step in range(3):
 			hub._campaign_action("enter:0")
 			fight(hub)

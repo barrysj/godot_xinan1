@@ -1,0 +1,23 @@
+{
+  "source_sha256": {
+    "core-2d.dxf": "61b20bce5299b80d142f523ae56c05d7d7259bc54067ec81a5b0a5bc7e2d8ca6",
+    "north-2d.dxf": "fc68062bd9014bab1f57dcd0bb76bc6625bda4f4caaf38e47c3c2f5872669bfb"
+  },
+  "north_glb_sha256": "63f70d438d2655591e3d9e7d749634e35e476761a7d0d74c903d94103339b67d",
+  "translation_north_to_core_m": [
+    133.8263886711211,
+    736.0842795609497,
+    0.0
+  ],
+  "matching_outline_pairs": 34,
+  "unique_core_outlines": 30,
+  "unique_north_outlines": 30,
+  "maximum_xy_residual_m": 1.3486991523486091e-06,
+  "core_local_origin_m": [
+    487.238728951721,
+    506.594165236689,
+    528.0
+  ],
+  "core_terrain_north_y_m": 1013.1883304733783,
+  "boundary": "Translation only; visual seam, 3D geometry, tree density and routing remain separate checks."
+}

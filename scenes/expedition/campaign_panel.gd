@@ -277,11 +277,9 @@ func home(progress, chosen_supply: bool) -> void:
 	elif progress.campaign.terminals.size() == 3 and not progress.campaign.restored:
 		button("接入终端","finale",true,mission)
 	else:
-		var explore := button("探索","choose_region",true,mission)
-		explore.pressed.connect(func(): _home_routes(progress))
+		button("探索","map_region",true,mission)
 	if not progress.active_run.is_empty() and progress.campaign.routes_acquired:
-		var choose := button("选择区域","choose_region",true,mission)
-		choose.pressed.connect(func(): _home_routes(progress))
+		button("选择区域","map_region",true,mission)
 	if progress.campaign.restored: button("重看结尾","ending",true,mission)
 	if progress.supply_unlocked:
 		text("补给："+("厚笔记本" if chosen_supply else "未携带"),17,mission)
@@ -336,6 +334,7 @@ func show_home_menu() -> void:
 	var box := _home_dialog("基地菜单")
 	var back := button("返回基地","hub_close",true,box)
 	back.pressed.connect(close_home_overlay)
+	button("路线预览","route_preview",true,box)
 	button("主菜单","menu",true,box)
 	var reset := button("重开存档","reset_profile",true,box)
 	reset.add_theme_color_override("font_color",Color(CampusUi.colors("semantic").danger))
@@ -554,6 +553,7 @@ func terminal_finale(terminals: Array, stage: int) -> void:
 
 func _board(journey, mode: String) -> Control:
 	var board = preload("res://scenes/expedition/campaign_board.gd").new()
+	board.name = "RouteMap" if mode == "route" else "LocationMap"
 	board.journey = journey
 	board.mode = mode
 	column.add_child(board)
@@ -604,10 +604,11 @@ func _empty(box: Control) -> void:
 		box.remove_child(child)
 		child.queue_free()
 
-func route(journey) -> void:
+func route(journey, restored: bool = false) -> void:
 	var current = "基地" if journey.data.visited.is_empty() else journey.Regions.PLACES[journey.data.visited.back()]
 	clear(journey.Regions.NAMES[journey.data.region],"当前位置："+current+"。目标：前往终点，取回记忆终端。每站先突破守卫封锁，再继续前进。")
 	var board = _board(journey,"route")
+	board.map_state = "day" if restored else "anomaly"
 	var detail = _detail_box()
 	board.picked.connect(func(index): _route_detail(journey,index,detail))
 	_route_detail(journey,0,detail)

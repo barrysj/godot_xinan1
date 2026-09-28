@@ -1,0 +1,20 @@
+{
+  "day": {
+    "roads": 208,
+    "centerline_samples": 7428,
+    "other_meshes_unchanged": 8983,
+    "camera_unchanged": true
+  },
+  "night": {
+    "roads": 208,
+    "centerline_samples": 7428,
+    "other_meshes_unchanged": 8983,
+    "camera_unchanged": true
+  },
+  "anomaly": {
+    "roads": 208,
+    "centerline_samples": 7428,
+    "other_meshes_unchanged": 8983,
+    "camera_unchanged": true
+  }
+}
