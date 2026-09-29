@@ -24,11 +24,43 @@
 
 ## 平台素材规格映射
 
-运行时调用 [平台路径适配层](../game/visual/platform_asset_paths.gd) 的 `resolve(原始资源路径)`。适配层根据导出平台选择对应文件；目前 Web 为校园地点及主菜单的 1920×1080 WebP，Windows／Linux／macOS／Android 沿用原始 PNG。它不根据浏览器窗口大小切换素材。未配置的资源保持原路径；调用方只需维护原始资源路径。
+### 运行时如何选图
 
-美术 [Manifest](../assets/art/asset_manifest.yaml) 继续记录资产版本、规格与人工批准状态，Godot 运行时不解析 YAML。新增平台规格时，在适配层登记源目录、目标目录及扩展名，准备对应衍生文件，更新该平台的 `export_presets.cfg` 排除规则，再运行平台映射检查与目标平台导出检查。构建器使用同一个适配层生成 Web 输出路径，避免生成位置和运行时选择分叉。缺少衍生文件时不能回退到被该平台排除的原图。
+界面只传正式原图路径给 [平台路径适配层](../game/visual/platform_asset_paths.gd) 的 `resolve(source_path)`。适配层先以 `OS.has_feature("web")` 识别 Web，否则使用 `OS.get_name().to_lower()`；再查 `VARIANTS[platform]`，仅对同时匹配源目录前缀和扩展名的文件替换目录与扩展名。没有匹配规则便返回原路径。`for_platform(source_path, platform)` 是同一套规则的显式平台入口，供生成器与检查工具调用。
 
-本地映射检查：`Godot_v4.7.2-stable_win64_console.exe --headless --path . res://tools/platform_asset_check.tscn`；实际 Web 包仍用 `--web-background-check` 验证 30 张导入纹理。
+例如 `res://assets/art/backgrounds/m1_main_menu/normal/library.png` 在 Web 映射为 `res://assets/art/web_backgrounds/m1_main_menu/normal/library.webp`，在 Windows、Linux、macOS、Android 上仍为原 PNG。目前仅登记校园地点和主菜单两组 Web 变体。此层按**导出平台**选文件，不根据设备屏幕或浏览器窗口大小动态切换档位。
+
+[Web 背景生成器](../tools/art/build_web_backgrounds.gd) 以 3840×2160 PNG 制作 1920×1080 WebP（Lanczos、品质 0.85）。场景中的 `load()` 读取 Godot 导入后的纹理；[导出预设](../export_presets.cfg)另行排除 Web 包里的两组原图，以及非 Web 包里的 WebP。映射表不自动修改导出预设，漏配衍生图会使该平台加载失败，不会安全回退到已被排除的原图。
+
+美术 [Manifest](../assets/art/asset_manifest.yaml) 管理版本、实际文件及人工批准；运行时不解析 YAML。衍生图的技术生成、原图批准和衍生视觉评审是不同状态，新增或改变衍生图后按[美术工作流](art/WORKFLOW.md)记录，不能由检查通过推定获批。
+
+### 接入后续图片
+
+| 情况 | 需要做什么 | 适配层／导出规则 |
+| --- | --- | --- |
+| 同组新增校园地点或主菜单背景 | 将批准的 3840×2160 PNG 放入现有目录，并将新地点或菜单项接入相应列表；生成 WebP、登记 Manifest、检查画面 | 现有目录前缀自动匹配；当前导出筛选已覆盖，无需逐张加映射 |
+| 全新图片组也要 Web 低规格 | 在 `VARIANTS.web` 增加该组的源／目标目录和扩展名，扩展衍生图生成与检查范围，并在 Web／非 Web 导出预设中分别排除多余版本 | 需要改一条组规则和对应导出筛选；当前生成器只扫描校园地点与主菜单 |
+| Android 等平台另用规格 | 准备该平台的衍生文件，在 `VARIANTS` 增加平台规则，并配置对应导出预设与目标设备验证 | 目前没有 Android 专用衍生图；仍用原 PNG |
+| 图片不需要多平台版本 | 直接按现有正式资源路径加载 | 不必登记映射 |
+
+现有两组的新图不用改“30”这样的数量常量：生成器会扫描校园地点目录下的 `daily.png`／`anomaly.png`，以及菜单 `normal`／`anomaly` 目录下的 PNG。校园每个地点须有两种状态；主菜单实际播放列表仍在 [menu.gd](../scenes/menu/menu.gd)，地点列表仍在 [campus_location_skin.gd](../scenes/expedition/campus_location_skin.gd)。新增全新图片组时，不能只加映射规则：生成器、检查工具和导出筛选也须覆盖它。
+
+### 生成与验收
+
+在项目根目录用 PowerShell 7 和 Godot 4.7.2 标准版执行：
+
+```powershell
+$godot = '.\.godot\web-tools\engine\Godot_v4.7.2-stable_win64_console.exe'
+& $godot --headless --path . --script res://tools/art/build_web_backgrounds.gd
+& $godot --headless --path . --script res://tools/art/build_web_backgrounds.gd -- --check
+& $godot --headless --editor --path . --import
+& $godot --headless --path . res://tools/platform_asset_check.tscn
+pwsh.exe -File .\build-web.ps1
+```
+
+`--check` 只读验证源图与衍生图的存在和尺寸；新增图片要先运行生成命令。检查成功会打印 `WEB_BACKGROUNDS_CHECK count=...`，映射检查会打印 `PLATFORM_ASSET_CHECK checked=... failures=0`。脚本模式退出时旧 GGT 自动加载项可能报告空场景属性错误，应同时核对退出码、上述成功标记和文件检查结果。实际 Web 包还应通过浏览器 `--web-background-check` 确认加载纹理，并查看画面；CI 使用已提交的衍生文件，不会重新生成。
+
+原图或衍生图视觉效果变动后，按资产审批范围复核，不能仅凭路径和分辨率检查认定画质合适。线上 Pages、Android／iOS 真机仍需分别验收。
 
 ## 本地复现
 
@@ -38,7 +70,7 @@ PowerShell 7：
 pwsh.exe -File .\build-web.ps1
 ```
 
-修改这两组原图后，先用同一 Godot 标准版运行 `--headless --path . --script res://tools/art/build_web_backgrounds.gd` 重新生成 Web 衍生图，再构建。衍生图已提交仓库，普通 CI 构建不需要重新生成。`tools/web_background_check.gd` 可由 Web 测试启动参数 `--web-background-check` 验证全部 30 张导入纹理。`m1_web_backgrounds` Manifest 将此衍生交付登记为待视觉评审。
+衍生图随代码提交仓库，普通 CI 构建不重新生成；新增或修改图片的完整接入与验收步骤见上节。当前 `m1_web_backgrounds` Manifest 的衍生视觉评审仍待完成。
 
 本机默认使用 `.godot/web-tools/engine` 下的标准版。其他机器通过 `-Godot '完整可执行文件路径'` 指定标准版，并先安装 4.7.2 导出模板。
 

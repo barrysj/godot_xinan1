@@ -299,4 +299,5 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - `res://tools/platform_asset_check.tscn`：30 个原图到 WebP 的路径映射、文件存在、Android 原图回退、平台名大小写及非目标图路径共 30/0；当前 Windows 运行时仍指向原图。
 - 原生主菜单 `res://tools/menu_runtime_check.tscn -- --test-size=1920x1080`：两种状态、六张 4K 背景、六次轮播通过；实际截图生成在 `.godot/m1-main-menu-1920x1080-*.png`。
 - `pwsh.exe -File ./build-web.ps1`：正式包导出成功，整站 182.4 MiB。浏览器打开正式 `/web/`，主菜单显示正常；仅本地检查页加入 `--web-background-check`，日志 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无浏览器错误。实际 Web 截图临时保存在 `.godot/platform-asset-web-check.png`，可复现；截图未纳入正式资产。
+- 2026-09-30 在 `9590986` 基线上复测：`build_web_backgrounds.gd -- --check` 报告 `WEB_BACKGROUNDS_CHECK count=30 sources=514775538 bytes derivatives=11356338 bytes`，未写入衍生图；`platform_asset_check.tscn` 为 30/0；原生主菜单六图与轮播通过并实际截图。此项移除新图数量硬编码，尚未用新增图片样本、全新图片组或 Android 导出验证。脚本模式结束时旧 GGT 自动加载项仍报告空场景属性错误，检查成功标记与退出码为 0。
 - `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v`：33 项通过，Manifest 映射字段未破坏资源台读取。已验证按平台选择，不代表已验证 Android／iOS 新规格、不同浏览器视口的质量或线上 Pages 发布。Web 衍生图的视觉效果仍待负责人人工评审。
