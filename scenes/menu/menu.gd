@@ -1,6 +1,7 @@
 extends Control
 
 const ProgressModel = preload("res://game/meta/campus_progress.gd")
+const PlatformAssetPaths = preload("res://game/visual/platform_asset_paths.gd")
 const BACKGROUNDS = [
 	{
 		"name": "图书馆",
@@ -42,9 +43,7 @@ func _load_progress_state() -> void:
 
 func _background_path(index: int) -> String:
 	var path: String = str(BACKGROUNDS[index].normal if normal_backgrounds_unlocked else BACKGROUNDS[index].anomaly)
-	if OS.has_feature("web"):
-		return path.replace("/backgrounds/", "/web_backgrounds/").get_basename() + ".webp"
-	return path
+	return PlatformAssetPaths.resolve(path)
 
 func _set_background(index: int, instant := false) -> void:
 	background_index = posmod(index, BACKGROUNDS.size())

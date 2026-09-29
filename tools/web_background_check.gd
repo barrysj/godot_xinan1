@@ -1,6 +1,7 @@
 extends Node
 
 const CampusLocationSkin = preload("res://scenes/expedition/campus_location_skin.gd")
+const PlatformAssetPaths = preload("res://game/visual/platform_asset_paths.gd")
 
 var menu: Control
 
@@ -20,8 +21,7 @@ func _run() -> void:
 			checked += 1
 	for background in menu.BACKGROUNDS:
 		for state in ["normal", "anomaly"]:
-			var path: String = background[state]
-			path = path.replace("/backgrounds/", "/web_backgrounds/").get_basename() + ".webp"
+			var path: String = PlatformAssetPaths.resolve(background[state])
 			if not _valid(path):
 				failures += 1
 			checked += 1

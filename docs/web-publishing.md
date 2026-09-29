@@ -22,6 +22,14 @@
 - 上传 `builds/web` 为官方 Pages artifact，再通过 `actions/deploy-pages` 发布。
 - `builds` 和 `.godot` 不提交。首次 CI 下载完整模板较大，后续命中缓存会更快。
 
+## 平台素材规格映射
+
+运行时调用 [平台路径适配层](../game/visual/platform_asset_paths.gd) 的 `resolve(原始资源路径)`。适配层根据导出平台选择对应文件；目前 Web 为校园地点及主菜单的 1920×1080 WebP，Windows／Linux／macOS／Android 沿用原始 PNG。它不根据浏览器窗口大小切换素材。未配置的资源保持原路径；调用方只需维护原始资源路径。
+
+美术 [Manifest](../assets/art/asset_manifest.yaml) 继续记录资产版本、规格与人工批准状态，Godot 运行时不解析 YAML。新增平台规格时，在适配层登记源目录、目标目录及扩展名，准备对应衍生文件，更新该平台的 `export_presets.cfg` 排除规则，再运行平台映射检查与目标平台导出检查。构建器使用同一个适配层生成 Web 输出路径，避免生成位置和运行时选择分叉。缺少衍生文件时不能回退到被该平台排除的原图。
+
+本地映射检查：`Godot_v4.7.2-stable_win64_console.exe --headless --path . res://tools/platform_asset_check.tscn`；实际 Web 包仍用 `--web-background-check` 验证 30 张导入纹理。
+
 ## 本地复现
 
 PowerShell 7：

@@ -291,3 +291,12 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - 本地 Web 测试 HTML 仅添加 `--web-background-check` 启动参数，正式 `index.html` 不带此参数。浏览器日志 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无背景加载错误；南门异常图 1920×1080、2560×1440、1920×1200 实际截图，主菜单同三尺寸截图见两项美术任务的 review/codex-workflow 证据目录。
 - 原生主菜单图形检查 `tools/menu_runtime_check.tscn -- --test-size=1920x1080` 通过 2 状态、6 张原始背景及 6 次轮播；原生全战役 `expedition.tscn -- --campaign-flow-check --order=012` 为 124/0。校园预览专项 `--campaign-flow-check --campus-environment-preview-capture` 为 125/0，覆盖 24 张原始 4K 导入纹理与三种窗口尺寸。第一次战役检查被旧 `.godot/campaign-flow-profile.json` 已通关测试档干扰而失败；临时移开旧档后通过，并已恢复原档。
 - 资源台单测 33 项通过；Manifest 实际扫描 32 对象、646 登记文件、缺失 0、不一致 0。非 Web 预设排除 Web 衍生图，原图版本状态未改变；Web 衍生图视觉效果及线上 Pages 仍待评审／验收。
+
+## 平台素材路径适配验证 E35
+
+2026-09-30；基线：`codex/web-export-size` 的 `4931b07` 加本次平台适配工作树；Godot 4.7.2 标准版、PowerShell 7、Codex 应用内浏览器本地 HTTP。
+
+- `res://tools/platform_asset_check.tscn`：30 个原图到 WebP 的路径映射、文件存在、Android 原图回退、平台名大小写及非目标图路径共 30/0；当前 Windows 运行时仍指向原图。
+- 原生主菜单 `res://tools/menu_runtime_check.tscn -- --test-size=1920x1080`：两种状态、六张 4K 背景、六次轮播通过；实际截图生成在 `.godot/m1-main-menu-1920x1080-*.png`。
+- `pwsh.exe -File ./build-web.ps1`：正式包导出成功，整站 182.4 MiB。浏览器打开正式 `/web/`，主菜单显示正常；仅本地检查页加入 `--web-background-check`，日志 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无浏览器错误。实际 Web 截图临时保存在 `.godot/platform-asset-web-check.png`，可复现；截图未纳入正式资产。
+- `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v`：33 项通过，Manifest 映射字段未破坏资源台读取。已验证按平台选择，不代表已验证 Android／iOS 新规格、不同浏览器视口的质量或线上 Pages 发布。Web 衍生图的视觉效果仍待负责人人工评审。

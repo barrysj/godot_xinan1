@@ -89,6 +89,7 @@ integration:
       m1_main_menu_normal_pinxue_building_webp: m1_main_menu/normal/pinxue-building.webp
   mapping:
     web_only: true
+    resolver: game/visual/platform_asset_paths.gd
     menu: scenes/menu/menu.gd
     campus: scenes/expedition/campus_location_skin.gd
   visual_review: pending

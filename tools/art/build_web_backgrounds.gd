@@ -4,7 +4,7 @@ extends SceneTree
 ## Run with: godot --headless --path . --script res://tools/art/build_web_backgrounds.gd
 
 const SOURCE_ROOT := "res://assets/art/backgrounds"
-const TARGET_ROOT := "res://assets/art/web_backgrounds"
+const PlatformAssetPaths = preload("res://game/visual/platform_asset_paths.gd")
 const SIZE := Vector2i(1920, 1080)
 const QUALITY := 0.85
 
@@ -35,7 +35,11 @@ func _initialize() -> void:
 			push_error("Expected a 3840x2160 source: " + source)
 			quit(1)
 			return
-		var target := source.replace(SOURCE_ROOT, TARGET_ROOT).get_basename() + ".webp"
+		var target := PlatformAssetPaths.for_platform(source, "web")
+		if target == source:
+			push_error("No Web variant configured for: " + source)
+			quit(1)
+			return
 		var directory_error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(target.get_base_dir()))
 		if directory_error != OK:
 			push_error("Cannot create output directory: " + target.get_base_dir())

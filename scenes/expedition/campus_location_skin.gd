@@ -1,6 +1,8 @@
 extends RefCounted
 ## Approved 4K campus exteriors. Preview order matches the art task's release list.
 
+const PlatformAssetPaths = preload("res://game/visual/platform_asset_paths.gd")
+
 const LOCATIONS: Array[Dictionary] = [
 	{"id": "south_gate", "label": "南门"},
 	{"id": "pinxue_courtyard", "label": "品学楼单区庭院"},
@@ -21,7 +23,6 @@ static func path(location_id: String, state: String) -> String:
 	if not STATES.has(state): return ""
 	for location in LOCATIONS:
 		if location.id == location_id:
-			if OS.has_feature("web"):
-				return "res://assets/art/web_backgrounds/m1_campus_locations/%s/%s.webp" % [location_id, state]
-			return "res://assets/art/backgrounds/m1_campus_locations/%s/%s.png" % [location_id, state]
+			var source := "res://assets/art/backgrounds/m1_campus_locations/%s/%s.png" % [location_id, state]
+			return PlatformAssetPaths.resolve(source)
 	return ""
