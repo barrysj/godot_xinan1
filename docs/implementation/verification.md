@@ -272,6 +272,7 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 原入口回归：expedition.tscn 的 --campaign-flow-check --order=012 为124/0；--run-smoke 三路线PASS；--pause-flow-smoke PASS；deployment_check.tscn --deployment-check 为0失败。图形运行 expedition.tscn --content-check 输出 CONTENT_CHECK_COMPLETE；menu.tscn --codex-check 为36项PASS。参数均置于引擎 -- 后。原 trial runner -Check 十场景通过（代码74、UI27、内容95、效果70、存档76、三战104、表现34、准确性51以及动作/自动战斗PASS）。
 
 1920×1080、1920×1200、2560×1440实际截图尺寸和终端边界通过；截图 .godot/main-code-terminal-<尺寸>.png 和 main-code-battle.png 已查看并展示。已有根证书读取错误、Kenney原图加载告警仍存在；未据此声明导出、手机或真人趣味性验收。
+
 ## M1 校园路线底图试接入 E23
 
 2026-09-21；基线6bff72b后。PowerShell 7调用Godot 4.7.2 Mono；测试档位于`.godot`，不覆盖玩家档。
@@ -556,3 +557,33 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - `build_roads.py --state <day|night|anomaly>`三态生成；`verify_assets.py`确认运行图逐字节一致、1800×1500尺寸、HTTP编辑器底图一致，用户布局SHA256仍为`6e931f8741d5284227ed31ebb1f7f770e2c777100b8b2e3c770c05a4737a2c92`。未提交用户布局。
 - Godot `--headless --editor --path . --import`退出0；图形`--path . res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`：194／0，三态三尺寸、缩放、选路及亮区通过。053实际游戏截图已目视并在对话展示；既有日志／证书／shader缓存权限警告仍存在。
 - `node --test tools/campus-map-editor/editor-core.test.mjs`：6／0；AssetCatalog扫描无Manifest错误。仅北部路面修复，未改变地图交互、其他几何或光照；路宽仍为示意，资产和接入效果review，待统筹。
+
+## Web 缩包与资源完整性验证 E56
+
+2026-09-29；基线 `main` `06ad4e6`，分支 `codex/web-export-size`；Windows PowerShell 7、Godot 4.7.2 标准版、Codex 应用内浏览器本地 HTTP。Web 预设仅排除 `design/*`，保留 `all_resources` 及闪卡活动目录。
+
+- `pwsh.exe -File ./build-web.ps1`：导出成功，整站 296.75 MiB（原包 1,299.91 MiB），其中 `index.pck` 258.74 MiB；导出记录无 `res://design/` 项。脚本与 Pages CI 均有 900 MB 整站体积门槛。
+- 正式 `builds/web/index.html`：主菜单、基地阶梯教室背景、图鉴闪卡列表及详情实际显示；截图 `.godot/web-export-home.jpg`、`.godot/web-export-card.jpg`。浏览器隔离 HTML 副本加入 `--campaign-flow-check` 后全战役 124 checks / 0 failures；副本已移除，正式包不带测试入口。
+- 图形场景 `res://scenes/expedition/expedition.tscn -- --campaign-flow-check --library-environment-preview-capture`：31 checks / 0 failures，覆盖九张环境图切换。
+- 边界：线上 Pages、手机未测；自动 Web 全战役日志有两条 `_focus_home_action` 延迟调用错误。原生 `--memory-terminal-capture` 输出 12 checks / 3 failures（终局节点数量断言），不列为通过。Godot 导入过程仍有既有根证书与编辑器设置保存提示。
+
+## Web 背景衍生图验证 E57
+
+2026-09-29；基线为 `codex/web-export-size` 的 `75a1011`（此前整站 296.75 MiB、PCK 258.74 MiB）；Windows PowerShell 7、Godot 4.7.2 标准版、Codex 应用内浏览器本地 HTTP。
+
+- `tools/art/build_web_backgrounds.gd` 从已批准的 24 张校园和 6 张主菜单 3840×2160 PNG 生成 30 张 1920×1080 WebP（Lanczos，品质 0.85）；原图共 514,775,538 字节，衍生图共 11,356,338 字节。生成器退出后 Godot 旧自动加载脚本报告空场景属性错误，但 30 张文件均已完成写入和解码检查。
+- `pwsh.exe -File ./build-web.ps1`：整站约 182.4 MiB，其中 PCK 144.34 MiB、WASM 37.68 MiB；相对 E56 整站减少约 114.4 MiB（约 38.5%）。导出日志含 24 张校园、6 张菜单 Web 导入纹理，不含这两组原始 4K 图片。对应导入纹理由校园 138.40 MiB 降至 49.15 MiB、菜单 40.03 MiB 降至 14.88 MiB。
+- 本地 Web 测试 HTML 仅添加 `--web-background-check` 启动参数，正式 `index.html` 不带此参数。浏览器日志 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无背景加载错误；南门异常图 1920×1080、2560×1440、1920×1200 实际截图，主菜单同三尺寸截图见两项美术任务的 review/codex-workflow 证据目录。
+- 原生主菜单图形检查 `tools/menu_runtime_check.tscn -- --test-size=1920x1080` 通过 2 状态、6 张原始背景及 6 次轮播；原生全战役 `expedition.tscn -- --campaign-flow-check --order=012` 为 124/0。校园预览专项 `--campaign-flow-check --campus-environment-preview-capture` 为 125/0，覆盖 24 张原始 4K 导入纹理与三种窗口尺寸。第一次战役检查被旧 `.godot/campaign-flow-profile.json` 已通关测试档干扰而失败；临时移开旧档后通过，并已恢复原档。
+- 资源台单测 33 项通过；Manifest 实际扫描 32 对象、646 登记文件、缺失 0、不一致 0。非 Web 预设排除 Web 衍生图，原图版本状态未改变；Web 衍生图视觉效果及线上 Pages 仍待评审／验收。
+
+## 平台素材路径适配验证 E58
+
+2026-09-30；基线：`codex/web-export-size` 的 `4931b07` 加本次平台适配工作树；Godot 4.7.2 标准版、PowerShell 7、Codex 应用内浏览器本地 HTTP。
+
+- `res://tools/platform_asset_check.tscn`：30 个原图到 WebP 的路径映射、文件存在、Android 原图回退、平台名大小写及非目标图路径共 30/0；当前 Windows 运行时仍指向原图。
+- 原生主菜单 `res://tools/menu_runtime_check.tscn -- --test-size=1920x1080`：两种状态、六张 4K 背景、六次轮播通过；实际截图生成在 `.godot/m1-main-menu-1920x1080-*.png`。
+- `pwsh.exe -File ./build-web.ps1`：正式包导出成功，整站 182.4 MiB。浏览器打开正式 `/web/`，主菜单显示正常；仅本地检查页加入 `--web-background-check`，日志 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无浏览器错误。实际 Web 截图临时保存在 `.godot/platform-asset-web-check.png`，可复现；截图未纳入正式资产。
+- 2026-09-30 在 `9590986` 基线上复测：`build_web_backgrounds.gd -- --check` 报告 `WEB_BACKGROUNDS_CHECK count=30 sources=514775538 bytes derivatives=11356338 bytes`，未写入衍生图；`platform_asset_check.tscn` 为 30/0；原生主菜单六图与轮播通过并实际截图。此项移除新图数量硬编码，尚未用新增图片样本、全新图片组或 Android 导出验证。脚本模式结束时旧 GGT 自动加载项仍报告空场景属性错误，检查成功标记与退出码为 0。
+- `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v`：33 项通过，Manifest 映射字段未破坏资源台读取。已验证按平台选择，不代表已验证 Android／iOS 新规格、不同浏览器视口的质量或线上 Pages 发布。Web 衍生图的视觉效果仍待负责人人工评审。
+- 合入本地 `main` 复测（基线 `5939c80` + `5526aab`）：`pwsh.exe -File ./build-web.ps1` 导出整站 255.8 MiB，低于 900 MB 门槛；`platform_asset_check.tscn` 为 30/0；资源台单测 33 项通过。隔离并恢复旧 `.godot/campaign-flow-profile.json` 后，`expedition.tscn -- --campaign-flow-check --order=012` 为 148/0；`menu_runtime_check.tscn -- --test-size=1920x1080` 六图轮播通过并保存实际截图。浏览器打开正式 `/web/` 显示主菜单；临时 HTML 检查页报告 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无浏览器错误，检查页已删除。实际 Web 截图为 `.godot/main-merged-web-menu.png`；未执行线上 Pages 部署。

@@ -51,6 +51,12 @@ jobs:
           test -s builds/web/index.wasm
           test -s builds/web/index.pck
           touch builds/web/.nojekyll
+          bytes=$(du -sb builds/web | cut -f1)
+          echo "Web site size: $bytes bytes"
+          if (( bytes >= 900000000 )); then
+            echo "Web site exceeds the 900 MB Pages deployment budget" >&2
+            exit 1
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: builds/web

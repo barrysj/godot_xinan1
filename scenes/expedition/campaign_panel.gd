@@ -214,10 +214,7 @@ func home(progress, chosen_supply: bool) -> void:
 	_show_home_page()
 	var backdrop := TextureRect.new()
 	backdrop.name = "HomeBackground"
-	var image := Image.new()
-	var bytes := FileAccess.get_file_as_bytes("res://assets/art/backgrounds/m1_campus_hub/lecture-hall.png")
-	if image.load_png_from_buffer(bytes) == OK:
-		backdrop.texture = ImageTexture.create_from_image(image)
+	backdrop.texture = load("res://assets/art/backgrounds/m1_campus_hub/lecture-hall.png") as Texture2D
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -719,7 +716,8 @@ func _update_campus_preview() -> void:
 	var location: Dictionary = CampusLocationSkin.LOCATIONS[campus_preview_location]
 	var image_path := CampusLocationSkin.path(location.id,campus_preview_state)
 	campus_preview_image.texture = ExplorationSkin.texture(image_path)
-	campus_preview_status.text = "%02d / 12 · %s · %s · 3840×2160" % [campus_preview_location + 1,location.label,"日常" if campus_preview_state == "daily" else "异常"]
+	var size := campus_preview_image.texture.get_size()
+	campus_preview_status.text = "%02d / 12 · %s · %s · %d×%d" % [campus_preview_location + 1,location.label,"日常" if campus_preview_state == "daily" else "异常",size.x,size.y]
 
 func _preview_group_label(label: String, parent: Control) -> void:
 	var item := _exploration_label(label,18)

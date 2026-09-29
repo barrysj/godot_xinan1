@@ -22,7 +22,11 @@ try {
         }
     }
     New-Item -ItemType File -Force builds/web/.nojekyll | Out-Null
-    Write-Host 'Web 构建完成：builds/web/index.html（需通过 HTTP 服务打开）'
+    $webBytes = (Get-ChildItem builds/web -Recurse -File | Measure-Object Length -Sum).Sum
+    if ($webBytes -ge 900000000) {
+        throw "Web 产物过大：$([math]::Round($webBytes / 1MB, 1)) MiB；发布上限预警为 900 MB。请检查 Web 导出资源筛选。"
+    }
+    Write-Host "Web 构建完成：builds/web/index.html（$([math]::Round($webBytes / 1MB, 1)) MiB，需通过 HTTP 服务打开）"
 } finally {
     Pop-Location
 }

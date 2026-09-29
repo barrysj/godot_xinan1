@@ -29,7 +29,9 @@ static func library_environment_path(state: String, viewpoint: String) -> String
 	return str(state_paths.get(viewpoint, ""))
 
 static func texture(path: String) -> ImageTexture:
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	var imported := load(path) as Texture2D
+	assert(imported != null)
+	var image := imported.get_image()
 	assert(image != null and not image.is_empty())
 	var used := image.get_used_rect()
 	assert(used.size.x > 0 and used.size.y > 0)

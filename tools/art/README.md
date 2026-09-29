@@ -13,6 +13,7 @@
 | `asset_manager/` | `catalog.py`、`server.py`、`static/` | Manifest 校验、HTTP 服务、资源台网页 |
 | `asset_manager/control/` | C# 源码、构建与启动测试 | Windows 桌面控制器；根目录入口自动补建缺失／过期缓存 |
 | `asset_manager/tests/` | Python 测试 | 资源台及与导出、提升之间的生产边界回归 |
+| `.` | `build_web_backgrounds.gd` | 校园／菜单 WebP 衍生图生成与 `--check` 只读核验；接入步骤见[平台素材规格映射](../../docs/web-publishing.md#平台素材规格映射) |
 
 `.gd.uid` 是 Godot 脚本的稳定身份文件，随脚本一起移动并保留；`.tscn` 是 Godot 工具的可运行入口。缓存、临时帧和 EXE 位于 `.godot/`，不提交入库。
 

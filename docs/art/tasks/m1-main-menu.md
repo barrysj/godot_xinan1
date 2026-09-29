@@ -2,6 +2,10 @@
 
 状态：六张主菜单背景已升级为 3840×2160 的 `asset_002`；异常与正常主题继续使用稳定 `assets/art/backgrounds/m1_main_menu/` 路径，Godot 图形接入与四种桌面窗口尺寸检查已通过。生成成功、技术检查和本地提交不替代照片发布授权批准。
 
+## Web 发布衍生图（2026-09-29，视觉效果待评审）
+
+用户要求降低 Web 发布时主菜单背景的体积。六张已批准 4K 原图保持原版本和桌面用途；从正式文件确定性缩放为 1920×1080、WebP 品质 0.85，路径为 `assets/art/web_backgrounds/m1_main_menu/`。Web 导出排除原始 4K PNG，正常／异常主题与三地点轮播仍按原流程读取。此发布衍生版本在 `m1_web_backgrounds` Manifest 登记为 `selected + pending`、已授权试接入，人工视觉效果待评审。浏览器纹理 6/6 加载，实际 Web 截图：[1920×1080](../../../design/concepts/m1-main-menu/review/codex-workflow/web-1080p-menu-1920x1080.jpg)、[2560×1440](../../../design/concepts/m1-main-menu/review/codex-workflow/web-1080p-menu-2560x1440.jpg)、[1920×1200](../../../design/concepts/m1-main-menu/review/codex-workflow/web-1080p-menu-1920x1200.jpg)；发布包见 E57。
+
 ## 目标与范围
 
 - 用途、数量与本次要求：建立并提升一组由真实校园参考图引导的主菜单 hero 背景资产，包含图书馆、品学楼、秋天银杏主楼三种身份主题的正常／异常各一张；标题家族和按钮资产不在本任务范围内。
