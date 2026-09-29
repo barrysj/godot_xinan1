@@ -21,5 +21,7 @@ static func path(location_id: String, state: String) -> String:
 	if not STATES.has(state): return ""
 	for location in LOCATIONS:
 		if location.id == location_id:
+			if OS.has_feature("web"):
+				return "res://assets/art/web_backgrounds/m1_campus_locations/%s/%s.webp" % [location_id, state]
 			return "res://assets/art/backgrounds/m1_campus_locations/%s/%s.png" % [location_id, state]
 	return ""

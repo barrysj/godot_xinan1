@@ -41,7 +41,10 @@ func _load_progress_state() -> void:
 	normal_backgrounds_unlocked = progress.read_save() and bool(progress.campaign.get("restored", false))
 
 func _background_path(index: int) -> String:
-	return str(BACKGROUNDS[index].normal if normal_backgrounds_unlocked else BACKGROUNDS[index].anomaly)
+	var path: String = str(BACKGROUNDS[index].normal if normal_backgrounds_unlocked else BACKGROUNDS[index].anomaly)
+	if OS.has_feature("web"):
+		return path.replace("/backgrounds/", "/web_backgrounds/").get_basename() + ".webp"
+	return path
 
 func _set_background(index: int, instant := false) -> void:
 	background_index = posmod(index, BACKGROUNDS.size())
@@ -74,6 +77,10 @@ func _open_codex() -> void:
 
 
 func _ready():
+	if "--web-background-check" in OS.get_cmdline_user_args():
+		var check = load("res://tools/web_background_check.gd").new()
+		check.menu = self
+		get_tree().root.call_deferred("add_child", check)
 	_load_progress_state()
 	_update_state_label()
 	_set_background(0, true)

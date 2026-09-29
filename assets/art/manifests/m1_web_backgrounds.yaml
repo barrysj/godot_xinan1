@@ -1,0 +1,95 @@
+schema_version: 3
+object:
+  id: m1_web_backgrounds
+  display_name: M1 校园与主菜单 Web 发布背景
+  type: background
+  subtype: web_delivery_derivatives
+variants:
+  web_1080p_001:
+    stage: asset
+    version: web-1080p-v1
+    selection: selected
+    approval: pending
+    integration_authorization:
+      source: docs/art/tasks/m1-main-menu.md
+      date: 2026-09-29
+      scope: web_only_low_resolution_delivery
+    root: assets/art/web_backgrounds
+    files:
+      m1_campus_locations_basic_laboratory_building_anomaly_webp: m1_campus_locations/basic_laboratory_building/anomaly.webp
+      m1_campus_locations_basic_laboratory_building_daily_webp: m1_campus_locations/basic_laboratory_building/daily.webp
+      m1_campus_locations_chengdian_auditorium_commercial_street_anomaly_webp: m1_campus_locations/chengdian_auditorium_commercial_street/anomaly.webp
+      m1_campus_locations_chengdian_auditorium_commercial_street_daily_webp: m1_campus_locations/chengdian_auditorium_commercial_street/daily.webp
+      m1_campus_locations_library_front_anomaly_webp: m1_campus_locations/library_front/anomaly.webp
+      m1_campus_locations_library_front_daily_webp: m1_campus_locations/library_front/daily.webp
+      m1_campus_locations_pinxue_atrium_anomaly_webp: m1_campus_locations/pinxue_atrium/anomaly.webp
+      m1_campus_locations_pinxue_atrium_daily_webp: m1_campus_locations/pinxue_atrium/daily.webp
+      m1_campus_locations_pinxue_courtyard_anomaly_webp: m1_campus_locations/pinxue_courtyard/anomaly.webp
+      m1_campus_locations_pinxue_courtyard_daily_webp: m1_campus_locations/pinxue_courtyard/daily.webp
+      m1_campus_locations_south_gate_anomaly_webp: m1_campus_locations/south_gate/anomaly.webp
+      m1_campus_locations_south_gate_daily_webp: m1_campus_locations/south_gate/daily.webp
+      m1_campus_locations_sports_field_anomaly_webp: m1_campus_locations/sports_field/anomaly.webp
+      m1_campus_locations_sports_field_daily_webp: m1_campus_locations/sports_field/daily.webp
+      m1_campus_locations_student_activity_center_anomaly_webp: m1_campus_locations/student_activity_center/anomaly.webp
+      m1_campus_locations_student_activity_center_daily_webp: m1_campus_locations/student_activity_center/daily.webp
+      m1_campus_locations_west_lake_center_anomaly_webp: m1_campus_locations/west_lake_center/anomaly.webp
+      m1_campus_locations_west_lake_center_daily_webp: m1_campus_locations/west_lake_center/daily.webp
+      m1_campus_locations_west_lake_entrance_anomaly_webp: m1_campus_locations/west_lake_entrance/anomaly.webp
+      m1_campus_locations_west_lake_entrance_daily_webp: m1_campus_locations/west_lake_entrance/daily.webp
+      m1_campus_locations_xuezi_cafeteria_anomaly_webp: m1_campus_locations/xuezi_cafeteria/anomaly.webp
+      m1_campus_locations_xuezi_cafeteria_daily_webp: m1_campus_locations/xuezi_cafeteria/daily.webp
+      m1_campus_locations_yinhua_halal_cafeterias_anomaly_webp: m1_campus_locations/yinhua_halal_cafeterias/anomaly.webp
+      m1_campus_locations_yinhua_halal_cafeterias_daily_webp: m1_campus_locations/yinhua_halal_cafeterias/daily.webp
+      m1_main_menu_anomaly_ginkgo_main_building_webp: m1_main_menu/anomaly/ginkgo-main-building.webp
+      m1_main_menu_anomaly_library_two_digital_swans_webp: m1_main_menu/anomaly/library-two-digital-swans.webp
+      m1_main_menu_anomaly_pinxue_building_webp: m1_main_menu/anomaly/pinxue-building.webp
+      m1_main_menu_normal_ginkgo_main_building_webp: m1_main_menu/normal/ginkgo-main-building.webp
+      m1_main_menu_normal_library_webp: m1_main_menu/normal/library.webp
+      m1_main_menu_normal_pinxue_building_webp: m1_main_menu/normal/pinxue-building.webp
+    metadata:
+      resolution: [1920, 1080]
+      transparent: false
+      source_version: approved_4k_menu_and_campus_backgrounds
+      processing: lanczos_resize_and_lossy_webp_quality_085
+      generator: tools/art/build_web_backgrounds.gd
+integration:
+  status: authorized_active
+  active_variant: web_1080p_001
+  root: assets/art/web_backgrounds
+  files:
+      m1_campus_locations_basic_laboratory_building_anomaly_webp: m1_campus_locations/basic_laboratory_building/anomaly.webp
+      m1_campus_locations_basic_laboratory_building_daily_webp: m1_campus_locations/basic_laboratory_building/daily.webp
+      m1_campus_locations_chengdian_auditorium_commercial_street_anomaly_webp: m1_campus_locations/chengdian_auditorium_commercial_street/anomaly.webp
+      m1_campus_locations_chengdian_auditorium_commercial_street_daily_webp: m1_campus_locations/chengdian_auditorium_commercial_street/daily.webp
+      m1_campus_locations_library_front_anomaly_webp: m1_campus_locations/library_front/anomaly.webp
+      m1_campus_locations_library_front_daily_webp: m1_campus_locations/library_front/daily.webp
+      m1_campus_locations_pinxue_atrium_anomaly_webp: m1_campus_locations/pinxue_atrium/anomaly.webp
+      m1_campus_locations_pinxue_atrium_daily_webp: m1_campus_locations/pinxue_atrium/daily.webp
+      m1_campus_locations_pinxue_courtyard_anomaly_webp: m1_campus_locations/pinxue_courtyard/anomaly.webp
+      m1_campus_locations_pinxue_courtyard_daily_webp: m1_campus_locations/pinxue_courtyard/daily.webp
+      m1_campus_locations_south_gate_anomaly_webp: m1_campus_locations/south_gate/anomaly.webp
+      m1_campus_locations_south_gate_daily_webp: m1_campus_locations/south_gate/daily.webp
+      m1_campus_locations_sports_field_anomaly_webp: m1_campus_locations/sports_field/anomaly.webp
+      m1_campus_locations_sports_field_daily_webp: m1_campus_locations/sports_field/daily.webp
+      m1_campus_locations_student_activity_center_anomaly_webp: m1_campus_locations/student_activity_center/anomaly.webp
+      m1_campus_locations_student_activity_center_daily_webp: m1_campus_locations/student_activity_center/daily.webp
+      m1_campus_locations_west_lake_center_anomaly_webp: m1_campus_locations/west_lake_center/anomaly.webp
+      m1_campus_locations_west_lake_center_daily_webp: m1_campus_locations/west_lake_center/daily.webp
+      m1_campus_locations_west_lake_entrance_anomaly_webp: m1_campus_locations/west_lake_entrance/anomaly.webp
+      m1_campus_locations_west_lake_entrance_daily_webp: m1_campus_locations/west_lake_entrance/daily.webp
+      m1_campus_locations_xuezi_cafeteria_anomaly_webp: m1_campus_locations/xuezi_cafeteria/anomaly.webp
+      m1_campus_locations_xuezi_cafeteria_daily_webp: m1_campus_locations/xuezi_cafeteria/daily.webp
+      m1_campus_locations_yinhua_halal_cafeterias_anomaly_webp: m1_campus_locations/yinhua_halal_cafeterias/anomaly.webp
+      m1_campus_locations_yinhua_halal_cafeterias_daily_webp: m1_campus_locations/yinhua_halal_cafeterias/daily.webp
+      m1_main_menu_anomaly_ginkgo_main_building_webp: m1_main_menu/anomaly/ginkgo-main-building.webp
+      m1_main_menu_anomaly_library_two_digital_swans_webp: m1_main_menu/anomaly/library-two-digital-swans.webp
+      m1_main_menu_anomaly_pinxue_building_webp: m1_main_menu/anomaly/pinxue-building.webp
+      m1_main_menu_normal_ginkgo_main_building_webp: m1_main_menu/normal/ginkgo-main-building.webp
+      m1_main_menu_normal_library_webp: m1_main_menu/normal/library.webp
+      m1_main_menu_normal_pinxue_building_webp: m1_main_menu/normal/pinxue-building.webp
+  mapping:
+    web_only: true
+    menu: scenes/menu/menu.gd
+    campus: scenes/expedition/campus_location_skin.gd
+  visual_review: pending
+  evidence: docs/art/tasks/m1-campus-locations.md

@@ -33,3 +33,4 @@ objects:
   m1_campus_hub_ui: manifests/m1_campus_hub_ui.yaml
   m1_campus_hub_environment: manifests/m1_campus_hub_environment.yaml
   m1_main_menu_visual: manifests/m1_main_menu_visual.yaml
+  m1_web_backgrounds: manifests/m1_web_backgrounds.yaml

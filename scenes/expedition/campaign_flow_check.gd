@@ -422,9 +422,9 @@ func capture_campus_environment_preview(hub) -> void:
 	for location in CampusLocationSkin.LOCATIONS:
 		for state in CampusLocationSkin.STATES:
 			var path := CampusLocationSkin.path(location.id,state)
-			verify(FileAccess.file_exists(path),"approved campus background exists %s/%s" % [location.id,state])
-			var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-			verify(image != null and image.get_size() == Vector2i(3840,2160),"approved campus background is 4K %s/%s" % [location.id,state])
+			var texture := load(path) as Texture2D
+			var expected_size := Vector2i(1920,1080) if OS.has_feature("web") else Vector2i(3840,2160)
+			verify(texture != null and texture.get_size() == Vector2(expected_size),"campus background loads at platform size %s/%s" % [location.id,state])
 	for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
 		hub.get_window().size = resolution
 		await hub.get_tree().process_frame

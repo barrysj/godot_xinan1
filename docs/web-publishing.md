@@ -17,7 +17,7 @@
 - CI 从 Godot 官方发布下载引擎与模板并验证 SHA-512，只安装 Web 单线程模板，随后缓存。
 - 使用 Compatibility 渲染器、单线程 Web 导出、默认相对资源路径；PWA 未启用。
 - 中文字体随游戏打包：Google Fonts Noto Sans SC，许可证见 `assets/fonts/OFL.txt`。
-- Web 预设保持全部正式运行资源，但排除 `design/*` 概念与评审资料；`assets/art/holo_cards` 必须保留，供图鉴动态发现。基地、图书馆和记忆终端使用导入纹理，不依赖导出包中的原 PNG 字节。
+- Web 预设保持全部正式运行资源，但排除 `design/*` 概念与评审资料，以及校园地点和主菜单的原始 4K PNG；Web 使用独立的 1920×1080 WebP 衍生图，非 Web 导出仍使用原图，并排除 Web 衍生图。`assets/art/holo_cards` 必须保留，供图鉴动态发现。基地、图书馆和记忆终端使用导入纹理，不依赖导出包中的原 PNG 字节。
 - 本地构建和 Actions 上传前均检查整站体积，达到 900 MB 就失败，以留出 Pages 1 GB 限额余量。
 - 上传 `builds/web` 为官方 Pages artifact，再通过 `actions/deploy-pages` 发布。
 - `builds` 和 `.godot` 不提交。首次 CI 下载完整模板较大，后续命中缓存会更快。
@@ -29,6 +29,8 @@ PowerShell 7：
 ```powershell
 pwsh.exe -File .\build-web.ps1
 ```
+
+修改这两组原图后，先用同一 Godot 标准版运行 `--headless --path . --script res://tools/art/build_web_backgrounds.gd` 重新生成 Web 衍生图，再构建。衍生图已提交仓库，普通 CI 构建不需要重新生成。`tools/web_background_check.gd` 可由 Web 测试启动参数 `--web-background-check` 验证全部 30 张导入纹理。`m1_web_backgrounds` Manifest 将此衍生交付登记为待视觉评审。
 
 本机默认使用 `.godot/web-tools/engine` 下的标准版。其他机器通过 `-Godot '完整可执行文件路径'` 指定标准版，并先安装 4.7.2 导出模板。
 

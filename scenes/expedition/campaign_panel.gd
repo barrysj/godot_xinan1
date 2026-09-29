@@ -715,7 +715,8 @@ func _update_campus_preview() -> void:
 	var location: Dictionary = CampusLocationSkin.LOCATIONS[campus_preview_location]
 	var image_path := CampusLocationSkin.path(location.id,campus_preview_state)
 	campus_preview_image.texture = ExplorationSkin.texture(image_path)
-	campus_preview_status.text = "%02d / 12 · %s · %s · 3840×2160" % [campus_preview_location + 1,location.label,"日常" if campus_preview_state == "daily" else "异常"]
+	var size := campus_preview_image.texture.get_size()
+	campus_preview_status.text = "%02d / 12 · %s · %s · %d×%d" % [campus_preview_location + 1,location.label,"日常" if campus_preview_state == "daily" else "异常",size.x,size.y]
 
 func _preview_group_label(label: String, parent: Control) -> void:
 	var item := _exploration_label(label,18)

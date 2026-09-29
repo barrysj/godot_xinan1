@@ -2,6 +2,10 @@
 
 状态：负责人于2026-09-25批准当前12张日常＋12张异常候选并要求统一版本，已逐字节提升为两组正式4K背景。正式日常共用 `asset_daily_003 / m1-campus-daily-4k-v1`，正式异常共用 `asset_anomaly_009 / m1-campus-anomaly-4k-v1`；每处试稿编号保留历史，不视作不同正式版本。南门异常态已接入战役，全部24张已提供只读游戏内预览；其余11处尚未绑定战役节点，接入效果未验收。
 
+## Web 发布衍生图（2026-09-29，视觉效果待评审）
+
+用户要求降低 Web 发布时校园地点图片的体积。24 张已批准 4K 原图保持原版本和桌面用途；从正式文件确定性缩放为 1920×1080、WebP 品质 0.85，路径为 `assets/art/web_backgrounds/m1_campus_locations/`。Web 导出排除这些原始 4K PNG，游戏按平台读取衍生图；无地点身份、构图或战役映射调整。此发布衍生版本在 `m1_web_backgrounds` Manifest 登记为 `selected + pending`、已授权试接入，人工视觉效果待评审。浏览器纹理 24/24 加载，南门异常图在 1920×1080、2560×1440、1920×1200 实际截图已检查；实际 Web 截图：[1920×1080](../../../design/concepts/m1-campus-locations/review/codex-workflow/web-1080p-south-gate-anomaly-1920x1080.jpg)、[2560×1440](../../../design/concepts/m1-campus-locations/review/codex-workflow/web-1080p-south-gate-anomaly-2560x1440.jpg)、[1920×1200](../../../design/concepts/m1-campus-locations/review/codex-workflow/web-1080p-south-gate-anomaly-1920x1200.jpg)；发布包与测试见 E34。
+
 ## Godot 接入与映射边界（2026-09-25，待负责人评审）
 
 - 战役的 `gate` 身份由实景证实为南门，序章与后续同名地点使用正式异常态 `asset_anomaly_009`，沿用既有热点、守卫、奖励与离开流程；没有改存档字段。日常态不自动进入战役，因为游戏尚无日常／异常时间或区域状态切换规则。
