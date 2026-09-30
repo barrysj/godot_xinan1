@@ -1,0 +1,29 @@
+schema_version: 3
+object:
+  id: great_volume_boss
+  display_name: "馆藏巨典"
+  type: character
+  subtype: enemy
+variants:
+  concept_004:
+    stage: concept
+    version: "004"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-24"
+      decision: approved
+      quote: "这两张概念通过"
+    root: design/concepts/m1-enemy-cast/great-volume-boss/concept_004
+    files:
+      concept: great_volume_boss_action_concept_004.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+      review_note: "修正展开书本结构、两条书签及纸飞机朝向；保留悬浮重砸。"
+integration:
+  status: not_integrated
+  active_variant: null

@@ -2,6 +2,18 @@ schema_version: 3
 objects:
   m1_player_cast: manifests/m1_player_cast.yaml
   battlefield_redesign: manifests/battlefield_redesign.yaml
+  basketball_bouncer: manifests/basketball_bouncer.yaml
+  shuttlecock_diver: manifests/shuttlecock_diver.yaml
+  meal_tray_guard: manifests/meal_tray_guard.yaml
+  textbook_architecture: manifests/textbook_architecture.yaml
+  textbook_linear_algebra: manifests/textbook_linear_algebra.yaml
+  textbook_security_math: manifests/textbook_security_math.yaml
+  textbook_compilers: manifests/textbook_compilers.yaml
+  cyber_librarian: manifests/cyber_librarian.yaml
+  return_stamp: manifests/return_stamp.yaml
+  great_volume_boss: manifests/great_volume_boss.yaml
+  keycap_brawler: manifests/keycap_brawler.yaml
+  exam_clock_boss: manifests/exam_clock_boss.yaml
   holo_cards:
     type: holo_card
     root: assets/art/holo_cards
@@ -14,6 +26,10 @@ objects:
   m1_campus_map: manifests/m1_campus_map.yaml
   chalk_spirit: manifests/chalk_spirit.yaml
   chalk_projectile: manifests/chalk_projectile.yaml
+  computer_terminal: manifests/computer_terminal.yaml
+  exam_paper: manifests/exam_paper.yaml
+  projector: manifests/projector.yaml
+  radio: manifests/radio.yaml
   m1_exploration_ui: manifests/m1_exploration_ui.yaml
   m1_library_environment: manifests/m1_library_environment.yaml
   m1_campus_locations: manifests/m1_campus_locations.yaml

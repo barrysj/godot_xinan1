@@ -1,0 +1,33 @@
+schema_version: 3
+object:
+  id: computer_terminal
+  display_name: "机房终端"
+  type: character
+  subtype: enemy
+variants:
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-25"
+      decision: approved
+      quote: "03 05 也通过"
+    root: design/concepts/m1-enemy-cast/computer-terminal/concept_003
+    files:
+      concept: computer_terminal_action_concept_003.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      resolution: [1774, 887]
+      transparent: false
+      usage: [concept_review, action_design]
+      style_layer: battle
+      poses: [idle, anticipation, release]
+      intended_facing: screen_right
+      review_note: "鼠标瞄准与光标弹体明确；显示器改成CRT外形，属于新方向，不继承旧版批准。"
+integration:
+  status: not_integrated
+  active_variant: null

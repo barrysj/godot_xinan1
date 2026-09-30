@@ -1,0 +1,28 @@
+schema_version: 3
+object:
+  id: meal_tray_guard
+  display_name: "餐盘格挡怪"
+  type: character
+  subtype: enemy
+variants:
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-30"
+      decision: approved
+      quote: "概念通过"
+    root: design/concepts/m1-enemy-cast/meal-tray-guard/concept_003
+    files:
+      concept: meal_tray_guard_action_concept_003.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+integration:
+  status: not_integrated
+  active_variant: null
