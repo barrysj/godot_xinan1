@@ -22,6 +22,10 @@ func _run() -> void:
 			if filename.ends_with(".png"):
 				_check(directory.path_join(filename), failures)
 				checked += 1
+	for state in ["day", "night", "anomaly"]:
+		var source := "res://assets/art/campus_map/expanded_neutral/%s.png" % state
+		_check(source, failures, "res://assets/art/web_campus_map/", ".png")
+		checked += 1
 	if checked == 0:
 		failures.append("no assets checked")
 	var unrelated := "res://assets/art/backgrounds/m1_library/daily/atrium-down.png"
@@ -37,9 +41,9 @@ func _run() -> void:
 	get_tree().quit(1 if not failures.is_empty() else 0)
 
 
-func _check(source: String, failures: Array[String]) -> void:
+func _check(source: String, failures: Array[String], expected_prefix: String = "res://assets/art/web_backgrounds/", expected_extension: String = ".webp") -> void:
 	var web := PlatformAssetPaths.for_platform(source, "web")
-	if web == source or not web.begins_with("res://assets/art/web_backgrounds/") or not web.ends_with(".webp"):
+	if web == source or not web.begins_with(expected_prefix) or not web.ends_with(expected_extension):
 		failures.append("web mapping: " + source)
 	if not FileAccess.file_exists(web):
 		failures.append("missing web asset: " + web)

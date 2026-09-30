@@ -193,6 +193,9 @@ variants:
       day: day.png
       night: night.png
       anomaly: anomaly.png
+      web_day: web/day.png
+      web_night: web/night.png
+      web_anomaly: web/anomaly.png
       source_day: day.blend
       source_night: night.blend
       source_anomaly: anomaly.blend
@@ -202,6 +205,7 @@ variants:
     metadata:
       representation: six_tile_campus_with_repaired_north_roads
       resolution: [5400, 4500]
+      web_resolution: [1800, 1500]
       logical_resolution: [1800, 1500]
       retention_evidence: docs/art/tasks/m1-campus-map.md
       historical_source: 053_at_3d16ad3
@@ -225,6 +229,30 @@ variants:
       scope: existing_three_state_full_map_preview
       source: docs/art/tasks/m1-campus-map.md
       owners: [scenes/expedition/expanded_campus_map.gd, tools/campus-map-editor/editor.mjs]
+  web_expanded_preview_001:
+    stage: integration
+    version: web-1800x1500-v1
+    selection: selected
+    approval: review
+    root: assets/art/web_campus_map/expanded_neutral
+    files:
+      day: day.png
+      night: night.png
+      anomaly: anomaly.png
+    metadata:
+      representation: web_only_three_state_full_map
+      resolution: [1800, 1500]
+      logical_resolution: [1800, 1500]
+      derived_from: asset_001
+      source_paths: design/concepts/m1-campus-map/campus-map/asset_001/web
+      platform: web
+      mipmaps: true
+      resolver: game/visual/platform_asset_paths.gd
+      visual_review: pending
+    integration_authorization:
+      scope: web_only_low_resolution_delivery
+      source: docs/art/tasks/m1-campus-map.md
+      owners: [scenes/expedition/expanded_campus_map.gd]
 
 integration:
   status: authorized_active

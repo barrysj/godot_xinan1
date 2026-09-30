@@ -16,6 +16,12 @@ const VARIANTS: Dictionary = {
 			"source_extension": ".png",
 			"target_extension": ".webp",
 		},
+		{
+			"source_prefix": "res://assets/art/campus_map/expanded_neutral/",
+			"target_prefix": "res://assets/art/web_campus_map/expanded_neutral/",
+			"source_extension": ".png",
+			"target_extension": ".png",
+		},
 	],
 }
 

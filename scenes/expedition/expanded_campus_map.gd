@@ -2,11 +2,12 @@ extends Control
 signal changed
 signal place_picked(place: String)
 const Geometry = preload("res://game/run/expanded_campus_geometry.gd")
+const PlatformAssetPaths = preload("res://game/visual/platform_asset_paths.gd")
 var layout = Geometry.new()
 const TEXTURES = {
-	"day": preload("res://assets/art/campus_map/expanded_neutral/day.png"),
-	"night": preload("res://assets/art/campus_map/expanded_neutral/night.png"),
-	"anomaly": preload("res://assets/art/campus_map/expanded_neutral/anomaly.png")
+	"day": "res://assets/art/campus_map/expanded_neutral/day.png",
+	"night": "res://assets/art/campus_map/expanded_neutral/night.png",
+	"anomaly": "res://assets/art/campus_map/expanded_neutral/anomaly.png"
 }
 # Colour-matched continuation for aspect ratios wider than the fixed atlas.
 # The second colour matches the route-focus shader's dimmed exterior.
@@ -21,6 +22,7 @@ const ZOOM_STEP = 1.25
 const VIEW_RESPONSE = 18.0
 const DRAG_RESPONSE = 32.0
 var map_state = "day"
+var texture_cache: Dictionary = {}
 var selected_route = -1
 var hovered_route = -1
 var hover_overrides_selection = true
@@ -240,7 +242,9 @@ func _draw() -> void:
 	var active = active_route()
 	draw_rect(Rect2(Vector2.ZERO, size), BACKDROPS[map_state][1 if active >= 0 else 0])
 	if surface == null: return
-	surface.texture = TEXTURES[map_state]
+	if not texture_cache.has(map_state):
+		texture_cache[map_state] = load(PlatformAssetPaths.resolve(TEXTURES[map_state]))
+	surface.texture = texture_cache[map_state]
 	surface.position = map_rect().position
 	surface.size = map_rect().size
 	focus_material.set_shader_parameter("focused", active >= 0)

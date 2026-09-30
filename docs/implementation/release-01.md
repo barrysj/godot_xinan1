@@ -5,7 +5,7 @@
 - 功能 ID：RELEASE-01
 - 所属系统：发布
 - 当前状态：已验证
-- 最近验证：2026-09-30；在本地 `main` 的 `5939c80` 与 `codex/web-export-size` 的 `5526aab` 合并树上完成正式 Web 导出、浏览器、平台映射、桌面主菜单和战役回归，结果见 E58。
+- 最近验证：2026-09-30；`art/campus-map-web-merge`在本地`main e611d5b`的squash合并树完成三态全图平台映射、正式Web导出和桌面预览复测，结果见E59；浏览器全图与线上Pages仍待验。
 
 ## 玩家能力与接入范围
 
@@ -13,7 +13,7 @@ Web 构建与 Pages 自动发布配置。玩家价值：可分发入口。
 
 ## 实现与规则入口
 
-- 实现入口：[build-web.ps1](../../build-web.ps1)、[export_presets.cfg](../../export_presets.cfg)、[push-export.yml](../../.github/workflows/push-export.yml)、[平台素材适配层](../../game/visual/platform_asset_paths.gd)、[映射检查](../../tools/platform_asset_check.tscn)、[Web 背景生成器](../../tools/art/build_web_backgrounds.gd)、[主菜单映射](../../scenes/menu/menu.gd)、[校园地点映射](../../scenes/expedition/campus_location_skin.gd)、[基地](../../scenes/expedition/campaign_panel.gd)、[图书馆](../../scenes/expedition/exploration_skin.gd)、[记忆终端纹理加载](../../scenes/expedition/memory_terminal_view.gd)
+- 实现入口：[build-web.ps1](../../build-web.ps1)、[export_presets.cfg](../../export_presets.cfg)、[push-export.yml](../../.github/workflows/push-export.yml)、[平台素材适配层](../../game/visual/platform_asset_paths.gd)、[映射检查](../../tools/platform_asset_check.tscn)、[Web 背景生成器](../../tools/art/build_web_backgrounds.gd)、[主菜单映射](../../scenes/menu/menu.gd)、[校园地点映射](../../scenes/expedition/campus_location_skin.gd)、[三态全图映射](../../scenes/expedition/expanded_campus_map.gd)、[基地](../../scenes/expedition/campaign_panel.gd)、[图书馆](../../scenes/expedition/exploration_skin.gd)、[记忆终端纹理加载](../../scenes/expedition/memory_terminal_view.gd)
 - 规则事实源：[发布](../web-publishing.md)
 - 跨系统边界参见[集成约束](integration.md)；本文件不另存规则数值或美术审批记录。
 
@@ -21,11 +21,14 @@ Web 构建与 Pages 自动发布配置。玩家价值：可分发入口。
 
 - 已有证据：E18；Web 缩包与实际浏览器检查见 [E56](verification.md#web-缩包与资源完整性验证-e56)，背景衍生图检查见 [E57](verification.md#web-背景衍生图验证-e57)；平台路径适配见 [E58](verification.md#平台素材路径适配验证-e58)。
 - E18、E56、E57 为继承记录；E58 记录合并树复测。整站 255.8 MiB；平台映射 30/0、浏览器背景 30/0、战役 148/0、资源台单测 33 项通过，实际浏览器和桌面主菜单截图已保存。
+- E59记录全图Web三态接入：整站199.3 MiB，平台映射33/0、桌面地图202/0，PCK含3张Web全图且排除3张高清全图；资源台单测33项通过。尚无Web浏览器三态实际画面证据。
 - 程序通过不等于真人体验、目标设备或美术审批通过。
 
 ## 已知边界与未完成项
 
 本地 HTTP 入口通过；线上 Actions／Pages 未触发。Web 自动全战役检查为 124/0，但日志出现两条延迟焦点调用错误；原生终端专项 12 项有 3 项节点数量断言失败，均未作为本轮通过项。
+
+2026-09-30 待统筹：校园全图`asset_001`同时保留5400×4500原图和1800×1500 Web图。合并分支已按`main`平台路径适配层增加三态全图映射及双向导出排除规则；正式Web导出包体和三态画质仍须以本分支验证记录为准，不能把资源留存或路径检查直接等同于线上发布验收。
 
 ## 交接给统筹
 
@@ -37,4 +40,4 @@ Web 预设保留 `all_resources`，排除 `design/*` 及校园地点、主菜单
 
 ## 平台规格适配（待统筹）
 
-2026-09-30：运行时平台路径统一由 [platform_asset_paths.gd](../../game/visual/platform_asset_paths.gd) 选择，主菜单与校园地点只传原始路径；当前登记 Web 两组 1080p WebP，其余平台保持 4K PNG。Web 背景生成器也调用同一映射；各平台导出预设仍负责排除不需要的版本。此层只解决按平台选文件，不处理屏幕尺寸动态分档。同组新图现由生成器自动发现，并可用 `--check` 只读核验；全新图片组仍需扩展生成器、映射检查和导出筛选。Android 与 iOS 新规格须另备资产、配置导出预设并做设备验收。
+2026-09-30：运行时平台路径统一由 [platform_asset_paths.gd](../../game/visual/platform_asset_paths.gd) 选择，主菜单、校园地点和全图只传原始路径；当前登记 Web 两组 1080p WebP 及全图一组 1800×1500 PNG，其余平台保持原图。Web 背景生成器只生产前两组；全图使用已留存的三态低清图。各平台导出预设负责排除不需要的版本。此层只解决按平台选文件，不处理屏幕尺寸动态分档。Android 与 iOS 新规格须另备资产、配置导出预设并做设备验收。

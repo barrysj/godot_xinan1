@@ -539,6 +539,12 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 
 合入main前隔离squash树补测：保留main的新基地、奖励归属与重开存档，并将“探索”接到高清全图、将“路线预览”放入基地菜单。Godot导入退出0（既有GGT设置脚本警告）；战役无界面148／0、图形149／0，全图图形202／0，旧派遣`--run-smoke`通过，合并图形截图`.godot/campaign-map-select-1920x1080.png`已目视。编辑器核心6／0、资产管理33／0，AssetCatalog合并树32对象／667文件／0缺失／0不一致。未覆盖低显存设备与Web导出。
 
+## 校园全图低清配套图留存 E56
+
+2026-09-30；起点`cc9361c`，PowerShell 7／Blender 4.5.14。`asset_001/web/{day,night,anomaly}.png`从高清替换前`e700f4f`的同名文件逐字节恢复，Git对象哈希分别为`c926cbc3`、`54173f95`、`8fd85123`，每张1800×1500；三张共11,101,654字节。`verify_bundle.py`重开三份Blend确认无外链、源场景仍为1800×1500，高清图5400×4500与正式运行图逐字节相同，新增低清图尺寸与三态互异断言PASS。AssetCatalog扫描10对象／158文件／0缺失／0不一致；Manifest记录低清三态但不提升审批状态。
+
+本轮只增加留存文件、Manifest和说明，未修改游戏运行纹理、布局、相机或Web导出脚本；依美术工作流的纯资源／配置整理规则，不重复运行截图。Web发布仍需实现平台纹理切换并验证包体与画质，不能将源图留存视为已经完成Web优化。低清图置于带`.gdignore`的design目录，不因留存而自动打入现有导出包；对发布流程的影响待统筹。
+
 ## 素材收尾与最新三态归档 E52
 
 2026-09-28；基线`3d16ad3`，PowerShell7／Blender4.5.14。项目美术技能、WORKFLOW、AGENTS、任务模板和tmp忽略规则同步；本轮不改变运行画面，依纯目录／规范整理规则不重跑截图。
@@ -587,3 +593,11 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - 2026-09-30 在 `9590986` 基线上复测：`build_web_backgrounds.gd -- --check` 报告 `WEB_BACKGROUNDS_CHECK count=30 sources=514775538 bytes derivatives=11356338 bytes`，未写入衍生图；`platform_asset_check.tscn` 为 30/0；原生主菜单六图与轮播通过并实际截图。此项移除新图数量硬编码，尚未用新增图片样本、全新图片组或 Android 导出验证。脚本模式结束时旧 GGT 自动加载项仍报告空场景属性错误，检查成功标记与退出码为 0。
 - `py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v`：33 项通过，Manifest 映射字段未破坏资源台读取。已验证按平台选择，不代表已验证 Android／iOS 新规格、不同浏览器视口的质量或线上 Pages 发布。Web 衍生图的视觉效果仍待负责人人工评审。
 - 合入本地 `main` 复测（基线 `5939c80` + `5526aab`）：`pwsh.exe -File ./build-web.ps1` 导出整站 255.8 MiB，低于 900 MB 门槛；`platform_asset_check.tscn` 为 30/0；资源台单测 33 项通过。隔离并恢复旧 `.godot/campaign-flow-profile.json` 后，`expedition.tscn -- --campaign-flow-check --order=012` 为 148/0；`menu_runtime_check.tscn -- --test-size=1920x1080` 六图轮播通过并保存实际截图。浏览器打开正式 `/web/` 显示主菜单；临时 HTML 检查页报告 `WEB_BACKGROUND_CHECK checked=30 failures=0`，无浏览器错误，检查页已删除。实际 Web 截图为 `.godot/main-merged-web-menu.png`；未执行线上 Pages 部署。
+
+## 校园全图 Web 三态集成 E59
+
+2026-09-30；隔离分支`art/campus-map-web-merge`，基线`main`的`e611d5b`加低清留存提交`27a2d87`；PowerShell 7／Godot 4.7.2标准版。`asset_001/web/`三张1800×1500 PNG逐字节复制到正式`assets/art/web_campus_map/expanded_neutral/`；三份Godot导入元数据均开启mipmap。平台路径适配层只在Web选择低清图，桌面等平台继续使用5400×4500原图；Web预设排除高清全图，非Web预设排除Web专用图。
+
+- Godot无头导入退出0；`res://tools/platform_asset_check.tscn`为33／0，覆盖三张新增映射、文件存在、非Web回退。图形`res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`为202／0，桌面实际日／夜／异常截图保存在`.godot/expanded-map-unselected-{day,night,anomaly}-1920x1080.png`，日间图已在对话展示。
+- `pwsh.exe -File ./build-web.ps1 -Godot <Godot 4.7.2标准版>`正式构建成功，整站199.3 MiB，PCK 169,134,436字节；PCK路径检查有3张Web全图、0张高清全图。三张正式Web源图与`asset_001/web`对应文件SHA256相同。
+- 资源台单测33项通过；AssetCatalog扫描33对象、错误0，`asset_001`及`web_expanded_preview_001`均matched；`git diff --check`通过。Web实际浏览器三态切换、手机画质／显存及线上Pages尚未验收；衍生图视觉批准仍为review，不能由构建成功推定获批。随后在本地`main`按squash合入，复测导入退出0、映射33／0、桌面地图202／0、资源台33项通过，Web整站199.3 MiB且PCK含3张Web全图／0张高清全图；未推送。

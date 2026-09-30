@@ -30,6 +30,10 @@ for state in ('day', 'night', 'anomaly'):
     assert struct.unpack('>II', source[16:24]) == (5400, 4500), state
     runtime = project / 'assets/art/campus_map/expanded_neutral' / f'{state}.png'
     assert source == runtime.read_bytes(), state
-    report[state] = dict(objects=len(bpy.data.objects), sha256=hashlib.sha256(source).hexdigest())
+    web = (bundle / 'web' / f'{state}.png').read_bytes()
+    assert web[:8] == b'\x89PNG\r\n\x1a\n', state
+    assert struct.unpack('>II', web[16:24]) == (1800, 1500), state
+    report[state] = dict(objects=len(bpy.data.objects), sha256=hashlib.sha256(source).hexdigest(), web_sha256=hashlib.sha256(web).hexdigest())
 assert len({entry['sha256'] for entry in report.values()}) == 3
+assert len({entry['web_sha256'] for entry in report.values()}) == 3
 print('CAMPUS_BUNDLE_PASS', json.dumps(report))

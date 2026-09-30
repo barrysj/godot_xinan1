@@ -17,7 +17,7 @@
 - CI 从 Godot 官方发布下载引擎与模板并验证 SHA-512，只安装 Web 单线程模板，随后缓存。
 - 使用 Compatibility 渲染器、单线程 Web 导出、默认相对资源路径；PWA 未启用。
 - 中文字体随游戏打包：Google Fonts Noto Sans SC，许可证见 `assets/fonts/OFL.txt`。
-- Web 预设保持全部正式运行资源，但排除 `design/*` 概念与评审资料，以及校园地点和主菜单的原始 4K PNG；Web 使用独立的 1920×1080 WebP 衍生图，非 Web 导出仍使用原图，并排除 Web 衍生图。`assets/art/holo_cards` 必须保留，供图鉴动态发现。基地、图书馆和记忆终端使用导入纹理，不依赖导出包中的原 PNG 字节。
+- Web 预设保持全部正式运行资源，但排除 `design/*` 概念与评审资料、校园地点和主菜单的原始 4K PNG，以及全图的原始 5400×4500 PNG；Web 使用两组 1920×1080 WebP 背景与一组三态 1800×1500 PNG 全图。非 Web 导出使用原图并排除 Web 衍生图。`assets/art/holo_cards` 必须保留，供图鉴动态发现。基地、图书馆和记忆终端使用导入纹理，不依赖导出包中的原 PNG 字节。
 - 本地构建和 Actions 上传前均检查整站体积，达到 900 MB 就失败，以留出 Pages 1 GB 限额余量。
 - 上传 `builds/web` 为官方 Pages artifact，再通过 `actions/deploy-pages` 发布。
 - `builds` 和 `.godot` 不提交。首次 CI 下载完整模板较大，后续命中缓存会更快。
@@ -28,9 +28,9 @@
 
 界面只传正式原图路径给 [平台路径适配层](../game/visual/platform_asset_paths.gd) 的 `resolve(source_path)`。适配层先以 `OS.has_feature("web")` 识别 Web，否则使用 `OS.get_name().to_lower()`；再查 `VARIANTS[platform]`，仅对同时匹配源目录前缀和扩展名的文件替换目录与扩展名。没有匹配规则便返回原路径。`for_platform(source_path, platform)` 是同一套规则的显式平台入口，供生成器与检查工具调用。
 
-例如 `res://assets/art/backgrounds/m1_main_menu/normal/library.png` 在 Web 映射为 `res://assets/art/web_backgrounds/m1_main_menu/normal/library.webp`，在 Windows、Linux、macOS、Android 上仍为原 PNG。目前仅登记校园地点和主菜单两组 Web 变体。此层按**导出平台**选文件，不根据设备屏幕或浏览器窗口大小动态切换档位。
+例如 `res://assets/art/backgrounds/m1_main_menu/normal/library.png` 在 Web 映射为 `res://assets/art/web_backgrounds/m1_main_menu/normal/library.webp`；三态全图 `res://assets/art/campus_map/expanded_neutral/day.png` 映射为 `res://assets/art/web_campus_map/expanded_neutral/day.png`。Windows、Linux、macOS、Android 仍用各自原图。目前登记校园地点、主菜单和全图三组 Web 变体。此层按**导出平台**选文件，不根据设备屏幕或浏览器窗口大小动态切换档位。
 
-[Web 背景生成器](../tools/art/build_web_backgrounds.gd) 以 3840×2160 PNG 制作 1920×1080 WebP（Lanczos、品质 0.85）。场景中的 `load()` 读取 Godot 导入后的纹理；[导出预设](../export_presets.cfg)另行排除 Web 包里的两组原图，以及非 Web 包里的 WebP。映射表不自动修改导出预设，漏配衍生图会使该平台加载失败，不会安全回退到已被排除的原图。
+[Web 背景生成器](../tools/art/build_web_backgrounds.gd) 以 3840×2160 PNG 制作 1920×1080 WebP（Lanczos、品质 0.85）。全图三态使用 `asset_001/web` 留存的 1800×1500 PNG，逐字节复制到正式 Web 目录，独立于该 WebP 生成器。场景中的 `load()` 读取 Godot 导入后的纹理；[导出预设](../export_presets.cfg)另行排除 Web 包里的三组原图，以及非 Web 包里的衍生图。映射表不自动修改导出预设，漏配衍生图会使该平台加载失败，不会安全回退到已被排除的原图。
 
 美术 [Manifest](../assets/art/asset_manifest.yaml) 管理版本、实际文件及人工批准；运行时不解析 YAML。衍生图的技术生成、原图批准和衍生视觉评审是不同状态，新增或改变衍生图后按[美术工作流](art/WORKFLOW.md)记录，不能由检查通过推定获批。
 
@@ -43,7 +43,7 @@
 | Android 等平台另用规格 | 准备该平台的衍生文件，在 `VARIANTS` 增加平台规则，并配置对应导出预设与目标设备验证 | 目前没有 Android 专用衍生图；仍用原 PNG |
 | 图片不需要多平台版本 | 直接按现有正式资源路径加载 | 不必登记映射 |
 
-现有两组的新图不用改“30”这样的数量常量：生成器会扫描校园地点目录下的 `daily.png`／`anomaly.png`，以及菜单 `normal`／`anomaly` 目录下的 PNG。校园每个地点须有两种状态；主菜单实际播放列表仍在 [menu.gd](../scenes/menu/menu.gd)，地点列表仍在 [campus_location_skin.gd](../scenes/expedition/campus_location_skin.gd)。新增全新图片组时，不能只加映射规则：生成器、检查工具和导出筛选也须覆盖它。
+原有两组的新图不用改“30”这样的数量常量：生成器会扫描校园地点目录下的 `daily.png`／`anomaly.png`，以及菜单 `normal`／`anomaly` 目录下的 PNG。校园每个地点须有两种状态；主菜单实际播放列表仍在 [menu.gd](../scenes/menu/menu.gd)，地点列表仍在 [campus_location_skin.gd](../scenes/expedition/campus_location_skin.gd)。全图三态由 [expanded_campus_map.gd](../scenes/expedition/expanded_campus_map.gd) 固定列出。新增全新图片组时，不能只加映射规则：来源、检查工具和导出筛选也须覆盖它。
 
 ### 生成与验收
 
