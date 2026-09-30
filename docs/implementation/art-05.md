@@ -5,6 +5,10 @@
 
 ## 当前状态
 
+- 2026-10-01 敌人清单分层（待统筹）：主 Manifest 对敌人只登记 `enemy: manifests/enemy.yaml`，18 个敌人／弹体对象清单归入 `assets/art/manifests/enemy/`；概念目录统一归入 `design/concepts/enemy/`。资源台递归读取子索引，新增“敌人”集合筛选，保持对象 ID、审批与接入状态不变；Godot 候选资源引用同步迁移。验证见本档案最新验证段，正式运行资产路径不变。
+
+  验证（基线 `93d9c3c`）：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`，36 项通过；`node --check tools/art/asset_manager/static/app.js` 与 `git diff --check` 通过。全库扫描 49 对象／735 文件，18 个敌人集合对象，0 缺失、0 不一致、0 索引错误；实际浏览器截图 `.godot/art-manager-enemy-hierarchy-20261001.png`，本地缓存不入库。Godot 运行 `scenes/battle_demo/hybrid_contract_check.tscn`，`failures=0`。已知边界：`design/.gdignore` 排除概念目录，资源台会禁用这些候选 `.tres` 的 Godot 直启，保留 GIF；正式运行包和契约检查使用可导入的正式资源。
+
 - 2026-09-28 二次收尾（待统筹）：用户明确授权asset_031重编号asset_001、删除001～053全部目录及手工副本；地图Manifest新增reference_topoexport／reference_images登记原始参考，旧运行源图迁移后更新登记。资产库协议和界面不变；参考stage为reference，不伪造approved状态。基线0144849，验证E53；下方E52为前一轮历史记录。
 
 - 2026-09-28 美术留存流程整理（待统筹）：美术微调不逐次提交或登记正式Manifest；阶段末询问留存、按tmp／concept／asset三位编号收尾，一次验证提交；美术合入main只用授权的squash。项目技能、WORKFLOW、AGENTS及任务模板同步。地图对象清单精简为有效证据和运行依赖；最新三态源文件同属asset_031，仍review。不改主Manifest协议、浏览器代码或其他对象。基线`3d16ad3`，验证与已知边界见E52。

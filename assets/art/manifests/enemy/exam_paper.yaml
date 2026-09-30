@@ -1,0 +1,33 @@
+schema_version: 3
+object:
+  id: exam_paper
+  display_name: "错题试卷"
+  type: character
+  subtype: enemy
+variants:
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-25"
+      decision: approved
+      quote: "03 05 也通过"
+    root: design/concepts/enemy/exam-paper/concept_002
+    files:
+      concept: exam_paper_action_concept_002.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      resolution: [1774, 887]
+      transparent: false
+      usage: [concept_review, action_design]
+      style_layer: battle
+      poses: [idle, anticipation, release]
+      intended_facing: screen_right
+      review_note: "卷袖蓄力、甩纸出手明确；卷面小字与碎页密度需简化。"
+integration:
+  status: not_integrated
+  active_variant: null

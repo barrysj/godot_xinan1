@@ -1,7 +1,7 @@
 """Manifest-driven catalog for the Cyber Pop Campus art desk.
 
-The main manifest is the only discovery input. Object roots make file entries
-short; file types and Godot references are derived from the registered files.
+The main manifest is the only discovery input. Its entries may point to
+collection manifests, whose paths are relative to their own location.
 """
 
 from __future__ import unicode_literals
@@ -285,6 +285,11 @@ def _preview_target_info(config, project_root):
         path = _uri_path(project_root, uri)
         if path is None or not path.is_file():
             return False, "%s资源缺失：%s" % (label, uri), None
+        for parent in (path.parent,) + tuple(path.parents):
+            if not _inside(parent, project_root):
+                break
+            if (parent / ".gdignore").is_file():
+                return False, "%s位于 Godot 忽略目录；请使用 GIF 或正式资产预览" % label, None
     if animation:
         info = godot_resource_info(_uri_path(project_root, animation), project_root)
         if info["resource_type"] != "BattleAnimationSet":
@@ -332,28 +337,49 @@ class AssetCatalog(object):
         main_path = self._manifest_path(raw_manifest)
         if main_path is None or not main_path.is_file():
             return None, [], [{"path": str(raw_manifest or self.default_manifest), "message": "Manifest 不存在或越出当前项目"}]
-        main = parse_simple_yaml(main_path)
-        if main.get("schema_version") != 3:
-            return main_path, [], [{"path": str(main_path), "message": "仅支持 Manifest schema_version 3"}]
-        loaded, errors = [], []
-        for object_id, raw_path in (main.get("objects", {}) or {}).items():
-            if isinstance(raw_path, dict):
-                cards, problems = self._load_holo_cards(object_id, raw_path, main_path)
-                loaded.extend(cards)
-                errors.extend(problems)
-                continue
-            path = _registered_path(self.project_root, raw_path, main_path.parent)
-            if path is None or not path.is_file():
-                errors.append({"path": str(raw_path), "message": "对象 Manifest 不存在或越出当前项目"})
-                continue
-            data = parse_simple_yaml(path)
+        loaded, errors, seen_ids = [], [], set()
+
+        def visit(index_path, collection, ancestors):
+            if index_path in ancestors:
+                errors.append({"path": str(index_path), "message": "集合 Manifest 存在循环引用"})
+                return
+            data = parse_simple_yaml(index_path)
             if data.get("schema_version") != 3:
-                errors.append({"path": str(path), "message": "对象 Manifest 不是 schema_version 3"})
-                continue
-            if (data.get("object", {}) or {}).get("id") != object_id:
-                errors.append({"path": str(path), "message": "对象 ID 与主 Manifest 不一致"})
-                continue
-            loaded.append((object_id, path, data))
+                errors.append({"path": str(index_path), "message": "仅支持 Manifest schema_version 3"})
+                return
+            entries = data.get("objects")
+            if not isinstance(entries, dict):
+                errors.append({"path": str(index_path), "message": "集合 Manifest 缺少 objects 映射"})
+                return
+            for object_id, raw_path in entries.items():
+                if isinstance(raw_path, dict):
+                    cards, problems = self._load_holo_cards(object_id, raw_path, index_path)
+                    errors.extend(problems)
+                    for card_id, card_path, card_data in cards:
+                        if card_id in seen_ids:
+                            errors.append({"path": str(card_path), "message": "重复对象 ID：" + card_id})
+                        else:
+                            seen_ids.add(card_id)
+                            loaded.append((card_id, card_path, card_data, collection))
+                    continue
+                path = _registered_path(self.project_root, raw_path, index_path.parent)
+                if path is None or not path.is_file():
+                    errors.append({"path": str(raw_path), "message": "对象 Manifest 不存在或越出当前项目"})
+                    continue
+                child = parse_simple_yaml(path)
+                if child.get("schema_version") != 3:
+                    errors.append({"path": str(path), "message": "对象 Manifest 不是 schema_version 3"})
+                elif "objects" in child and "object" not in child:
+                    visit(path, collection + (object_id,), ancestors + (index_path,))
+                elif (child.get("object", {}) or {}).get("id") != object_id:
+                    errors.append({"path": str(path), "message": "对象 ID 与索引 Manifest 不一致"})
+                elif object_id in seen_ids:
+                    errors.append({"path": str(path), "message": "重复对象 ID：" + object_id})
+                else:
+                    seen_ids.add(object_id)
+                    loaded.append((object_id, path, child, collection))
+
+        visit(main_path, (), ())
         return main_path, loaded, errors
 
     def _load_holo_cards(self, collection_id, config, main_path):
@@ -452,7 +478,7 @@ class AssetCatalog(object):
         self.files, self.preview_items = {}, {}
         main_path, loaded, errors = self._load_objects(raw_manifest)
         result_objects = []
-        for object_id, manifest_path, data in loaded:
+        for object_id, manifest_path, data, collection in loaded:
             identity = data.get("object", {}) or {}
             variants, all_assets, variant_lookups, warnings = [], [], {}, []
             for variant_id, raw_variant in (data.get("variants", {}) or {}).items():
@@ -589,7 +615,7 @@ class AssetCatalog(object):
                 "id": object_id, "name": identity.get("display_name") or object_id,
                 "type": identity.get("type") or "unknown", "subtype": identity.get("subtype"),
                 "category": TYPE_CATEGORIES.get(str(identity.get("type") or ""), "未归类"),
-                "manifest_path": str(manifest_path), "variants": variants, "assets": all_assets,
+                "manifest_path": str(manifest_path), "collection": list(collection), "variants": variants, "assets": all_assets,
                 "holo_card": data.get("holo_card"),
                 "thumbnail_id": None, "relationships": relationships,
                 "integration": {"declared_status": declared, "verified_status": verified, "active_variant": active_variant or None, "owner_resource": owners[0] if owners else None, "owners": owners, "resource": resource, "evidence": raw_integration.get("evidence"), "effective_files": effective_files, "bindings": checks},

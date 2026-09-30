@@ -1,0 +1,29 @@
+schema_version: 3
+object:
+  id: keycap_brawler
+  display_name: "键帽拳灵"
+  type: character
+  subtype: enemy
+variants:
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-25"
+      decision: approved
+      quote: "这几个都概念通过"
+    root: design/concepts/enemy/keycap-brawler/concept_002
+    files:
+      concept: keycap_brawler_action_concept_002.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+      review_note: "双键拳面统一，蓄力与出拳对应关系更明确；击打面透视和按键下压深度仍需正式动作稿细化。"
+integration:
+  status: not_integrated
+  active_variant: null

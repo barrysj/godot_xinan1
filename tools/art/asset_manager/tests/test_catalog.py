@@ -183,6 +183,32 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual("动画资源", resource["kind_label"])
         self.assertFalse(any("stray.png" in item["path"] for item in obj["assets"]))
 
+    def test_nested_collections_resolve_relative_paths_and_keep_object_identity(self):
+        self.fixture.character_manifest()
+        self.fixture.projectile_manifest()
+        self.fixture.text("assets/art/asset_manifest.yaml", "schema_version: 3\nobjects:\n  enemy: manifests/enemy.yaml\n")
+        self.fixture.text("assets/art/manifests/enemy.yaml", "schema_version: 3\nobjects:\n  chalk: chalk.yaml\n  effects: enemy/effects.yaml\n")
+        self.fixture.text("assets/art/manifests/enemy/effects.yaml", "schema_version: 3\nobjects:\n  chalk_projectile: ../chalk_projectile.yaml\n")
+        result = self.scan()
+        self.assertEqual([], result["errors"])
+        self.assertEqual({"chalk", "chalk_projectile"}, {obj["id"] for obj in result["objects"]})
+        chalk = next(obj for obj in result["objects"] if obj["id"] == "chalk")
+        self.assertEqual(["enemy"], chalk["collection"])
+        self.assertEqual("matched", chalk["relationships"][0]["status"])
+        projectile = next(obj for obj in result["objects"] if obj["id"] == "chalk_projectile")
+        self.assertEqual(["enemy", "effects"], projectile["collection"])
+
+    def test_nested_collections_report_cycle_duplicate_and_escaping_path(self):
+        self.fixture.character_manifest()
+        self.fixture.text("assets/art/asset_manifest.yaml", "schema_version: 3\nobjects:\n  enemy: manifests/enemy.yaml\n  chalk: manifests/chalk.yaml\n")
+        self.fixture.text("assets/art/manifests/enemy.yaml", "schema_version: 3\nobjects:\n  back: ../asset_manifest.yaml\n  chalk: chalk.yaml\n  escape: ../../../../outside.yaml\n")
+        result = self.scan()
+        self.assertEqual(1, len(result["objects"]))
+        messages = [error["message"] for error in result["errors"]]
+        self.assertTrue(any("循环引用" in message for message in messages))
+        self.assertTrue(any("重复对象 ID" in message for message in messages))
+        self.assertTrue(any("越出当前项目" in message for message in messages))
+
     def test_relationship_resolves_target_thumbnail_and_navigation_identity(self):
         self.fixture.character_manifest(); self.fixture.projectile_manifest(); self.fixture.install_index(["chalk", "chalk_projectile"])
         result = self.scan(); chalk = next(item for item in result["objects"] if item["id"] == "chalk")
@@ -218,6 +244,16 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual("unselected", variant["selection"])
         self.assertEqual("review", variant["approval"])
         self.assertEqual("not_integrated", obj["integration"]["verified_status"])
+
+    def test_godot_preview_is_disabled_when_candidate_is_in_gdignore(self):
+        self.fixture.character_manifest()
+        self.fixture.install_index(["chalk"])
+        self.fixture.text("design/.gdignore", "# concepts are not imported\n")
+        obj = self.scan()["objects"][0]
+        asset = next(variant for variant in obj["variants"] if variant["id"] == "asset_002")
+        preview = next(item for item in asset["previews"] if item["type"] == "godot")
+        self.assertFalse(preview["supported"])
+        self.assertIn("Godot 忽略目录", preview["reason"])
 
     def test_variant_validation_is_missing_when_a_registered_file_is_missing(self):
         paths = self.fixture.character_manifest(); self.fixture.install_index(["chalk"]); paths["sheet"].unlink()

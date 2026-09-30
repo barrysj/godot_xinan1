@@ -57,11 +57,15 @@ function countLabel(object) {
   return bits;
 }
 
+function matchesFilter(object, filter) {
+  return filter === "全部" || (filter === "敌人" ? object.collection.includes("enemy") : object.category === filter);
+}
+
 function renderFilters() {
-  const categories = ["全部", "场景", "人物", "UI", "闪卡", "特效", "未归类"];
+  const categories = ["全部", "敌人", "场景", "人物", "UI", "闪卡", "特效", "未归类"];
   filters.replaceChildren();
   categories.forEach(category => {
-    const count = category === "全部" ? state.objects.length : state.objects.filter(item => item.category === category).length;
+    const count = state.objects.filter(item => matchesFilter(item, category)).length;
     const button = document.createElement("button");
     button.className = `filter${state.filter === category ? " active" : ""}`;
     button.textContent = category;
@@ -72,7 +76,7 @@ function renderFilters() {
 }
 
 function renderGrid() {
-  const visible = state.filter === "全部" ? state.objects : state.objects.filter(item => item.category === state.filter);
+  const visible = state.objects.filter(item => matchesFilter(item, state.filter));
   grid.replaceChildren(); empty.hidden = visible.length > 0;
   if (!visible.length) {
     empty.querySelector("h3").textContent = state.objects.length ? "这个分类还是空的" : "Manifest 没有对象";

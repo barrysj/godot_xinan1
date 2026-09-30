@@ -1,7 +1,6 @@
 extends Node
-## Baseline contract: load the candidate directly, independently of its production binding.
+## Baseline contract: use the imported production package; design/ is .gdignore.
 const Animator = preload("res://scenes/battle_demo/battle_animation.gd")
-const Candidate = preload("res://design/concepts/chalk-spirit/chalk-spirit/006/battle_animation.tres")
 const Chalk = preload("res://resources/content/enemies/chalk.tres")
 var failures := 0
 
@@ -12,7 +11,7 @@ func check(ok: bool, label: String) -> void:
 
 func _ready() -> void:
 	_check_shared_controller()
-	for config in [Candidate, Chalk.battle_animation]:
+	for config in [Chalk.battle_animation]:
 		_check_animation_budget(config.animation_library)
 		var rig: Node2D = config.presentation_scene.instantiate()
 		add_child(rig)

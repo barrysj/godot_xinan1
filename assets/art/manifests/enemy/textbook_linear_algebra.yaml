@@ -1,0 +1,28 @@
+schema_version: 3
+object:
+  id: textbook_linear_algebra
+  display_name: "线性代数"
+  type: character
+  subtype: enemy
+variants:
+  concept_001:
+    stage: concept
+    version: "001"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-30"
+      decision: approved
+      quote: "4本书的概念也通过"
+    root: design/concepts/enemy/textbook-linear-algebra/concept_001
+    files:
+      concept: textbook_linear_algebra_action_concept_001.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+integration:
+  status: not_integrated
+  active_variant: null

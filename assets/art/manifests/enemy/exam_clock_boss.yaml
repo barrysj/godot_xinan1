@@ -1,0 +1,29 @@
+schema_version: 3
+object:
+  id: exam_clock_boss
+  display_name: "监考钟灵"
+  type: character
+  subtype: boss
+variants:
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-25"
+      decision: approved
+      quote: "这几个都概念通过"
+    root: design/concepts/enemy/exam-clock-boss/concept_002
+    files:
+      concept: exam_clock_boss_action_concept_002.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+      review_note: "去除腿脚和下摆钟摆，保留钟面、双铃和长短针刃；挥砍可读。"
+integration:
+  status: not_integrated
+  active_variant: null

@@ -1,0 +1,20 @@
+schema_version: 3
+objects:
+  basketball_bouncer: enemy/basketball_bouncer.yaml
+  shuttlecock_diver: enemy/shuttlecock_diver.yaml
+  meal_tray_guard: enemy/meal_tray_guard.yaml
+  textbook_architecture: enemy/textbook_architecture.yaml
+  textbook_linear_algebra: enemy/textbook_linear_algebra.yaml
+  textbook_security_math: enemy/textbook_security_math.yaml
+  textbook_compilers: enemy/textbook_compilers.yaml
+  cyber_librarian: enemy/cyber_librarian.yaml
+  return_stamp: enemy/return_stamp.yaml
+  great_volume_boss: enemy/great_volume_boss.yaml
+  keycap_brawler: enemy/keycap_brawler.yaml
+  exam_clock_boss: enemy/exam_clock_boss.yaml
+  chalk_spirit: enemy/chalk_spirit.yaml
+  chalk_projectile: enemy/chalk_projectile.yaml
+  computer_terminal: enemy/computer_terminal.yaml
+  exam_paper: enemy/exam_paper.yaml
+  projector: enemy/projector.yaml
+  radio: enemy/radio.yaml

@@ -27,7 +27,7 @@ Constraints: a single isolated projectile; no character; no hands; no muzzle; no
 
 ## 确定性处理
 
-`design/concepts/chalk-spirit/chalk-projectile/001/build_projectile.py` 读取同候选目录的 `projectile_source_rgba.png`，将 alpha 小于 8 的生成噪点清零，按非透明包围盒裁切，再保持原横纵比缩放到 192×96 透明画布。有效内容为 164×64，运行显示尺寸为 32×16；脚本同时重建候选 `.tres`、元数据和静态尺寸预览。
+`design/concepts/enemy/chalk-projectile/001/build_projectile.py` 读取同候选目录的 `projectile_source_rgba.png`，将 alpha 小于 8 的生成噪点清零，按非透明包围盒裁切，再保持原横纵比缩放到 192×96 透明画布。有效内容为 164×64，运行显示尺寸为 32×16；脚本同时重建候选 `.tres`、元数据和静态尺寸预览。
 
 - 原始图：1254×1254 RGBA；有效包围盒 `[370, 518, 898, 724]`。
 - 原始 SHA-256：`d279a2797bd9271f70fe3d5b82c0cb0a62f456b5ad1d360fd9c7db25cc316046`。
@@ -39,6 +39,6 @@ Constraints: a single isolated projectile; no character; no hands; no muzzle; no
 
 - 单体与实际尺寸：[projectile-preview.png](review/projectile-preview.png)。
 - 真实战斗渲染：[远程 1920×1080](review/motion-preview-3-1920x1080.png)、[2560×1440](review/motion-preview-3-2560x1440.png)、[1920×1200](review/motion-preview-3-1920x1200.png)。
-- 预览命令：`pwsh.exe -File ./run-motion-preview.ps1 -Unit 'res://resources/content/enemies/chalk.tres' -Animation 'res://design/concepts/chalk-spirit/chalk-spirit/005/battle_animation.tres' -Projectile 'res://design/concepts/chalk-spirit/chalk-projectile/001/chalk_projectile.tres'`。
+- 预览命令：`pwsh.exe -File ./run-motion-preview.ps1 -Unit 'res://resources/content/enemies/chalk.tres' -Animation 'res://design/concepts/enemy/chalk-spirit/005/battle_animation.tres' -Projectile 'res://design/concepts/enemy/chalk-projectile/001/chalk_projectile.tres'`。
 
 资产已获批准；接入后的实际战斗效果仍需负责人按运行截图单独验收。

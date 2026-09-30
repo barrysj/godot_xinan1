@@ -1,6 +1,6 @@
 {
   "version": "001",
-  "source": "design/concepts/chalk-spirit/chalk-projectile/001/projectile_source_rgba.png",
+  "source": "design/concepts/enemy/chalk-projectile/001/projectile_source_rgba.png",
   "output": "assets/art/effects/chalk_projectile/projectile.png",
   "source_size": [
     1254,

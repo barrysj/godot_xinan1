@@ -1,0 +1,29 @@
+schema_version: 3
+object:
+  id: radio
+  display_name: "广播中继"
+  type: character
+  subtype: enemy
+variants:
+  concept_003:
+    stage: concept
+    version: "003"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-25"
+      decision: approved
+      quote: "这几个都概念通过"
+    root: design/concepts/enemy/radio/concept_003
+    files:
+      concept: radio_action_concept_003.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+      review_note: "非类人悬浮广播设备，展开挡板、调频、增幅明确；受益机械体仅技能对象占位，不登记为新敌人。"
+integration:
+  status: not_integrated
+  active_variant: null

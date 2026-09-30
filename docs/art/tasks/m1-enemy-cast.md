@@ -9,22 +9,22 @@
 
 | 已批准概念 | 留存版本 | 概念图 |
 | --- | --- | --- |
-| 机械弹跳篮球 | concept_002 | [查看图](../../../design/concepts/m1-enemy-cast/basketball-bouncer/concept_002/basketball_bouncer_action_concept_002.png) |
-| 羽片发射器 | concept_002 | [查看图](../../../design/concepts/m1-enemy-cast/shuttlecock-diver/concept_002/shuttlecock_diver_action_concept_002.png) |
-| 餐具协同怪 | concept_003 | [查看图](../../../design/concepts/m1-enemy-cast/meal-tray-guard/concept_003/meal_tray_guard_action_concept_003.png) |
-| 《计算机组成原理》 | concept_001 | [查看图](../../../design/concepts/m1-enemy-cast/textbook-architecture/concept_001/textbook_architecture_action_concept_001.png) |
-| 《线性代数》 | concept_001 | [查看图](../../../design/concepts/m1-enemy-cast/textbook-linear-algebra/concept_001/textbook_linear_algebra_action_concept_001.png) |
-| 《信息安全数学》 | concept_001 | [查看图](../../../design/concepts/m1-enemy-cast/textbook-security-math/concept_001/textbook_security_math_action_concept_001.png) |
-| 《编译原理》 | concept_001 | [查看图](../../../design/concepts/m1-enemy-cast/textbook-compilers/concept_001/textbook_compilers_action_concept_001.png) |
-| 图书管理员（Boss） | concept_003 | [查看图](../../../design/concepts/m1-enemy-cast/cyber-librarian/concept_003/cyber_librarian_action_concept_003.png) |
-| 馆藏巨典 | concept_004 | [查看图](../../../design/concepts/m1-enemy-cast/great-volume-boss/concept_004/great_volume_boss_action_concept_004.png) |
-| 键帽拳灵 | concept_002 | [查看图](../../../design/concepts/m1-enemy-cast/keycap-brawler/concept_002/keycap_brawler_action_concept_002.png) |
-| 投影独眼灵 | concept_003 | [查看图](../../../design/concepts/m1-enemy-cast/projector/concept_003/projector_action_concept_003.png) |
-| 归还印章怪 | concept_002 | [查看图](../../../design/concepts/m1-enemy-cast/return-stamp/concept_002/return_stamp_action_concept_002.png) |
-| 监考钟灵（Boss） | concept_002 | [查看图](../../../design/concepts/m1-enemy-cast/exam-clock-boss/concept_002/exam_clock_boss_action_concept_002.png) |
-| 广播中继 | concept_003 | [查看图](../../../design/concepts/m1-enemy-cast/radio/concept_003/radio_action_concept_003.png) |
-| 试卷怨灵 | concept_002 | [查看图](../../../design/concepts/m1-enemy-cast/exam-paper/concept_002/exam_paper_action_concept_002.png) |
-| 光标术士 | concept_003 | [查看图](../../../design/concepts/m1-enemy-cast/computer-terminal/concept_003/computer_terminal_action_concept_003.png) |
+| 机械弹跳篮球 | concept_002 | [查看图](../../../design/concepts/enemy/basketball-bouncer/concept_002/basketball_bouncer_action_concept_002.png) |
+| 羽片发射器 | concept_002 | [查看图](../../../design/concepts/enemy/shuttlecock-diver/concept_002/shuttlecock_diver_action_concept_002.png) |
+| 餐具协同怪 | concept_003 | [查看图](../../../design/concepts/enemy/meal-tray-guard/concept_003/meal_tray_guard_action_concept_003.png) |
+| 《计算机组成原理》 | concept_001 | [查看图](../../../design/concepts/enemy/textbook-architecture/concept_001/textbook_architecture_action_concept_001.png) |
+| 《线性代数》 | concept_001 | [查看图](../../../design/concepts/enemy/textbook-linear-algebra/concept_001/textbook_linear_algebra_action_concept_001.png) |
+| 《信息安全数学》 | concept_001 | [查看图](../../../design/concepts/enemy/textbook-security-math/concept_001/textbook_security_math_action_concept_001.png) |
+| 《编译原理》 | concept_001 | [查看图](../../../design/concepts/enemy/textbook-compilers/concept_001/textbook_compilers_action_concept_001.png) |
+| 图书管理员（Boss） | concept_003 | [查看图](../../../design/concepts/enemy/cyber-librarian/concept_003/cyber_librarian_action_concept_003.png) |
+| 馆藏巨典 | concept_004 | [查看图](../../../design/concepts/enemy/great-volume-boss/concept_004/great_volume_boss_action_concept_004.png) |
+| 键帽拳灵 | concept_002 | [查看图](../../../design/concepts/enemy/keycap-brawler/concept_002/keycap_brawler_action_concept_002.png) |
+| 投影独眼灵 | concept_003 | [查看图](../../../design/concepts/enemy/projector/concept_003/projector_action_concept_003.png) |
+| 归还印章怪 | concept_002 | [查看图](../../../design/concepts/enemy/return-stamp/concept_002/return_stamp_action_concept_002.png) |
+| 监考钟灵（Boss） | concept_002 | [查看图](../../../design/concepts/enemy/exam-clock-boss/concept_002/exam_clock_boss_action_concept_002.png) |
+| 广播中继 | concept_003 | [查看图](../../../design/concepts/enemy/radio/concept_003/radio_action_concept_003.png) |
+| 试卷怨灵 | concept_002 | [查看图](../../../design/concepts/enemy/exam-paper/concept_002/exam_paper_action_concept_002.png) |
+| 光标术士 | concept_003 | [查看图](../../../design/concepts/enemy/computer-terminal/concept_003/computer_terminal_action_concept_003.png) |
 
 ### 历史评审记录
 
@@ -75,10 +75,10 @@
 | B1 | 餐盘格挡怪 | 竖起格挡后用盘面冲撞 |
 | B2 | 汤勺泼手 | 倾转勺体泼洒热汤 |
 | B3 | 蒸笼喷喷 | 抬盖蓄压后喷出蒸汽 |
-| C1 | [计算机组成原理](../../../design/concepts/m1-enemy-cast/textbook-architecture/concept_001/textbook_architecture_action_concept_001.png) | 通过 CPU 运算发射数字脉冲 |
-| C2 | [线性代数](../../../design/concepts/m1-enemy-cast/textbook-linear-algebra/concept_001/textbook_linear_algebra_action_concept_001.png) | 生成矩阵区域，改变目标站位 |
-| C3 | [信息安全数学](../../../design/concepts/m1-enemy-cast/textbook-security-math/concept_001/textbook_security_math_action_concept_001.png) | 生成模运算封锁环限制目标 |
-| C4 | [编译原理](../../../design/concepts/m1-enemy-cast/textbook-compilers/concept_001/textbook_compilers_action_concept_001.png) | 词法单元进入语法树，输出指令弹 |
+| C1 | [计算机组成原理](../../../design/concepts/enemy/textbook-architecture/concept_001/textbook_architecture_action_concept_001.png) | 通过 CPU 运算发射数字脉冲 |
+| C2 | [线性代数](../../../design/concepts/enemy/textbook-linear-algebra/concept_001/textbook_linear_algebra_action_concept_001.png) | 生成矩阵区域，改变目标站位 |
+| C3 | [信息安全数学](../../../design/concepts/enemy/textbook-security-math/concept_001/textbook_security_math_action_concept_001.png) | 生成模运算封锁环限制目标 |
+| C4 | [编译原理](../../../design/concepts/enemy/textbook-compilers/concept_001/textbook_compilers_action_concept_001.png) | 词法单元进入语法树，输出指令弹 |
 
 ### 本轮检查与边界
 
@@ -157,8 +157,8 @@ quality_result:
 ## 书本结构与技能方向修复（2026-09-24，最新评审入口）
 
 - 负责人认可前轮概念方向并要求修复；特别指出巨典展开不像书、纸飞机头朝向相反。此意见不自动批准新版本或正式资产。
-- [馆藏巨典 concept_004](../../../design/concepts/m1-enemy-cast/great-volume-boss/concept_004/great_volume_boss_action_concept_004.png)：展开改为明确的左右矩形页、中央装订缝、页块和封面；纸飞机尖头朝右，宽尾及尾迹在左；统一两条书签，保留悬浮与重砸。实际有三处卷页角，不影响概念用途。
-- [图书管理员 concept_003](../../../design/concepts/m1-enemy-cast/cyber-librarian/concept_003/cyber_librarian_action_concept_003.png)：保留非类人机身；肃静区域包住目标，扫描与归架书群汇向右下同一目标；运动时序留待动画验证。
+- [馆藏巨典 concept_004](../../../design/concepts/enemy/great-volume-boss/concept_004/great_volume_boss_action_concept_004.png)：展开改为明确的左右矩形页、中央装订缝、页块和封面；纸飞机尖头朝右，宽尾及尾迹在左；统一两条书签，保留悬浮与重砸。实际有三处卷页角，不影响概念用途。
+- [图书管理员 concept_003](../../../design/concepts/enemy/cyber-librarian/concept_003/cyber_librarian_action_concept_003.png)：保留非类人机身；肃静区域包住目标，扫描与归架书群汇向右下同一目标；运动时序留待动画验证。
 - 两张均 pending / unselected / not_integrated；旧版保留，新版完整提示词、来源与初检见 generation.md。本轮仅概念修复，无运行画面变动，不代表正式资产通过。
 
 ## 纸飞机巨典与非类人管理员（2026-09-24，最新评审入口）
@@ -222,9 +222,9 @@ quality_result:
 | --- | --- | --- | --- |
 | 1 | 订书钳兽 | concept_001 | 待评审 |
 | 2 | 圆规刺客 | concept_001 | 待评审 |
-| 3 | 试卷怨灵 | [concept_002](../../../design/concepts/m1-enemy-cast/exam-paper/concept_002/exam_paper_action_concept_002.png) | 待评审 |
+| 3 | 试卷怨灵 | [concept_002](../../../design/concepts/enemy/exam-paper/concept_002/exam_paper_action_concept_002.png) | 待评审 |
 | 4 | 键帽拳灵 | concept_001 | 待评审 |
-| 5 | 机房终端·光标术士 | [concept_003](../../../design/concepts/m1-enemy-cast/computer-terminal/concept_003/computer_terminal_action_concept_003.png) | 待评审 |
+| 5 | 机房终端·光标术士 | [concept_003](../../../design/concepts/enemy/computer-terminal/concept_003/computer_terminal_action_concept_003.png) | 待评审 |
 | 6 | 网线缠绕怪 | concept_001 | 待评审 |
 | 7 | 电容跳豆 | concept_001 | 待评审 |
 | 8 | 广播号令灵 | concept_002 | 待评审 |

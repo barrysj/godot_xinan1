@@ -8,7 +8,7 @@ PowerShell 7 在项目根运行 `./run-tool-suite-control.ps1`：缺少 EXE 或�
 
 工具集只会停止健康接口核验为当前工作树、且 PID 未变化的服务；同端口若被其他程序或工作树占用，显示“端口占用”并禁用对应操作。地图编辑器需要 Node.js；美术资源台需要 Python。
 
-本工具只读取用户指定的主 Manifest。普通对象由对象清单登记；`holo_card` 集合允许在显式登记的目录内发现卡片，不扫描其他目录，也不提供跨项目预览。
+本工具只读取用户指定的主 Manifest。普通对象由对象清单登记；索引清单可以继续指向子索引，浏览器会按相对路径递归读取并保留对象 ID。`holo_card` 集合允许在显式登记的目录内发现卡片，不扫描其他目录，也不提供跨项目预览。
 
 全息卡登记：在 `objects` 下增加 `holo_cards: {type: holo_card, root: assets/art/holo_cards}`。每个直接子目录放 `card.tres`、其引用的本目录原图和 `review.png`。资源台直接读取 `.tres` 文案、显示实际截图、启动同份 Godot 资源，不显示 concept/asset 审批阶段。闪卡为独立分类；列表与详情仅加载 `review.png`，缺少截图时不回退原照。点击“原图”才加载原照并在弹窗显示，关闭后清空弹窗图片；服务端文件完整性校验仍正常读取原照。截图生成命令与限制见 [照片卡工作流](../../../docs/art/holo-cards.md#当前最简流程2026-09-16)。
 
@@ -19,9 +19,10 @@ schema_version: 3
 objects:
   sample_character: manifests/sample_character.yaml
   sample_projectile: manifests/sample_projectile.yaml
+  enemy: manifests/enemy.yaml
 ```
 
-对象清单路径相对主 Manifest。页面只需要填写这个主 Manifest 的路径，不再填写资产目录。
+子索引也使用 `schema_version: 3` 和 `objects` 映射，例如 `manifests/enemy.yaml` 可将 `chalk_spirit` 指向 `enemy/chalk_spirit.yaml`。每一级路径都相对当前索引文件；循环引用、重复对象 ID 和越出项目的路径会报错。页面只需要填写主 Manifest 路径；“敌人”筛选按 `enemy` 集合归属显示，原有类别筛选不变。
 
 ## 对象清单
 

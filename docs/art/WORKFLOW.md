@@ -16,7 +16,7 @@
 
 ### 本地资源台登记约定
 
-- [主 Manifest](../../assets/art/asset_manifest.yaml)索引对象清单；每版使用项目相对 `root` 与相对文件路径。只登记实际文件，不扫描目录推断对象或批准状态。
+- [主 Manifest](../../assets/art/asset_manifest.yaml)索引对象清单或子索引；敌人统一通过 `manifests/enemy.yaml` 指向 `manifests/enemy/` 下的对象清单。每一级索引路径相对自身文件，每版仍使用项目相对 `root` 与相对文件路径。只登记实际文件，不扫描目录推断对象或批准状态。
 - `stage` 区分生产阶段，`selection` 表示选用，`approval` 表示人工决定，`integration` 表示真实接入；校验通过不能推导批准。缺少历史依据时保留 `unknown`。
 - 文件类型、动作后端、引用和哈希由实际资源计算，不重复登记派生数据。字段格式只维护在[资源台说明](../../tools/art/asset_manager/README.md)，界面及验证边界见 [ART-05](../implementation/art-05.md)。
 - 资源台只消费预生成 GIF，点击动作和启动预览不生产资产。GIF 制作、运行包及提升见[战斗动画](../battle-animation.md#hybrid-animation-package)。

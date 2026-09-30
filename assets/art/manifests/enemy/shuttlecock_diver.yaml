@@ -1,0 +1,28 @@
+schema_version: 3
+object:
+  id: shuttlecock_diver
+  display_name: "羽球突刺"
+  type: character
+  subtype: enemy
+variants:
+  concept_002:
+    stage: concept
+    version: "002"
+    selection: selected
+    approval: approved
+    approval_evidence:
+      source: docs/art/tasks/m1-enemy-cast.md
+      date: "2026-09-30"
+      decision: approved
+      quote: "其他两个概念通过"
+    root: design/concepts/enemy/shuttlecock-diver/concept_002
+    files:
+      concept: shuttlecock_diver_action_concept_002.png
+      generation: generation.md
+    metadata:
+      asset_type: action_concept_board
+      transparent: false
+      usage: [concept_review, action_design]
+integration:
+  status: not_integrated
+  active_variant: null
