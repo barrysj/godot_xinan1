@@ -16,6 +16,9 @@ static func run(preview: Node, manifest_path: String) -> void:
 		push_error("Capture cache does not match manifest")
 		preview.get_tree().quit(1)
 		return
+	var animation_size: Vector2 = preview.units[0].battle_animation.display_size
+	var scale_to_256_high := 256.0 / maxf(animation_size.y, 1.0)
+	job.size = [maxi(352, ceili(animation_size.x * scale_to_256_high) + 96), 352]
 	var viewport := SubViewport.new()
 	viewport.size = Vector2i(int(job.size[0]), int(job.size[1]))
 	viewport.transparent_bg = true
@@ -62,7 +65,7 @@ static func run(preview: Node, manifest_path: String) -> void:
 			var actor: Dictionary = preview.units[0]
 			var context: Dictionary = preview._presentation_context(actor, Vector2.ZERO, 4.0)
 			context.center = Vector2(job.size[0] * 0.5, job.size[1] * 0.85)
-			context.display_size = Vector2.ONE * 256.0
+			context.display_size = actor.battle_animation.display_size * scale_to_256_high
 			var handled := rig != null and bool(rig.call("handles_presentation_state", context.state))
 			if rig != null: rig.call("apply_presentation", context)
 			fallback.visible = not handled

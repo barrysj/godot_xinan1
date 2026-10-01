@@ -1,0 +1,8 @@
+schema_version: 3
+objects:
+  guard: "characters/guard.yaml"
+  archer: "characters/archer.yaml"
+  striker: "characters/striker.yaml"
+  inventor: "characters/inventor.yaml"
+  healer: "characters/healer.yaml"
+  archer_alt: "characters/archer_alt.yaml"

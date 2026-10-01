@@ -8,7 +8,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from asset_manager.catalog import parse_simple_yaml
+from asset_manager.catalog import AssetCatalog, parse_simple_yaml
 
 ROOT = Path(__file__).resolve().parents[3]
 ACTIONS = ('idle', 'move', 'melee', 'ranged', 'cast', 'hurt', 'critical', 'death')
@@ -40,12 +40,16 @@ def write_yaml(path, data):
     temporary.replace(path)
 
 
+def registered_manifests(root):
+    _, objects, errors = AssetCatalog(root)._load_objects(None)
+    if errors:
+        raise ValueError('Invalid Manifest tree: ' + str(errors))
+    return objects
+
+
 def prepare(animation, unit, action, root=ROOT):
-    index = parse_simple_yaml(root / 'assets/art/asset_manifest.yaml')
     matches = []
-    for relative in index['objects'].values():
-        path = inside(root / 'assets/art' / relative, root / 'assets/art/manifests')
-        manifest = parse_simple_yaml(path)
+    for _, path, manifest, _ in registered_manifests(root):
         for key, variant in manifest.get('variants', {}).items():
             if variant.get('stage') != 'asset' or 'animation' not in variant:
                 continue

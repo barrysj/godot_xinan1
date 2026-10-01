@@ -1,0 +1,71 @@
+{
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "move": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "ranged": {
+      "poses": [
+        "idle",
+        "aim",
+        "aim",
+        "shot",
+        "aim",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "cast": {
+      "poses": [
+        "idle",
+        "aim",
+        "cast",
+        "cast",
+        "aim",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "hurt": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "critical": {
+      "poses": [
+        "death_1"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "death": {
+      "poses": [
+        "death_2"
+      ],
+      "fps": 4,
+      "loop": false
+    }
+  },
+  "canvas": [
+    512,
+    512
+  ],
+  "display_size": [
+    128,
+    128
+  ]
+}

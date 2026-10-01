@@ -1,0 +1,156 @@
+{
+  "method": "rigid RootBone and HeadBone for idle/move/hurt; key pose frames for attack/cast/critical/death",
+  "idle": {
+    "source": "design/concepts/characters/inventor/asset_001/source/idle-master.png",
+    "source_bbox": [
+      45,
+      26,
+      995,
+      1495
+    ],
+    "anchor_x": 520.0,
+    "scale": 0.3049693669162696,
+    "placement": [
+      97,
+      24
+    ],
+    "canvas": [
+      512,
+      512
+    ],
+    "feet_y": 480
+  },
+  "attack": {
+    "source": "design/concepts/characters/inventor/asset_001/source/idle-master.png",
+    "source_bbox": [
+      45,
+      26,
+      995,
+      1495
+    ],
+    "anchor_x": 520.0,
+    "scale": 0.3049693669162696,
+    "placement": [
+      97,
+      24
+    ],
+    "canvas": [
+      512,
+      512
+    ],
+    "feet_y": 480
+  },
+  "head_cut_y": 113,
+  "defeat": {
+    "source": "design/concepts/characters/inventor/asset_001/source/critical-death-sheet.png",
+    "panels": [
+      {
+        "crop": [
+          92,
+          105,
+          870,
+          829
+        ],
+        "size": [
+          392,
+          365
+        ],
+        "position": [
+          60,
+          115
+        ]
+      },
+      {
+        "crop": [
+          0,
+          478,
+          887,
+          825
+        ],
+        "size": [
+          480,
+          188
+        ],
+        "position": [
+          16,
+          292
+        ]
+      }
+    ]
+  },
+  "muzzle": [
+    403,
+    228
+  ],
+  "effect": "railgun",
+  "attack_name": "ranged",
+  "canvas": [
+    512,
+    512
+  ],
+  "display_size": [
+    128,
+    128
+  ],
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "move": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "ranged": {
+      "poses": [
+        "idle",
+        "aim",
+        "aim",
+        "shot",
+        "aim",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "cast": {
+      "poses": [
+        "idle",
+        "aim",
+        "cast",
+        "cast",
+        "aim",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "hurt": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "critical": {
+      "poses": [
+        "death_1"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "death": {
+      "poses": [
+        "death_2"
+      ],
+      "fps": 4,
+      "loop": false
+    }
+  }
+}

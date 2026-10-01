@@ -1,0 +1,34 @@
+# Character_Action_Design v2; distinct appearance, identical Archer motion structure.
+action_card_v2:
+  action_id: archer_alt_ranged_01
+  module: attack
+  priority: P0
+  loop_policy: one-shot
+  frame_count: 6
+  frame_rate: 8
+  canvas_size: [512, 512]
+  view_angle: side-2.5d
+  key_poses:
+    - {frame: 1, height: mid, pose: "右手单枪低位待机"}
+    - {frame: 2, height: low, pose: "同原远射手时间点抬枪"}
+    - {frame: 3, height: mid, pose: "右手枪口向右，左手托腕"}
+    - {frame: 4, height: high, pose: "枪口完整，短促青蓝光"}
+    - {frame: 6, height: mid, pose: "回低位待机"}
+  consistency_locks:
+    identity_anchor: "银蓝短波波头、橙色发夹、圆框眼镜、橙袖白衣、橙色学生证、黑包、黑工装裤、白鞋"
+    asymmetry_lock: "橙发夹与单侧斜挎包不交换左右"
+    weapon_hand_lock: "右手仍只持原型的单支青白虚拟手枪，左手托腕，不生第二枪"
+    palette_lock: "银蓝发、橙白上衣、青白枪、深灰裤、白鞋"
+    direction_hint: "仅右向四分之三侧视；与原远射手共用骨骼动画库"
+  transitions:
+    can_cancel_to: []
+    interruptible: false
+    blend_time: 0
+    hit_frame: 4
+  motion_trail:
+    frames: [4]
+    color: "#38D8F7"
+    style: "短促枪口光"
+  prompt: >-
+    同一银蓝短发圆眼镜橙白上衣远射手，右手单枪向右举枪，左手托腕；脚底、动作节奏、枪口方向与原远射手一致。
+    保持短发、橙发夹、橙学生证、黑包和青白单枪，固定机位透明背景，不出现马尾或蓝色衣服。

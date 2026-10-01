@@ -104,3 +104,20 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 **待统筹补充**：M1 图书馆九张背景已有 Godot 映射、默认状态和三分辨率接入截图；日常／夜间没有被虚构为游戏内自然时间系统，视觉效果仍需负责人人工评审，不能据此宣布最终美术验收完成。
 
 **待统筹补充**：十二处校园地点概念方向已批准；旧低分辨率日常正式版被统一4K日常正式版替代，12张异常4K也已形成另一统一正式版本。两组均已完成资产批准与提升；当前仅南门绑定战役 `gate`，24张提供只读预览，其余11处可游玩地点映射尚未确定。不得把预览汇总成“十二处场景已接入关卡”或“地点美术全部完成”。
+
+## 五名我方人物正式替换（2026-10-01）
+
+基线0a3f939加本次工作树。负责人批准现存人物概念和六套动画，排除旧应援者007／008种子；Guard只留008。角色来源统一为 design/concepts/characters/<角色>/，五名默认单位动画与头像均引用 assets/art/characters/<角色>/，远射手替换外观正式入库但未绑定。旧Guard／Archer占位图集及 resources/content/animations 下的旧入口删除。每角色一个Manifest同时维护概念与动画，三个研究聚合对象撤销。
+
+验证：六套 promote_animation.py --check 通过；六版 run-motion-preview.ps1 -Check 均 failures=0；action_check、animation_check、presentation_check通过；authored_assets_check为5角色／0失败，新增 --capture 在两组合法四人阵容、三种分辨率输出六张截图。资源台52对象／1105文件，0缺失、0不一致、0错误。路径和生成器复现检查、原图迁移哈希审计见[任务记录](../art/tasks/m1-player-cast-animation.md#正式登记与接入2026-10-01)。
+
+接入效果待人工评审：沿用既有姿势和节奏；应援者头身比不一致、纵向人物与名牌局部交叠、Guard绿幕细边均明确保留为已知边界。待统筹：默认角色美术与资源组织已变化；未改全局总览和Roadmap。
+
+
+## 适配 main 分类索引并合并（2026-10-01）
+
+整合基线：main 1e94537、人物分支967ec0d；合并分支art/characters-main-integration。保留main新增的enemy分类，根assets/art/asset_manifest.yaml通过manifests/characters.yaml加载六个manifests/characters/<角色>.yaml。人物源包位于design/concepts/characters/<角色>/，运行包位于assets/art/characters/<角色>/。撤去本次新增的98个.import描述并忽略后续生成的.import／.uid，不改无关历史导入配置。
+
+动画提升与GIF任务准备复用资源台递归索引解析，补充二级清单回归检查；人物的播放元数据精简改为源包显式选择，保留粉笔精灵既有完整帧元数据契约。验证：39项资源台／制作工具测试通过；六个人物包及粉笔精灵确定性提升检查通过；资源台52对象、1105文件、0缺失、0不一致、0错误。正式角色Godot检查5角色／0失败；保留既有接入视觉评审状态。本轮仅目录、索引与工具兼容调整，沿用前次三分辨率截图。待统筹：人物采用与main敌人相同的分类子索引，制作工具支持递归查找。
+
+本地main合并核验：接收基线902342c，合并来源art/characters-main-integration的a673acf，使用squash。保留main敌人分类及后续战斗设计文档。main实际资源台52对象／1105文件、0缺失／不一致；首次导入后Guard七动作预览0失败，正式角色检查5角色／0失败。新增提交无.import／.uid／缓存，未推送远程。游戏接入效果仍沿用待人工评审状态。

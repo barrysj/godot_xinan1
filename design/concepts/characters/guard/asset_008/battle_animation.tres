@@ -1,0 +1,82 @@
+[gd_resource type="Resource" load_steps=65 format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_00.png" id="tex_0"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_01.png" id="tex_1"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_02.png" id="tex_2"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_03.png" id="tex_3"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_04.png" id="tex_4"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_05.png" id="tex_5"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_06.png" id="tex_6"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_07.png" id="tex_7"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/idle_08.png" id="tex_8"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_00.png" id="tex_9"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_01.png" id="tex_10"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_02.png" id="tex_11"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_03.png" id="tex_12"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_04.png" id="tex_13"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_05.png" id="tex_14"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_06.png" id="tex_15"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_07.png" id="tex_16"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/move_08.png" id="tex_17"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_00.png" id="tex_18"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_01.png" id="tex_19"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_02.png" id="tex_20"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_03.png" id="tex_21"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_04.png" id="tex_22"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_05.png" id="tex_23"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_06.png" id="tex_24"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_07.png" id="tex_25"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_08.png" id="tex_26"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_09.png" id="tex_27"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_10.png" id="tex_28"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_11.png" id="tex_29"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_12.png" id="tex_30"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_13.png" id="tex_31"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_14.png" id="tex_32"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_15.png" id="tex_33"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_16.png" id="tex_34"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_17.png" id="tex_35"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_18.png" id="tex_36"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_19.png" id="tex_37"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_20.png" id="tex_38"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_21.png" id="tex_39"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_22.png" id="tex_40"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/melee_23.png" id="tex_41"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_00.png" id="tex_42"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_01.png" id="tex_43"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_02.png" id="tex_44"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_03.png" id="tex_45"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_04.png" id="tex_46"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_05.png" id="tex_47"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_06.png" id="tex_48"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_07.png" id="tex_49"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/cast_08.png" id="tex_50"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_00.png" id="tex_51"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_01.png" id="tex_52"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_02.png" id="tex_53"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_03.png" id="tex_54"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_04.png" id="tex_55"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_05.png" id="tex_56"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_06.png" id="tex_57"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_07.png" id="tex_58"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/hurt_08.png" id="tex_59"]
+
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/critical.png" id="critical_pose"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/guard/asset_008/frames/death.png" id="death_pose"]
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{"frames": [{"duration": 1.0, "texture": ExtResource("tex_0")}, {"duration": 1.0, "texture": ExtResource("tex_1")}, {"duration": 1.0, "texture": ExtResource("tex_2")}, {"duration": 1.0, "texture": ExtResource("tex_3")}, {"duration": 1.0, "texture": ExtResource("tex_4")}, {"duration": 1.0, "texture": ExtResource("tex_5")}, {"duration": 1.0, "texture": ExtResource("tex_6")}, {"duration": 1.0, "texture": ExtResource("tex_7")}, {"duration": 1.0, "texture": ExtResource("tex_8")}], "loop": true, "name": &"idle", "speed": 2.25},
+{"frames": [{"duration": 1.0, "texture": ExtResource("tex_9")}, {"duration": 1.0, "texture": ExtResource("tex_10")}, {"duration": 1.0, "texture": ExtResource("tex_11")}, {"duration": 1.0, "texture": ExtResource("tex_12")}, {"duration": 1.0, "texture": ExtResource("tex_13")}, {"duration": 1.0, "texture": ExtResource("tex_14")}, {"duration": 1.0, "texture": ExtResource("tex_15")}, {"duration": 1.0, "texture": ExtResource("tex_16")}, {"duration": 1.0, "texture": ExtResource("tex_17")}], "loop": true, "name": &"move", "speed": 2.25},
+{"frames": [{"duration": 1.0, "texture": ExtResource("tex_18")}, {"duration": 1.0, "texture": ExtResource("tex_19")}, {"duration": 1.0, "texture": ExtResource("tex_20")}, {"duration": 1.0, "texture": ExtResource("tex_21")}, {"duration": 1.0, "texture": ExtResource("tex_22")}, {"duration": 1.0, "texture": ExtResource("tex_23")}, {"duration": 1.0, "texture": ExtResource("tex_24")}, {"duration": 1.0, "texture": ExtResource("tex_25")}, {"duration": 1.0, "texture": ExtResource("tex_26")}, {"duration": 1.0, "texture": ExtResource("tex_27")}, {"duration": 1.0, "texture": ExtResource("tex_28")}, {"duration": 1.0, "texture": ExtResource("tex_29")}, {"duration": 1.0, "texture": ExtResource("tex_30")}, {"duration": 1.0, "texture": ExtResource("tex_31")}, {"duration": 1.0, "texture": ExtResource("tex_32")}, {"duration": 1.0, "texture": ExtResource("tex_33")}, {"duration": 1.0, "texture": ExtResource("tex_34")}, {"duration": 1.0, "texture": ExtResource("tex_35")}, {"duration": 1.0, "texture": ExtResource("tex_36")}, {"duration": 1.0, "texture": ExtResource("tex_37")}, {"duration": 1.0, "texture": ExtResource("tex_38")}, {"duration": 1.0, "texture": ExtResource("tex_39")}, {"duration": 1.0, "texture": ExtResource("tex_40")}, {"duration": 1.0, "texture": ExtResource("tex_41")}], "loop": false, "name": &"melee", "speed": 6.0},
+{"frames": [{"duration": 1.0, "texture": ExtResource("tex_42")}, {"duration": 1.0, "texture": ExtResource("tex_43")}, {"duration": 1.0, "texture": ExtResource("tex_44")}, {"duration": 1.0, "texture": ExtResource("tex_45")}, {"duration": 1.0, "texture": ExtResource("tex_46")}, {"duration": 1.0, "texture": ExtResource("tex_47")}, {"duration": 1.0, "texture": ExtResource("tex_48")}, {"duration": 1.0, "texture": ExtResource("tex_49")}, {"duration": 1.0, "texture": ExtResource("tex_50")}], "loop": false, "name": &"cast", "speed": 2.25},
+{"frames": [{"duration": 1.0, "texture": ExtResource("tex_51")}, {"duration": 1.0, "texture": ExtResource("tex_52")}, {"duration": 1.0, "texture": ExtResource("tex_53")}, {"duration": 1.0, "texture": ExtResource("tex_54")}, {"duration": 1.0, "texture": ExtResource("tex_55")}, {"duration": 1.0, "texture": ExtResource("tex_56")}, {"duration": 1.0, "texture": ExtResource("tex_57")}, {"duration": 1.0, "texture": ExtResource("tex_58")}, {"duration": 1.0, "texture": ExtResource("tex_59")}], "loop": false, "name": &"hurt", "speed": 11.25},
+{"frames": [{"duration": 1.0, "texture": ExtResource("critical_pose")}], "loop": true, "name": &"critical", "speed": 4},
+{"frames": [{"duration": 1.0, "texture": ExtResource("death_pose")}], "loop": false, "name": &"death", "speed": 4}]
+
+[resource]
+script = ExtResource("script")
+frames = SubResource("frames")
+display_size = Vector2(256, 128)
+anchor = Vector2(0.5, 0.94726562)
+impact_ratio = 0.45
+flip_with_facing = true

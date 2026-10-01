@@ -33,7 +33,57 @@ if ($ExportPreviews) {
     $Projectile = $job.projectile
     $EnsureImport = $true
 }
-if ($EnsureImport) {
+if ($Animation) {
+    $relativeAnimation = if ($Animation.StartsWith('res://')) { $Animation.Substring(6) } else { $Animation }
+    if ([System.IO.Path]::IsPathRooted($relativeAnimation)) { throw "Animation must be a res:// or project-relative path: $Animation" }
+    $projectRoot = [System.IO.Path]::GetFullPath($PSScriptRoot)
+    $animationFile = [System.IO.Path]::GetFullPath((Join-Path $projectRoot $relativeAnimation))
+    if (-not $animationFile.StartsWith($projectRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Animation path escapes the preview project: $Animation"
+    }
+    if (-not (Test-Path -LiteralPath $animationFile -PathType Leaf)) {
+        throw "Animation resource is missing from this checkout: $animationFile. Run the preview script from the worktree containing this candidate."
+    }
+}
+function Test-AnimationImportNeeded([string]$AnimationResource) {
+    if (-not $AnimationResource) { return $false }
+    $relative = if ($AnimationResource.StartsWith('res://')) { $AnimationResource.Substring(6) } else { $AnimationResource }
+    if ([System.IO.Path]::IsPathRooted($relative)) { return $true }
+    $resource = Join-Path $PSScriptRoot $relative
+    if (-not (Test-Path -LiteralPath $resource -PathType Leaf)) { return $true }
+    $references = [regex]::Matches([System.IO.File]::ReadAllText($resource), 'path="res://([^"\r\n]+\.(?:png|webp|jpe?g|svg))"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    if ($references.Count -eq 0) { return $false }
+    foreach ($reference in $references) {
+        $source = Join-Path $PSScriptRoot $reference.Groups[1].Value
+        $descriptor = $source + '.import'
+        if (-not (Test-Path -LiteralPath $source -PathType Leaf) -or -not (Test-Path -LiteralPath $descriptor -PathType Leaf)) { return $true }
+        $remap = [regex]::Match([System.IO.File]::ReadAllText($descriptor), '(?m)^path="res://([^"\r\n]+)"')
+        if (-not $remap.Success) { return $true }
+        $cache = Join-Path $PSScriptRoot $remap.Groups[1].Value
+        if (-not (Test-Path -LiteralPath $cache -PathType Leaf)) { return $true }
+        if ((Get-Item -LiteralPath $source).LastWriteTimeUtc -gt (Get-Item -LiteralPath $cache).LastWriteTimeUtc) { return $true }
+    }
+    return $false
+}
+function Test-ProjectImportNeeded {
+    $assetsRoot = Join-Path $PSScriptRoot 'assets'
+    $testingRoot = (Join-Path $assetsRoot 'testing') + [System.IO.Path]::DirectorySeparatorChar
+    foreach ($source in Get-ChildItem -LiteralPath $assetsRoot -Recurse -File) {
+        if ($source.Extension.ToLowerInvariant() -notin @('.png', '.webp', '.jpg', '.jpeg', '.svg', '.ttf', '.otf')) { continue }
+        if ($source.FullName.StartsWith($testingRoot, [System.StringComparison]::OrdinalIgnoreCase)) { continue }
+        $descriptor = $source.FullName + '.import'
+        if (-not (Test-Path -LiteralPath $descriptor -PathType Leaf)) { return $true }
+        $remap = [regex]::Match([System.IO.File]::ReadAllText($descriptor), '(?m)^path="res://([^"\r\n]+)"')
+        if (-not $remap.Success) { return $true }
+        $cache = Join-Path $PSScriptRoot $remap.Groups[1].Value
+        if (-not (Test-Path -LiteralPath $cache -PathType Leaf)) { return $true }
+        if ($source.LastWriteTimeUtc -gt (Get-Item -LiteralPath $cache).LastWriteTimeUtc) { return $true }
+    }
+    return $false
+}
+$rawConceptAnimation = $Animation -and $relativeAnimation.Replace('\', '/').StartsWith('design/concepts/', [System.StringComparison]::OrdinalIgnoreCase)
+# The preview scene decodes concept PNGs directly because design/.gdignore excludes them from Godot import.
+if ($EnsureImport -and ((Test-ProjectImportNeeded) -or (-not $rawConceptAnimation -and (Test-AnimationImportNeeded $Animation)))) {
     $importLog = Join-Path $PSScriptRoot '.godot/art-manager-import.log'
     $importArgs = @('--headless', '--editor', '--path', ('"{0}"' -f $PSScriptRoot), '--quit', '--log-file', ('"{0}"' -f $importLog))
     $importProcess = Start-Process -FilePath $EnginePath -ArgumentList $importArgs -WorkingDirectory $PSScriptRoot -WindowStyle Hidden -Wait -PassThru
@@ -54,7 +104,8 @@ if ($ExportPreviews) { $previewArgs += "--capture-manifest=$captureManifest" }
 $previewArgs += "--preview-speed=$($Speed.ToString([System.Globalization.CultureInfo]::InvariantCulture))"
 # The Windows GUI executable otherwise returns before capture/check completion.
 $quotedArgs = $previewArgs | ForEach-Object { '"{0}"' -f $_ }
-$process = Start-Process -FilePath $EnginePath -ArgumentList $quotedArgs -WorkingDirectory $PSScriptRoot -WindowStyle Hidden -Wait -PassThru
+$windowStyle = if ($Check -or $Capture -or $ExportPreviews) { 'Hidden' } else { 'Normal' }
+$process = Start-Process -FilePath $EnginePath -ArgumentList $quotedArgs -WorkingDirectory $PSScriptRoot -WindowStyle $windowStyle -Wait -PassThru
 if ($process.ExitCode -ne 0) { exit $process.ExitCode }
 if ($ExportPreviews) {
     & $PythonPath @pythonArgs $producer encode --manifest $captureManifest

@@ -8,10 +8,10 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from asset_manager.catalog import parse_simple_yaml
-from animation.motion_previews import inside, write_yaml, ROOT, ACTIONS
+from animation.motion_previews import inside, write_yaml, registered_manifests, ROOT, ACTIONS
 
-CORE = {'presentation.tscn', 'animations.tres', 'battle_animation.tres',
-        'battle_animation.frames.json', 'rig_manifest.json'}
+CORE = {'battle_animation.tres', 'battle_animation.frames.json', 'rig_manifest.json'}
+HYBRID = {'presentation.tscn', 'animations.tres'}
 SHARED = 'res://scenes/battle_demo/presentations/hybrid_presentation.gd'
 REFERENCES = re.compile(r'path="(res://[^"]+)"')
 
@@ -42,14 +42,16 @@ def runtime_name(name):
     path = Path(name)
     if path.is_absolute() or '..' in path.parts or '\\' in name:
         raise ValueError('Runtime path escapes package: ' + name)
-    return name in CORE or (path.suffix == '.png' and
-                           (len(path.parts) == 1 or (len(path.parts) == 2 and path.parts[0] == 'parts')))
+    return name in CORE | HYBRID or (path.suffix == '.png' and
+                           (len(path.parts) == 1 or (len(path.parts) == 2 and path.parts[0] in ('parts', 'frames'))))
 
 
 def plan(object_id, variant_id=None, root=ROOT):
-    index = parse_simple_yaml(root / 'assets/art/asset_manifest.yaml')
-    manifest_path = inside(root / 'assets/art' / index['objects'][object_id], root / 'assets/art/manifests')
-    manifest = parse_simple_yaml(manifest_path)
+    matches = [(path, data) for key, path, data, _ in registered_manifests(root) if key == object_id]
+    if len(matches) != 1:
+        raise ValueError('Expected one registered object: ' + object_id)
+    manifest_path, manifest = matches[0]
+    manifest_path = inside(manifest_path, root / 'assets/art/manifests')
     integration = manifest['integration']
     key = variant_id or integration['active_variant']
     variant = manifest['variants'][key]
@@ -69,11 +71,15 @@ def plan(object_id, variant_id=None, root=ROOT):
     metadata = json.loads((candidate / 'battle_animation.frames.json').read_text(encoding='utf-8'))
     frame_actions = set(metadata['clips'])
     skeleton_actions = set(rig['skeleton_actions'])
+    if skeleton_actions and not HYBRID.issubset(names):
+        raise ValueError('Skeleton actions require a scene and animation library')
+    if bool(HYBRID & set(names)) != HYBRID.issubset(names):
+        raise ValueError('Hybrid scene and animation library must be delivered together')
     if frame_actions != set(rig['frame_actions']) or not skeleton_actions.issubset(frame_actions):
         raise ValueError('Metadata action sets disagree')
     if not frame_actions.issubset(ACTIONS) or not {'idle', 'death'}.issubset(frame_actions):
         raise ValueError('Invalid canonical action contract')
-    library = (candidate / 'animations.tres').read_text(encoding='utf-8')
+    library = (candidate / 'animations.tres').read_text(encoding='utf-8') if 'animations.tres' in names else ''
     budget = rig.get('animation_budget', {})
     key_count = sum(len(values.split(',')) for values in
                     re.findall(r'"times": PackedFloat32Array\(([^)]*)\)', library) if values.strip())
@@ -102,6 +108,13 @@ def plan(object_id, variant_id=None, root=ROOT):
         data = source.read_bytes()
         if source.suffix in ('.tres', '.tscn', '.json'):
             text = data.decode('utf-8-sig').replace(old_prefix, new_prefix)
+            if name == 'battle_animation.frames.json' and rig.get('playback_metadata_only', False):
+                # Generation inputs stay with the approved source. The deployed
+                # metadata only describes playback, never source images/videos.
+                source_metadata = json.loads(text)
+                playback_fields = ('clips', 'canvas', 'display_size', 'anchor', 'impact_ratio', 'flip_with_facing')
+                text = json.dumps({key: source_metadata[key] for key in playback_fields
+                                   if key in source_metadata}, ensure_ascii=False, indent=2) + '\n'
             # Resource UIDs are checkout caches; paths are portable and authoritative.
             text = re.sub(r' uid="uid://[^"]+"', '', text)
             if 'design/concepts/' in text:
@@ -125,7 +138,7 @@ def plan(object_id, variant_id=None, root=ROOT):
         payload[name] = data
     # Resolve all owner rewrites before any mutation.
     owners = integration.get('owners', [integration['owner']] if 'owner' in integration else [])
-    if not owners:
+    if not owners and integration.get('status') != 'not_integrated':
         raise ValueError('No registered runtime owner')
     old_resource = 'res://' + integration['resource']
     new_resource = new_prefix + 'battle_animation.tres'

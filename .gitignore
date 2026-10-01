@@ -11,6 +11,9 @@ design/concepts/**/review/*.import
 __pycache__/
 *.py[cod]
 
+# Local API credential supplied by the project owner
+/api.txt
+
 # Builds/export directory
 tools/art/asset_manager/control/ArtManagerControl.exe
 tools/art/asset_manager/control/ArtManagerControl.exe.sources
@@ -28,3 +31,7 @@ builds/**/*
 # Art candidates are promoted only at phase closeout.
 /design/concepts/**/tmp_[0-9][0-9][0-9]/
 /assets/art/**/tmp_[0-9][0-9][0-9]/
+
+# Godot-generated import descriptors and script ID sidecars are local.
+*.import
+*.uid

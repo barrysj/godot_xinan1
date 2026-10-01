@@ -52,6 +52,8 @@
 PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、濒危、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
 
 - `-Unit 'res://路径/角色资源.tres'` 加载角色元数据；近战、远程入口根据 `attack_modes` 置灰。旧资源未显式配置时，从 `action_profile` 与 `attack_range` 推断；未来双能力角色配置为近战与远程均可用。
+- Guard 即梦近战留存候选 008：`pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Animation res://design/concepts/characters/guard/asset_008/battle_animation.tres -Action Melee -Speed 0.5`。008 的近战来自即梦视频并对齐待机色板，其他动作保存于同一版本目录。普通预览保持可见窗口，关闭窗口后命令返回。
+- `design/.gdignore` 排除概念图的编辑器导入；独立预览器在开发运行时直接解码 `design/concepts/` 下 PNG，并不改变正式游戏资源。显式动画若未成功加载，`-Check` 会失败，避免回退占位图后仍误报通过。`-EnsureImport` 不会因概念 PNG 缺 `.import` 而反复启动编辑器；正式资产的描述或缓存缺失、过期时仍会导入一次。
 - `-Check` 自动验证八种模式及入口可用性；`-Capture` 输出三种分辨率下当前角色支持的攻击、施法、受击、濒危、退场截图；`-Tour` 连续展示可用模式后退出。
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - `-Projectile 'res://路径/弹体资源.tres'` 仅给本次预览的动画资源深复制件挂载 `BattleProjectileStyle`，便于先审弹体再决定是否正式接入，不会修改角色定义或候选动画文件。
@@ -75,6 +77,7 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - 运行约束：两类后端共用战斗动作时钟、朝向与锚点；骨骼表现未处理的状态必须回退到主 `SpriteFrames`，不得维护第二套角色状态机。
 - 资源约束：候选版本保存在 `design/concepts/<task>/<object>/<version>/`，正式文件固定在 `assets/art/<type>/<object>/`；正式运行资源不得引用候选目录或版本号目录。
 - 预览约束：继续使用统一 `run-motion-preview.ps1` 指定角色、动作和速度；早期独立混合动画 runner 已由 `0fe6329` 清除，不得为新角色复制。现有候选 GIF 作为批准证据保留；显式通用批量导出、捕获清单和后处理器已按 [ART-03](implementation/art-03.md#骨骼序列帧通用生产与预览) 完成。
+- 显式指定 `-Animation` 时，预览脚本先检查该资源在脚本所在项目中存在，`-Check` 再确认资源实际加载；从别的 checkout 调用导致候选缺失时直接报错。正式资产首次导入或清理缓存后可加 `-EnsureImport`，概念候选不依赖导入缓存。
 
 骨骼不是免切图方案。首次宽遮罩误带脸侧阴影，旋转后形成裂口；收紧遮罩并在主体保留肩部覆盖片后修复。因此正式生产应先定义部件边界、枢轴、前后遮挡和允许的动作幅度。提示词中的统一朝向、主体占框和特效边界仍用于关键姿势生成，但不能替代跨帧像素一致性。
 
@@ -134,3 +137,12 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - 提升先检查批准／选用状态、允许列表、动作集合、依赖、扩展登记和引用入口，再复制并改写引用；拒绝候选路径泄漏和非运行文件。重复提升内容相同，`--check` 校验正式包与确定性提升结果一致。
 
 优化或迁移后的验收同时检查姿态、动作切换、周期接缝、跳变点与加载／更新开销。通用姿态对比的配置、命令及边界见[工具说明](../tools/art/README.md#姿态对比)；旧代码采样和转换已归档，不是上述制作流程的必要步骤。当前样本的已知误差与实测结果见 [ART-03](implementation/art-03.md)。
+
+## 我方角色正式包（2026-10-01）
+
+五名默认角色已直接绑定各自 assets/art/characters/<角色>/battle_animation.tres，Guard为008视频抽帧，其余为001刚性骨骼＋关键帧。远射手替换外观位于 archer_alt/，未绑定默认角色。旧Guard／Archer图集和动画入口已删除。来源、批准范围及边界见[人物任务](art/tasks/m1-player-cast-animation.md#正式登记与接入2026-10-01)。
+
+逐角色预览无需 -Animation 覆盖，例如：
+pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Action Melee -Speed 0.5
+
+authored_assets_check.tscn 当前验证五名角色正式引用、头像、七动作与不同的濒危／退场姿势；不再要求旧4×4图集或至少三张死亡帧。图形运行追加 -- --capture，按游戏四人部署规则用两组阵容覆盖五名角色，输出三分辨率截图到 .godot/characters-battle-party*.png。

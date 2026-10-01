@@ -1,0 +1,1262 @@
+{
+  "baseline": "0a3f939",
+  "date": "2026-10-01",
+  "retained_media_count": 248,
+  "media_byte_identical": true,
+  "catalog_summary": {
+    "objects": 52,
+    "files": 1105,
+    "mismatches": 0,
+    "missing": 0,
+    "categories": {
+      "场景": 20,
+      "人物": 23,
+      "UI": 4,
+      "闪卡": 1,
+      "特效": 2,
+      "未归类": 2
+    }
+  },
+  "files": [
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_00.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_00.png",
+      "sha256": "7665264b8541bda5d493cad0c3590aa14e526dc912e9eeec9d58db7fef08c570"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_01.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_01.png",
+      "sha256": "ab4d184afbe2529753956b83659d9dfe523b4aa4240f1a4b2236d1e14c599407"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_02.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_02.png",
+      "sha256": "b82620079085017f43afe7353b9ab7d46040380c5e2e76510e2c9b2ced71f8b2"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_03.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_03.png",
+      "sha256": "b1c01f1bf03a4527a84885dd1c2f42666677ee8a937195010129a2d7a812f2c1"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_04.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_04.png",
+      "sha256": "9dca6c891c359e143c33eb639bd9117baddf613a90dc42c750605f10cd0b3c6a"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_05.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_05.png",
+      "sha256": "3b2f0085e95c1f4b0a5993caa73267480f04b94ad5251be283975f6762548d7e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_06.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_06.png",
+      "sha256": "fa2fe934e1cc55214b0241d27473f16aa30723719786ebe762de41cb125cf2e8"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_07.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_07.png",
+      "sha256": "80e174bdfd1a047e9e4cc5dc83cc9c38c4d2293f7c43619ea73d92be8752039b"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/cast_08.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/cast_08.png",
+      "sha256": "b9d06912ecf77c4fe4ee7503ea36e517cb7953973566fb68840dc962a3d9a92e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/critical.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/critical.png",
+      "sha256": "d7d837931942ea73b96b006c49173058af4259830801c0ed0ba3fa0ac66fc2ed"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/death.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/death.png",
+      "sha256": "0d338a17c9886f91f980fdc7deacd8b54ee9a5aa16221cfc200b0f72dfa913c9"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_00.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_00.png",
+      "sha256": "e80736ecc3f7a05b22b5426980421d9b8630ece8a26048f84ccd5e1b45050a0c"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_01.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_01.png",
+      "sha256": "47c51c96364237f87b46269a9fd155ef2f3be46a96b2eb9657d71c37dad48569"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_02.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_02.png",
+      "sha256": "5cde5d9ca0ccbad5d666eedd8e4d7e9c03882b5beb806c53268035d76b02754a"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_03.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_03.png",
+      "sha256": "674a32e1a1ef7a8fe33e157bbb1b86a726528fb41063733e046db65aff9507eb"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_04.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_04.png",
+      "sha256": "411c3908139470e7e397b4b0d413cc687b75591904241a290cc07e32441f595e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_05.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_05.png",
+      "sha256": "f2ebe09545bd61e666c55bab1d2b44d6052b72cc10fa62321356ee3c9f5bfdff"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_06.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_06.png",
+      "sha256": "32d9a47f93303d2ec903420c540638967517407f5457682152bb8ecaaa0a0a76"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_07.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_07.png",
+      "sha256": "0f2ca3161f6b59265eafed48c7000e44d7195d59ea01780dc4723aea814fba0a"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/hurt_08.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/hurt_08.png",
+      "sha256": "6255a04c48afda0f5517ff8420c16d677b83272bb1372a9522871380c2f642f2"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_00.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_00.png",
+      "sha256": "f1dacdee3da2ab18eb9a8da5e8177a64428278c9d5e818fd04b6c8743a31a414"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_01.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_01.png",
+      "sha256": "c4169a70b1018c913ed81c77c9881c28fed8bcf7c9bf113141a54edefe1cfcdf"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_02.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_02.png",
+      "sha256": "d313919fe67921192e66e90579cf2760a04e77af846297685ff9dae71b8f8fc6"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_03.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_03.png",
+      "sha256": "cde3f0915bec0db33d2ee58675267b1458294d5a3b07620eb35e2ff400746e87"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_04.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_04.png",
+      "sha256": "558c8ae6a2f8507b2c7e425f753cac3b4982f076578836685411563f375d0ade"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_05.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_05.png",
+      "sha256": "ad8607ffcec87ebd75d5da0e0c84fc0c3bc28a394f87794e3ca1ddc41b902ab9"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_06.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_06.png",
+      "sha256": "aadf96bf5017f92b92452924c72672f2993c9b2193d92acabceea6c8c6c3bab7"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_07.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_07.png",
+      "sha256": "32266b46ab3725a8a5d99f34c60a3f2ca972e5eaf30e7ec2bff77797a0fa1701"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/idle_08.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/idle_08.png",
+      "sha256": "8bbd96dd6e7e836da98aa2f9595dc00c852ef157924898f8cf87f71e5a2634f6"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_00.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_00.png",
+      "sha256": "cd51f7477ca9775e3f22c4fc2a383446a6990e24f2abe90c5e99d069bb7edd0c"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_01.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_01.png",
+      "sha256": "641f6b4e19510d968bbfc7973ab077612d3871683d3a2fdd5ad30e4670714f5d"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_02.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_02.png",
+      "sha256": "73eb7840e1fe68a3760f6a66bb0089f97f5883c96e623917f72293fc63582dd1"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_03.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_03.png",
+      "sha256": "0356e6b8e2092e15142b9cf53897b74ab8f85eda0cab65e710bc7b6e501c8a2e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_04.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_04.png",
+      "sha256": "b0ab404953ce0fdfd1f698991e4b87b70767d226b3f830fa60f57cdfcb3ecca7"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_05.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_05.png",
+      "sha256": "ae6d240937172b2cca406aff9e0f5df93008edc1eba8ad2c353cfab93276eccb"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_06.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_06.png",
+      "sha256": "ee2712ede87aeff39763fb2cc28adbf1f89fef755871d555720bb4157fb7e78e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_07.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_07.png",
+      "sha256": "0a9838b69c34a1101272e367ada1392f197c5f9f389db9d55f00c39997c0ee22"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_08.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_08.png",
+      "sha256": "36d70ad8f4f714e0b11c97a0f140b8e6c6e2acb4db68d8521daa57eb6768c862"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_09.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_09.png",
+      "sha256": "116d1777e40a7b386c6e98775d3bb3cb7416e5ff2802e1593c5a6af025385e97"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_10.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_10.png",
+      "sha256": "889902e95d47fde0fbec283a2401aada43c18f1fa58e628bfab4e03d8fc724c5"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_11.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_11.png",
+      "sha256": "5041fc8371914e46372a003d6b84f37ee01442ee0992a700c1ac7d08d8156b9e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_12.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_12.png",
+      "sha256": "48388512acece077d3c461764efd3f6fae20cddb89ea01363a2b95bf15711167"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_13.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_13.png",
+      "sha256": "61d1451eb44607e8f2ddd43b4c3b8aa282b507428a86a45fe65f7f51162b77c4"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_14.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_14.png",
+      "sha256": "f64dcaa0d7e7f41f3d3fdc6f7a4b10854d2e5219d3ce08a195c29697f5286519"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_15.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_15.png",
+      "sha256": "b4055f73c19cbf406093a7cd3c196e60cd7f30974f4f749c269d90b8d8231dfe"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_16.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_16.png",
+      "sha256": "47eabafb3e0c5a3dc79997eb5338985cad7c30b6dba706d216ad85aabec69d0c"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_17.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_17.png",
+      "sha256": "745112c952f38f1a38df8f0117683816a2caff3d7111ac0cb098216d7a249e07"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_18.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_18.png",
+      "sha256": "738b5242e31de36c00c206e1e5d1f218ed59ae8d02349220bcca9bb58a1fd4d0"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_19.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_19.png",
+      "sha256": "139713524e8c848f710ee7babeaa19af89e226ebf0524c635f05756f8143844a"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_20.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_20.png",
+      "sha256": "2d018fcf97626fc8729e3ec22c5d6759998892da3d38421aaffdca555a1d35d3"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_21.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_21.png",
+      "sha256": "3485a56dcda4cb6c43feecd3cb0bb88a00404c49181422988d5de9b8e1390bea"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_22.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_22.png",
+      "sha256": "5c07ba6679465ec5dc81e78e27d78376d4bce5f832102a5a02a9e601e3bc0e72"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/melee_23.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/melee_23.png",
+      "sha256": "c169f2a5233aff8785af1fd3dfca1e4f24d15b2a27a82d15895dca74fd8332fc"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_00.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_00.png",
+      "sha256": "c8b295da103cdf7e2d97e82cd01ac06b20b25bc65e8056b2eae1402447b41007"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_01.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_01.png",
+      "sha256": "65d1b0844cd8367cfe84ac56afe85e6a286776335055120d95f11742a12f74e2"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_02.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_02.png",
+      "sha256": "e0f3233c24798685503279f2246c7c82f5e4abde0f8c41453e8c0fc1324b782b"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_03.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_03.png",
+      "sha256": "2b9fe3ec9081c6bbdfc6bd26bd407c3d532b68ec3f56ea77d737b64fcf05cdf8"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_04.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_04.png",
+      "sha256": "d2915d2c70d55cb7b53271ba1d4d202b5616af6039fc8916ea14c5fb7689bb33"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_05.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_05.png",
+      "sha256": "0038bedd99890a280de7f4461dc00be4b136ccbe58978d3a342aa2f99274526c"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_06.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_06.png",
+      "sha256": "8b6f450fc4a6ca787b4344b998796dff699f961433296dd902f703092e80101d"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_07.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_07.png",
+      "sha256": "518f06cfd49d015a7d79827b6d9760ff1250664732ec87469c1bcde46725c319"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/frames/move_08.png",
+      "retained": "design/concepts/characters/guard/asset_008/frames/move_08.png",
+      "sha256": "261ff08013ce2f8e177b7912f193253b46c95667902c6230d37a88415ff19357"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/all-actions.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/all-actions.gif",
+      "sha256": "2b51870ec53c3fb1aa043bedb17a619f7220b100b7c992586b417affaef61cee"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/art-browser-melee-2026-09-30.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/art-browser-melee-2026-09-30.png",
+      "sha256": "35d5e1c333f7ee4ad83b800397e27a3d2b16602b4d9eb609593042776132b328"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/cast-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/cast-preview.gif",
+      "sha256": "4d75fe5e109def4f0e3c7f51217651125f79424df7de6b4e71628557c7ea8639"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/critical-death-stills.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/critical-death-stills.png",
+      "sha256": "5bf26794082e4ccae41fdd8134dbb833701956af803f33940c544930d955937f"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/critical-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/critical-preview.gif",
+      "sha256": "47d5296d2aa41fddd357124f8e8222f04daba20550ec1792c9ecceaa81018154"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/death-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/death-preview.gif",
+      "sha256": "d4bbfc7ace9fb55530c1d944796a841c0e827f9db958303f74e23c995c0f32e7"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/godot-critical-1920x1080.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/godot-critical-1920x1080.png",
+      "sha256": "e574dc8ba8282c82f5f79dcbed9fb884683a52e617dce7694c97e6d5fad7aea2"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/godot-death-1920x1080.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/godot-death-1920x1080.png",
+      "sha256": "5ec5904075a8c72f1518edf5aff94201106af659030e603a221b2149600fe65d"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/godot-melee-1920x1080.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/godot-melee-1920x1080.png",
+      "sha256": "39d54fc7c6a0ad086105b09e1cc94df09e6473207b86abb1f8ec1b04f2ea132e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/godot-melee-1920x1200.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/godot-melee-1920x1200.png",
+      "sha256": "76c80a9ab550d54ec1a77bde28fcb90f5436c493d2f978ee12b3422d4a186151"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/godot-melee-2560x1440.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/godot-melee-2560x1440.png",
+      "sha256": "c63345029ea84e2755f291e2478abd4e24290f2666bb59d3db0b54dfe6ce8999"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/hurt-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/hurt-preview.gif",
+      "sha256": "111925bd2c9b1206e6044152362b5a76ebf554538c888d9e4afbdbea5c563cae"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/idle-melee-palette-comparison.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/idle-melee-palette-comparison.png",
+      "sha256": "c36959919f6ae6daab9552782a5ba87fb36c3309d3eb24a13903f51ff0124f08"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/idle-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/idle-preview.gif",
+      "sha256": "66fb90f60a7272fc163b99603b17f476c8e8922bef1406dcd8790fee6becd249"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/melee-contact.png",
+      "retained": "design/concepts/characters/guard/asset_008/review/melee-contact.png",
+      "sha256": "929b092eda1b04708f00d0a567f1333857639788618eda9d5cbe5b5f69f6f9bb"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/melee-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/melee-preview.gif",
+      "sha256": "596c5bec62d40a06bc6a18e28a815fc81863c3459fe01510e230bb8fef1683ec"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/review/move-preview.gif",
+      "retained": "design/concepts/characters/guard/asset_008/review/move-preview.gif",
+      "sha256": "5c6bc448d2659605b6be4d4ad4a85908447bd80b60c3c325e3eb18720b8dd95e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/critical-death-sheet.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/critical-death-sheet.png",
+      "sha256": "e14536ca431509a542804a4f5bb29aee403e7ec29f614a0e6491a19575c0aa7e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/identity-first-frame.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/identity-first-frame.png",
+      "sha256": "09bce7801524bb3b5b12f540a7462c25c145098e23ad8b53b186ae7f82acb0c9"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/melee.mp4",
+      "retained": "design/concepts/characters/guard/asset_008/source/melee.mp4",
+      "sha256": "52e19da98598b1b20429b19a8eaa6fb1485f4d5fbe6655cf9bfd8a02c71c0dbb"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_00.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_00.png",
+      "sha256": "8e811911765616d5f421d92b103b8b8bf0fddbbacbb3ddda1bd1ac25379a46f3"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_01.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_01.png",
+      "sha256": "56ee8d040a11bb25b19fea6d4a39be0fa8dec9398d25b92f13af291407f89da3"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_02.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_02.png",
+      "sha256": "7d1c1012bc61a5e9113aceaf086acf2ef1d37f32a33d7c639dbb36f3ca6141d6"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_03.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_03.png",
+      "sha256": "8795725713608f6b9e4b6302353c6f396fe03fd3ac4c573d98056874bc82a755"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_04.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_04.png",
+      "sha256": "8345ee9ca7726a6535101f6419a60b36d27d449d95ef83be03933e880193282a"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_05.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_05.png",
+      "sha256": "7610332d96b220d8d2f365c577f3bb4429d4cac002126262835fd24b8416a178"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_06.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_06.png",
+      "sha256": "f28c3bc232a2901548ca41097c630397638fcde577df84027940c9951f919b46"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_07.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_07.png",
+      "sha256": "17da0c8ec6703e68c458acb503616845a2cc2b0d5d2508e979db1127577ec3d3"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_08.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_08.png",
+      "sha256": "ae30d79d6a5333d31975cd8ba9321064ab2b452e0da8d7376ba4c49d6e01014c"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_09.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_09.png",
+      "sha256": "3654d8e84bccc005f55f4f6dc7523602c67b8e6308fa72e46bb4d77be566dac3"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_10.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_10.png",
+      "sha256": "acf5f69875c6b21072d4c723d658f90f7fdc76b1ebf40b9001508fc086781124"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_11.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_11.png",
+      "sha256": "b71b247b9bd34b8b9f5a95d4fff1933b508116cef7f5360fd1083159cdb3971d"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_12.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_12.png",
+      "sha256": "2853f3ae4d9510f31bb1dd6e08d4f7eedbe0e5f094539807acf51aab20b6da19"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_13.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_13.png",
+      "sha256": "5dcbe89e680b7b0d165aefa37d61ff79d3177383504ecf644bb135bda9bac0ca"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_14.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_14.png",
+      "sha256": "b2ed1fbcf26c086c4039f266081fb81d7f68df876fc15074b1af9ff6ad15c310"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_15.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_15.png",
+      "sha256": "7be5512dc79fe04efe889655c107fa012ef8b19c7b93d1bfb3f00eab777eeefe"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_16.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_16.png",
+      "sha256": "73b20ab6d1600c104b37a143f2e4cbb072da1c373af6f8f01caa1640212f383c"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_17.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_17.png",
+      "sha256": "25a5c5e081aa042fca5241c7b57881b99f72ee861329e9eb4ca4a00374f7109a"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_18.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_18.png",
+      "sha256": "092fcbd30f70e9a46cf4c6b7c4eaf0fd1d669bf34ed72e9dcf6d21b3378ddaad"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_19.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_19.png",
+      "sha256": "39219385d797f03df063a0e3c154416c02196cb01f4b67df0496bff868b3f65e"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_20.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_20.png",
+      "sha256": "f5458c23348254eae9d1be35445281c480c14b0b067c354428c88bc616b0ee80"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_21.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_21.png",
+      "sha256": "2789f80c6902f0be19505f0571b30fd95b4cbbff1ff5764237db77b8c3ac798f"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_22.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_22.png",
+      "sha256": "19b5bb0c74578f2ba487cc4d45b98a6dc26933570d2277644440ae42006f6605"
+    },
+    {
+      "old": "design/concepts/guard-animation-study/guard/008/source/pre-neutral-frames/melee_23.png",
+      "retained": "design/concepts/characters/guard/asset_008/source/pre-neutral-frames/melee_23.png",
+      "sha256": "404bdf2aba3bcb2e286411d8452096422949a6dbf9ec045ad878dd0c6b9ae434"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/002/m1_guard_firewall_shield_concept_002.png",
+      "retained": "design/concepts/characters/guard/concept_002/m1_guard_firewall_shield_concept_002.png",
+      "sha256": "1d2551911f1b24bef23673d0b6d26767314e054cb6a10cc2af43aca4d8709fe9"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/002/m1_guard_identity_reference_002.png",
+      "retained": "design/concepts/characters/guard/concept_002/m1_guard_identity_reference_002.png",
+      "sha256": "3790e20fef00bd1c78da0a0cb5854d4c972a7369db7df36286178f1b84a6b26c"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/002/m1_guard_loadout_concept_002.png",
+      "retained": "design/concepts/characters/guard/concept_002/m1_guard_loadout_concept_002.png",
+      "sha256": "48a62c241f750c749db042d10877b578fa5001bfaeb70c47307bb8f70b2b25c1"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/002/m1_guard_sword_concept_002.png",
+      "retained": "design/concepts/characters/guard/concept_002/m1_guard_sword_concept_002.png",
+      "sha256": "51fcfb214c7076b673f2479726322b12239ea97bed6e67d95cf06cfa6253a222"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/006/m1_archer_short_sleeve_concept_006.png",
+      "retained": "design/concepts/characters/archer/concept_006/m1_archer_short_sleeve_concept_006.png",
+      "sha256": "9b814a87014d4a826dbc88a766fa17eefc7208d089010b44dd208442ace2c425"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/006/m1_healer_long_sleeve_concept_006.png",
+      "retained": "design/concepts/characters/healer/concept_006/m1_healer_long_sleeve_concept_006.png",
+      "sha256": "7004a224f72fb5be199c95216bfcdb942567ade013160ef22234e51f7438ade3"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/006/m1_inventor_workshirt_concept_006.png",
+      "retained": "design/concepts/characters/inventor/concept_006/m1_inventor_workshirt_concept_006.png",
+      "sha256": "ad08b5eed98d1b792ff5403b4193c6e9d7cea11f0e867ee37cddf04484b4d045"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/006/m1_striker_hoodie_concept_006.png",
+      "retained": "design/concepts/characters/striker/concept_006/m1_striker_hoodie_concept_006.png",
+      "sha256": "64be23fa8862324462eacc51e7ae7f221b00ee8c8f9e682a30bea96ae2a0f0bf"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/m1_healer_battle_composite_asset_007.png",
+      "retained": "design/concepts/characters/healer/asset_007/m1_healer_battle_composite_asset_007.png",
+      "sha256": "1357138bf90194039eca2a1a027517fddf014bdeaf64a8290674d5516e740c85"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/m1_healer_portrait_asset_007.png",
+      "retained": "design/concepts/characters/healer/asset_007/m1_healer_portrait_asset_007.png",
+      "sha256": "3956aac1c0e6ce1b1b9eba62d67d1f5f4bb1454d907a5edc5bb6ac0e0b9056c8"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/m1_healer_rig_master_asset_007.png",
+      "retained": "design/concepts/characters/healer/asset_007/m1_healer_rig_master_asset_007.png",
+      "sha256": "02b62aee41c391d4581107bb5c93ff97f0d1695907089ace9f5154ed64f3b956"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/m1_healer_split_keyboards_asset_007.png",
+      "retained": "design/concepts/characters/healer/asset_007/m1_healer_split_keyboards_asset_007.png",
+      "sha256": "897c8da11cd32a0a00954aa989c6a82b36ab11f1f2adcc8e54a63fb595027cd5"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/processed/m1_healer_battle_composite_384.png",
+      "retained": "design/concepts/characters/healer/asset_007/processed/m1_healer_battle_composite_384.png",
+      "sha256": "c9f21a8dbcfa75a582e29291b3d0396da060a888ffedd5c9123f6b98619944cf"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/processed/m1_healer_portrait_140.png",
+      "retained": "design/concepts/characters/healer/asset_007/processed/m1_healer_portrait_140.png",
+      "sha256": "c8f9345a9fc20b98bd59ea8bad025790f284181791e9985ccac244318749078b"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/processed/m1_healer_rig_master_384.png",
+      "retained": "design/concepts/characters/healer/asset_007/processed/m1_healer_rig_master_384.png",
+      "sha256": "0e1ad1910a9b581db0085040e8d3b125fa9c8d4735bbb74ebd1d79486cd2400c"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/review/codex-workflow/m1_healer_seed_007_128_compare.png",
+      "retained": "design/concepts/characters/healer/asset_007/review/codex-workflow/m1_healer_seed_007_128_compare.png",
+      "sha256": "16426abaf08ce324aae93ee9444c0c33dd7628c58a51994efb021907e55c2d0a"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/007/review/codex-workflow/m1_healer_seed_007_contact.png",
+      "retained": "design/concepts/characters/healer/asset_007/review/codex-workflow/m1_healer_seed_007_contact.png",
+      "sha256": "55bbc5323b3a4ff66b0fd76ce1961e6080603b2a1c8eacae648eb8925eb55a76"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/parts/m1_healer_body_without_head_384_008.png",
+      "retained": "design/concepts/characters/healer/asset_008/parts/m1_healer_body_without_head_384_008.png",
+      "sha256": "1ff26664c6a2c7c9a60830e61389f41bb93ddc328f87d80083bc694b5062c193"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/parts/m1_healer_body_without_head_source_008.png",
+      "retained": "design/concepts/characters/healer/asset_008/parts/m1_healer_body_without_head_source_008.png",
+      "sha256": "81d36365e0c2d870dc7a1affeaa58edddb49823f1feb58955152b8c47f968931"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/parts/m1_healer_head_complete_source_008.png",
+      "retained": "design/concepts/characters/healer/asset_008/parts/m1_healer_head_complete_source_008.png",
+      "sha256": "a47a35a0ef68fa32308d902f3b1afcfb9354e746d579dfe57defd84ca18c8224"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/parts/m1_healer_head_on_canvas_384_008.png",
+      "retained": "design/concepts/characters/healer/asset_008/parts/m1_healer_head_on_canvas_384_008.png",
+      "sha256": "b6b5f763e48a91c83d48e827171307b8f21616c3ca1669931edaa8246b9d963e"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/parts/m1_healer_head_on_source_canvas_008.png",
+      "retained": "design/concepts/characters/healer/asset_008/parts/m1_healer_head_on_source_canvas_008.png",
+      "sha256": "782d027f6cfdae6f4a5201e7c03d6cb6f58e78bfc8ddf1a5831f6d3345d96668"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/review/codex-workflow/m1_healer_head_socket_008_contact.png",
+      "retained": "design/concepts/characters/healer/asset_008/review/codex-workflow/m1_healer_head_socket_008_contact.png",
+      "sha256": "83470ca6ef553d758af1a5c50f8d5dda7884d4d39d054794b9245ac676cdef6f"
+    },
+    {
+      "old": "design/concepts/m1-player-cast/m1_player_cast/008/review/codex-workflow/m1_healer_head_socket_recomposed_384_008.png",
+      "retained": "design/concepts/characters/healer/asset_008/review/codex-workflow/m1_healer_head_socket_recomposed_384_008.png",
+      "sha256": "0e1ad1910a9b581db0085040e8d3b125fa9c8d4735bbb74ebd1d79486cd2400c"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/frames/aim.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/frames/aim.png",
+      "sha256": "70ebadb529d3699d1d98d3e725d2300ba7156d5acf3f4080419fe59249b14e0d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/frames/cast.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/frames/cast.png",
+      "sha256": "c0219a939e06a81a85fe119e73f645b79b3e4a05caeef16413e3d83bc5e5178d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/frames/death_1.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/frames/death_1.png",
+      "sha256": "83d82a1e2b9452aeae094b15159d465c4aba9d462b86b8b9cf93560609e48b99"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/frames/death_2.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/frames/death_2.png",
+      "sha256": "bf600ec65b0fdfeea2302432c3f76272862115a047bd0c00d0c79053a6857d9d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/frames/idle.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/frames/idle.png",
+      "sha256": "2e240ad29388abc5791a7d0f132a091f2755e990cb5493f08c80ccd6074e4133"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/frames/shot.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/frames/shot.png",
+      "sha256": "6fd4cdea32bd06e68fb02fc17d004abb0c934b47e0d30eeddcdf6758d511fe2b"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/parts/body.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/parts/body.png",
+      "sha256": "e1f45b96c5810170e433cd01355a331bfd3fd14de075247733fdbc35d70edc7a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/parts/head.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/parts/head.png",
+      "sha256": "cdee6b1358e9c6e4ebd492346690c5956d0567d5e5dba0836cc86527ce93d949"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/all-actions.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/all-actions.gif",
+      "sha256": "68e081eac3a00c8f6bc439146483f7a6e9ec056742b2e63c166d7fb51eb9a127"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/cast-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/cast-preview.gif",
+      "sha256": "65e3176264e19f4bffb98a0c8120c6d33a9e26178debc0ad6a1e8c37a4b72cc8"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/critical-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/critical-preview.gif",
+      "sha256": "1a906730fc17a14965a1713dbb9ab6d3a46c8aa34c19f2819e85a09318176b68"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/death-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/death-preview.gif",
+      "sha256": "95daf61e89345a8e51bc46e4e50b612d167c78b7987b846a2c43ddbac5bf04b8"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/godot-idle-1920x1080.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/godot-idle-1920x1080.png",
+      "sha256": "7b476747707bab4962700d2d0fad6bd641ee88d1665f0f167fe556a64c12ee69"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/godot-idle-1920x1200.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/godot-idle-1920x1200.png",
+      "sha256": "88f9095f542b355a516f0129adbb3655b85ed7fc343c20e4145f11270121d123"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/godot-idle-2560x1440.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/godot-idle-2560x1440.png",
+      "sha256": "0e607ba945b21645be157cc59f52b54aa6c5e4986ab7d074f7931c7106915872"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/godot-ranged-1920x1080.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/godot-ranged-1920x1080.png",
+      "sha256": "e0835608b43658bd2b0cb8917d5a0e9f8801fa56a5030afd02159d98e6d6c93a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/godot-ranged-1920x1200.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/godot-ranged-1920x1200.png",
+      "sha256": "c21d09b2864fa7660f84138092130c4b823b72d05bbb4a625b1f455e005cfba7"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/godot-ranged-2560x1440.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/godot-ranged-2560x1440.png",
+      "sha256": "d391ee5fe273e77996e81730db29ebf259cdebf28a5b914d33aef89a59c0e755"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/hurt-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/hurt-preview.gif",
+      "sha256": "e90f4a9bc1c1057860fb62b46b15e90d5157479e0085689a2bc2187e9b8d798a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/idle-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/idle-preview.gif",
+      "sha256": "3618ef27fc68c8e293519bb71edbd40d8b7b82afa33ff1e5fc335169ff01b0eb"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/move-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/move-preview.gif",
+      "sha256": "7dbb807c6caf83119fb3680ad46cdc04b141cec52950387221e8ef78b5d3717b"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/review/ranged-preview.gif",
+      "retained": "design/concepts/characters/archer-alt/asset_001/review/ranged-preview.gif",
+      "sha256": "0af2da1e6ef65ca071809a931116649589d4de2c4f025944eeac0cf0bfdd2fd0"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/source/critical-death-sheet.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/source/critical-death-sheet.png",
+      "sha256": "0aa454a092c4f02730a72524973814804a43a2318bc55e02205e30c8e8a804d6"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/source/idle-master.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/source/idle-master.png",
+      "sha256": "5ef48eba8e378ba775e4e8acd29c7f46eac6961da156cd7ed481637964ea94f6"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer-alt/001/source/ranged-keypose.png",
+      "retained": "design/concepts/characters/archer-alt/asset_001/source/ranged-keypose.png",
+      "sha256": "09b7b86ced852e2382783012341ea25cb7d8e9baf85145f6a73ba40e9d6e119a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/frames/aim.png",
+      "retained": "design/concepts/characters/archer/asset_001/frames/aim.png",
+      "sha256": "60f949ee98beb8f357771ce6504aa733a206a66a50404ff2d5e30abeca9b08b2"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/frames/cast.png",
+      "retained": "design/concepts/characters/archer/asset_001/frames/cast.png",
+      "sha256": "d077b2ecd7811bf24a2e6a0049f70e6653808dd27dbd08b63ff47722c178a0d6"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/frames/death_1.png",
+      "retained": "design/concepts/characters/archer/asset_001/frames/death_1.png",
+      "sha256": "281c263acb54df10743846d581910e37e7cac5ed5adff2971c3ba654cdb31792"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/frames/death_2.png",
+      "retained": "design/concepts/characters/archer/asset_001/frames/death_2.png",
+      "sha256": "3251c08d2277f0c6b4397a1ae58f46094228c6fdcf62e91c281a5bb17b71027d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/frames/idle.png",
+      "retained": "design/concepts/characters/archer/asset_001/frames/idle.png",
+      "sha256": "37b2e110034733e89fa1e68df67904ac7de84173085d64bef71654685b6c9f25"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/frames/shot.png",
+      "retained": "design/concepts/characters/archer/asset_001/frames/shot.png",
+      "sha256": "db08c2a747941c1a3bf14721d9e08d854f345a03f4b0e2f45a9b15d9344eb441"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/parts/body.png",
+      "retained": "design/concepts/characters/archer/asset_001/parts/body.png",
+      "sha256": "6a6fde0d4c955577816a7ba6c79a5f268337f23535ba89605bc137bac99d69d3"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/parts/head.png",
+      "retained": "design/concepts/characters/archer/asset_001/parts/head.png",
+      "sha256": "841a5686170b3c137b7eeb1bd30b50c384abbb798feeb72c736a1dd707b80d84"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/all-actions.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/all-actions.gif",
+      "sha256": "28e7321735e275b90a8622650122a742ba1b239f4867f92f245b55326911209d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/cast-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/cast-preview.gif",
+      "sha256": "c3895760a638f35a64e90bcad3c35617898006afe8db6b996718674582dbf5b6"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/critical-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/critical-preview.gif",
+      "sha256": "619003c7b497b8e4a4dc138816e826648a3f616d23b54021d89d60967602ca19"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/death-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/death-preview.gif",
+      "sha256": "f191829a74415ea05e92bb010652887370ba70969cb93559a9c1b0045e2bb940"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-critical-1920x1080.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-critical-1920x1080.png",
+      "sha256": "e372dcb132e5d59da2725ab997797e805334debb14bd46d08753608d83bb179e"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-death-1920x1080.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-death-1920x1080.png",
+      "sha256": "fc172dd8eda26e69df2cd1d2e2d15ca94bd92148a982661464a253d2333dd574"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-idle-1920x1080.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-idle-1920x1080.png",
+      "sha256": "5457b0a519c297c0478b7798955185d620d232a430cc3531d0101b29cd0be84c"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-idle-1920x1200.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-idle-1920x1200.png",
+      "sha256": "c690301b8221c0583c3decb23c0d962bd6f8eba96fb097bab93eb73872926fe5"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-idle-2560x1440.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-idle-2560x1440.png",
+      "sha256": "545e4ddc29c46e3076bbaa72fd52af7c7243306f7257053397bb4f658cf0c294"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-ranged-1920x1080.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-ranged-1920x1080.png",
+      "sha256": "5427cd74cacd23ac74f607316d50217253b0b9098c67c60375e4f1d3edd1079c"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-ranged-1920x1200.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-ranged-1920x1200.png",
+      "sha256": "111320c770de9753fe8dafba0f05ba4a0e4c5d1295d5273459d3467c3f06614e"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/godot-ranged-2560x1440.png",
+      "retained": "design/concepts/characters/archer/asset_001/review/godot-ranged-2560x1440.png",
+      "sha256": "59ffa673dd9833436980b5b564d86b9bce6174d5aa0e7983f69ca06a53557a84"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/hurt-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/hurt-preview.gif",
+      "sha256": "2be5dceca48cc0e981235b11dd88e8756dae5cc9c6460cddfbdf01ce0239ef8a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/idle-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/idle-preview.gif",
+      "sha256": "03026ccef57621ac3f17d640e9a13a2dd54dbcbea318947277ef9ae67930c190"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/move-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/move-preview.gif",
+      "sha256": "f940f31fe9f8ea0181c091881e1ed13c117feed4cd151a10324bd18438e25249"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/review/ranged-preview.gif",
+      "retained": "design/concepts/characters/archer/asset_001/review/ranged-preview.gif",
+      "sha256": "91ccc85243f0af79b5b8b002815484ec305b1a0410fa8f8eae7954ea688636fa"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/source/critical-death-sheet.png",
+      "retained": "design/concepts/characters/archer/asset_001/source/critical-death-sheet.png",
+      "sha256": "504ac5b27dbdb8fbc92099a892728a0c570a4537ba674a1a16d446fcbc405004"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/source/idle-master.png",
+      "retained": "design/concepts/characters/archer/asset_001/source/idle-master.png",
+      "sha256": "352c89368aad048d9c1d82c8e97ee750f22b959a9463eb41ef9cd32823842688"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/archer/001/source/ranged-keypose.png",
+      "retained": "design/concepts/characters/archer/asset_001/source/ranged-keypose.png",
+      "sha256": "d5bfdfd427f0f7a79f43dc6e8b667d71065fcd2f3f2b025e4d9bf1e7e519aa77"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/frames/aim.png",
+      "retained": "design/concepts/characters/healer/asset_001/frames/aim.png",
+      "sha256": "8109996b6f78a0fa3480d1303849edd01444bfb19df5ac4d9f7984442360d37d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/frames/cast.png",
+      "retained": "design/concepts/characters/healer/asset_001/frames/cast.png",
+      "sha256": "f54b1cb5083c6526906a2e0f36be225e8e9fc73eb839a76895b7a778b2800d8d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/frames/death_1.png",
+      "retained": "design/concepts/characters/healer/asset_001/frames/death_1.png",
+      "sha256": "2bbcf080609e8e58c4a35541efa621698498b18e5ecf64cc062855ec3b35b1ab"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/frames/death_2.png",
+      "retained": "design/concepts/characters/healer/asset_001/frames/death_2.png",
+      "sha256": "113940660cec486bf094c52ea66e54be5a07d86c71fd2e85af8cdfe86ecc342e"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/frames/idle.png",
+      "retained": "design/concepts/characters/healer/asset_001/frames/idle.png",
+      "sha256": "8109996b6f78a0fa3480d1303849edd01444bfb19df5ac4d9f7984442360d37d"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/frames/shot.png",
+      "retained": "design/concepts/characters/healer/asset_001/frames/shot.png",
+      "sha256": "dc2b41d183161afca626f1c5da474818274e0c423104416d3b147048aebbacbe"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/parts/body.png",
+      "retained": "design/concepts/characters/healer/asset_001/parts/body.png",
+      "sha256": "587fdb65affea4c66c8014740969a3ccf0fe51782c0ed4e4da0c54d24ddf5b33"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/parts/head.png",
+      "retained": "design/concepts/characters/healer/asset_001/parts/head.png",
+      "sha256": "4cb76d703e4a5a7e4c1e0428d4dfd99abeeca2f222483d8d21cc05e9f707797c"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/all-actions.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/all-actions.gif",
+      "sha256": "5d176f29cca2c7bf19cc4d6285f5c34b7c3db238aeeebd559d2db1b36e01db2e"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/cast-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/cast-preview.gif",
+      "sha256": "7f3e89ad51e8d7b8ec81799f80d24adffbd77a4daa8d0263c4acf56d738106c0"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/critical-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/critical-preview.gif",
+      "sha256": "5b3fcd3903483703c41a47e8a1a51ec3cfb7b0628650e941ecc0737267650d2e"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/death-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/death-preview.gif",
+      "sha256": "00a9c228a63eb12e3cd99d6afc8f00464caa274f9d09155052805c9fd71da4a4"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/godot-cast-1920x1080.png",
+      "retained": "design/concepts/characters/healer/asset_001/review/godot-cast-1920x1080.png",
+      "sha256": "d2bdc3fce0c2251abe3424b056c741fc24df2f6b1799619818ab1fb08ebe6c9f"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/godot-cast-1920x1200.png",
+      "retained": "design/concepts/characters/healer/asset_001/review/godot-cast-1920x1200.png",
+      "sha256": "ddaf0ce7b8e4ce5715fa3ed8750f5039f11e04fd0682ed8d7cdfd1378ec0e371"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/godot-cast-2560x1440.png",
+      "retained": "design/concepts/characters/healer/asset_001/review/godot-cast-2560x1440.png",
+      "sha256": "c260f81d896a5175f3938f1dcdb83e4eaea172b0cbbb9c1cc9cf8c08fb9f6c02"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/hurt-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/hurt-preview.gif",
+      "sha256": "669cb0de2756cb4e0265b0b972a4237eddc7a0a41841f842cfb9a13a96eff0d4"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/idle-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/idle-preview.gif",
+      "sha256": "7d1657d5a3192d4d7a807fa220ad1cbc32923e26ba5e57aeb9e62984189f16f6"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/move-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/move-preview.gif",
+      "sha256": "cbb2086455efbe2af2c22c3fe485997c259cd410587876282b552ed243e80459"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/review/ranged-preview.gif",
+      "retained": "design/concepts/characters/healer/asset_001/review/ranged-preview.gif",
+      "sha256": "c59c9b97f8801bb64dd21899e35467410f5f793129d270333529d954fdaff6b2"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/source/critical-death-sheet.png",
+      "retained": "design/concepts/characters/healer/asset_001/source/critical-death-sheet.png",
+      "sha256": "b1c414001178c0e524b7c8201292b06b67d3bc9b73a9307056406c9c841d81fe"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/healer/001/source/idle-master.png",
+      "retained": "design/concepts/characters/healer/asset_001/source/idle-master.png",
+      "sha256": "1357138bf90194039eca2a1a027517fddf014bdeaf64a8290674d5516e740c85"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/frames/aim.png",
+      "retained": "design/concepts/characters/inventor/asset_001/frames/aim.png",
+      "sha256": "f74b79893c1cc62e928319e3b4d947483d092ecea5db7a925252ba5a491d6108"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/frames/cast.png",
+      "retained": "design/concepts/characters/inventor/asset_001/frames/cast.png",
+      "sha256": "a4c212446417ae1b09f9aa7a7f5ea577f57e00cbbe84196967333c2a94454f26"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/frames/death_1.png",
+      "retained": "design/concepts/characters/inventor/asset_001/frames/death_1.png",
+      "sha256": "acc1df8cf92f191e746b118e3af477d79d3bd204b507bc022565085e64cb5531"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/frames/death_2.png",
+      "retained": "design/concepts/characters/inventor/asset_001/frames/death_2.png",
+      "sha256": "640120d0537197f0ef068865a1a110ff4b60fbbb9880bacc5772f90279df22ad"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/frames/idle.png",
+      "retained": "design/concepts/characters/inventor/asset_001/frames/idle.png",
+      "sha256": "f74b79893c1cc62e928319e3b4d947483d092ecea5db7a925252ba5a491d6108"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/frames/shot.png",
+      "retained": "design/concepts/characters/inventor/asset_001/frames/shot.png",
+      "sha256": "a0dde4745e3971a292ddf4f5e1f009b171cec6d7a2ac251933f0ddeb0849280b"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/parts/body.png",
+      "retained": "design/concepts/characters/inventor/asset_001/parts/body.png",
+      "sha256": "670d187bcfd4fb8241a33c2334accf29fd811bde9e6fa858221b5295719b6df0"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/parts/head.png",
+      "retained": "design/concepts/characters/inventor/asset_001/parts/head.png",
+      "sha256": "6c5c1335073f24b253b80270ef6333fa9667ae8e76f2ff2de45dde53f319a25b"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/all-actions.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/all-actions.gif",
+      "sha256": "5990370c52850394250ba49bb1a9775d5ac5420bfe01271f7de462b8fc51d50c"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/cast-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/cast-preview.gif",
+      "sha256": "4931f36a682748327ce6f2d3f7117619f0d91d695feb7832c995ae8364fd5d78"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/critical-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/critical-preview.gif",
+      "sha256": "e9dbd4381f511fd6f145c6092307b1c779de357bdca8d4ae35c503016508dde1"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/death-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/death-preview.gif",
+      "sha256": "4bc12718094ce3b03c5ec2f275a041cab5a0e2d46a396d329ce09fe27492ad9c"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/godot-ranged-1920x1080.png",
+      "retained": "design/concepts/characters/inventor/asset_001/review/godot-ranged-1920x1080.png",
+      "sha256": "062cd5933dd4cf55240ac681c8c783c6c14811c49ac99d4c0ea8346e7c61a5f7"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/godot-ranged-1920x1200.png",
+      "retained": "design/concepts/characters/inventor/asset_001/review/godot-ranged-1920x1200.png",
+      "sha256": "a397068b69e836f14aff1418b1dd2864317011c29f63817ee1191c7148041dcf"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/godot-ranged-2560x1440.png",
+      "retained": "design/concepts/characters/inventor/asset_001/review/godot-ranged-2560x1440.png",
+      "sha256": "7703d20194d1e3a5d30c8cf1ac7b9b259eb01c4a2f6eb50dd8858b7ef009456a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/hurt-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/hurt-preview.gif",
+      "sha256": "100043b664b3e16af312c809d815adabf9cecd3e7fdb30a16ccda8780c4e9509"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/idle-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/idle-preview.gif",
+      "sha256": "5e037ec35a5d5b4727c4f2eefbc31c311af70f14845c7a2be1c1dc05dbfaeeb6"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/move-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/move-preview.gif",
+      "sha256": "eb78977dbcff945c2a1a41a8df6cbd5de81cb452cae0a701759073b5e3667cdc"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/review/ranged-preview.gif",
+      "retained": "design/concepts/characters/inventor/asset_001/review/ranged-preview.gif",
+      "sha256": "86815ba4a528b0aaa14c3195d424cccac6b87fc9c640259cb35a9344f8e0d5f5"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/source/critical-death-sheet.png",
+      "retained": "design/concepts/characters/inventor/asset_001/source/critical-death-sheet.png",
+      "sha256": "4f71eb9acad5e1a945cd05bcd4b8a408f4b69c85f11bced236517c77f151136a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/inventor/001/source/idle-master.png",
+      "retained": "design/concepts/characters/inventor/asset_001/source/idle-master.png",
+      "sha256": "5ecf93dc99a326b3996ab0a0559a355ddb73ae04e39d3f0885fe5d46407d975b"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/review/critical-death-comparison.png",
+      "retained": "design/concepts/characters/review/critical-death-comparison.png",
+      "sha256": "a42e1f6924c7a3615d9e1f02d29f6b3bc2ed58d220b4d552688c526812f12969"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/review/critical-death-godot-gifs.png",
+      "retained": "design/concepts/characters/review/critical-death-godot-gifs.png",
+      "sha256": "632d5128f24f072e9545f1f935b10a8dde50f0b3ed2a3dd0dad43c88302fe136"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/frames/aim.png",
+      "retained": "design/concepts/characters/striker/asset_001/frames/aim.png",
+      "sha256": "048c47ac404fee75a9037986b15079d2bb145a55ea65b5cbd3679c7e5d88574f"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/frames/cast.png",
+      "retained": "design/concepts/characters/striker/asset_001/frames/cast.png",
+      "sha256": "05632c78f2eef17a1dc6740720638ebed37562b8aa6f7267de800cd9bddbe8bd"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/frames/death_1.png",
+      "retained": "design/concepts/characters/striker/asset_001/frames/death_1.png",
+      "sha256": "f11ea5e7634ac1ee4c72e5bbc00c9f23c45b006dc35ddbbce85ed59b6ab82332"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/frames/death_2.png",
+      "retained": "design/concepts/characters/striker/asset_001/frames/death_2.png",
+      "sha256": "e82d1d7a32da747367bcd5607d3b372c359f2853392d3d97a2791f9c96e3164a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/frames/idle.png",
+      "retained": "design/concepts/characters/striker/asset_001/frames/idle.png",
+      "sha256": "c1dc99534374514cc52fd93e0b40005eea8ba2cc17f87c6f59345b1f26364340"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/frames/shot.png",
+      "retained": "design/concepts/characters/striker/asset_001/frames/shot.png",
+      "sha256": "e67ce592f21e2115f7e36e587cd681da22d89884cd2a9859c3752b30a525e0e1"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/parts/body.png",
+      "retained": "design/concepts/characters/striker/asset_001/parts/body.png",
+      "sha256": "7d939e7368b0c77cf787b77bd27a9fcef194e2e0aa785e88fa2269af3473f074"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/parts/head.png",
+      "retained": "design/concepts/characters/striker/asset_001/parts/head.png",
+      "sha256": "2b4adaffaacbfaa9ffe0d71292c50f319fcb7515785fb17f23777da2711d0c14"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/all-actions.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/all-actions.gif",
+      "sha256": "376aa03a608576477fc7469a160bdab9ef669a84d83a50647b6f857e60327453"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/cast-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/cast-preview.gif",
+      "sha256": "c826725b43fd5092dc38bf91c14b3fc24d6aa322c05bdf64d243c3aa731f74ea"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/critical-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/critical-preview.gif",
+      "sha256": "71e4f1b56cd282e6f2ad4bdb41be9ea4c140898f860b259eb7ebfa463a48534b"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/death-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/death-preview.gif",
+      "sha256": "e3911e0a40260fd9e2ed1c467f5df84d50a52bd70a99515d13c2688c794f8318"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/godot-melee-1920x1080.png",
+      "retained": "design/concepts/characters/striker/asset_001/review/godot-melee-1920x1080.png",
+      "sha256": "a4f386260d48cdce4f23f90c4c431baf0f91023a8783f1561ecb681122936609"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/godot-melee-1920x1200.png",
+      "retained": "design/concepts/characters/striker/asset_001/review/godot-melee-1920x1200.png",
+      "sha256": "79b1ccfdd6dfb8f9ab5afab0685298b534032b250437fc3d019a01bbedd27fc8"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/godot-melee-2560x1440.png",
+      "retained": "design/concepts/characters/striker/asset_001/review/godot-melee-2560x1440.png",
+      "sha256": "5df3fe3cfe3d9f369c989e41f8db8adba6d2d3f13a0be26abb2f32303bb1d936"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/hurt-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/hurt-preview.gif",
+      "sha256": "6f0c766c644bb1045a45494305c15b7cd7f12d749c95f00f6b9a5253500ad61a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/idle-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/idle-preview.gif",
+      "sha256": "6edc95491d05636bc5c4f257cc0e82e4cc6dfe92ccfc3ba14d79da120868409a"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/melee-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/melee-preview.gif",
+      "sha256": "bd00c208ac622ac9259a11274bbd7063d37c02a0b2d8d30e29f70d10c28b9679"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/review/move-preview.gif",
+      "retained": "design/concepts/characters/striker/asset_001/review/move-preview.gif",
+      "sha256": "694c78e05fe307de7193bc23fd9af0adba76478f69b019d390f8ef23d212dc0e"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/source/critical-death-sheet.png",
+      "retained": "design/concepts/characters/striker/asset_001/source/critical-death-sheet.png",
+      "sha256": "e4bda5fb2bea3ab7be8c8b99b15b3ea9b4d7816545d618e383e976cdbfdc6b68"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/source/idle-master.png",
+      "retained": "design/concepts/characters/striker/asset_001/source/idle-master.png",
+      "sha256": "5bb11303ce96efddb5ff51ab0ba35fa21830f977301f820c819a4d258ab024e3"
+    },
+    {
+      "old": "design/concepts/player-cast-hybrid-animation/striker/001/source/melee-keypose.png",
+      "retained": "design/concepts/characters/striker/asset_001/source/melee-keypose.png",
+      "sha256": "0d556a16ce2d7395439e13aa3541cfe210148c7b12787c937ff19e2583ca910e"
+    }
+  ]
+}

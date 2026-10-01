@@ -13,6 +13,7 @@
 
 - 当前使用版：Manifest 对象 ID、active variant、正式路径（尚无则标明未接入）：
 - 本轮候选：tmp目录、编号与阶段（阶段内不要求正式Manifest登记）：
+- 人物目录（适用时）：`design/concepts/characters/<角色ID>/` 下的概念与动画版本；正式运行子集路径及同一对象 Manifest：
 - 本轮改动、需保留的部分与当前待决事项：
 - 复用的批准方向／资产及原评审记录：
 - 技术依据：相关 Token、Godot 资源、切帧元数据及对象 Manifest；列出多文件角色与 selected-to-effective binding，仅补充本任务特有参数，不复制整套规范：

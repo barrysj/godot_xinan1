@@ -1,0 +1,156 @@
+{
+  "method": "rigid RootBone and HeadBone for idle/move/hurt; key pose frames for attack/cast/critical/death",
+  "idle": {
+    "source": "design/concepts/characters/archer/asset_001/source/idle-master.png",
+    "source_bbox": [
+      265,
+      15,
+      822,
+      1514
+    ],
+    "anchor_x": 543.5,
+    "scale": 0.2988659106070714,
+    "placement": [
+      94,
+      28
+    ],
+    "canvas": [
+      512,
+      512
+    ],
+    "feet_y": 480
+  },
+  "attack": {
+    "source": "design/concepts/characters/archer/asset_001/source/ranged-keypose.png",
+    "source_bbox": [
+      125,
+      13,
+      975,
+      1513
+    ],
+    "anchor_x": 543.5,
+    "scale": 0.2988659106070714,
+    "placement": [
+      117,
+      28
+    ],
+    "canvas": [
+      512,
+      512
+    ],
+    "feet_y": 480
+  },
+  "head_cut_y": 111,
+  "defeat": {
+    "source": "design/concepts/characters/archer/asset_001/source/critical-death-sheet.png",
+    "panels": [
+      {
+        "crop": [
+          213,
+          54,
+          691,
+          844
+        ],
+        "size": [
+          221,
+          365
+        ],
+        "position": [
+          145,
+          115
+        ]
+      },
+      {
+        "crop": [
+          44,
+          573,
+          860,
+          864
+        ],
+        "size": [
+          480,
+          171
+        ],
+        "position": [
+          16,
+          309
+        ]
+      }
+    ]
+  },
+  "muzzle": [
+    386,
+    99
+  ],
+  "effect": "pistol",
+  "attack_name": "ranged",
+  "canvas": [
+    512,
+    512
+  ],
+  "display_size": [
+    128,
+    128
+  ],
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "move": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "ranged": {
+      "poses": [
+        "idle",
+        "aim",
+        "aim",
+        "shot",
+        "aim",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "cast": {
+      "poses": [
+        "idle",
+        "aim",
+        "cast",
+        "cast",
+        "aim",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "hurt": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "critical": {
+      "poses": [
+        "death_1"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "death": {
+      "poses": [
+        "death_2"
+      ],
+      "fps": 4,
+      "loop": false
+    }
+  }
+}

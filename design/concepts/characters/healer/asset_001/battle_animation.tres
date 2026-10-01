@@ -1,0 +1,29 @@
+[gd_resource type="Resource" load_steps=10 format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/healer/asset_001/frames/idle.png" id="idle"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/healer/asset_001/frames/aim.png" id="aim"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/healer/asset_001/frames/shot.png" id="shot"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/healer/asset_001/frames/cast.png" id="cast"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/healer/asset_001/frames/death_1.png" id="death_1"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/healer/asset_001/frames/death_2.png" id="death_2"]
+[ext_resource type="PackedScene" path="res://design/concepts/characters/healer/asset_001/presentation.tscn" id="presentation"]
+[ext_resource type="AnimationLibrary" path="res://design/concepts/characters/healer/asset_001/animations.tres" id="library"]
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}], "loop": true, "name": &"idle", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}], "loop": true, "name": &"move", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}, {"duration": 1.0, "texture": ExtResource("aim")}, {"duration": 1.0, "texture": ExtResource("aim")}, {"duration": 1.0, "texture": ExtResource("shot")}, {"duration": 1.0, "texture": ExtResource("aim")}, {"duration": 1.0, "texture": ExtResource("idle")}], "loop": false, "name": &"ranged", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}, {"duration": 1.0, "texture": ExtResource("aim")}, {"duration": 1.0, "texture": ExtResource("cast")}, {"duration": 1.0, "texture": ExtResource("cast")}, {"duration": 1.0, "texture": ExtResource("aim")}, {"duration": 1.0, "texture": ExtResource("idle")}], "loop": false, "name": &"cast", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}], "loop": false, "name": &"hurt", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("death_1")}], "loop": true, "name": &"critical", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("death_2")}], "loop": false, "name": &"death", "speed": 4}]
+
+[resource]
+script = ExtResource("script")
+frames = SubResource("frames")
+display_size = Vector2(128, 128)
+anchor = Vector2(0.5, 0.9375)
+impact_ratio = 0.45
+flip_with_facing = true
+presentation_scene = ExtResource("presentation")
+animation_library = ExtResource("library")

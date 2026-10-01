@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | `animation/` | `motion_capture.gd` | Godot 隔离视口捕获动作，输出捕获清单和临时帧 |
 | `animation/` | `motion_previews.py` | 准备捕获任务、按清单编码 GIF、登记 Manifest |
+| `animation/` | `sync_browser_clips.py` | 从 Godot `SpriteFrames` 同步动作索引到帧元数据，供资源台网页逐动作预览 |
 | `animation/` | `build_battle_frames.py`、`build_skill_frames.py` | 既有角色图集／护盾样本的构建工具；布局假设固定，不是任意图集自动识别器 |
 | `verification/` | `compare_presentation.gd`＋`.tscn`、`presentation_math.gd` | 同一 context 下比较任意两个兼容场景；不依赖迁移器，配置见下文 |
 | `archive/legacy-animation/` | `bake_presentation`、`compact_cycles` | 一次性旧代码动画迁移，保留复现用途；不是新角色制作入口，见目录内说明 |
@@ -48,3 +49,10 @@ JSON 必填：`source`、`target`（两个场景路径）、`canvas`、非空 `a
 ```
 
 `length` 是传给两版的动作持续时间；默认采样完整动作，`sample_end` 可单独指定采样终点，`times` 补充循环接缝和长时采样点。`source_action` 只处理旧动作名映射。可选 `facing_right`、`global_pose`、`ignore_nodes` 及 `tolerance`（position、rotation、scale、modulate）。忽略项必须有结构调整依据；目标额外节点不比较，新增视觉需单独查看。跳变动作可显式设置 `boundary_seconds`，报告接受的单侧时间容差次数；默认不启用。它验证姿态，不代替战斗事件测试或视觉评审。
+
+## 人物源包与正式交付
+
+人物资料统一位于 design/concepts/characters/<角色>/；概念与动画由各角色Manifest共同登记。制作脚本位于 animation/guard/ 和 animation/player_cast/，不再依赖旧study目录。player_cast/animations.tres为共同曲线模板，各包携带一致副本。
+promote_animation.py同时支持纯序列帧和混合包；rig_manifest.json列出运行文件，frames/*.png属于允许范围。生成输入和评审证据留在源包，正式帧元数据只保留播放字段。对象未绑定单位时须明确 not_integrated。
+
+人物索引入口：assets/art/asset_manifest.yaml → manifests/characters.yaml → manifests/characters/<角色>.yaml。提升与GIF导出通过资源台同一递归解析器查找对象；不依赖对象必须出现在根索引。

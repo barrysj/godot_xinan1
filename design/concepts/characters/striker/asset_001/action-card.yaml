@@ -1,0 +1,34 @@
+# Character_Action_Design v2; right-facing placeholder only.
+action_card_v2:
+  action_id: striker_melee_01
+  module: attack
+  priority: P0
+  loop_policy: one-shot
+  frame_count: 6
+  frame_rate: 8
+  canvas_size: [512, 512]
+  view_angle: side-2.5d
+  key_poses:
+    - {frame: 1, height: mid, pose: "双刀低位戒备，双脚稳固"}
+    - {frame: 2, height: low, pose: "身体前倾蓄力，左右手仍各持一刀"}
+    - {frame: 3, height: mid, pose: "右脚向右前踏，右手刀前伸，左手刀护胸"}
+    - {frame: 4, height: high, pose: "右手刀向右斩击，两把刀均完整"}
+    - {frame: 6, height: mid, pose: "收刀回待机"}
+  consistency_locks:
+    identity_anchor: "黑色短发洋红发梢、白色小发夹、炭灰连帽衫、背包、学生证、黑工装裤、白球鞋"
+    asymmetry_lock: "发夹、背包肩带和服饰特征保持同一侧，不交换左右"
+    weapon_hand_lock: "左手与右手各持一把青蓝洋红短匕首；两把完整刀刃始终可见"
+    palette_lock: "炭灰服装、黑发洋红发梢、青蓝洋红双刀、白鞋"
+    direction_hint: "仅右向四分之三侧视；不转身"
+  transitions:
+    can_cancel_to: []
+    interruptible: false
+    blend_time: 0
+    hit_frame: 4
+  motion_trail:
+    frames: [4]
+    color: "#ED6BFF"
+    style: "贴刀尖短弧光，不遮双刀"
+  prompt: >-
+    同一冲刺手右向四分之三侧视，黑短发洋红发梢、白发夹、炭灰连帽衫、背包、学生证、黑工装裤和白鞋。
+    右手刀向屏幕右方横斩，左手刀护在胸前，恰好两把青蓝洋红短匕首，两刀全程完整，脚底稳定，固定机位透明背景。

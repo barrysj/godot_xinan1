@@ -1,0 +1,7 @@
+# Guard 008 濒危与退场静态姿势
+
+输入：Guard 008 的透明待机帧 `frames/idle_00.png`。内置 image_gen 用下述提示词生成一张透明双姿势源图，保存为 `guard/008/source/critical-death-sheet.png`。源图按左右正方形裁切；[`add_defeat_poses.py`](../../../tools/art/animation/guard/add_defeat_poses.py)统一脚底并写入 `critical`、`death` 单帧片段。重建命令：`python tools/art/animation/guard/add_defeat_poses.py 008`。
+
+> Create a two-pose 2D anime game sprite sheet from this exact Guard reference. Same young brown-haired man with glasses, dark campus jacket over pale blue shirt, black pants, student lanyard, ONE complete cyan energy sword in his right hand and ONE large blue crystalline shield on his left forearm. Preserve all equipment silhouette and palette. Transparent wide 2:1 canvas, exactly TWO full-body poses, each centered separately in a square half, no text or border. LEFT critical health: staggered low crouch with knees bent, torso slumped, head lowered, sword tip near the ground in right hand; left arm still carries full shield but it droops downward, not upright defensive idle. RIGHT final defeat: compact side-lying fallen pose on the ground, knees bent, eyes closed, sword fully visible on ground immediately beside right hand, shield fully visible beside left arm on the ground, neither weapon clipped. Same three-quarter side angle facing screen right, fixed camera. Strong silhouette difference from standing reference. No gore, blood, extra limbs, extra sword, extra shield, weapon mutation, scenery, effects, blur or transparency inside character.
+
+这是以轮廓辨识为目标的低成本静态补帧。退场仍由现有战斗表现层渐隐；画面中并无从站立到倒地的过渡动作。

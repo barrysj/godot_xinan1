@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/guard.tres" id="skill"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/guard/battle_sheet.png" id="atlas"]
-[ext_resource type="Resource" path="res://resources/content/animations/guard.tres" id="battle_animation"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/guard/frames/idle_00.png" id="atlas"]
+[ext_resource type="Resource" path="res://assets/art/characters/guard/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
-region = Rect2(100, 5, 140, 140)
+region = Rect2(450, 25, 130, 130)
 [resource]
 script = ExtResource("s")
 id = "guard"

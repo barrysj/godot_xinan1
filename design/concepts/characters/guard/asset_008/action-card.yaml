@@ -1,0 +1,40 @@
+# Character_Action_Design v2, scoped to the existing right-facing Guard clip.
+# The approved concept is a loadout/portrait, not a three-view turnaround;
+# this card does not claim eight-direction animation readiness.
+action_card_v2:
+  action_id: guard_melee_01
+  module: attack
+  priority: P0
+  loop_policy: one-shot
+  frame_count: 24
+  frame_rate: 6
+  canvas_size: [1024, 512]
+  view_angle: side-2.5d
+  key_poses:
+    - {frame: 1, height: mid, pose: "右手持一把霓虹剑斜向下，左前臂举盾，双脚站稳"}
+    - {frame: 5, height: low, pose: "重心后移，右手蓄力，左臂盾保持在身前"}
+    - {frame: 11, height: high, pose: "右手剑向右突刺，剑尖完整，左前臂盾贴近躯干"}
+    - {frame: 16, height: mid, pose: "剑身平稳停留，盾边仍在画面内"}
+    - {frame: 24, height: mid, pose: "收剑回到右手低位，左前臂盾恢复待机位置"}
+  consistency_locks:
+    identity_anchor: "棕色短发圆框眼镜的校园守护者，深灰外套、浅蓝衬衫、青色学生证、斜挎包、白鞋"
+    asymmetry_lock: "左前臂始终有一面蓝色防火墙盾，右手始终握剑，不交换左右侧"
+    weapon_hand_lock: "仅一把霓虹单手剑由右手握持，仅一面蓝色防火墙盾固定在左前臂；剑柄、剑身、剑尖和盾缘全程完整"
+    palette_lock: "待机帧色板：棕发 #59443B、浅蓝衬衫 #C3D2F1、蓝盾 #50AAE2、亮肤色 #F6DBC2、白鞋 #E5DED8"
+    direction_hint: "仅右向四分之三侧视；全程不转身"
+  transitions:
+    can_cancel_to: []
+    interruptible: false
+    blend_time: 0
+    hit_frame: 11
+  motion_trail:
+    frames: [9, 10, 11, 12]
+    color: "#8FD8FF"
+    style: "短促青蓝剑光，不遮住剑尖"
+  prompt: >-
+    棕色短发圆框眼镜的校园守护者，深灰外套、浅蓝衬衫、青色学生证、斜挎包、白鞋。
+    仅一把霓虹单手剑由右手握持，仅一面蓝色防火墙盾固定在左前臂；剑柄、剑身、剑尖和盾缘全程完整。
+    右向四分之三侧视，固定机位，先后压蓄力，约 45% 动作时向右突刺，短暂停留后收势回到待机。
+    左前臂始终有一面蓝色防火墙盾，右手始终握剑，不交换左右侧。
+    待机帧色板：棕发 #59443B、浅蓝衬衫 #C3D2F1、蓝盾 #50AAE2、亮肤色 #F6DBC2、白鞋 #E5DED8。
+    人物全身、武器和盾始终在画面内，动作期间身份、色板、握持手和朝向不变。

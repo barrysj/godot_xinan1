@@ -4,6 +4,7 @@ const AnimationSet = preload("res://game/content/battle_animation_set.gd")
 const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
 const UnitDefinition = preload("res://game/content/unit_def.gd")
 const ActionProfile = preload("res://game/content/battle_action_profile.gd")
+const PreviewPngLoader = preload("res://tools/art/animation/preview_png_loader.gd")
 enum Mode { IDLE, MOVE, MELEE, RANGED, CAST, HURT, CRITICAL, DEATH }
 const MODES = ["待机", "移动", "近战", "远程", "施法", "受击", "濒危", "退场"]
 const ACTION_MODES = {"idle": Mode.IDLE, "move": Mode.MOVE, "melee": Mode.MELEE,
@@ -30,15 +31,23 @@ var tour := false
 var tour_stage := 0
 var tour_clock := 0.0
 var preview_presentations: Array[Node2D] = []
+var preview_png_loader: ResourceFormatLoader
+var explicit_animation_requested := false
+var explicit_animation_loaded := false
 
 func _ready() -> void:
+	preview_png_loader = PreviewPngLoader.new()
+	ResourceLoader.add_resource_format_loader(preview_png_loader, true)
 	super._ready()
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--preview-animation="):
+			explicit_animation_requested = true
 			var path = arg.trim_prefix("--preview-animation=")
 			if ResourceLoader.exists(path):
 				var resource = load(path)
-				if resource is AnimationSet: preview_animation = resource
+				if resource is AnimationSet:
+					preview_animation = resource
+					explicit_animation_loaded = true
 				else: push_warning("Preview requires a BattleAnimationSet resource")
 			else: push_warning("Preview animation resource does not exist: " + path)
 		elif arg.begins_with("--preview-unit="):
@@ -307,7 +316,11 @@ func _update_preview_presentations() -> void:
 	_apply_preview_presentation(preview_presentations[0], _presentation_context(
 		actor, _unit_center(actor) + Vector2(0, 13), 4.0))
 	_apply_preview_presentation(preview_presentations[1], _presentation_context(
-		actor, Vector2(1080, 520), 8.0))
+		actor, Vector2(1080, 520), _detail_factor(actor)))
+
+func _detail_factor(actor: Dictionary) -> float:
+	var width: float = actor.battle_animation.display_size.x if actor.battle_animation != null else 64.0
+	return minf(8.0, 1024.0 / maxf(width, 1.0))
 
 func _presentation_handles(u: Dictionary) -> bool:
 	if preview_presentations.is_empty() or u.id != 0: return false
@@ -365,7 +378,7 @@ func _draw() -> void:
 		if event.kind == "impact": description += "  %d" % event.actual
 		_text(Vector2(957, y), "%.2f  #%d  %s" % [event.time, event.action_id, description], DARK, 15)
 		y += 24
-	_pawn(units[0], Vector2(1080, 520), 8)
+	_pawn(units[0], Vector2(1080, 520), _detail_factor(units[0]))
 	_text(Vector2(957, 564), "十字标记为逻辑脚底", DARK, 15)
 	_text(Vector2(957, 586), "右侧为角色放大预览", DARK, 15)
 	_pixel_panel(Rect2(24, 617, 894, 34), PAPER)
@@ -375,6 +388,9 @@ func _check_preview() -> void:
 	set_process(false)
 	repeat = false
 	var failures = 0
+	if explicit_animation_requested and not explicit_animation_loaded:
+		failures += 1
+		push_error("Explicit preview animation failed to load")
 	if selector.is_item_disabled(Mode.MELEE) != (not _mode_enabled(Mode.MELEE)):
 		failures += 1
 	if selector.is_item_disabled(Mode.RANGED) != (not _mode_enabled(Mode.RANGED)):
@@ -389,8 +405,10 @@ func _check_preview() -> void:
 		_reset_preview()
 		for i in 25: advance_preview(STEP)
 		var impacts = history.filter(func(e): return e.kind == "impact")
+		var opponent_impacts = impacts.filter(func(e): return e.actor_id != e.target_id)
 		var ok = true
-		if mode in [Mode.IDLE, Mode.MOVE, Mode.CRITICAL]: ok = impacts.is_empty()
+		# Guard's low-health self shield is a valid passive impact during critical idle.
+		if mode in [Mode.IDLE, Mode.MOVE, Mode.CRITICAL]: ok = opponent_impacts.is_empty()
 		else: ok = not impacts.is_empty()
 		if mode == Mode.MOVE: ok = ok and units[0].position.y < 5
 		if mode == Mode.RANGED:
@@ -403,7 +421,9 @@ func _check_preview() -> void:
 			if preview_presentation_scene != null: ok = ok and not _presentation_handles(units[0])
 		if not ok:
 			failures += 1
-			push_error("Preview mode failed: " + MODES[mode])
+			push_error("Preview mode failed: %s state=%s hp=%.2f/%.2f critical=%s moving=%s phase=%s impacts=%s" % [
+				MODES[mode], units[0].animation.state, units[0].hp, units[0].max_hp,
+				units[0].animation.critical, units[0].animation.moving, phase, str(impacts)])
 		print("MOTION_PREVIEW_MODE ", MODES[mode], " ", "PASS" if ok else "FAIL")
 	mode = Mode.RANGED if _mode_enabled(Mode.RANGED) else Mode.MELEE
 	_reset_preview()

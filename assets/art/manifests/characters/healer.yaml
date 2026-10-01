@@ -1,0 +1,183 @@
+schema_version: 3
+object:
+  id: "healer"
+  display_name: "应援者"
+  type: "character"
+  subtype: "ally"
+variants:
+  healer_split_keyboard_long_sleeve_concept_006:
+    stage: "concept"
+    version: "006"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast-animation.md"
+      date: "2026-10-01"
+      decision: "approved_retained_character_resources"
+      quote: "除了注释1的应援者动画，其他的概念、动画都登记为正式资源"
+    root: "design/concepts/characters/healer/concept_006"
+    files:
+      concept: "m1_healer_long_sleeve_concept_006.png"
+      generation: "generation.md"
+    metadata:
+      usage: ["approved_character_reference", "identity_and_equipment_design"]
+      style_layer: "battle"
+      role: "healer"
+      character_id: "healer"
+      outfit: "single_long_sleeve_crewneck"
+      weapon: "dual_split_virtual_keyboards"
+      accent: "green_mint_warm_yellow"
+  healer_animation_seed_asset_007:
+    stage: "asset"
+    version: "007"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-22"
+      decision: "approved_for_animation_prototype"
+      quote: "007/008 接受，开始应援者最小动画原型。"
+    root: "design/concepts/characters/healer/asset_007"
+    files:
+      battle_composite_source: "m1_healer_battle_composite_asset_007.png"
+      rig_master_source: "m1_healer_rig_master_asset_007.png"
+      split_keyboards_source: "m1_healer_split_keyboards_asset_007.png"
+      portrait_source: "m1_healer_portrait_asset_007.png"
+      battle_composite_normalized: "processed/m1_healer_battle_composite_384.png"
+      rig_master_normalized: "processed/m1_healer_rig_master_384.png"
+      portrait_normalized: "processed/m1_healer_portrait_140.png"
+      generation: "generation.md"
+      contact_preview: "review/codex-workflow/m1_healer_seed_007_contact.png"
+      native_scale_preview: "review/codex-workflow/m1_healer_seed_007_128_compare.png"
+    metadata:
+      transparent: true
+      usage: ["asset_review", "animation_seed", "battle_static_candidate", "portrait_candidate", "tool_part_reference"]
+      style_layer: "battle"
+      role: "healer"
+      character_id: "healer"
+      source_concept: "healer_split_keyboard_long_sleeve_concept_006"
+      body_proportion: "battle_4_to_4_5_head_candidate"
+      normalized_canvas: [384, 384]
+      battle_display_size: [128, 128]
+      battle_anchor: [0.5, 0.875]
+      foot_point: [192, 336]
+      portrait_size: [140, 140]
+      tool: "dual_split_virtual_keyboards"
+      rig_state: "flat_master_not_layered"
+      release_scope: "excluded_2026_10_01_retained_prototype_only"
+  healer_head_socket_asset_008:
+    stage: "asset"
+    version: "008"
+    selection: "selected"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast.md"
+      date: "2026-09-22"
+      decision: "approved_for_animation_prototype"
+      quote: "007/008 接受，开始应援者最小动画原型。"
+    root: "design/concepts/characters/healer/asset_008"
+    files:
+      head_complete_source: "parts/m1_healer_head_complete_source_008.png"
+      head_on_source_canvas: "parts/m1_healer_head_on_source_canvas_008.png"
+      body_without_head_source: "parts/m1_healer_body_without_head_source_008.png"
+      head_on_normalized_canvas: "parts/m1_healer_head_on_canvas_384_008.png"
+      body_without_head_normalized: "parts/m1_healer_body_without_head_384_008.png"
+      socket_metadata: "head_socket.json"
+      generation: "generation.md"
+      recomposed_review: "review/codex-workflow/m1_healer_head_socket_recomposed_384_008.png"
+      contact_preview: "review/codex-workflow/m1_healer_head_socket_008_contact.png"
+    metadata:
+      transparent: true
+      usage: ["asset_review", "animation_seed", "replaceable_head_interface", "identity_reference_slot"]
+      style_layer: "battle"
+      role: "healer"
+      character_id: "healer"
+      derived_from: "healer_animation_seed_asset_007"
+      source_canvas: [1086, 1448]
+      source_cut_y: 510
+      normalized_canvas: [384, 384]
+      normalized_cut_y: 122
+      head_pivot: [193, 122]
+      draw_order: ["body_without_head", "head"]
+      replacement_mode: "complete_stylized_head"
+      release_scope: "excluded_2026_10_01_retained_prototype_only"
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "approved"
+    root: "design/concepts/characters/healer/asset_001"
+    files:
+      source_idle: "source/idle-master.png"
+      source_defeat: "source/critical-death-sheet.png"
+      idle: "frames/idle.png"
+      aim: "frames/aim.png"
+      shot: "frames/shot.png"
+      cast: "frames/cast.png"
+      death_1: "frames/death_1.png"
+      death_2: "frames/death_2.png"
+      head: "parts/head.png"
+      body: "parts/body.png"
+      frame_metadata: "battle_animation.frames.json"
+      action_card: "action-card.yaml"
+      generation: "generation.md"
+      godot_cast: "review/godot-cast-1920x1080.png"
+      gif_cast: "review/cast-preview.gif"
+      gif_idle: "review/idle-preview.gif"
+      gif_move: "review/move-preview.gif"
+      gif_ranged: "review/ranged-preview.gif"
+      gif_hurt: "review/hurt-preview.gif"
+      gif_critical: "review/critical-preview.gif"
+      gif_death: "review/death-preview.gif"
+      gif_all_actions: "review/all-actions.gif"
+      battle_animation: "battle_animation.tres"
+      rig_manifest_json: "rig_manifest.json"
+      presentation_tscn: "presentation.tscn"
+      animations_tres: "animations.tres"
+    resource: "design/concepts/characters/healer/asset_001/battle_animation.tres"
+    animation:
+      frames: "frame_metadata"
+      scene: "design/concepts/characters/healer/asset_001/presentation.tscn"
+      library: "design/concepts/characters/healer/asset_001/animations.tres"
+    previews:
+      gifs:
+        cast: "gif_cast"
+        idle: "gif_idle"
+        move: "gif_move"
+        ranged: "gif_ranged"
+        hurt: "gif_hurt"
+        critical: "gif_critical"
+        death: "gif_death"
+      godot:
+        unit: "res://resources/content/characters/healer.tres"
+        animation: "res://design/concepts/characters/healer/asset_001/battle_animation.tres"
+    metadata:
+      role: "healer"
+      method: "rigid_head_root_bones_and_key_pose_frames"
+      usage: ["battle", "deployment", "motion_preview"]
+    approval_evidence:
+      source: "docs/art/tasks/m1-player-cast-animation.md"
+      date: "2026-10-01"
+      decision: "approved_retained_character_resources"
+      quote: "除了注释1的应援者动画，其他的概念、动画都登记为正式资源"
+integration:
+  status: "authorized_active"
+  active_variant: "asset_001"
+  root: "assets/art/characters/healer"
+  resource: "assets/art/characters/healer/battle_animation.tres"
+  evidence: "2026-10-01 用户批准登记并替换旧角色；资产已批准，游戏接入效果待人工评审。"
+  owner: "resources/content/characters/healer.tres"
+  files:
+    animations_tres: "animations.tres"
+    frame_metadata: "battle_animation.frames.json"
+    battle_animation: "battle_animation.tres"
+    aim: "frames/aim.png"
+    cast: "frames/cast.png"
+    death_1: "frames/death_1.png"
+    death_2: "frames/death_2.png"
+    idle: "frames/idle.png"
+    shot: "frames/shot.png"
+    body: "parts/body.png"
+    head: "parts/head.png"
+    presentation_tscn: "presentation.tscn"
+    rig_manifest_json: "rig_manifest.json"

@@ -1,0 +1,116 @@
+{
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle_00",
+        "idle_01",
+        "idle_02",
+        "idle_03",
+        "idle_04",
+        "idle_05",
+        "idle_06",
+        "idle_07",
+        "idle_08"
+      ],
+      "fps": 2,
+      "loop": true
+    },
+    "move": {
+      "poses": [
+        "move_00",
+        "move_01",
+        "move_02",
+        "move_03",
+        "move_04",
+        "move_05",
+        "move_06",
+        "move_07",
+        "move_08"
+      ],
+      "fps": 2,
+      "loop": true
+    },
+    "melee": {
+      "poses": [
+        "melee_00",
+        "melee_01",
+        "melee_02",
+        "melee_03",
+        "melee_04",
+        "melee_05",
+        "melee_06",
+        "melee_07",
+        "melee_08",
+        "melee_09",
+        "melee_10",
+        "melee_11",
+        "melee_12",
+        "melee_13",
+        "melee_14",
+        "melee_15",
+        "melee_16",
+        "melee_17",
+        "melee_18",
+        "melee_19",
+        "melee_20",
+        "melee_21",
+        "melee_22",
+        "melee_23"
+      ],
+      "fps": 6,
+      "loop": false
+    },
+    "cast": {
+      "poses": [
+        "cast_00",
+        "cast_01",
+        "cast_02",
+        "cast_03",
+        "cast_04",
+        "cast_05",
+        "cast_06",
+        "cast_07",
+        "cast_08"
+      ],
+      "fps": 2,
+      "loop": false
+    },
+    "hurt": {
+      "poses": [
+        "hurt_00",
+        "hurt_01",
+        "hurt_02",
+        "hurt_03",
+        "hurt_04",
+        "hurt_05",
+        "hurt_06",
+        "hurt_07",
+        "hurt_08"
+      ],
+      "fps": 11,
+      "loop": false
+    },
+    "critical": {
+      "poses": [
+        "critical"
+      ],
+      "fps": 4,
+      "loop": true
+    },
+    "death": {
+      "poses": [
+        "death"
+      ],
+      "fps": 4,
+      "loop": false
+    }
+  },
+  "canvas": [
+    1024,
+    512
+  ],
+  "display_size": [
+    256,
+    128
+  ]
+}
