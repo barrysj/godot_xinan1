@@ -1,10 +1,14 @@
 # Guard 角色动画生产方式调研
 
+## 已采纳结论（2026-10-10）
+
+首选人形（友方＋敌方）采用职业原配开源 3D 模型／动作 → 模型内派生与道具变化 → 水平正交导向 → 已批准身份约束下的整身日系 2D 转绘 → 固定画布 SpriteFrames → 原战斗运行与程序特效。正式规则已回写[美术工作流](../art/WORKFLOW.md#人形动画生成友方敌方首选)，获批交付与混合来源例外见[M1 任务](../art/tasks/m1-player-cast-animation.md)。本文件其余内容为历史研究和当时上游核验，不代表当前价格／版本或已实现的运行时换装能力。中间实物按负责人最新一版授权清理，只保留最终源与最少证据。
+
 调研日期：2026-09-25。目标是用同一个 Guard 概念制作可公平比较的短动作组；本文件记录官方能力、路线判断及本次 H3 验证，具体成片评价见[Guard 动画方法对照](../art/tasks/guard-animation-study.md)。这不是资产批准或正式运行接入。
 
 ## 项目输入和比较基线
 
-- 身份依据：`design/concepts/characters/guard/concept_002/m1_guard_identity_reference_002.png` 与同目录的剑、盾、组合概念。002 人物身份和霓虹单手剑、防火墙盾方向已获批准；没有获批的动态 Guard 原画。具体批准边界见[我方角色样板](../art/tasks/m1-player-cast.md)。
+- 身份依据：`design/concepts/characters/guard/concept_001/m1_guard_identity_reference_002.png` 与同目录的剑、盾、组合概念。002 人物身份和霓虹单手剑、防火墙盾方向已获批准；没有获批的动态 Guard 原画。具体批准边界见[我方角色样板](../art/tasks/m1-player-cast.md)。
 - 游戏中的 4 头身战斗角色与 7 头身资料立绘应保持发型、服装和核心配饰一致，见[角色规范](../art/specs/CHARACTER_SPEC.md)。比较样本统一采用 4 头身战斗视角；若 002 参考偏向概念立绘，先派生同一 Guard 的战斗静帧并保留身份对照，不把模型自行重设计的人物视为同一角色。
 - 最小动作组建议为 `idle`、`move`、`melee`、`cast`、`hurt` 五项；若时间允许再补 `critical`、`death`。每项展示入场静止、动作与返回静止（死亡停末帧），同一画布、脚底、朝向、尺度、动作时长与出手点；详见[战斗动画契约](../battle-animation.md)。剑、盾的前后遮挡和武器握持是主要观察点。所有方法用相同展示大小、播放速度和 Godot 预览器，而不是只比源视频的观感。
 - 2026-09-25 的项目记录已明确：此前人物动态实验的 022 过于抽象、023 出现衣袖／前臂与裤腿交叠处网格翻折，均未通过；这条失败证据不能被粉笔精灵的成功直接抵消，见[ART-03](../implementation/art-03.md)与[角色任务](../art/tasks/m1-player-cast.md)。
@@ -71,3 +75,33 @@ MiniMax [官方模型仓库](https://huggingface.co/MiniMaxAI/MiniMax-H3)列出�
 2026-09-27 补充比例判断：Guard 当前 5～6 头身的观感得到负责人肯定，因此**后续 H3 抽帧试验暂不把 4 头身作为硬门槛**。更细长的体型可能利于展示挥剑和自然步态；在 128×128 显示下，头脸、学生证和持剑手也可能更小，这是需要实际同屏检验的风险。此为 Guard 试验范围内的临时选择，正式角色是否采用 6 头身、其他角色是否跟随及现行[角色规范](../art/specs/CHARACTER_SPEC.md)是否修改，均待游戏内比较后决定。
 
 2026-09-27 实测补充：负责人提供的 **即梦／Dreamina** 近战片已作为 005 接入独立 Godot 候选预览，不能将其记为 H3 结果。按源片真实时间戳择取 12 帧并使用横向安全画布后，004 旧版出手帧剑尖出画的问题在 005 中得到明显改善；游戏出手帧右剑完整，盾牌仍被身体遮挡较多。当前推荐从“固定使用 H3”调整为**先比较视频生成模型的逐动作有效帧率与修帧成本，再决定供应模型**；已验证的生产核心是固定角色首帧、单动作生成、逐时间戳选帧、等比画布和实际战斗时序预览。005 只有近战，不能推断即梦已具备整组动作的稳定性。样片与验证见[任务档案](../art/tasks/guard-animation-study.md#005--即梦近战视频抽帧试验2026-09-27)。
+
+## 免费 3D 动作资源核验（2026-10-07）
+
+本轮只核对原作者网站、商店和官方许可说明，未下载、导入、重定向或制作对比动画；以下是候选清单，不代表资产批准或接入验证。资源的“可免费用于商业游戏”“CC0”“免费提供 Blender 源文件”是不同条件，不能相互替代。针对本次 3～4 头身守护者需求，优先寻找已有完整人形骨骼及近战、格挡、移动动作的组合。
+
+### 优先试验：KayKit 模型与动作库
+
+| 资源 | 已核实免费范围 | 格式与许可 | 对守护者的意义及边界 |
+| --- | --- | --- | --- |
+| [KayKit Character Animations](https://kaylousberg.itch.io/kaykit-character-animations) | 当前 Features 列 161 项人形动画；Free 1.1 为 14 MB。全部动画免费，类别含待机、受击、死亡、走跑跳、单手／双手／双持攻击、格挡、弓枪和施法。 | FBX／GLTF；CC0，可商用且无署名要求。带控制 rig 的 `.blend` 源文件为 US$14.99 付费档，不属于免费交付。 | 最直接的动作候选。作者说明 Large rig 动作少于 Medium；重定向至非 KayKit 角色仍需调整，效果可能不理想。不能把动作库总数当成每个体型的动作数。 |
+| [KayKit Adventurers](https://kaylousberg.itch.io/kaykit-adventurers) | 当前 Free 2.0 为 12 MB，含 5 个带骨骼人物、25+ 武器／盾等道具和基础移动动作，可配合上述免费动作库。 | FBX／GLTF；CC0。Extra 的 3 个角色需 US$7.95，`.blend` Source 需 US$11.95。 | 可先用原包人物和剑盾观察现成动作，减少首次试验的绑定变量。旧 GitHub 1.0 的 4 角色／75 动作说明不应用来描述当前 2.0。 |
+
+项目推论：先在 KayKit 原骨架上展示待机、移动、单手攻击与格挡，再评估把动作转给守护者，比立刻改造现有试样更容易分辨“动作本身”“绑定”“角色比例”的问题。现成低多边形人物只作为动作验证载体，尚无证据证明它们已经符合校园守护者身份或精确达到本项目的 3～4 头身比例。短手臂、大头、剑盾握持仍要调整，不能只缩放骨架后直接认定合格。
+
+### Quaternius：动作候补，免费范围和许可须分开核对
+
+| 资源 | 已核实范围与费用边界 | 文件与动作证据 | 尚未确认 |
+| --- | --- | --- | --- |
+| [Universal Animation Library](https://quaternius.itch.io/universal-animation-library) | 整个产品宣传 120+ 动作；免费 Standard 15 MB，Pro US$9.99，Source US$14.99。**120+ 不是已确认的免费动作数。** | [作者官网](https://quaternius.com/packs/universalanimationlibrary.html)列 FBX／GLB／Blend；`.blend` 属 Source。产品说明有八方向移动、战斗、持枪、死亡，以及 Root Motion 开／关两种导出。 | 网页正文未给出可核验的当前 Standard 精确动作数及完整逐项名单；不能断言全部近战、盾牌动作或八方向组合都免费。官网版本区的 60～70% 描述不可换算成精确动画数。 |
+| [Universal Animation Library 2](https://quaternius.itch.io/universal-animation-library-2) | 整个产品宣传 130+ 动作；免费 Standard 17 MB，Source US$14.99。**130+ 不是已确认的免费动作数。** | [作者官网](https://quaternius.com/packs/universalanimationlibrary2.html)列 FBX／GLB／Blend；`.blend` 属 Source。产品说明含徒手／持械连击、独立攻击及收招、跑酷等；2026-09-28 更新修复 Sword_Light 与收招末帧衔接。 | 当前免费版具体数量、近战连击与盾动作的免费归属未确认。将它作为近战动作候补，不宣称免费档已有完整守护者动作组。 |
+| [Ultimate Animated Character Pack](https://quaternius.com/packs/ultimatedanimatedcharacter.html) | 官网列 52 个模型，正文称 50+ 动画人物，免费个人／商业使用；该老包页面没有 Standard／Pro／Source 下载分档说明。 | FBX／OBJ／Blend；作者 [2019 年发布说明](https://www.patreon.com/quaternius/posts/ultimate-pack-31403272?l=en-GB)也写免费并提供 Blend。OBJ 是网格格式，不能据此推断携带骨骼动画。 | 当前网页未列精确动作总数或逐角色的剑盾动作清单；没有验证旧骨架与 Universal Animation Library 新骨架的兼容性。 |
+
+**许可声明存在差异，暂不把 Quaternius 无条件归为严格 CC0 清单。** 上述包页仍标 CC0，Universal Animation Library 的 itch 元数据也标 CC0；但作者当前[总许可证页](https://quaternius.com/license.html)是 2026-08-28 更新的 Quaternius Asset License（QAL v1.0），允许免费修改并用于商业游戏、视频和渲染作品，无须署名，同时禁止将原版或改版素材作为独立素材再分发。其条款还说明后续许可变化不追溯已经取得的旧版素材。两处声明不能由本轮网页浏览消除：实际采用前应核对所下载版本附带许可证并保存来源，必要时向作者确认；不能凭旧宣传图将新下载包认定为 CC0，也不能将 QAL 与开源许可混同。
+
+### 其他候补及不列入严格开放清单的资源
+
+- Kenney [Animated Characters Protagonists](https://kenney.nl/assets/animated-characters-protagonists) 和 [Animated Characters Survivors](https://kenney.nl/assets/animated-characters-survivors)：两页均有免费入口和 CC0 标识，可作为带动画人物候补。页面的 `Files 8` 是文件数量，不能解释为 8 项动作；本轮未确认剑盾覆盖和具体动画格式。
+- [Mixamo 官方 FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)：Adobe ID 可免费使用，不要求订阅，允许在游戏等商业项目中使用；它不是 CC0 开源资源，不能和上述 CC0 候选混写。官方还说明中国 country code 的用户不可使用 Mixamo，因此只列为补充信息。
+
+本轮建议排序：**KayKit 免费人物＋免费动作库先做动作质量对照；Quaternius 待版本许可与免费动作名单核清后作为补充；Kenney 作为基础人形候补。** 本次尚未进行任何效果实测，不根据资源数量推断动作一定自然。若进入下一次试验，先限制为一条单手近战加一条移动，与当前 008 使用相同站立高度、时长和出手点比较，观察重心、腰胯发力、脚滑及剑盾穿插，再决定扩展范围。

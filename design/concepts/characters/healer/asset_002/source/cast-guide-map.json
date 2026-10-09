@@ -1,0 +1,250 @@
+{
+  "columns": 4,
+  "rows": 3,
+  "guide": "source/cast-guide.png",
+  "sha256": "1f1a2d9ce3cd137f3189b8c78ebab3178a89c5ba0241eadd5d09fe91e2c5fc89",
+  "cells": [
+    {
+      "action": "cast",
+      "index": 0,
+      "timeline_frame": 0,
+      "native_body": {
+        "frame": 0,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 0.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_00.png",
+      "sha256": "00ba66a7eb8b45841731c90201851fd2c056321b27f36c061ddd02a2ae800dcd"
+    },
+    {
+      "action": "cast",
+      "index": 1,
+      "timeline_frame": 6,
+      "native_body": {
+        "frame": 6,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 2.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_01.png",
+      "sha256": "6807510decee4e95cbacbb3a523b35a42db5d6b6bdb79796466dd5ce97371001"
+    },
+    {
+      "action": "cast",
+      "index": 2,
+      "timeline_frame": 12,
+      "native_body": {
+        "frame": 12,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 5.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_02.png",
+      "sha256": "ce8b7f31132112386bab8e8440dcf808904b4edf1af5975cfc024b0aac2f5ffa"
+    },
+    {
+      "action": "cast",
+      "index": 3,
+      "timeline_frame": 18,
+      "native_body": {
+        "frame": 18,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 8.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_03.png",
+      "sha256": "90312963865d90ef71536b4839e7467ebf9a010d87a47ffb83268491d816361b"
+    },
+    {
+      "action": "cast",
+      "index": 4,
+      "timeline_frame": 24,
+      "native_body": {
+        "frame": 24,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 10.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_04.png",
+      "sha256": "12f9bda5b9e274e3267a1e3f2bb321e8c0e0ad2b0f43c7276c9d62b38361c4ae"
+    },
+    {
+      "action": "cast",
+      "index": 5,
+      "timeline_frame": 27,
+      "native_body": {
+        "frame": 27,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 12.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_05.png",
+      "sha256": "cab432faaf3252f07870d18cf2986acb5dd6b8f5c6797b701e978a6af644fdb2"
+    },
+    {
+      "action": "cast",
+      "index": 6,
+      "timeline_frame": 30,
+      "native_body": {
+        "frame": 30,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 13.333333333333334,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_06.png",
+      "sha256": "dd5b7d4d388417473f12d662773d40e75366fb036e82b1411292aa4f8fd89e23"
+    },
+    {
+      "action": "cast",
+      "index": 7,
+      "timeline_frame": 36,
+      "native_body": {
+        "frame": 36,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 16.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_07.png",
+      "sha256": "fae8be037031cda88166709e830ab4962ed8fd3d8899f177fdc6b309eec6a823"
+    },
+    {
+      "action": "cast",
+      "index": 8,
+      "timeline_frame": 42,
+      "native_body": {
+        "frame": 42,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_08.png",
+      "sha256": "16db5e055064edd76a4b076894d0fab2d23146b82357f4ecf1f25b49ed024e4d"
+    },
+    {
+      "action": "cast",
+      "index": 9,
+      "timeline_frame": 48,
+      "native_body": {
+        "frame": 48,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_09.png",
+      "sha256": "1d2ab87aab1d8c69d6343ef0e615e5423d38659ed212ef926bf8e9c135792e80"
+    },
+    {
+      "action": "cast",
+      "index": 10,
+      "timeline_frame": 54,
+      "native_body": {
+        "frame": 54,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 0.5
+      },
+      "file": "model-frames/cast_10.png",
+      "sha256": "42c4fd0a0f6df5901d3a3139b8607a59f6e8391039acbb2ebcf841367fcd71f5"
+    },
+    {
+      "action": "cast",
+      "index": 11,
+      "timeline_frame": 60,
+      "native_body": {
+        "frame": 60,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 1.0
+      },
+      "file": "model-frames/cast_11.png",
+      "sha256": "37abaa441c9a39130fa8b4026461fb809cbd1bae66dcebf431d325d53caeae76"
+    }
+  ],
+  "bounds": [
+    [
+      237,
+      122,
+      387,
+      359
+    ],
+    [
+      237,
+      122,
+      388,
+      359
+    ],
+    [
+      236,
+      122,
+      389,
+      359
+    ],
+    [
+      235,
+      122,
+      399,
+      359
+    ],
+    [
+      229,
+      122,
+      429,
+      359
+    ],
+    [
+      201,
+      122,
+      429,
+      359
+    ],
+    [
+      190,
+      122,
+      429,
+      359
+    ],
+    [
+      167,
+      122,
+      437,
+      359
+    ],
+    [
+      237,
+      122,
+      401,
+      359
+    ],
+    [
+      237,
+      122,
+      389,
+      359
+    ],
+    [
+      237,
+      122,
+      387,
+      359
+    ],
+    [
+      237,
+      122,
+      387,
+      359
+    ]
+  ],
+  "tight_guide": {
+    "file": "source/cast-guide-tight.png",
+    "sha256": "ad89451dfafd93fc236d602e3a951d4d1c3879ad1d753a680df2f30b271b6b53",
+    "common_crop": [
+      147,
+      102,
+      457,
+      379
+    ],
+    "common_scale": 1.7328519855595668,
+    "pose_changes": false
+  }
+}

@@ -16,4 +16,4 @@
 | 应援者 | Brown fluffy hair, round glasses, mint green jacket, black trousers, lanyard, bag, white shoes and two green holographic wrist keyboards. Left critical: visibly exhausted, bent knees, slumped torso, lowered head and arms. Right defeat: side-lying body; glasses and both keyboards remain visible. |
 | 远射手换貌 | Short silver-blue bob, round glasses, orange-white shirt, black cargo trousers, lanyard, shoulder bag, white sneakers and one cyan-white pistol in right hand. Left critical: hunched, bent knees, left hand bracing a knee, complete pistol pointing down. Right defeat: compact side-lying pose with glasses retained and pistol next to right hand. |
 
-脚本 `tools/art/animation/player_cast/build_placeholder_hybrid.py` 将两栏裁切、按同一脚底线缩放到 512×512，并将濒危、退场分别接入对应的静态帧。原始生成图与标准化帧均保留，方便核对身份和武器完整性。
+本页记录较早混合占位包的直接生图提示词；该方法已被原配 3D 动作导向转绘替代。旧裁切生成器与中间稿已清理，当前五人新版依据 WORKFLOW，人形新增姿势先完成 3D 动作。

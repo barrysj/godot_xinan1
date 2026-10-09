@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-09",
+  "tool": "image_gen.imagegen",
+  "purpose": "Repair cast drawing style against accepted non-cast motions, preserve rendered native 3D pose guide",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_004/source/accepted-motion-style.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_003/source/cast-glow-v2.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_004/source/cast-guide-tight.png"
+    ],
+    "prompt": "Repair an existing native3D-guided 2D game cast atlas so it belongs to its other accepted motions. IMAGE1 is the AUTHORITATIVE identity/style: same modernstudentboy in accepted idle, rangedattack, hurt and crouch; upper full bodies and lower closeups. IMAGE2 is the 4x3 atlas edit target: overly warm reddish hair, heavy contours/material shading and too rounded chibi face, broad bloom, genericstar rings. IMAGE3 is ACTUAL native Ranger Ranged_2H_Shoot with customtwinrail cannon: pose chronology, jointangles andpropdeployment ONLY, never copy its lowpoly face, proportions, clothing/materiallighting. Return exactly12 full-body poses in4 columns3rows, same chronology andnativejointangles asimages2/3, release atrow2col2 andnative recoilcol3. Use the EXACT boy fromimage1 inALL12poses: muted mediumbrown tousledshort hair with sparsefine lineart, narrow youthful softanimeface, brown eyes, slender neck, navyblackschooltee cyantrim greenlanyard whitebadge darkcargopants whitegray sneakers blackbackpack. Samehead/bodyratio andlengths asimage1 (about3.7-3.8headsstanding), sameheadwidththroughout, no oversizedhead/bulkyhands/shorttorso, no bodyfacial redesign. Thin charcoal contours, softflat limitedcelshadows fromimage1, cloth matte and simplefolds, no 3Dmaterialgradient/gloss/metallicskin, no detailed red-gold hair rimlights, no thick comicink. Keep acceptedblackwhite twinrail heavycannon graspedwith bothnativehands, smallorange circularcore andcyancompactcontrols; preserve muzzlegeometry/readablewhite rails. Cast rampsbrighter cyanwhite energybetweenrails,row2cols2-3 release with a compact asymmetric handdrawnwhitecyan jagged lightbrush shape at muzzle; no fullwhitecloud or giantcircle, halo no biggerthan halfheadwidth. Bakedchargebrightness strongerthanbasicattack but confinedtoweapon, no smokygray aura, glossy volume or glowcoveringface/hands. Last3posesquietrecovery emissionlikereference1idle. IndependentgameVFX will supply flyingtrails/impact, don't fake a long wide cannonbeaminsideframe. Use transparentlight, no opaquehaze/background. Wholebodyfeet visible, commonfloorperrow and identicalscaleeverycell, evenly spaced4x3cells with20pxminimumclear gaps to cell edges, no clipping. No text/grid/labels/watermark/referenceboardcopied. Restyle these existing native-model poses, do not invent a free-text body animation."
+  },
+  "generated_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-13649084-4948-4edc-8e0b-d8b86908eb10.png",
+  "output": "source/cast-style-v1.png",
+  "status": "candidate awaiting quality and engine checks",
+  "output_sha256": "89b74c147b3855bb9a16a303799b41025b5642206bb12f8832a34d2e107dc4cb",
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_004/source/accepted-motion-style.png",
+      "sha256": "d2bae9d1563036a368d85e365ff88650a27c37ef0f930eceef8ef4326a37bef2"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_003/source/cast-glow-v2.png",
+      "sha256": "5861fc7d60be9c63661fc4cd84bd4f887ae5b03b4741e8ad8dbf7eccac1b926e"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_004/source/cast-guide-tight.png",
+      "sha256": "87aa6d7d315b26a18bd52fc4e75b3e40362174ba2f4aef29f550011727d69071"
+    }
+  ],
+  "output_size": [
+    1448,
+    1086
+  ],
+  "candidate_status": "quality reviewed; actual engine verified; pending human style approval"
+}

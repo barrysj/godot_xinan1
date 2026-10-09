@@ -1,0 +1,730 @@
+{
+  "frames": [
+    {
+      "action": "melee",
+      "index": 0,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        389,
+        354
+      ],
+      "model_pose": "model-frames/melee_00.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 309,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 1,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 1,
+      "source_rect": [
+        389,
+        0,
+        778,
+        354
+      ],
+      "model_pose": "model-frames/melee_01.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 309,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 2,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 2,
+      "source_rect": [
+        778,
+        0,
+        1166,
+        354
+      ],
+      "model_pose": "model-frames/melee_02.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 309,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 3,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 3,
+      "source_rect": [
+        1166,
+        0,
+        1555,
+        354
+      ],
+      "model_pose": "model-frames/melee_03.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 309,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 4,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 4,
+      "source_rect": [
+        0,
+        354,
+        389,
+        681
+      ],
+      "model_pose": "model-frames/melee_04.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 635,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 5,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 5,
+      "source_rect": [
+        389,
+        354,
+        778,
+        681
+      ],
+      "model_pose": "model-frames/melee_05.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 635,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 6,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 6,
+      "source_rect": [
+        778,
+        354,
+        1166,
+        681
+      ],
+      "model_pose": "model-frames/melee_06.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 635,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 7,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 7,
+      "source_rect": [
+        1166,
+        354,
+        1555,
+        681
+      ],
+      "model_pose": "model-frames/melee_07.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 635,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 8,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 8,
+      "source_rect": [
+        0,
+        681,
+        389,
+        1011
+      ],
+      "model_pose": "model-frames/melee_08.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 956,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 9,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 9,
+      "source_rect": [
+        389,
+        681,
+        778,
+        1011
+      ],
+      "model_pose": "model-frames/melee_09.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 956,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 10,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 10,
+      "source_rect": [
+        778,
+        681,
+        1166,
+        1011
+      ],
+      "model_pose": "model-frames/melee_10.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 956,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "melee",
+      "index": 11,
+      "sheet": "source/attack-tech-v4.png",
+      "cell": 11,
+      "source_rect": [
+        1166,
+        681,
+        1555,
+        1011
+      ],
+      "model_pose": "model-frames/melee_11.png",
+      "shared_sheet_scale": 1.3747318431059339,
+      "shared_row_ground": 956,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "cast",
+      "index": 0,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        389,
+        365
+      ],
+      "model_pose": "model-frames/cast_00.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 328,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "cast",
+      "index": 1,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 1,
+      "source_rect": [
+        389,
+        0,
+        779,
+        365
+      ],
+      "model_pose": "model-frames/cast_01.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 328,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "cast",
+      "index": 2,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 2,
+      "source_rect": [
+        779,
+        0,
+        1168,
+        365
+      ],
+      "model_pose": "model-frames/cast_02.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 328,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "cast",
+      "index": 3,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 3,
+      "source_rect": [
+        0,
+        365,
+        389,
+        690
+      ],
+      "model_pose": "model-frames/cast_03.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 662,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "cast",
+      "index": 4,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 4,
+      "source_rect": [
+        389,
+        365,
+        779,
+        690
+      ],
+      "model_pose": "model-frames/cast_04.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 662,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "cast",
+      "index": 5,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 5,
+      "source_rect": [
+        779,
+        365,
+        1168,
+        690
+      ],
+      "model_pose": "model-frames/cast_05.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 662,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 0,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 6,
+      "source_rect": [
+        0,
+        690,
+        389,
+        1014
+      ],
+      "model_pose": "model-frames/hurt_00.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 986,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 1,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 7,
+      "source_rect": [
+        389,
+        690,
+        779,
+        1014
+      ],
+      "model_pose": "model-frames/hurt_01.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 986,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 2,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 8,
+      "source_rect": [
+        779,
+        690,
+        1168,
+        1014
+      ],
+      "model_pose": "model-frames/hurt_02.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 986,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 3,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 9,
+      "source_rect": [
+        0,
+        1014,
+        389,
+        1346
+      ],
+      "model_pose": "model-frames/hurt_03.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 1302,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 4,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 10,
+      "source_rect": [
+        389,
+        1014,
+        779,
+        1346
+      ],
+      "model_pose": "model-frames/hurt_04.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 1302,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 5,
+      "sheet": "source/support-tech-v2.png",
+      "cell": 11,
+      "source_rect": [
+        779,
+        1014,
+        1168,
+        1346
+      ],
+      "model_pose": "model-frames/hurt_05.png",
+      "shared_sheet_scale": 1.2772039774444799,
+      "shared_row_ground": 1302,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 0,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        336,
+        326
+      ],
+      "model_pose": "model-frames/move_00.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 299,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 1,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 1,
+      "source_rect": [
+        336,
+        0,
+        673,
+        326
+      ],
+      "model_pose": "model-frames/move_01.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 299,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 2,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 2,
+      "source_rect": [
+        673,
+        0,
+        1010,
+        326
+      ],
+      "model_pose": "model-frames/move_02.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 299,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 3,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 3,
+      "source_rect": [
+        1010,
+        0,
+        1346,
+        326
+      ],
+      "model_pose": "model-frames/move_03.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 299,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 4,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 4,
+      "source_rect": [
+        0,
+        326,
+        336,
+        615
+      ],
+      "model_pose": "model-frames/move_04.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 596,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 5,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 5,
+      "source_rect": [
+        336,
+        326,
+        673,
+        615
+      ],
+      "model_pose": "model-frames/move_05.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 596,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 6,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 6,
+      "source_rect": [
+        673,
+        326,
+        1010,
+        615
+      ],
+      "model_pose": "model-frames/move_06.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 596,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 7,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 7,
+      "source_rect": [
+        1010,
+        326,
+        1346,
+        615
+      ],
+      "model_pose": "model-frames/move_07.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 596,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "critical",
+      "index": 0,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 9,
+      "source_rect": [
+        336,
+        615,
+        673,
+        900
+      ],
+      "model_pose": "model-frames/critical_00.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 881,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "critical",
+      "index": 1,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 10,
+      "source_rect": [
+        673,
+        615,
+        1010,
+        900
+      ],
+      "model_pose": "model-frames/critical_01.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 881,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 0,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 12,
+      "source_rect": [
+        0,
+        900,
+        336,
+        1168
+      ],
+      "model_pose": "model-frames/death_00.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 1150,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 1,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 13,
+      "source_rect": [
+        336,
+        900,
+        673,
+        1168
+      ],
+      "model_pose": "model-frames/death_01.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 1150,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 2,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 14,
+      "source_rect": [
+        673,
+        900,
+        1010,
+        1168
+      ],
+      "model_pose": "model-frames/death_02.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 1150,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 3,
+      "sheet": "source/locomotion-tech-v1.png",
+      "cell": 15,
+      "source_rect": [
+        1010,
+        900,
+        1346,
+        1168
+      ],
+      "model_pose": "model-frames/death_03.png",
+      "shared_sheet_scale": 1.2596795040129012,
+      "shared_row_ground": 1150,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "idle",
+      "index": 0,
+      "source": "source/idle-tech-v1.png",
+      "shared_sheet_scale": 0.5174081985656823,
+      "source_sha256": "f0f6d4218ae6fc017a5e67ff55b2b310fbce87a98491347932a1688a6909b82e",
+      "model_pose": "model-frames/idle_00.png",
+      "pixel_processing": "imagegen weapon-only edit + one isotropic layout transform; original Rogue Idle_A retained"
+    },
+    {
+      "action": "melee",
+      "index": 12,
+      "source": "exact idle return; not a new generated/model pose"
+    },
+    {
+      "action": "cast",
+      "index": 6,
+      "source": "exact idle return; not a new generated/model pose"
+    },
+    {
+      "action": "hurt",
+      "index": 6,
+      "source": "exact idle return; not a new generated/model pose"
+    }
+  ],
+  "sheets": {
+    "attack": {
+      "file": "source/attack-tech-v4.png",
+      "size": [
+        1555,
+        1011
+      ],
+      "columns": 4,
+      "rows": 3,
+      "scale": 1.3747318431059339,
+      "row_ground": [
+        309,
+        635,
+        956
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "source_head_length": 63.28506932918696,
+      "target_head_length": 87.0,
+      "reference_cell": 0,
+      "landmark_points": [
+        [
+          188,
+          79
+        ],
+        [
+          194,
+          142
+        ]
+      ],
+      "sha256": "2053766da7928a86e144db5631f4476bdc219460860211cb456236f15a7b48e6"
+    },
+    "support": {
+      "file": "source/support-tech-v2.png",
+      "size": [
+        1168,
+        1346
+      ],
+      "columns": 3,
+      "rows": 4,
+      "scale": 1.2772039774444799,
+      "row_ground": [
+        328,
+        662,
+        986,
+        1302
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "source_head_length": 68.11754546370561,
+      "target_head_length": 87.0,
+      "reference_cell": 0,
+      "landmark_points": [
+        [
+          206,
+          82
+        ],
+        [
+          210,
+          150
+        ]
+      ],
+      "sha256": "6cb14856652ff1f476c0aa2cdb4dd9e9ea8b2c84aa70252f67ba106b887571d3"
+    },
+    "locomotion": {
+      "file": "source/locomotion-tech-v1.png",
+      "size": [
+        1346,
+        1168
+      ],
+      "columns": 4,
+      "rows": 4,
+      "scale": 1.2596795040129012,
+      "row_ground": [
+        299,
+        596,
+        881,
+        1150
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "source_head_length": 69.06518659932803,
+      "target_head_length": 87.0,
+      "reference_cell": 0,
+      "landmark_points": [
+        [
+          191,
+          61
+        ],
+        [
+          194,
+          130
+        ]
+      ],
+      "sha256": "5f78530796fcdb3bd02621609d17e7fadf753c180b5a4d13baf20f722dc26f69"
+    }
+  }
+}

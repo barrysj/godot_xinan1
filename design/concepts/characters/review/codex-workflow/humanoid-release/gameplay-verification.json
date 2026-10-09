@@ -1,0 +1,53 @@
+{
+  "result": "PASS_WITH_NOTES",
+  "scene": "res://scenes/expedition/expedition.tscn",
+  "formal_packages": true,
+  "fps": 30,
+  "capture_fps": 15,
+  "seconds": 22.6,
+  "captured_frames": 339,
+  "simulation_steps": 678,
+  "events": 344,
+  "event_and_numeric_trail_identical_to_approved_candidate": true,
+  "three_role_cast_coverage": "PASS",
+  "healer_inventor_seven_state_coverage": "PASS",
+  "state_frame_counts": {
+    "archer": {
+      "cast": 54,
+      "death": 84,
+      "hurt": 39,
+      "idle": 365,
+      "move": 14,
+      "ranged": 122
+    },
+    "guard": {
+      "cast": 29,
+      "critical": 24,
+      "death": 312,
+      "hurt": 69,
+      "idle": 149,
+      "melee": 81,
+      "move": 14
+    },
+    "healer": {
+      "cast": 39,
+      "critical": 41,
+      "death": 84,
+      "hurt": 20,
+      "idle": 389,
+      "move": 14,
+      "ranged": 91
+    },
+    "inventor": {
+      "cast": 26,
+      "critical": 9,
+      "death": 233,
+      "hurt": 81,
+      "idle": 237,
+      "move": 27,
+      "ranged": 65
+    }
+  },
+  "mp4_complete_decode": "PASS",
+  "known_boundary": "Inventor critical is 9 simulation frames (0.3s); Archer critical did not occur naturally in this recording. All five seven clips are separately verified and previewed."
+}

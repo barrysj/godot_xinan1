@@ -1,97 +1,61 @@
 # 美术任务：M1 我方角色动画
 
-状态：2026-10-01，负责人批准除应援者旧007／008种子外的现存人物概念和动画正式登记。Guard仅保留008；其他四名角色及远射手替换外观保留001。五名默认角色已接入，替换外观已入库但未替换默认远射手。游戏接入效果待人工评审。
+## 正式交付与人工决定（2026-10-10）
 
-## 正式登记与接入（2026-10-01）
+负责人已批准最新画面、动作与程序特效，并明确：“可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。守护者依然要保留008那个资源（目前命名不对，请修改，将asset_008改为001，concept_002改成001），新的资源是asset_002。”本轮依此收尾；此前“待评审／制作中”的候选状态已由该最终决定替代，不需要重复询问留存。
 
-人工依据：“除了注释1的应援者动画，其他的概念、动画都登记为正式资源”，并明确要求按角色归档、删除旧Guard及远射手占位、使用新资源。这同时确认本阶段留存范围。排除项仅指旧应援者动画原图与头部拆件 healer/asset_007、healer/asset_008；新应援者混合动画 healer/asset_001 在本次范围内。
+| 角色 | 留存概念 | 当前正式动画 | 提升前的具体版本 | 运行帧数 |
+| --- | --- | --- | --- | --- |
+| 守护者 | `guard/concept_001`，原 concept_002 仅纠正编号 | `guard/asset_002` | 整合 tmp_001 | 39 |
+| 远射手 | `archer/concept_006` | `archer/asset_002` | tmp_008，仅等比缩放后的最终稿 | 48 |
+| 冲刺手 | `striker/concept_006` | `striker/asset_002` | tmp_005，科技匕首最终稿 | 42 |
+| 应援者 | `healer/concept_006` | `healer/asset_002` | tmp_003，大操作界面与光效最终稿 | 48 |
+| 发明家 | `inventor/concept_006` | `inventor/asset_002` | tmp_005，仅等比缩放后的最终稿 | 48 |
 
-| 对象 | 设计资料与动画源包 | 正式运行包 | 游戏状态 |
-| --- | --- | --- | --- |
-| guard | characters/guard/concept_002、asset_008 | assets/art/characters/guard/ | 已替换旧图集、动画入口及头像 |
-| archer | characters/archer/concept_006、asset_001 | assets/art/characters/archer/ | 已替换旧图集、动画入口及头像 |
-| striker | characters/striker/concept_006、asset_001 | assets/art/characters/striker/ | 已绑定动画与新头像 |
-| inventor | characters/inventor/concept_006、asset_001 | assets/art/characters/inventor/ | 已绑定动画与新头像 |
-| healer | characters/healer/concept_006、asset_001 | assets/art/characters/healer/ | 已绑定动画与新头像；007／008只留原型资料 |
-| archer_alt | characters/archer-alt/asset_001 | assets/art/characters/archer_alt/ | 已批准备选外观，未绑定默认单位 |
+另外按负责人明确要求保留守护者旧视频版 `guard/asset_001`，它是原正式 `asset_008`，内容与历史批准不变，未作为当前游戏版本。**旧正式视频版 asset_008 和 10 月 7 日模型转绘试验 tmp_008 是不同来源**；后者的已用结果已收进新版 asset_002。默认游戏稳定引用 `assets/art/characters/<角色>/battle_animation.tres`，Debug／Release 均使用新版，`Current` 启动参数兼容指向同一正式包。头像仅调整同一待机图的 AtlasTexture 裁切，不生图。
 
-表内 characters/ 均位于 design/concepts/ 下。概念仍是 stage: concept + approved 的正式设计参考，不将带标注的概念板当作战斗图集。每角色一个对象 Manifest；旧 m1_player_cast、guard_animation_study、player_cast_hybrid_animation 聚合对象已撤销，主表改索引六个人物／外观对象。独立 YAML 本身符合工作流，本轮调整的是所有权归属。
+五人当前概念／动画由各对象 Manifest 登记；原概念批准沿用其原记录，新动画和实际接入效果使用本次批准。远射手另一外观 `archer-alt` 不在本轮替换范围，原资产与未绑定状态保持。负责人 2026-10-10 指示合入 main，已按美术分支规则 squash 合入本地 main；未推送远程。
 
-正式包由 tools/art/promotion/promote_animation.py 提升：Guard65文件，其余每包13文件。源图、视频、生成记录、动作卡和GIF留在角色源包；运行包不依赖 design/。各混合包携带同一动画库的确定性副本，远射手两外观库及规范化场景／动作一致，保持可独立交付。头像使用新待机帧的Atlas裁切，不另生成身份图。
+## 所有动作的实际来源
 
-验证基线：0a3f939 加本次工作树；Godot4.7.2。六包确定性提升检查、六版动作预览检查（每版七动作，含暂停／单步／慢速）、行动模拟、帧动画与表现专项通过。authored_assets_check.tscn 验证五名实际角色正式路径、头像、帧尺寸、濒危／退场与待机像素不同及低血量／死亡状态选择；5角色、0失败。图形模式 -- --capture 用两组合法四人阵容覆盖全部五角色，在1920×1080、2560×1440、1920×1200捕获六张真实战斗截图，0失败。
+| 角色／底模 | 待机 | 移动 | 普攻 | 施法 | 受击 | 濒危／退场 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 守护者／Knight 迁移至学生代理模型 | 模型导向＋全身转绘；单张 | 模型导向＋转绘 | 原 KayKit 剑击迁移＋转绘 | 历史直接生成 4 姿势，补降盾与精确待机返回 | 历史直接生成 4 姿势，补精确待机返回 | 历史直接生成；2／4 帧 |
+| 远射手／Ranger 原配蒙皮骨架 | Idle_A；单张 | Running_A | Ranged_1H_Shoot | 原单手射击时间映射＋原待机混合，3D 枪体延长／展开后转绘 | Hit_A | Crouching／Death_A |
+| 冲刺手／Rogue 原配蒙皮骨架 | Idle_A；单张 | Running_B | Melee_Dualwield_Attack_Slice | Melee_Dualwield_Attack_Stab | Hit_A | Crouching／Death_A |
+| 应援者／Mage 原配蒙皮骨架 | Ranged_Magic_Shoot 起点；单张 | Walking_B | Ranged_Magic_Shoot | Ranged_Magic_Spellcasting 时间映射＋原待机混合，3D 大界面展开后转绘 | Hit_A | Crouching／Death_A |
+| 发明家／Ranger 原配蒙皮骨架 | Ranged_2H_Aiming；单张 | Running_HoldingRifle | Ranged_2H_Shoot | 原双手射击时间映射＋原待机混合，3D 重炮蓄力展开后转绘 | Hit_A | Crouching／Death_A |
 
-证据位于[正式接入截图](../../../design/concepts/characters/review/codex-workflow/release/)、[迁移审计](../../../design/concepts/characters/review/codex-workflow/release/migration-audit.json)。资源台扫描52对象、1105文件、0缺失、0不一致、0错误；PNG原图与批准前内容哈希保持一致。目录迁移撤去 design/.gdignore 内无用的旧 .import 描述，正式帧使用常规Godot导入。
+除守护者明确标出的历史例外，其他四人七态均有实际 3D 动作来源，再整身转绘；不是把 2D 身体图贴在低模上得到成图，也不声称转绘关节与模型投影逐像素一致。普通动作保留原曲线；派生施法另建动作，原曲线不改。科技武器／键盘／操作界面为按概念制作的自制 3D 道具，不能标成 KayKit 原装武器。精确起止、动作名、时间映射、采样和原曲线指纹以各包 `model.json` 及 `source/*provenance.json` 为准。
 
-边界：008继承的绿幕细边、武器形变，以及刚性骨骼移动缺腿步仍保留；应援者头身比与其他四人不同。本轮批准既有画稿，没有重绘或改变动作节奏。实际战斗存在纵向相邻人物与上排名牌局部交叠，留待接入效果评审，不宣称布局已最终验收。运行日志的既有根证书／旧像素源图警告不影响本轮加载；编辑器无法写AppData设置的环境告警未改。待统筹：默认五名角色的运行资产、头像和目录所有权已变化。
+`source/base-motion.blend` 保存三名远程角色的普通动作源，`source/motion.blend` 保存最终派生施法；这两份属于同一最终交付的必要源文件。冲刺手同一模型承载七态。守护者只对真正由模型导向的动作保存源模型，来源表不补造施法／受击的 3D 证据。开放输入与两份 CC0 许可证只留实际用到的四模型、Medium 动作组及来源记录，位于 `design/references/animation/kaykit/`。
 
-## 当前预览
+## 最终比例、播放与特效
 
-默认角色直接使用正式包，无需临时覆盖：
-pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Action Melee -Speed 0.5
-远射手替换外观仍显式指定 -Animation res://assets/art/characters/archer_alt/battle_animation.tres。
-网页资源台从六个人物 Manifest 展示同角色的概念、动作及GIF。
+- 守护者运行画布 1024×896、显示 256×224；其他四人 1536×1024、显示 384×256。所有帧固定脚底锚、透明背景、水平视角、左右镜像；源图与实际运行包装分别保留。
+- 远射手移动／普攻／施法／受击／濒危分别等比缩放 0.90／0.94／0.90／0.95／0.94；发明家为 0.85／0.99／0.94／0.98／1.00。两人待机与退场 1.00，同动作固定尺度绕脚底缩放全帧，精确待机返回图保持原字节。最后比例修正没有局部变形、拼头、重绘或改时序；提升再核对 225 张运行 PNG 的 SHA-256 与已批准版本一致。
+- 远射施法强化长枪与细长弹道，发明家为蓄力重炮，应援者为可对友方／敌方工作的较大操作界面。帧内装备光效保留；程序特效共享实际模拟时钟和释放／投射／命中事件。
+- `667e60e` 的音爆环与薄线特效保留：精准一道环 0.40 秒；重炮两道环 0.60 秒，第二道延迟 0.085 秒。反向、斜向、暂停、变速、重开和去重由共享显示层处理，不改战斗规则。
 
-## 历史试制记录
+## 验证与最新证据
 
-## 方法与约束
+本地 main 合并复验（2026-10-10）：主线基线 `2eaa397`，获批来源 `art/guard-3d-sprite@36b5a32`，合并初始索引与来源树完全相同、无冲突。Godot 4.7.2 增量导入后，Debug 启动／难度重开捕获 39／0、Release 入口 6／0；资源台 39 项单测、五包确定性提升检查、五人七态与两组四人阵容三分辨率截图通过；施法特效 26／0，ACTION／PRESENTATION／ANIMATION 全部 PASS。命令及记录见交付验证报告的 `local_main_squash`；保留既有证书、编辑器设置写入及旧像素图加载警告，未新增脚本或绘制错误。
 
-- 先做低成本占位：根骨骼＋头骨骼承担待机、移动、受击；濒危、幅度大的攻击、技能和退场用完整关键姿势帧。避免旧人体网格试验已发现的衣袖、前臂和裤腿翻折；根骨骼移动不是完整腿部步态。
-- 根据已安装的 [`Character_Action_Design` Skill v2](https://github.com/guiguiyan930-source/Character_Action_Design)，为每个角色记录身份、不可交换的左右特征、武器数量／持手及色板，并在动作卡标明关键姿势和出手帧。已批准的概念是身份和武器方向参考，尚无完整三视图，本轮仅验证右向片段，不宣称八方向可用。
-- 运行预览通过 `-Animation` 临时覆盖，`resources/content/characters/*.tres` 不引用候选。批准与提升仍按 [WORKFLOW](../WORKFLOW.md) 分阶段进行。
+验证日期 2026-10-10；基线 `667e60e`＋本次正式收尾工作树；Godot 4.7.2、Blender 4.5.14、Pillow 12.3。正式提升五包确定性检查通过，运行 PNG 225／225 与批准稿相同。`authored_assets_check.tscn` 五人／0 失败，两组合法四人阵容、三规定分辨率已运行并保存。共享特效 26／0，ACTION／PRESENTATION／ANIMATION 检查通过。其余逐人预览、资源台、启动与清理后复验结果随最终验证报告登记。
 
-## 进度
+最新跨角色证据：[正式资源实战](../../../design/concepts/characters/review/codex-workflow/humanoid-release/characters-battle-party2-1920x1080.png)、[冲刺手阵容](../../../design/concepts/characters/review/codex-workflow/humanoid-release/characters-battle-party1-1920x1080.png)、[完整演示](../../../design/concepts/characters/review/codex-workflow/humanoid-release/gameplay-1080p.mp4)、[验证报告](../../../design/concepts/characters/review/codex-workflow/humanoid-release/release-verification.json)。每角色 `asset_002/review/` 保留最新七动作 GIF 和全动作巡演，供 Manifest 资源台播放。
 
-| 角色 | 状态 | 素材与实现 | 已知边界 |
-| --- | --- | --- | --- |
-| 守护者 | 已有混合样本 003；视频抽帧 008 保留 | 头／盾骨骼＋序列帧；008 为独立近战修色候选 | 003 不含四肢骨骼，008 仍待人工评审 |
-| 远射手 | 001 已技术验证，待人工评审 | 按已批准 006 概念生成透明待机与举枪姿势；共享根／头骨骼动画库，远程／施法关键帧 | 腿部移动只是占位上下运动；静态首尾姿势衔接未精修 |
-| 应援者 | 001 已技术验证，待人工评审 | 已批准 007 静态合成种子；共用根／头骨骼库，键盘绿光关键帧 | 手指无独立打字动作 |
-| 冲刺手 | 001 已技术验证，待人工评审 | 透明待机母图与双刀前斩姿势；共用根／头骨骼库，近战／施法关键帧 | 移动非腿部步态，出手首尾未精修 |
-| 发明家 | 001 已技术验证，待人工评审 | 透明待机母图；共用根／头骨骼库，枪口青光关键帧 | 举枪和后坐力尚未细化 |
-| 远射手换貌验证 | 001 已技术验证，待人工评审 | 银蓝短发、圆眼镜、橙白短袖；与原远射手共用完全相同骨骼场景结构、动作资源时序和动画库 | 仅证明当前根／头刚性骨骼可复用，不证明未来四肢蒙皮可直接复用 |
+已知边界：待机为静态图；四人濒危使用原蹲姿作为基础表达；整身转绘仍有少量关节／透视演绎，等比缩放不能消除内部比例与姿势差异。现有困难实战中发明家濒危约 0.3 秒，独立预览补看，不强改 HP／伤害延长。当前动画单朝向镜头＋左右镜像，不宣称八方向、运行时 3D 换装、精确投影、Web／移动导出或敌方新动画已完成验证。敌方后续采用同一工作流，需各自实装验收。
 
-### 远射手 001
+## 清理与恢复
 
-- 源图、关键姿势、帧、分层和 Godot 资源见 [`archer/001`](../../../design/concepts/characters/archer/asset_001/)；共享动画库为 [`shared/animations.tres`](../../../tools/art/animation/player_cast/animations.tres)。[动作卡](../../../design/concepts/characters/archer/asset_001/action-card.yaml)锁定右手单枪、马尾发夹、服装色板和关键出手帧。
-- 用内置 imagegen 依 006 概念生成单张透明右向待机，再参考该图生成举枪关键姿势；完整提示词与来源见同版本的 `generation.md`。脚本 [`build_placeholder_hybrid.py`](../../../tools/art/animation/player_cast/build_placeholder_hybrid.py)确定性归一画布、脚底、裁出头部、制作枪口短光及淡出退场帧。
-- 2026-09-29 技术验证基线：`art/player-cast-hybrid-animation`，Godot 4.7.2。`pwsh.exe -File run-motion-preview.ps1 -Unit res://resources/content/characters/archer.tres -Animation res://design/concepts/characters/archer/asset_001/battle_animation.tres -EnsureImport -Check` 及缓存已齐时不带 `-EnsureImport` 的 `-Check` 均通过，七动作通过、近战略过。`-Action Idle`／`-Action Ranged -Capture` 各得 1920×1080、1920×1200、2560×1440 实机截图并人工查看；`-ExportPreviews` 产出七动作 30 FPS、352×352 GIF 与巡演。资源台扫描 `errors=[]`、本对象 `warnings=[]`、全局缺失和不一致均为 0；Python 编译、Git 差异检查通过。
-- [待机截图](../../../design/concepts/characters/archer/asset_001/review/godot-idle-1920x1080.png)、[远程截图](../../../design/concepts/characters/archer/asset_001/review/godot-ranged-1920x1080.png)、[七动作巡演](../../../design/concepts/characters/archer/asset_001/review/all-actions.gif) 是实际 Godot 输出。地面青色方块是预览标记，源图与标准化帧中没有它。
-- 状态：只用于低成本可运行占位，不把这套小幅刚性骨骼解释为完整四肢蒙皮；不覆盖正式角色配置。独立动作完成后需继续制作其余职业。
+负责人已明确只留最新稿和守护者旧版例外。先收齐当前动作源／许可证与对应元数据，提升稳定运行子集，再删除五人 tmp、守护者历史试验目录、四人旧动画包、旧对照／录像与一次性研究脚本；概念只保留当前已批准稿。保留必要最终源，不保留废弃调色前帧、旧候选模型和重复比较图。工作区删除不重写 Git 历史；已提交旧版本可从其历史提交恢复，未提交的中间稿按授权不再留存。
 
-### 冲刺手 001
+本轮编号由负责人显式指定，覆盖守护者旧编号；新保留动画为 asset_002。制作过程曾分配的 tmp 上限：守护者 011、远射手 008、冲刺手 005、应援者 003、发明家 005，后续不因删除而复用这些 tmp 编号。正式编号后续按 WORKFLOW 的已分配上限规则处理；应援者曾用 asset_007／008，记录保留其历史分配事实，不把本轮新 asset_002 解释为允许复用旧编号。
 
-- [动作卡](../../../design/concepts/characters/striker/asset_001/action-card.yaml)锁定双刀数量、左右持手、发夹和服装色板。按已批准 006 概念生成透明待机母图，再用 imagegen 编辑右向双刀前斩姿势；提示词和来源见同版本的 `generation.md`。整帧关键姿势保住手与两把刀，待机／移动／受击／濒危共用 Archer 的同一根／头骨骼动画库。
-- 2026-09-29 验证基线：`art/player-cast-hybrid-animation`。Godot 4.7.2 `run-motion-preview.ps1 -Unit res://resources/content/characters/striker.tres -Animation res://design/concepts/characters/striker/asset_001/battle_animation.tres -EnsureImport -Check` 通过；`-Action Melee -Capture` 得三分辨率截图并人工查看 1920×1080；`-Action Melee -ExportPreviews` 得 30 FPS、352×352 实际时序 GIF。Manifest 扫描 `errors=[]`、本对象 `warnings=[]`、缺失与不一致为 0。首次预览发现刀尖光弧与刀身分离，已改锚点后重建、重新导入、截图复核。
-- [近战实机截图](../../../design/concepts/characters/striker/asset_001/review/godot-melee-1920x1080.png)、[近战 GIF](../../../design/concepts/characters/striker/asset_001/review/melee-preview.gif)。状态为评审候选，不覆盖正式角色。
-
-### 发明家 001／应援者 001
-
-- 发明家按已批准 006 服装概念用 imagegen 生成透明持枪母图，双手与同一支完整大枪稳定可见；现阶段用同一姿势加短枪口光表达出手。[动作卡](../../../design/concepts/characters/inventor/asset_001/action-card.yaml)、[远程实机截图](../../../design/concepts/characters/inventor/asset_001/review/godot-ranged-1920x1080.png)、[远程 GIF](../../../design/concepts/characters/inventor/asset_001/review/ranged-preview.gif)。枪口光首次位置偏离，已移回枪口后复建。
-- 应援者复制已批准 007 透明合成图，保留两块全息键盘与人物外观；同一静态姿势加键盘处绿光脉冲表达技能。[动作卡](../../../design/concepts/characters/healer/asset_001/action-card.yaml)、[施法实机截图](../../../design/concepts/characters/healer/asset_001/review/godot-cast-1920x1080.png)、[施法 GIF](../../../design/concepts/characters/healer/asset_001/review/cast-preview.gif)。静态素材的批准不等于动画获批。
-- 2026-09-29～30 技术验证基线：`art/player-cast-hybrid-animation`，Godot 4.7.2。对 `resources/content/characters/inventor.tres` 和 `healer.tres` 分别用对应 `battle_animation.tres` 运行 `run-motion-preview.ps1 -EnsureImport -Check`，均通过；`-Action Ranged`／`-Action Cast -Capture` 各得三分辨率截图并人工查看 1920×1080；各动作 `-ExportPreviews` 得 30 FPS、352×352 Godot 实际时序 GIF。Manifest 扫描 `errors=[]`、本对象 `warnings=[]`、缺失与不一致均为 0；Python 编译、Git 差异检查通过。两套均引用同一个 `shared/animations.tres`。新动画仍待人工评审，不替换正式角色。
-
-### 远射手换外貌复用验证 001
-
-- 银蓝短发、圆框眼镜和橙白上衣的透明待机母图与举枪关键姿势由内置 imagegen 生成；原远射手举枪图只提供姿势参考，身份以新母图为准。新形象持同一支完整青白手枪，动作卡见 [`archer-alt/001`](../../../design/concepts/characters/archer-alt/asset_001/)；新图尚待人工视觉评审。
-- 2026-09-30 验证基线：`art/player-cast-hybrid-animation`。`verify_archer_reuse.py` 检查两套 `presentation.tscn` 和 `battle_animation.tres` 去掉角色资源路径后逐字相同，并都直接引用同一个 `shared/animations.tres`；512×512 待机图重叠可见像素中，RGB 单通道差值大于 30 的比例为 0.391，确认并非只替换文件名。Godot 4.7.2 对换貌候选 `-EnsureImport -Check` 和缓存齐备后普通 `-Check` 均通过；`-Action Idle`／`-Action Ranged -Capture` 各得三分辨率截图并人工查看 1920×1080；待机、远程各用 `-ExportPreviews` 得 30 FPS、352×352 GIF。Manifest 扫描 `errors=[]`、本对象 `warnings=[]`、缺失／不一致为 0；Python 编译和 Git 差异检查通过。
-- 对照：[原远射手待机](../../../design/concepts/characters/archer/asset_001/review/godot-idle-1920x1080.png)、[换貌待机](../../../design/concepts/characters/archer-alt/asset_001/review/godot-idle-1920x1080.png)；[原远程](../../../design/concepts/characters/archer/asset_001/review/godot-ranged-1920x1080.png)、[换貌远程](../../../design/concepts/characters/archer-alt/asset_001/review/godot-ranged-1920x1080.png)。证明的范围是当前根／头两根刚性骨骼和整帧攻击的复用；服装、头发的高自由度变形及全身骨骼尚未验证。
-
-### 网页动作预览（2026-09-30）
-
-五个候选均已用 Godot `run-motion-preview.ps1 -EnsureImport -ExportPreviews` 导出七个动作 GIF 和 `review/all-actions.gif`。Manifest 登记逐动作预览，帧元数据同步 `clips` 索引后，美术资源浏览器可直接选择动作观看。启动 `pwsh.exe -NoProfile -File ./tools/art/asset_manager/run-server.ps1`，打开 `http://127.0.0.1:8765/`，依次选择“人物”→“M1 我方角色骨骼与关键帧占位动画”→版本→“动画”→动作。五个版本同为 001，以路径末段 `archer`、`striker`、`inventor`、`healer`、`archer-alt` 区分；分别对应远射手、冲刺手、发明家、应援者和远射手换貌。网页校验显示五版各七动作，GIF 图片均可加载，缺失／不一致为 0。它们仍是待评审候选，不因完成预览而提升为正式资产。
-
-### 濒危／退场关键姿势修订（2026-09-30）
-
-负责人明确要求两态至少有与待机不同的静态帧。旧版濒危仍显示待机图，退场仅给待机图降饱和并淡出，未满足此要求。以各角色原待机图为编辑参考，内置 imagegen 生成[双姿势源图及提示词](../prompts/m1-player-cast-defeat-poses.md)：濒危弯腰或踉跄，退场侧卧倒地；枪、双刀、巨枪与两套全息键盘均保留。每版 `source/critical-death-sheet.png` 是原始输出，脚本确定性裁切成 `frames/death_1.png`（濒危）和 `frames/death_2.png`（倒地）；退场直接显示倒地帧，再由已有战斗表现层淡出。共享骨骼库不再覆盖濒危，五版的动作资源与网页 GIF 已重建。
-
-[五位角色三态并排](../../../design/concepts/characters/review/critical-death-comparison.png)用于核对静态轮廓；[Godot GIF 抽样](../../../design/concepts/characters/review/critical-death-godot-gifs.png)、[远射手濒危实际截图](../../../design/concepts/characters/archer/asset_001/review/godot-critical-1920x1080.png)与[退场实际截图](../../../design/concepts/characters/archer/asset_001/review/godot-death-1920x1080.png)验证运行效果。五版 `-EnsureImport -Check` 均通过、七动作 GIF 与巡演重新导出；源帧对待机的可见 Alpha 轮廓交并比，濒危为 0.335～0.434、退场为 0.115～0.194。动作仍是静态关键姿势之间的切换，没有补中间过渡；候选继续待负责人评审。
+研究经验已回写[美术工作流·人形动画生成](../WORKFLOW.md#人形动画生成友方敌方首选)，作为友方与敌方首选；工具状态归 ART-03，正式接入归 ART-02。待统筹：五人默认正式包替换和人形生产方式已变化，总览／Roadmap 未在普通美术功能 session 中改写。
 
 
-## 适配 main 分类索引并合并（2026-10-01）
+清理后最终复验：资源台39项单测／0失败，五对象 warnings=[]、正式内容全部 matched、缺失／不一致 0；五人各七态与守护者旧 asset_001 检查通过，35 动作 GIF＋5 巡演已重录；7 个原配／派生源模型重开，28 动作原始曲线指纹通过。Debug 正式启动捕获39／0、Release6／0，Current兼容38／0；正式实录22.6秒／339帧／678步／344事件与批准候选一致，MP4完整解码通过。65个已核验目标清理约5.56GiB，最终资源、许可证、旧守护者62帧保留；历史有效工具归档。验证日期2026-10-10，基线667e60e＋收尾工作树。
 
-整合基线：main 1e94537、人物分支967ec0d；合并分支art/characters-main-integration。保留main新增的enemy分类，根assets/art/asset_manifest.yaml通过manifests/characters.yaml加载六个manifests/characters/<角色>.yaml。人物源包位于design/concepts/characters/<角色>/，运行包位于assets/art/characters/<角色>/。撤去本次新增的98个.import描述并忽略后续生成的.import／.uid，不改无关历史导入配置。
-
-动画提升与GIF任务准备复用资源台递归索引解析，补充二级清单回归检查；人物的播放元数据精简改为源包显式选择，保留粉笔精灵既有完整帧元数据契约。验证：39项资源台／制作工具测试通过；六个人物包及粉笔精灵确定性提升检查通过；资源台52对象、1105文件、0缺失、0不一致、0错误。正式角色Godot检查5角色／0失败；保留既有接入视觉评审状态。本轮仅目录、索引与工具兼容调整，沿用前次三分辨率截图。待统筹：人物采用与main敌人相同的分类子索引，制作工具支持递归查找。
-
-本地main合并核验：接收基线902342c，合并来源art/characters-main-integration的a673acf，使用squash。保留main敌人分类及后续战斗设计文档。main实际资源台52对象／1105文件、0缺失／不一致；首次导入后Guard七动作预览0失败，正式角色检查5角色／0失败。新增提交无.import／.uid／缓存，未推送远程。游戏接入效果仍沿用待人工评审状态。
+另清理26个本次研究产生的旧录制／检查缓存约14.79GiB，保留最终实录审计与Godot正常导入缓存；不清空整个.godot。清理后无候选依赖的正式动作预览再验通过。

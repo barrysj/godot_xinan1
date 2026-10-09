@@ -36,11 +36,22 @@
 
 结算前保留至少 0.65 秒收尾；如剩余死亡动画更长则等待其完成，之后才恢复胜利方并进入战报。headless 直接完成结算，不依赖动画时钟。
 
+### 独立施法特效
+
+`BattleAnimationSet.cast_vfx_style` 可选绑定 `game/content/battle_cast_vfx_style.gd`：按外观设置精准／重炮形态、颜色、强度及逻辑炮口偏移。`scenes/battle_demo/cast_vfx.gd` 只保存短暂绘制数据，原 `pixel_battle.gd`／征途战斗共同消费。没有配置时保留原有表现。
+
+蓄力读取存活角色当前施法前摇；释放闪光只响应成功的 `action_released`，技能命中闪光只响应 `impact` 的特殊伤害，并按动作／目标去重。技能尾迹沿真实模拟投射物绘制，炮口偏移只修正显示端的起点；普通攻击沿用原弹道。暂停冻结表现时钟，倍速同步，重建战斗清空短暂特效；特效资源不保存运行状态，不改动作、射程、飞行速度、伤害或存档。短暂闪光不会遮满整个战场，不包含额外震屏、音效或命中停顿。
+
+枪械施法释放另绘向前推进的音爆环，椭圆短轴沿真实瞄准方向、长轴横跨弹道，半径快速扩张后淡出。精准形态一道细环持续0.40秒；重炮形态两道较厚的环持续0.60秒，第二道延迟0.085秒并落在第一道后方。彩色边缘、细白芯与短速度线配合原枪口闪光；枪口点火在0.18／0.28秒内消退，压力波独立继续推进。`sonic_rings()`统一生成绘制与捕获使用的方向、中心、半径、透明度和顶点；成功释放按动作／目标去重。全部为原生程序绘制，不需要修改SpriteFrames、3D模型或动画资源。
+
+验证入口为 `scenes/battle_demo/cast_vfx_check.tscn`，覆盖原征途中的暂停／倍速／重开、朝向、释放及命中去重、基础攻击与缺失样式回退、落空／取消和规则隔离，并验证音爆环扩张／前移／淡出、左右与斜向瞄准、零距离回退、重炮双环延迟及生命周期。美术候选的配置、实际截图和人工意见仍归对应任务。
+
 ## 验证
 
 使用 PowerShell 7 调用 Godot：
 
 - `--headless --path . res://game/combat/action_check.tscn`：行动、命中与弹道边界。
+- `--headless --path . res://scenes/battle_demo/cast_vfx_check.tscn`：独立施法特效与共享表现时钟。
 - `--headless --path . res://scenes/battle_demo/animation_check.tscn`：原有帧时长、优先级、恢复、缺失、暂停、倍速与重开。
 - `--headless --path . res://scenes/battle_demo/presentation_check.tscn`：移动片段、出手帧对齐、动画锁释放、插值、受击/死亡、30/60/144 FPS × 0.25×/1×/2×全量模拟事件、战斗结果与统计一致。
 - `--path . res://scenes/battle_demo/battle_demo.tscn -- --autobattle-capture`：1920×1080、2560×1440、1920×1200 的运行截图，输出到 `.godot/`。
@@ -52,7 +63,7 @@
 PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、濒危、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
 
 - `-Unit 'res://路径/角色资源.tres'` 加载角色元数据；近战、远程入口根据 `attack_modes` 置灰。旧资源未显式配置时，从 `action_profile` 与 `attack_range` 推断；未来双能力角色配置为近战与远程均可用。
-- Guard 即梦近战留存候选 008：`pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Animation res://design/concepts/characters/guard/asset_008/battle_animation.tres -Action Melee -Speed 0.5`。008 的近战来自即梦视频并对齐待机色板，其他动作保存于同一版本目录。普通预览保持可见窗口，关闭窗口后命令返回。
+- Guard 即梦近战留存候选 008：`pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Animation res://design/concepts/characters/guard/asset_001/battle_animation.tres -Action Melee -Speed 0.5`。008 的近战来自即梦视频并对齐待机色板，其他动作保存于同一版本目录。普通预览保持可见窗口，关闭窗口后命令返回。
 - `design/.gdignore` 排除概念图的编辑器导入；独立预览器在开发运行时直接解码 `design/concepts/` 下 PNG，并不改变正式游戏资源。显式动画若未成功加载，`-Check` 会失败，避免回退占位图后仍误报通过。`-EnsureImport` 不会因概念 PNG 缺 `.import` 而反复启动编辑器；正式资产的描述或缓存缺失、过期时仍会导入一次。
 - `-Check` 自动验证八种模式及入口可用性；`-Capture` 输出三种分辨率下当前角色支持的攻击、施法、受击、濒危、退场截图；`-Tour` 连续展示可用模式后退出。
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
@@ -126,9 +137,9 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 ### 制作、导出与提升
 
-新角色直接在 `presentation.tscn` 制作层级、枢轴、遮挡与挂点，在 AnimationLibrary 制作骨骼动作，在 SpriteFrames 制作序列帧。静态属性留在场景；动态曲线只记录变化，某动作必需的固定姿态可用单键。周期动作只保存独立周期，不展开成整场战斗长度。`RESET` 和 `_cycle_*` 是内部片段，不作为公共动作；周期层使用库的 `cycle_layers` 映射，时间仍来自模拟 context。
+人形角色优先按[美术工作流](art/WORKFLOW.md#人形动画生成友方敌方首选)完成原配 3D 动作、导向与全身 2D 转绘，再制作 SpriteFrames。需分层表现的资产在 `presentation.tscn` 制作层级、枢轴、遮挡与挂点，在 AnimationLibrary 制作骨骼动作。静态属性留在场景；动态曲线只记录变化，某动作必需的固定姿态可用单键。周期动作只保存独立周期，不展开成整场战斗长度。`RESET` 和 `_cycle_*` 是内部片段，不作为公共动作；周期层使用库的 `cycle_layers` 映射，时间仍来自模拟 context。
 
-候选和正式运行核心同构：`presentation.tscn`、`animations.tres`、`battle_animation.tres`、`battle_animation.frames.json`、`rig_manifest.json`、图集和 `parts/`。候选另保留 `generation.md`、review GIF 和必要证据；正式包仅含允许的运行文件及 Godot 导入设置，不包含版本号、review 或专用工具。
+候选和正式运行核心同构：`battle_animation.tres`、`battle_animation.frames.json`、`rig_manifest.json` 与允许的帧图；分层包另含 `presentation.tscn`、`animations.tres` 和 `parts/`，纯整身序列帧不要求这两个混合资源。候选另保留 `generation.md`、review GIF 和必要证据；正式包仅含允许的运行文件及 Godot 导入设置，不包含版本号、review 或专用工具。
 
 - `rig_manifest.animation_budget` 为角色明确体积、关键帧数和片段时长预算；超限先分析结构。具体样本预算及实测维护于 ART-03，不作为所有角色的固定门槛。
 - `-ExportPreviews` 从 Manifest 精确解析候选；可用 `-Animation` 指定历史版本，否则取角色当前接入候选。输出仅写该候选 `review/`，普通预览不写资产；`-Capture` 是另一个显式截图入口，仅写 `.godot`。
@@ -138,11 +149,18 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 
 优化或迁移后的验收同时检查姿态、动作切换、周期接缝、跳变点与加载／更新开销。通用姿态对比的配置、命令及边界见[工具说明](../tools/art/README.md#姿态对比)；旧代码采样和转换已归档，不是上述制作流程的必要步骤。当前样本的已知误差与实测结果见 [ART-03](implementation/art-03.md)。
 
-## 我方角色正式包（2026-10-01）
+## 我方角色正式包（2026-10-10）
 
-五名默认角色已直接绑定各自 assets/art/characters/<角色>/battle_animation.tres，Guard为008视频抽帧，其余为001刚性骨骼＋关键帧。远射手替换外观位于 archer_alt/，未绑定默认角色。旧Guard／Archer图集和动画入口已删除。来源、批准范围及边界见[人物任务](art/tasks/m1-player-cast-animation.md#正式登记与接入2026-10-01)。
+五名默认角色已绑定最新 `asset_002` 的稳定正式路径 `assets/art/characters/<角色>/battle_animation.tres`，全部为整身 SpriteFrames。守护者原视频版 asset_008 更名为 asset_001，独立留存；概念更名为 concept_001。其他四人的旧动画包已按最新一版授权清理，远射手另一个外观未替换。具体来源、人工批准与例外见[人物任务](art/tasks/m1-player-cast-animation.md)。
 
-逐角色预览无需 -Animation 覆盖，例如：
+逐人包保存 `model.json`、最终模型、3D 导向、转绘源图与映射；正式目录只包含 `rig_manifest.runtime_files`。帧元数据的 `clips.<动作>.poses`、fps、loop 与实际 SpriteFrames 同步，支持资源台逐动作 GIF。模型／概念／review 不进入运行目录。Debug／Release 均加载正式包，`Current` 参数兼容同一正式动画。
+
+```powershell
 pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Action Melee -Speed 0.5
+pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/archer.tres -Check
+pwsh.exe -File ./run-battle-demo.ps1 -Mode Debug
+```
 
-authored_assets_check.tscn 当前验证五名角色正式引用、头像、七动作与不同的濒危／退场姿势；不再要求旧4×4图集或至少三张死亡帧。图形运行追加 -- --capture，按游戏四人部署规则用两组阵容覆盖五名角色，输出三分辨率截图到 .godot/characters-battle-party*.png。
+`authored_assets_check.tscn` 验证五人正式引用、头像、七态、固定画布／脚底、不同濒危与退场姿势、死亡停末帧及整身帧后端。图形运行追加 `-- --capture`，两组合法四人阵容覆盖五人，输出三规定分辨率截图至 `.godot/characters-battle-party*.png`。
+
+`tools/art/animation/capture_humanoid_gameplay.tscn` 是可复用的正式资源实录入口：实例化原征途、使用既有困难遭遇与四人队伍，存档仅在 `.godot/humanoid-gameplay/`。开战前敌方 HP 倍率 2.5 的观看样本会明确记录；不强制运行中 HP／状态，不改战斗结算。Windows 以 `Start-Process -WindowStyle Hidden -Wait -PassThru` 等待 Godot，参数可用 `-- --size=1920x1080 --capture-fps=15`；其他两尺寸加 `--stills`。输出帧／事件清单留缓存，最新交付证据另归人物任务。

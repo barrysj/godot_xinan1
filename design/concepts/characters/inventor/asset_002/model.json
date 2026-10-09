@@ -1,0 +1,149 @@
+{
+  "character": "inventor",
+  "source_character": "Ranger",
+  "source_character_file": "design/references/animation/kaykit/characters/Ranger.glb",
+  "source_character_sha256": "3a0b0166b9d61d58dcaaa739c3cc0538be46e00d2928dd5cb513d9a41770d2e9",
+  "source_mesh_sha256": "bf769f1d251494c5704286ece71eb0e56e2761d4bf29c5ccae3eb17fefd6754c",
+  "source_rig_sha256": "69c3b8a4fcb2847a4cb93baaf9c3f34f250008f62ca92345939a831828e635a6",
+  "pipeline": "other clips reused unchanged; cast: native motion time remapping + native idle blend + self-made 3D prop deployment -> model renders -> whole-body 2D redraw",
+  "clips": {
+    "idle": {
+      "source_action": "Ranged_2H_Aiming",
+      "baked_action": "Ranged_2H_Aiming",
+      "start": 0.0,
+      "end": 48.0,
+      "duration": 1.6,
+      "loop": true,
+      "count": 1,
+      "unedited_action_sha256": "0112c1f500efc9fa20e653aefcf1f514301889b03bbee30a0bf6eea568b941a4",
+      "motion_model": "source/base-motion.blend"
+    },
+    "move": {
+      "source_action": "Running_HoldingRifle",
+      "baked_action": "Running_HoldingRifle",
+      "start": 0.0,
+      "end": 24.0,
+      "duration": 0.8,
+      "loop": true,
+      "count": 8,
+      "unedited_action_sha256": "e5b14b01fffaffc5bc03ebfc4c9950dc2bb2519691c444b4f15e124ad252c6c3",
+      "motion_model": "source/base-motion.blend"
+    },
+    "ranged": {
+      "source_action": "Ranged_2H_Shoot",
+      "baked_action": "Ranged_2H_Shoot",
+      "start": 0.0,
+      "end": 32.0,
+      "duration": 1.0666666666666667,
+      "loop": false,
+      "count": 13,
+      "unedited_action_sha256": "94510a7f10b2e6627c5c06aba294ca7beb74acc59cdb0073e24c49c63b3885fe",
+      "motion_model": "source/base-motion.blend"
+    },
+    "cast": {
+      "source_action": "Ranged_2H_Shoot",
+      "baked_action": "Cast_Native_Retimed_With_Prop_Deployment",
+      "start": 0,
+      "end": 60,
+      "duration": 1.0666666666666667,
+      "loop": false,
+      "count": 13,
+      "unedited_action_sha256": "94510a7f10b2e6627c5c06aba294ca7beb74acc59cdb0073e24c49c63b3885fe",
+      "model_duration": 2.0,
+      "body_time_remapping": true,
+      "original_curves_unchanged": true,
+      "motion_model": "source/motion.blend"
+    },
+    "hurt": {
+      "source_action": "Hit_A",
+      "baked_action": "Hit_A",
+      "start": 0.0,
+      "end": 20.0,
+      "duration": 0.6666666666666666,
+      "loop": false,
+      "count": 7,
+      "unedited_action_sha256": "4ec3bc2fb293a80e59fc4a6b53632b31ae2a1145274f4abd53642c0d872e23ca",
+      "motion_model": "source/base-motion.blend"
+    },
+    "critical": {
+      "source_action": "Crouching",
+      "baked_action": "Crouching",
+      "start": 0.0,
+      "end": 32.0,
+      "duration": 1.0666666666666667,
+      "loop": true,
+      "count": 2,
+      "unedited_action_sha256": "702e4adc4cbde834ab8052df6fa884215be4dd2f3095011e787f6b5b96fb6efd",
+      "motion_model": "source/base-motion.blend"
+    },
+    "death": {
+      "source_action": "Death_A",
+      "baked_action": "Death_A",
+      "start": 0.0,
+      "end": 24.0,
+      "duration": 0.8,
+      "loop": false,
+      "count": 4,
+      "unedited_action_sha256": "3cb28468fa10e474b37323aa5bb0ea8de0e2fe15cb92618e9bd99a7dc56d76d0",
+      "motion_model": "source/base-motion.blend"
+    }
+  },
+  "canvas": [
+    800,
+    640
+  ],
+  "anchor": [
+    0.5,
+    0.84375
+  ],
+  "camera_elevation_degrees": 0,
+  "target_bones": 23,
+  "weapon_count": 1,
+  "motion_model": "source/motion.blend",
+  "rig_checks": [
+    {
+      "file": "Rig_Medium_General.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "5f725c0f745f36078c7238968cd5c04843cbc6260689eb6e7f5e2bbd7ffdd7ad"
+    },
+    {
+      "file": "Rig_Medium_MovementBasic.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "11422afd50abf7e8c92ea107e2e0bc94abd38023d6d15f55ad580347efbfa29e"
+    },
+    {
+      "file": "Rig_Medium_MovementAdvanced.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56"
+    },
+    {
+      "file": "Rig_Medium_CombatMelee.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "c55e6ec1c79e83ae21d46fe1cd921c1b64be8b9a524a24517e51c6ba99231459"
+    },
+    {
+      "file": "Rig_Medium_CombatRanged.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "7fef1fc0e7b0feafd34b8e12d23f514c8c1f9d068047a691b854b56f1774dff5"
+    }
+  ],
+  "geometry_changed": false,
+  "animation_curves_changed": false,
+  "custom_prop_source": "procedural concept-based twin keyboards / twin rail energy cannon",
+  "notes": [
+    "One isotropic scale per whole sheet, one row baseline; no per-frame fit.",
+    "AI redraw can reinterpret joint/equipment angles; not exact skeletal reproduction.",
+    "Static idle; Crouching used as critical placeholder; sparse native guide sampling.",
+    "2026-10-09: user-authorized per-action isotropic whole-frame scale, common factor within each action; idle and exact idle returns untouched. No regenerated imagery, local head resizing, pose, timing or free offset edits."
+  ],
+  "weapon_mesh_parts": 11,
+  "visible_alpha_threshold": 30,
+  "normalization_scale": 1.4161490683229814,
+  "source": "actual native body poses retimed in 3D with modelled prop animation -> whole-body anime redraw",
+  "status": "approved and retained 2026-10-10; historical source labels are provenance only"
+}

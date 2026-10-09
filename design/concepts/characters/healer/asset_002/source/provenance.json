@@ -1,0 +1,117 @@
+{
+  "source_version": "tmp_003",
+  "retained_version": "asset_002",
+  "runtime_frame_pixels_unchanged": true,
+  "runtime_frame_sha256": {
+    "cast_00.png": "85d67c4a0fd86adf06632edc17d9a5371cc7754073ec517b837b17b94c96dc8b",
+    "cast_01.png": "c6f8cffc062ca51b42c47a178214c2178a43a4e44a9e46edc202b67365da99bd",
+    "cast_02.png": "5c2d93a5392121c97f36c667b037803ba987839c3b714928ce30cb242cd70369",
+    "cast_03.png": "b192f9e1efc2b6b5aa8aac84ba62b9009cf37b027440e56d4ca73386b2a6f527",
+    "cast_04.png": "a9b7a70c411fc7f8998a1e01dbdcb2ebbaf5fbb76c5c7ffa6192d6d607976f65",
+    "cast_05.png": "648abb2344bcfc8cdd06bd693528d27cc5de42b0433515f11d3f54ac62917eef",
+    "cast_06.png": "3a0babf3f3b84dd34ffc7d59039f0a4cbedf82a659f227f4b67276a4231ce7b0",
+    "cast_07.png": "4135baaabbd2af21f89a08bf71e35eb993e4cd198eefc8457f3cdd6d0fac9c06",
+    "cast_08.png": "864147fe92aa50861e29f049456067f771a3dc492df11ea7a9da2c7076672d6f",
+    "cast_09.png": "bc6561d16ba8af48314d5479c4950ae36c69ba11cab4c840b566a88e4f58b95b",
+    "cast_10.png": "b888184f1c0c960801f07beab6a25a2b63c53030527df3ae08cd1b94b727c4d8",
+    "cast_11.png": "0264080ad3e0df5757fd29692a5bde5ccb1d3b51b732ecc5bc28dc65ca1985f7",
+    "cast_12.png": "29b9ebdcb642244bb41da8a424916ec1beb3b97f0d4bbda51e698146af55fa8a",
+    "critical_00.png": "3d32e55a85643049ec617b9a783dba9457789ad289a0b3989806327db42ed73e",
+    "critical_01.png": "390a401aa315585aaa0ff6786b0e7851e2da50cbcf38402a17f925843ada8d41",
+    "death_00.png": "e74c4f1fd43958ef8b1e15d5a9ecc773fb2d2d77567cc23ec80c0befb261c90b",
+    "death_01.png": "9836054ff805b02c06593b2efdee9d92846a615b6b034924cfa99f9fd4efd2c9",
+    "death_02.png": "4db37faebea5afec229480df6d6c5922a9d7cb1324e6bdf774b4aace0f59dc1f",
+    "death_03.png": "ac195007b28cbe96c58e4d85c1fdcf5374e407128f16b2e85d5a0323b5712be9",
+    "hurt_00.png": "271777a578347631e3c45f1c1391b616915fe679cf944774accdee55d4904986",
+    "hurt_01.png": "40471ae95faf70ef2c109cbea526eab5951ebe7e1b13b5211e7ff89855b9f050",
+    "hurt_02.png": "a9c270c5716da492c48975ea2dd29d8e07b07d4af28cc54202a6dc6df70fe15e",
+    "hurt_03.png": "de8ebc0d14a1942ed059249fc0d2b5ac06361c03a6f6d62fc6dfad49cddc0a6d",
+    "hurt_04.png": "d77e71cddc4684aca541f85268dd2b1631b2dbec47de5dff25f366e5a8cf68d8",
+    "hurt_05.png": "a460743c9e0162262a5fd81958c5459fb5cb5d26579cd14a995c928de823ed70",
+    "hurt_06.png": "29b9ebdcb642244bb41da8a424916ec1beb3b97f0d4bbda51e698146af55fa8a",
+    "idle_00.png": "29b9ebdcb642244bb41da8a424916ec1beb3b97f0d4bbda51e698146af55fa8a",
+    "move_00.png": "9878c30bab5a99bbfccc80882dabee8584d0c7c273b988a4937e1508717912fa",
+    "move_01.png": "2dfce9dcec823bfc2403b7678b5360a082457ceccc976c057ddb888f1a154835",
+    "move_02.png": "ac6798ef57cbff99c76f27ceae41cfdce6d6530abe9c068681992968eb2a20ab",
+    "move_03.png": "5821027df10e0b937f0e875f7dfc73745db3eaf3ff7488a09c8185a49fdabe13",
+    "move_04.png": "ed1e2c84f99951a3d3322d577d878fbf6dd55d67be36eba1d81d1c6ff12b94ed",
+    "move_05.png": "e673445d1c4f42e41990bd3a516a5e76ba9ad7156067bc002e3bdcd87674ac17",
+    "move_06.png": "d1b3f049e7f4f8d08ff4f9a98c6fe3d6c2c4277184cae6de9c287865b1049af4",
+    "move_07.png": "90ec2e8c1ce8d1ecd2b5fd20b4e4642fb2ed42fa31e2ce5ace20357b09d899d6",
+    "ranged_00.png": "29b9ebdcb642244bb41da8a424916ec1beb3b97f0d4bbda51e698146af55fa8a",
+    "ranged_01.png": "cf2c94079f59091954bce5b5188d88bd7a880af519e252a2242e73f5c7a89688",
+    "ranged_02.png": "468046785621005300ed067a52e34bc35e2f12b50ee5f513cdbc808b1d77f595",
+    "ranged_03.png": "74efaf3596d394aef1b52c2ce137d426143aa4f5e6565a0a5e472ff0d769e689",
+    "ranged_04.png": "0d8de092cb08ee7a3beba00d8410b2c58b857b5697bbb90b12e8b5ee1c8da423",
+    "ranged_05.png": "26b15aa825d970483d44f69cc5e753fb9410aee7a986327affec37d97c0ed408",
+    "ranged_06.png": "f25fa89f81fed1df30b7b6d35a3687a6d52c910d17c8b42088a0e1ce8ac5c0ef",
+    "ranged_07.png": "fb1e90d80dfd3c3f51b81d7a88a94a08d148ceee5eade20c9e4426e82869a5d8",
+    "ranged_08.png": "0b8f4e072c204b371b444059ac08f95db254a86c76ddcd75a1a60b1cfb3d7438",
+    "ranged_09.png": "38ad91904a24bec7ea149cc7bedaee95c61453ef1f26d46e062e9d078bc4d603",
+    "ranged_10.png": "6ec888b2c983fff7091620d2f8623532bd1a2412431bc7337f0e035faa479c76",
+    "ranged_11.png": "53c5569fbe674e4f293bcb0f618f00a1a6f5f91a7346f300660f417ffcb3a6a3",
+    "ranged_12.png": "29b9ebdcb642244bb41da8a424916ec1beb3b97f0d4bbda51e698146af55fa8a"
+  },
+  "origins": {
+    "idle": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_Magic_Shoot",
+      "derived_action": "Ranged_Magic_Shoot",
+      "frame_count": 1
+    },
+    "move": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Walking_B",
+      "derived_action": "Walking_B",
+      "frame_count": 8
+    },
+    "ranged": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_Magic_Shoot",
+      "derived_action": "Ranged_Magic_Shoot",
+      "frame_count": 13
+    },
+    "cast": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_Magic_Spellcasting",
+      "derived_action": "Cast_Native_Retimed_With_Prop_Deployment",
+      "frame_count": 13
+    },
+    "hurt": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Hit_A",
+      "derived_action": "Hit_A",
+      "frame_count": 7
+    },
+    "critical": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Crouching",
+      "derived_action": "Crouching",
+      "frame_count": 2
+    },
+    "death": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Death_A",
+      "derived_action": "Death_A",
+      "frame_count": 4
+    }
+  },
+  "canvas": [
+    1536,
+    1024
+  ],
+  "display_size": [
+    384.0,
+    256.0
+  ],
+  "anchor": [
+    0.5,
+    0.715820312
+  ],
+  "approval": {
+    "source": "docs/art/tasks/m1-player-cast-animation.md",
+    "date": "2026-10-10",
+    "decision": "approved_final_animation_and_integration",
+    "quote": "可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。"
+  }
+}

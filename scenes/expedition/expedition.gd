@@ -40,7 +40,7 @@ func _ready() -> void:
 		progress.path = "res://.godot/expedition-test-progress.json"
 		if "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args():
 			progress.path = "res://.godot/meta-test-progress.json"
-	else:
+	elif not ("--campus-debug" in OS.get_cmdline_user_args() and "--debug-battle" in OS.get_cmdline_user_args()):
 		progress.read_save()
 	notice = progress.error_message
 	if "--run-smoke" in OS.get_cmdline_user_args():

@@ -1,6 +1,7 @@
 extends RefCounted
 ## Explicitly enabled developer commands; no direct profile unlocks or reward grants.
 const Run = preload("res://game/run/short_run.gd")
+const Difficulties = preload("res://game/combat/demo_battle_presets.gd")
 
 static func reward_pool(hub) -> Array:
 	var pool = Run.Rewards.eligible(hub.run.badge_owned,hub.run.roster,hub.run.inventory,hub.run.node.get("reward_pool","campus_rewards"),hub.run.training,hub.run.combat_rewards).duplicate(true)
@@ -21,13 +22,14 @@ static func reason(hub, command: String) -> String:
 	if hub.reset_pending or not hub.pending_exit.is_empty(): return "请先完成或取消当前确认。"
 	var campaign: bool = not hub.campaign_mode.is_empty()
 	var visit: Dictionary = hub.journey.visit.data
-	if command in ["skip","restart"]:
-		if command == "restart" and hub.screen not in ["battle","report"]: return "进入战斗或战报后可重开本场。"
+	if command in ["skip","restart","difficulty"]:
+		if command in ["restart","difficulty"] and hub.screen not in ["battle","report"]: return "进入战斗或战报后可重开本场。"
 		if campaign:
 			if visit.is_empty() or visit.guard_won: return "当前没有尚未结算的守卫战。"
 			if hub.screen not in ["battle","report","campaign"]: return "请先回到当前地点或战斗。"
 		elif hub.screen not in ["battle","report"] or hub.run.node.is_empty() or hub.run.reward_taken:
 			return "当前没有尚未结算的战斗。"
+		if command == "difficulty" and hub.formation.count(-1) != 2: return "先部署四名同学，再调整难度重开。"
 		return ""
 	if command == "reroll":
 		if campaign:
@@ -46,8 +48,21 @@ static func reason(hub, command: String) -> String:
 		return "当前没有可重抽的事件或其他奖励候选。"
 	return "未知调试操作。"
 
-static func execute(hub, command: String) -> bool:
+static func execute(hub, command: String, difficulty: String = "") -> bool:
 	if not reason(hub,command).is_empty() or hub.paused: return false
+	if command == "difficulty":
+		if not Difficulties.ORDER.has(difficulty): return false
+		# Commit the existing restart checkpoint before changing the local setting.
+		if not execute(hub,"restart"): return false
+		var previous_difficulty: String = hub.debug_battle_difficulty
+		hub.debug_battle_difficulty = difficulty
+		hub._start()
+		if not hub.last_save_ok:
+			hub.debug_battle_difficulty = previous_difficulty
+			hub.phase = "prepare"
+			hub._build_units()
+			return false
+		return hub.screen == "battle" and hub.phase == "battle"
 	var previous = hub.run.to_dict()
 	var previous_screen: String = hub.screen
 	var previous_report = hub.report.duplicate(true)

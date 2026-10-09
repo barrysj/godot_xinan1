@@ -3,51 +3,23 @@
 > 持续功能档案；整体统筹见 [总览](../implementation-status.md)，规则见 [战斗动画](../battle-animation.md)。
 
 - 功能 ID：ART-03；状态：生产入口已验证；姿态等价存在已记录的 120 Hz 跳变边界。
-- 验证日期：2026-10-01（合入 `main` 规则后 Guard 008 留存与概念预览修复）；起点 `ee5b780`；运行修复基线 `76c8406`；工具归档基线 `7be8ffe`；本轮合并基线 `4bd7db6`、预览工具提交 `7c6c62d`。Guard 留存提交见本地 Git 历史。
+- 最新验证日期：2026-10-10，本地 main squash 基线 `2eaa397`＋获批来源 `36b5a32`；正式收尾基线 `667e60e`；历史验证2026-10-01（合入 `main` 规则后 Guard 008 留存与概念预览修复）；起点 `ee5b780`；运行修复基线 `76c8406`；工具归档基线 `7be8ffe`；此前合并基线 `4bd7db6`、预览工具提交 `7c6c62d`。Guard 留存提交见本地 Git 历史。
 - 实现入口：[预览器](../../scenes/battle_demo/motion_preview.tscn)、[共享控制器](../../scenes/battle_demo/presentations/hybrid_presentation.gd)、[捕获器](../../tools/art/animation/motion_capture.gd)、[GIF 后处理](../../tools/art/animation/motion_previews.py)、[确定性提升](../../tools/art/promotion/promote_animation.py)。
 
 ## 骨骼＋序列帧通用生产与预览
 
-### M1 角色混合占位扩展（2026-09-29）
+### 人形首选工作流与五人正式收尾（2026-10-10）
 
-- 按[任务档案](../art/tasks/m1-player-cast-animation.md)开始五职业基础占位及远射手换貌复用验证。首个 Archer 001 用共用 RootBone／HeadBone 刚性动画库做待机、移动、受击、濒危；持枪远程、施法和死亡采用整帧关键姿势回退。入口为 [`build_placeholder_hybrid.py`](../../tools/art/animation/player_cast/build_placeholder_hybrid.py)、同目录共享 `animations.tres`、Archer 的 `presentation.tscn` 与 `battle_animation.tres`。本批仍为评审候选；不替换正式角色。
-- 2026-09-30 按负责人反馈修订五版濒危／退场：`build_placeholder_hybrid.py` 从各版透明双姿势源图裁出独立濒危与侧卧倒地帧；移除共享库中覆盖濒危的骨骼片段，濒危由静态帧呈现，退场立即显示倒地帧并沿用战斗表现层渐隐。五版 Godot 检查、关键动作截图及全量 GIF 重录通过；轮廓、武器和实际画面证据见任务档案。候选批准及正式接入状态未改变。
-- Godot 4.7.2 `run-motion-preview.ps1 -EnsureImport -Check` 与常规 `-Check` 通过，七动作检查成功；待机／远程三分辨率截图与七动作 GIF 已实际生成，1920×1080 已人工查看。Manifest 扫描无错误，本对象无警告，全局缺失／不一致为 0；Python 编译和 Git 差异检查通过。细节、命令和截图链接在任务档案。
-- 已知边界：移动为根部上下动，并非腿部步态；头部水平切层只容许微小转角；出手帧与待机画法仍有细微差异。若后续提升正式资产，需要人工确认观感与进一步分层。**待统筹**：新批量占位制作取代先前暂停的精细动画路线；总览与 Roadmap 留待统筹会话核验。
-- 冲刺手 001 复用同一动画库但换用双刀关键姿势与近战片段。Godot 4.7.2 `-EnsureImport -Check`、近战三分辨率截图、单动作 30 FPS GIF 成功；1920×1080 截图已人工查看。枪口光绘制逻辑扩展为近战贴刀尖短弧光，发现位置漂移后重建并复看。Manifest 扫描仍无错误、缺失或不一致。具体记录和证据见任务档案；正式配置未修改。
-- 发明家 001 与应援者 001 继续引用同一根／头骨骼库；发明家用单张透明持枪图与短枪口光，应援者复用已批准 007 静态合成图与键盘绿光脉冲。各自 `-EnsureImport -Check` 通过，远程／施法三分辨率截图和单动作 GIF 成功，1920×1080 截图已人工查看。Manifest 扫描 `errors=[]`、本对象 `warnings=[]`、缺失／不一致均为 0；Python 编译和 Git 差异检查通过。局限是没有完整举枪后坐力与手指动作，不改变正式配置。证据与命令见任务档案。
-- Archer 换貌 001 使用银蓝短发、圆眼镜、橙白短袖，与原 Archer 使用同一 `shared/animations.tres`；`verify_archer_reuse.py` 证实两套骨骼场景和动作资源仅角色素材路径不同，重叠可见像素颜色差异比例 0.391。Godot 4.7.2 `-EnsureImport -Check` 和重复 `-Check` 均通过；待机／远程三分辨率实机截图和各自 GIF 成功，1920×1080 已人工查看。证明范围限于当前根／头刚性骨骼与整帧出手姿势，不等于全身蒙皮动画可直接换皮。Manifest 无错误或缺失；细节见任务档案。
+负责人已批准最新五人动画／接入／程序特效，并明确只保留最新及旧守护者例外。当前五人统一为 asset_002，旧守护者正式 asset_008 更名为 asset_001、concept_002 更名为 concept_001。所有中间实验已按授权清理，最终来源及人工依据集中于[M1 任务](../art/tasks/m1-player-cast-animation.md)，不继续把删除的试验路径写作活动命令。
 
-### Guard 动画方法比较候选（2026-09-25）
+- 首选规则：[WORKFLOW 人形动画](../art/WORKFLOW.md#人形动画生成友方敌方首选)。职业原配 3D 模型／动作先验证，再水平导向、整身日系转绘、固定画布／脚底与 exact idle 返回；适用于友方／敌方。四名新角色为原配开源动作链；守护者部分片段历史直接生成的例外如实登记，不能冒充完成了所有动作的模型流程。
+- 实现入口：`run-motion-preview.ps1`、`motion_capture.gd`、`motion_previews.py`、`sync_browser_clips.py`、`promote_animation.py`；正式实录入口 `tools/art/animation/capture_humanoid_gameplay.tscn`。模型／源图／映射留在各 asset_002，正式运行仅含允许列表。
+- 正式提升五包确定性检查通过，225 PNG 与批准稿逐 SHA 相同，时长／方向／锚点未改变；头像更新为正式待机帧裁切。资源台索引与逐动作 GIF 后续按最终验证报告复核，旧守护者 asset_001 另做独立七态检查。
+- 已验证：基线 `667e60e`＋收尾工作树，Godot 4.7.2；五人正式资源／0 失败，两组合法四人阵容、1920×1080／2560×1440／1920×1200 实际截图，共享特效 26／0，ACTION／PRESENTATION／ANIMATION PASS。最终逐人播放、资源台／启动和清理后复验结果见人物任务与交付验证报告。
+- 本地 main 合并后复验：资源台 39 项单测、五包确定性提升检查通过；五人七态／两阵容三分辨率实际截图、Debug 39／0、Release 6／0、特效 26／0及三项战斗显示检查通过。合并初始树与获批来源完全相同，未调整素材；完整命令和环境边界见交付报告 `local_main_squash`，远程未推送。
+- 边界：纯序列帧不是实时 3D 换装；AI 转绘仍可能演绎关节／透视，整帧缩放只处理外部尺度。单张待机与蹲姿濒危的简化明确保留，发明家实战濒危时窗较短，不改结算延长。**待统筹**：正式包和人形首选方式改变，高层总览未在本 session 重写。
 
-- **当前入口（2026-10-01）：**负责人确认 Guard 只留 008。`guard/008` 保存七态动画、62 张自持运行帧、源片、调色前帧、身份首帧与两张静态姿势源图；历史 001～007 和四法并排素材可从 `7c6c62d` 恢复，当前 Manifest 仅登记 008 为 `selected + pending + not_integrated`。`design/.gdignore` 排除概念图导入后，预览器用开发专用 PNG 解码器直接加载，并在显式动画加载失败时让检查失败。Godot 4.7.2 `-EnsureImport -Check` 七态 PASS、远程 SKIP、`failures=0`，近战／濒危／退场三分辨率截图已生成并人工查看；资源台扫描 51 对象、错误 0、缺失 0、不一致 0、Guard 警告 0。`b79729d` 补验正式资源缺一份导入描述时只重建一次，随后重复 `-EnsureImport -Check` 不再启动编辑器，仍为 `failures=0`。当前命令和证据见[Guard 任务档案](../art/tasks/guard-animation-study.md#008-留存收尾2026-10-01)。以下为历史过程记录，旧路径并非活动入口。
-
-- 状态：001～004 四条五动作样片，005～008 四条即梦近战候选；全部未批准，未接入正式角色。004 通过中国站 MiniMax H3 生成五段原片；005～008 从负责人提供的即梦视频演进，后续版本增加择帧与调色。均由同一 Godot 预览器验证。样片、截图、生成来源及视觉结论见[Guard 动画方法对照](../art/tasks/guard-animation-study.md)，官方一手来源见[方法调研](../research/guard-animation-methods.md)。
-- 输入为 M1 已批准 Guard 002 身份和剑盾方向；内置 image_gen 生成 7 张透明独立姿势，统一到 512×512 后构建 001 `SpriteFrames`；002 则用同一待机图做单图平移／旋转／缩放并烘焙五动作。003 从待机图切出头、盾与主体，`Skeleton2D` 驱动待机与受击，移动／近战／施法由 001 序列帧回退；施法骨骼尝试因无法表达盾牌展开而未采用，仅是粉笔精灵式混合的局部验证。
-- 验证基线：本工作树，Godot 4.7.2，随工作区提供的 Python/Pillow 12.3。`design/concepts/guard-animation-study/build_previews.py`／`build_hybrid.py` 可复现输出；三候选均经 `run-motion-preview.ps1 -Check`，各支持动作与状态检查通过；003 `hybrid_check.tscn` 确认头盾骨骼转动和近战回退。`-Action Melee -Capture` 得到三分辨率实际截图，003 另抓取待机，1920×1080 截图已人工查看。资源台 33 项单测通过，Manifest 扫描 errors=[]，新对象 warnings=[]、五动作可识别、状态 `not_integrated`。
-- 2026-09-25 补验：003 `hybrid_check.tscn` 再次通过，`run-motion-preview.ps1 -Check` 通过；`-ExportPreviews` 录制五动作 30 FPS GIF，施法与受击 `-Capture` 各得到三分辨率实际截图，1920×1080 已人工查看。导出器跳过总表内嵌对象后的真实导出通过；细节、失败骨骼施法及时间边界见任务档案。验证基线以本分支当前提交为准，不替代正式接入评审。
-- 2026-09-30 网页预览：五职业候选以及 Guard 003／008 用 `-EnsureImport -ExportPreviews` 补齐逐动作 GIF 与全动作巡演；帧元数据写入与 Godot 资源一致的 `clips`，美术资源浏览器现能显示动作按钮并加载 GIF。实现入口为 [`build_placeholder_hybrid.py`](../../tools/art/animation/player_cast/build_placeholder_hybrid.py)、[`sync_browser_clips.py`](../../tools/art/animation/sync_browser_clips.py) 和两份 Manifest。网页实际打开检查：五职业各七动作，Guard 003／008 各六个真实片段；两版退场由旧 Guard 回退。验证细节见对应美术任务档案，批准与正式接入状态未改变。
-- 2026-09-30 按负责人反馈，Guard 003／008 也补入区别于待机的濒危与退场静帧。透明双姿势源图经 [`add_defeat_poses.py`](../../tools/art/animation/guard/add_defeat_poses.py)裁切、定脚底并写入两个 `SpriteFrames` 片段，网页两版各有七个真实片段，退场不再借旧 Guard 回退。两版 `-EnsureImport -Check` 均通过，四个动作现场截图与两版全量 GIF 已重录；008 濒危和倒地截图已人工查看。画面直接换姿势，退场仍按既有表现层渐隐。候选状态与正式接入状态不变，详细证据见[Guard 任务档案](../art/tasks/guard-animation-study.md#003008--濒危与退场独立静帧2026-09-30)。
-- 2026-09-25 同规格补验：001／002 各用 `run-motion-preview.ps1 -ExportPreviews` 完成五动作 Godot 30 FPS／352×352 实际录制；与 003 的原录制用 `design/concepts/guard-animation-study/compare_runtime.py` 生成 15 FPS 同步并排 GIF 和 0.55 秒五动作静帧总览。检查 001 待机静帧、近战／施法短停留，002 整体运动无腿步／独立剑击，003 待机／受击连续骨骼运动。登记原录制于 Manifest，不改变正式人物资源。验证命令、图像及局限见任务档案；验证基线以本分支当前提交为准。
-- 2026-09-25 H3 补验：入口 `h3_generate.py`（历史脚本 `7c6c62d:design/concepts/guard-animation-study/h3_generate.py`）使用中国站 V2 API 五动作各成功提交一次并下载 768×768、24 FPS 源片；`build_h3_candidate.py`（历史脚本 `7c6c62d:design/concepts/guard-animation-study/build_h3_candidate.py`）每动作采九帧、抠绿、对齐脚底并生成 `guard/004/battle_animation.tres`。本分支工作树作为验证基线，Godot 4.7.2 `run-motion-preview.ps1 -Unit Guard -Animation design/concepts/guard-animation-study/guard/004/battle_animation.tres -Check` 与 `-ExportPreviews` 通过，`-Action Cast -Capture`／`-Action Hurt -Capture` 生成并人工查看 1920×1080 实际截图；`compare_runtime.py` 重建四组同步 GIF 和 0.55／0.75 秒静帧。Manifest 登记源片、帧、资源及预览；正式人物引用未变。
-- 2026-09-27 H3 交互预览修复：补齐 004 的 45 张切帧 Godot 导入描述，普通预览窗口改为可见；首次或缓存清理后使用 `-EnsureImport`。本分支工作树在 Godot 4.7.2 增量导入后执行 004 `-Check`，七个适用状态 PASS、远程 SKIP；清理其他临时导入文件后，不加 `-EnsureImport` 的重复 `-Check` 无帧加载错误且 `failures=0`，`-Action Melee -Capture` 生成三分辨率截图并人工查看 1920×1080，交互预览进程存在可见主窗口。正式人物引用未变。
-- 2026-09-27 即梦 005 试验：以 `build_jimeng_melee_candidate.py`（历史脚本 `7c6c62d:design/concepts/guard-animation-study/build_jimeng_melee_candidate.py`）从负责人提供的 1280×720 可变帧率源片按时间戳抽取近战 12 帧，其他四动作借 004 帧并补边为 1024×512。Godot 4.7.2 增量导入后 `-Check` 通过，`-Action Melee -Capture` 三分辨率通过并人工查看 1920×1080，`-ExportPreviews -Action Melee` 得 30 FPS／608×352 的真实时序 GIF。宽画布预览按资源比例缩放，捕获器按角色显示高度扩展视口宽度；004 方形输出仍为 352×352。十二张新近战帧未触透明画布四边。005 的出手剑尖完整，峰值盾牌遮挡和绿幕细边仍待评审；正式 Guard 引用未变。验证基线：当前 art/guard-animation-study 工作树；详情及命令见任务档案。
-- 2026-09-28 即梦 006 试验：沿用 005 原片，按时间戳重新择取 24 张近战姿势，出手区间加密；用输入首帧的脸部中位色校准，在跨帧一致的肤色遮罩内施加 `(18,28,24)` RGB 增量。内置 imagegen 的单帧修色样本改变了局部形状，仅存评审，不进入动画。Godot 4.7.2 `run-motion-preview.ps1 -EnsureImport -Check`、`-Action Melee -Capture`、`-Action Melee -ExportPreviews` 通过；24 张 1024×512 RGBA 帧邻帧不同，四边 alpha≤30，三分辨率实际截图已生成并人工查看 1920×1080，近战 GIF 为 30 FPS／608×352。复建入口、输入／输出及边界见[任务档案](../art/tasks/guard-animation-study.md#006--重新择帧与肤色校正2026-09-28)。006 仍待人工选择与批准，正式 Guard 引用未变；验证基线为本分支当前工作树。
-- 2026-09-28 即梦 007 色彩复核：以 005 待机帧对比 006 起手帧，发现脸部亮色接近，衬衫／盾面／鞋较暗及后段肤色偏暖。以 `build_guard_palette_match.py`（历史脚本 `7c6c62d:design/concepts/guard-animation-study/build_guard_palette_match.py`）保留 006 姿势和 alpha，作同一平滑材质调色与按帧小幅肤色校准；24 张原帧 alpha 逐像素不变，最大可见 RGB 单通道改动 28。Godot 4.7.2 绝对脚本路径 `-EnsureImport -Check`、`-Action Melee -Capture`、`-Action Melee -ExportPreviews` 通过，三分辨率截图已生成并人工查看 1920×1080，GIF 为 30 FPS／608×352。详情与色彩比较见[任务档案](../art/tasks/guard-animation-study.md#007--对齐待机色板2026-09-28)；007 未批准，正式 Guard 引用未变。
-- 2026-09-29 即梦 008 中性色复核：基于 007、参照 005 待机，压低后段浅色衣物的暖红偏差，并小幅冷却暗部／蓝色装备。`build_guard_neutral_palette.py` 可复现；24 张帧的 Alpha 逐像素不变，最大单通道改动 16。按 `Character_Action_Design` Skill v2 的身份、左右特征、持手、色板四锁建立当前右向近战动作卡；由于缺三视图，不声称 8 方向已验证。Godot 4.7.2 `-EnsureImport -Check` 和不带导入的重复 `-Check` 通过（`failures=0`）；`-Action Melee -Capture` 得三分辨率截图，1920×1080 已人工查看；`-ExportPreviews` 得 30 FPS／608×352 GIF。资源台扫描 `errors=[]`、Guard `warnings=[]`、缺失 0、不一致 0。008 未批准，正式 Guard 引用未变。详细色差与评审文件见[任务档案](../art/tasks/guard-animation-study.md#008--压低近战帧整体暖红偏色2026-09-29)。
-- 2026-09-28 预览路径修复：`run-motion-preview.ps1` 在启动 Godot 前检查显式 `-Animation` 是否属于当前项目且文件存在，避免从另一份 checkout 运行时无声回退到占位资源。用不存在的 `guard/999/battle_animation.tres` 复现旧行为：原命令 exit 0、日志只有 warning 和 `MOTION_PREVIEW_CHECK failures=0`；修复后 exit 1 并指明缺失路径。使用本分支脚本绝对路径和 006 资源执行 `-EnsureImport -Action Melee -Capture` exit 0，三分辨率实际截图已生成并人工查看 1920×1080：左侧显示 006，右侧纸甲守卫是固定测试目标。用户入口及边界见任务档案；正式 Guard 引用未变。
-- 2026-09-27 预览导入修复：`run-motion-preview.ps1 -EnsureImport` 先检查所选动画资源直引图片的 `.import` 描述及 `.godot/imported` 缓存；文件缺失或源图更新时才运行 Godot 编辑器导入。未提供 `-Animation` 或无法确认依赖时保守执行导入。005／004 缓存齐全时 `-EnsureImport -Check` 均通过且导入日志时间未变，005 约 2.3 秒完成检查；临时移走一张 005 纹理缓存后，同一命令触发编辑器导入、重建缓存且动作检查通过。资源台与手动命令沿用原参数时，不再每次启动编辑器。首次导入后直接运行预览的命令也继续可用。
-- 质量边界：001 动作剪影比 002 清楚，但图生图人物约 5～6 头身，未满足 4 头身规范，细节跨姿势漂移；002 没有肢体独立运动；003 只验证头盾在待机与受击的小范围运动，没有人体四肢蒙皮；004 动作连续，但剑盾形态漂移、局部出画，绿幕抠像留彩边，压到 0.45 秒行动后关键细节易漏看。此轮不能认为人物骨骼翻折问题已修复；后续若继续混合骨骼，应先补正分层原画与遮挡再试。
-- **待统筹**：若选择新的人物生产路线，需重新估算 Guard 和其他角色的分层／补帧成本，以及目标平台验证；本轮不改总览和 Roadmap。
-
-### M1我方概念分离交付／动画停止（2026-09-25）
-
-- 交付基线main `28c8d2f`，从`art/m1-player-cast`按人工批准分离002武器方向、006四人服装概念与007／008静态种子；保留7个批准登记项、29个唯一登记文件及原有PNG导入设置。任务与路径见[我方角色样板](../art/tasks/m1-player-cast.md)和`assets/art/asset_manifest.yaml`。
-- 用户限定的最后两轮结束：022太抽象，023带入设定角色但可见网格翻折，质量未通过。原动画试验截至`8864a77`留在美术分支；本交付无009–023目录、动画资源、播放代码或正式人物引用，不把静态批准升级为动态／真人换脸批准。
-- 验证：29文件逐一SHA256相等；`py -3 -m unittest discover -s tools/art/asset_manager/tests -q`在当前main基线33项通过；真实Manifest扫描30对象411文件、errors=[]、missing=0、mismatches=0。暂存差异检查发现旧generation.md的Markdown行末双空格／末尾空行；为保持来源文件哈希不改动，使用`git -c core.whitespace=-blank-at-eol,-blank-at-eof diff --cached --check`检查其余空白问题。与美术实验分支34项测试数量不同，未引入其额外工具改动。
-- **待统筹**：概念可供后续美术任务复用，人物动画停止；新任务需先解决遮挡绘制、蒙皮拓扑与动作设计。没有提升正式运行资产或改变游戏画面，本次仅静态交付，不重复截图；不改高层总览／Roadmap，不自动推送远程。
-
-制作契约、动作命名、运行包结构、显式导出与提升规则统一维护于[战斗动画](../battle-animation.md#hybrid-animation-package)。本档案只记录实现、验证及已知边界；通用工具与归档入口见[工具说明](../../tools/art/README.md)。
+研究保留的文字结论：自行刚性摆动作僵硬；低模材质与动漫头拼接不匹配；视频抽帧可做备选但外观／武器漂移难控；职业原配动作＋整身转绘为本轮获批路线。较早稀疏曲线／短周期和共享混合包的程序能力仍有效，后续章节保留其实现基线，不能等同于当前五人后端。
 
 ## 验证结果
 
@@ -151,4 +123,7 @@
 
 基线 `3c8a741`：`tools/art/promotion/promote_animation.py` 支持纯序列帧包与 `frames/*.png`，沿用 `rig_manifest.json` 的运行文件允许列表；存在骨骼动作时仍强制成对交付场景和动画库。生成来源留在候选，正式帧元数据只保留播放字段。未绑定单位的批准外观可登记为 `not_integrated` 后入库。验证：`py -3 -m unittest discover -s tools/art/asset_manager/tests -q`，35项通过，覆盖帧包依赖改写、重复提升一致性和不完整骨骼包拒绝。此改动未更改运行画面，无需截图；后续人物正式接入见 ART-02。
 
-2026-10-01人物目录迁移补充：调色与败北静帧工具迁到 tools/art/animation/guard/；刚性骨骼生成器和换皮验证迁到 tools/art/animation/player_cast/。源包统一 design/concepts/characters/<角色>/。只读复现检查确认Guard24帧逐像素一致、五套混合资源生成文本一致；远射手双外观的同库同动作检查通过。正式提升与六套动作检查见ART-02及人物任务。
+2026-10-10 收尾替代：人物当前入口与来源见本档案人形工作流节；仅保留有效共享工具和最终资源，历史一次性生成器不再作为当前复现命令。
+
+
+清理后最终复验：资源台39项单测／0失败，五对象 warnings=[]、正式内容全部 matched、缺失／不一致 0；五人各七态与守护者旧 asset_001 检查通过，35 动作 GIF＋5 巡演已重录；7 个原配／派生源模型重开，28 动作原始曲线指纹通过。Debug 正式启动捕获39／0、Release6／0，Current兼容38／0；正式实录22.6秒／339帧／678步／344事件与批准候选一致，MP4完整解码通过。65个已核验目标清理约5.56GiB，最终资源、许可证、旧守护者62帧保留；历史有效工具归档。验证日期2026-10-10，基线667e60e＋收尾工作树。

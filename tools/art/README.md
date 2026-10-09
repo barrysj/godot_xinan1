@@ -52,7 +52,9 @@ JSON 必填：`source`、`target`（两个场景路径）、`canvas`、非空 `a
 
 ## 人物源包与正式交付
 
-人物资料统一位于 design/concepts/characters/<角色>/；概念与动画由各角色Manifest共同登记。制作脚本位于 animation/guard/ 和 animation/player_cast/，不再依赖旧study目录。player_cast/animations.tres为共同曲线模板，各包携带一致副本。
+人物资料统一位于 design/concepts/characters/<角色>/；概念与动画由各角色Manifest共同登记。首选人形制作流程维护于 docs/art/WORKFLOW.md；各 asset_002 自持最终模型、导向与切帧来源，开放原配输入统一位于 design/references/animation/kaykit/。一次性失败实验和依赖旧候选的研究脚本已按留存授权移除，不列为活动入口；换貌样本的旧混合模板及历史有效工具保存在 archive/legacy-animation/，不是日常生产入口。
 promote_animation.py同时支持纯序列帧和混合包；rig_manifest.json列出运行文件，frames/*.png属于允许范围。生成输入和评审证据留在源包，正式帧元数据只保留播放字段。对象未绑定单位时须明确 not_integrated。
 
 人物索引入口：assets/art/asset_manifest.yaml → manifests/characters.yaml → manifests/characters/<角色>.yaml。提升与GIF导出通过资源台同一递归解析器查找对象；不依赖对象必须出现在根索引。
+
+正式资源实录入口为 `animation/capture_humanoid_gameplay.gd`＋`.tscn`；加载稳定正式五人资源，实例化原征途，以独立缓存存档捕获四人困难样本。与逐动作七态预览、两阵容三分辨率截图互补；命令与观看边界见[战斗动画](../../docs/battle-animation.md#我方角色正式包2026-10-10)。

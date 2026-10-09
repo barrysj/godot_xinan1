@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/support-redraw-v1.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/identity-master.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/support-guide.png"
+    ],
+    "prompt": "Edit image 1's existing sprite atlas only to correct the student's head/body proportion drift. Image 2 is the LOCKED idle identity and anatomy reference. Image 3 gives the real native 3D pose in every cell, preserving slot order. The atlas currently makes him too squat with a bulbous head compared with the reference idle. REDUCE skull + facial features + hair as a unit by about 18-20 percent relative to the same torso and legs. Keep torso, leg lengths, prop size, limb pose and the overall standing height unchanged; this brings him toward image2's approximately FOUR-head teenage build, away from a toddler chibi. Do not uniformly shrink the whole figure. After this edit, head width relative to shoulders and body must match image2; no gigantic hair cap. Maintain one fixed skull size across all cells, including leaning/crouching/fallen poses. Draw the head freshly as a connected anatomical part of this same boy, no pasted head, floating neck, elongated neck, giant hands or boots. Preserve the existing silhouette joint directions where they follow image3 and do not invent new motion.  Retain brown hair, CLOSED navy short sleeve button workshirt, chest patch, dark lanyard/white badge, black backpack, charcoal trousers, sneakers, and LARGE cyber cannon: two separate long white angular rails, dark receiver, bright orange circular core and cyan floating panels. The weapon must NOT get smaller or simplified. Keep 3 columns x 4 rows exactly; no new or missing cell, no reordering. Fine Japanese anime outlines and flat cel colors matching image2. Completely transparent alpha background and margins, no gray gradients, ground shadows, fog, watermarks, labels or grid lines. Full silhouettes including all gun tips, feet and hair stay inside each slot."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/support-redraw-v1.png",
+      "sha256": "f5d8e7e4ecd8f304cbfbede227f59bdeaed9f9133f2c5a5fb230c4ef8d55924c"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/identity-master.png",
+      "sha256": "bc31f11be05a3c9af30c1c29fce7798d73f00dd0d7ed25560076bcb149ee74c2"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/support-guide.png",
+      "sha256": "bf0afdd5301e3bd77613818ed87fad99d5374e9325ce7805a18e8f2113011001"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-6db72e6a-95f3-43ee-86eb-cc82e8c55100.png",
+  "output": "source/support-redraw-v2.png",
+  "output_sha256": "4ba6808bc6efe0de979fbba5fc92621b20604480ebba1a32a53a2f687cd04e79",
+  "mode": "RGBA",
+  "size": [
+    1166,
+    1349
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

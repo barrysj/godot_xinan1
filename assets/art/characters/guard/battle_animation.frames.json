@@ -1,36 +1,75 @@
 {
   "clips": {
     "idle": {
-      "poses": [
-        "idle_00",
-        "idle_01",
-        "idle_02",
-        "idle_03",
-        "idle_04",
-        "idle_05",
-        "idle_06",
-        "idle_07",
-        "idle_08"
+      "fps": 1.0,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/idle_00.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 2,
-      "loop": true
-    },
-    "move": {
       "poses": [
-        "move_00",
-        "move_01",
-        "move_02",
-        "move_03",
-        "move_04",
-        "move_05",
-        "move_06",
-        "move_07",
-        "move_08"
-      ],
-      "fps": 2,
-      "loop": true
+        "idle_00"
+      ]
     },
     "melee": {
+      "fps": 12.0,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/melee_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_07.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_08.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_09.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_10.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_11.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_12.png",
+          "duration": 1.0
+        }
+      ],
       "poses": [
         "melee_00",
         "melee_01",
@@ -44,73 +83,187 @@
         "melee_09",
         "melee_10",
         "melee_11",
-        "melee_12",
-        "melee_13",
-        "melee_14",
-        "melee_15",
-        "melee_16",
-        "melee_17",
-        "melee_18",
-        "melee_19",
-        "melee_20",
-        "melee_21",
-        "melee_22",
-        "melee_23"
+        "melee_12"
+      ]
+    },
+    "move": {
+      "fps": 10.0,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/move_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_07.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 6,
-      "loop": false
+      "poses": [
+        "move_00",
+        "move_01",
+        "move_02",
+        "move_03",
+        "move_04",
+        "move_05",
+        "move_06",
+        "move_07"
+      ]
     },
     "cast": {
+      "fps": 5.45454545,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/cast_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_05.png",
+          "duration": 1.0
+        }
+      ],
       "poses": [
         "cast_00",
         "cast_01",
         "cast_02",
         "cast_03",
         "cast_04",
-        "cast_05",
-        "cast_06",
-        "cast_07",
-        "cast_08"
-      ],
-      "fps": 2,
-      "loop": false
+        "cast_05"
+      ]
     },
     "hurt": {
+      "fps": 12.5,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/hurt_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_04.png",
+          "duration": 1.0
+        }
+      ],
       "poses": [
         "hurt_00",
         "hurt_01",
         "hurt_02",
         "hurt_03",
-        "hurt_04",
-        "hurt_05",
-        "hurt_06",
-        "hurt_07",
-        "hurt_08"
-      ],
-      "fps": 11,
-      "loop": false
+        "hurt_04"
+      ]
     },
     "critical": {
-      "poses": [
-        "critical"
+      "fps": 1.66666667,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/critical_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/critical_01.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 4,
-      "loop": true
+      "poses": [
+        "critical_00",
+        "critical_01"
+      ]
     },
     "death": {
-      "poses": [
-        "death"
+      "fps": 4.70588235,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/death_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_03.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 4,
-      "loop": false
+      "poses": [
+        "death_00",
+        "death_01",
+        "death_02",
+        "death_03"
+      ]
     }
   },
   "canvas": [
     1024,
-    512
+    896
   ],
   "display_size": [
-    256,
-    128
-  ]
+    256.0,
+    224.0
+  ],
+  "anchor": [
+    0.5,
+    0.818080357
+  ],
+  "impact_ratio": 0.45,
+  "flip_with_facing": true
 }

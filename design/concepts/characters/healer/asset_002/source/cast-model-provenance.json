@@ -1,0 +1,560 @@
+{
+  "character": "healer",
+  "version": "asset_002",
+  "previous_version": "tmp_002",
+  "body_model_version": "tmp_001",
+  "source_character": "Mage",
+  "source_model": "design/references/animation/kaykit/characters/Mage.glb",
+  "source_model_sha256": "a71290a05a2f5aee7aeeec162a1306c8ee09a7b3618d89627225bb8aaf5d6940",
+  "motion_model": "source/motion.blend",
+  "native_body_action": "Ranged_Magic_Spellcasting",
+  "native_idle_action": "Ranged_Magic_Spellcasting",
+  "native_action_sha256": "9b07c6e80f021471ba5caa41b712faeb761c7f20253d40602a0ce55cef46321e",
+  "derived_action": "Cast_Native_Retimed_With_Prop_Deployment",
+  "body_method": "native pose time remapping + smooth native idle return; no authored bone offsets",
+  "body_mesh_weights_unchanged": true,
+  "body_mesh_sha256": "d17bd0f0a372e1c59195532c0b2846756d5ce43c70188cd7653800dd143a5374",
+  "rest_pose_unchanged": true,
+  "rig_sha256": "69c3b8a4fcb2847a4cb93baaf9c3f34f250008f62ca92345939a831828e635a6",
+  "all_original_curves_unchanged": true,
+  "custom_3d_prop_animation": true,
+  "camera_elevation_degrees": 0,
+  "guide_frames": [
+    {
+      "action": "cast",
+      "index": 0,
+      "timeline_frame": 0,
+      "native_body": {
+        "frame": 0,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 0.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_00.png",
+      "sha256": "00ba66a7eb8b45841731c90201851fd2c056321b27f36c061ddd02a2ae800dcd"
+    },
+    {
+      "action": "cast",
+      "index": 1,
+      "timeline_frame": 6,
+      "native_body": {
+        "frame": 6,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 2.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_01.png",
+      "sha256": "6807510decee4e95cbacbb3a523b35a42db5d6b6bdb79796466dd5ce97371001"
+    },
+    {
+      "action": "cast",
+      "index": 2,
+      "timeline_frame": 12,
+      "native_body": {
+        "frame": 12,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 5.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_02.png",
+      "sha256": "ce8b7f31132112386bab8e8440dcf808904b4edf1af5975cfc024b0aac2f5ffa"
+    },
+    {
+      "action": "cast",
+      "index": 3,
+      "timeline_frame": 18,
+      "native_body": {
+        "frame": 18,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 8.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_03.png",
+      "sha256": "90312963865d90ef71536b4839e7467ebf9a010d87a47ffb83268491d816361b"
+    },
+    {
+      "action": "cast",
+      "index": 4,
+      "timeline_frame": 24,
+      "native_body": {
+        "frame": 24,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 10.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_04.png",
+      "sha256": "12f9bda5b9e274e3267a1e3f2bb321e8c0e0ad2b0f43c7276c9d62b38361c4ae"
+    },
+    {
+      "action": "cast",
+      "index": 5,
+      "timeline_frame": 27,
+      "native_body": {
+        "frame": 27,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 12.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_05.png",
+      "sha256": "cab432faaf3252f07870d18cf2986acb5dd6b8f5c6797b701e978a6af644fdb2"
+    },
+    {
+      "action": "cast",
+      "index": 6,
+      "timeline_frame": 30,
+      "native_body": {
+        "frame": 30,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 13.333333333333334,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_06.png",
+      "sha256": "dd5b7d4d388417473f12d662773d40e75366fb036e82b1411292aa4f8fd89e23"
+    },
+    {
+      "action": "cast",
+      "index": 7,
+      "timeline_frame": 36,
+      "native_body": {
+        "frame": 36,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 16.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_07.png",
+      "sha256": "fae8be037031cda88166709e830ab4962ed8fd3d8899f177fdc6b309eec6a823"
+    },
+    {
+      "action": "cast",
+      "index": 8,
+      "timeline_frame": 42,
+      "native_body": {
+        "frame": 42,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_08.png",
+      "sha256": "16db5e055064edd76a4b076894d0fab2d23146b82357f4ecf1f25b49ed024e4d"
+    },
+    {
+      "action": "cast",
+      "index": 9,
+      "timeline_frame": 48,
+      "native_body": {
+        "frame": 48,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_09.png",
+      "sha256": "1d2ab87aab1d8c69d6343ef0e615e5423d38659ed212ef926bf8e9c135792e80"
+    },
+    {
+      "action": "cast",
+      "index": 10,
+      "timeline_frame": 54,
+      "native_body": {
+        "frame": 54,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 0.5
+      },
+      "file": "model-frames/cast_10.png",
+      "sha256": "42c4fd0a0f6df5901d3a3139b8607a59f6e8391039acbb2ebcf841367fcd71f5"
+    },
+    {
+      "action": "cast",
+      "index": 11,
+      "timeline_frame": 60,
+      "native_body": {
+        "frame": 60,
+        "source_action": "Ranged_Magic_Spellcasting",
+        "source_frame": 20.0,
+        "native_idle_blend": 1.0
+      },
+      "file": "model-frames/cast_11.png",
+      "sha256": "37abaa441c9a39130fa8b4026461fb809cbd1bae66dcebf431d325d53caeae76"
+    }
+  ],
+  "timeline": [
+    {
+      "frame": 0,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 0.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 1,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 0.3333333333333333,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 2,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 0.6666666666666666,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 3,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 1.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 4,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 1.3333333333333333,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 5,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 1.6666666666666667,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 6,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 2.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 7,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 2.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 8,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 3.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 9,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 3.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 10,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 4.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 11,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 4.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 12,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 5.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 13,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 5.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 14,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 6.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 15,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 6.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 16,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 7.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 17,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 7.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 18,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 8.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 19,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 8.333333333333334,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 20,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 8.666666666666666,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 21,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 9.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 22,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 9.333333333333334,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 23,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 9.666666666666666,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 24,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 10.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 25,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 10.666666666666666,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 26,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 11.333333333333334,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 27,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 12.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 28,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 12.444444444444445,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 29,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 12.88888888888889,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 30,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 13.333333333333334,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 31,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 13.777777777777779,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 32,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 14.222222222222221,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 33,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 14.666666666666666,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 34,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 15.11111111111111,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 35,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 15.555555555555555,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 36,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 16.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 37,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 16.666666666666668,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 38,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 17.333333333333332,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 39,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 18.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 40,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 18.666666666666668,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 41,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 19.333333333333332,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 42,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 43,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 44,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 45,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 46,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 47,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 48,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 49,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.019675925925925927
+    },
+    {
+      "frame": 50,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.07407407407407407
+    },
+    {
+      "frame": 51,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.15625
+    },
+    {
+      "frame": 52,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.25925925925925924
+    },
+    {
+      "frame": 53,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.37615740740740744
+    },
+    {
+      "frame": 54,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.5
+    },
+    {
+      "frame": 55,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.6238425925925927
+    },
+    {
+      "frame": 56,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.7407407407407407
+    },
+    {
+      "frame": 57,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.84375
+    },
+    {
+      "frame": 58,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.925925925925926
+    },
+    {
+      "frame": 59,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 0.9803240740740741
+    },
+    {
+      "frame": 60,
+      "source_action": "Ranged_Magic_Spellcasting",
+      "source_frame": 20.0,
+      "native_idle_blend": 1.0
+    }
+  ],
+  "frame_range": [
+    0,
+    60
+  ],
+  "fps": 30,
+  "model_duration": 2.0,
+  "release_frame": 27,
+  "result": "PASS",
+  "render_visibility_note": "Mage hat/cape hidden only in model guides to expose head/limbs; mesh data retained",
+  "generator_provided_poses": false,
+  "interface_design": "twin keyboard operation -> unfolding wraparound curved interface -> command ring and cube -> release pulse -> collapse",
+  "hologram_geometry_modelled_before_redraw": true
+}

@@ -1,71 +1,314 @@
 {
   "clips": {
     "idle": {
-      "poses": [
-        "idle"
+      "fps": 0.9375,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/idle_00.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 8,
-      "loop": true
+      "poses": [
+        "idle_00"
+      ]
     },
     "move": {
-      "poses": [
-        "idle"
+      "fps": 7.5,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/move_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_07.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 8,
-      "loop": true
+      "poses": [
+        "move_00",
+        "move_01",
+        "move_02",
+        "move_03",
+        "move_04",
+        "move_05",
+        "move_06",
+        "move_07"
+      ]
     },
     "ranged": {
-      "poses": [
-        "idle",
-        "aim",
-        "aim",
-        "shot",
-        "aim",
-        "idle"
+      "fps": 13.92857143,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/ranged_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_07.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_08.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_09.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_10.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_11.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/ranged_12.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 8,
-      "loop": false
+      "poses": [
+        "ranged_00",
+        "ranged_01",
+        "ranged_02",
+        "ranged_03",
+        "ranged_04",
+        "ranged_05",
+        "ranged_06",
+        "ranged_07",
+        "ranged_08",
+        "ranged_09",
+        "ranged_10",
+        "ranged_11",
+        "ranged_12"
+      ]
     },
     "cast": {
-      "poses": [
-        "idle",
-        "aim",
-        "cast",
-        "cast",
-        "aim",
-        "idle"
+      "fps": 19.5,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/cast_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_07.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_08.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_09.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_10.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_11.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_12.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 8,
-      "loop": false
+      "poses": [
+        "cast_00",
+        "cast_01",
+        "cast_02",
+        "cast_03",
+        "cast_04",
+        "cast_05",
+        "cast_06",
+        "cast_07",
+        "cast_08",
+        "cast_09",
+        "cast_10",
+        "cast_11",
+        "cast_12"
+      ]
     },
     "hurt": {
-      "poses": [
-        "idle"
+      "fps": 10.5,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/hurt_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_06.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 8,
-      "loop": false
+      "poses": [
+        "hurt_00",
+        "hurt_01",
+        "hurt_02",
+        "hurt_03",
+        "hurt_04",
+        "hurt_05",
+        "hurt_06"
+      ]
     },
     "critical": {
-      "poses": [
-        "death_1"
+      "fps": 1.875,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/critical_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/critical_01.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 8,
-      "loop": true
+      "poses": [
+        "critical_00",
+        "critical_01"
+      ]
     },
     "death": {
-      "poses": [
-        "death_2"
+      "fps": 5.0,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/death_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_03.png",
+          "duration": 1.0
+        }
       ],
-      "fps": 4,
-      "loop": false
+      "poses": [
+        "death_00",
+        "death_01",
+        "death_02",
+        "death_03"
+      ]
     }
   },
   "canvas": [
-    512,
-    512
+    1536,
+    1024
   ],
   "display_size": [
-    128,
-    128
-  ]
+    384.0,
+    256.0
+  ],
+  "anchor": [
+    0.5,
+    0.715820312
+  ],
+  "impact_ratio": 0.45,
+  "flip_with_facing": true
 }

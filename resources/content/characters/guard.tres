@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://assets/art/characters/guard/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
-region = Rect2(450, 25, 130, 130)
+region = Rect2(445, 265, 180, 180)
 [resource]
 script = ExtResource("s")
 id = "guard"

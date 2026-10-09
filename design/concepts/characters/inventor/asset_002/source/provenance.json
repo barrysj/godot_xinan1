@@ -1,0 +1,117 @@
+{
+  "source_version": "tmp_005",
+  "retained_version": "asset_002",
+  "runtime_frame_pixels_unchanged": true,
+  "runtime_frame_sha256": {
+    "cast_00.png": "dd7a1d254dd8e7894da21cdc8b36a069f37f1eb73bd45816805ee23b26a4e0a6",
+    "cast_01.png": "68edcf67331f531d0e0cb48b58bece7728864352586238a3cd3106529b97978e",
+    "cast_02.png": "18cace7e76d26737c832eea975ae369d4329a9b40660c38dbfac20c6e89e6aa9",
+    "cast_03.png": "409e89c0fe8e617f64167d42795742569c744d6fb3747ff43f057fa3c442f404",
+    "cast_04.png": "29d877cb40ad4d2e91f0acd4a6a90e455c42006e0d817d7bf47d29530c339ed9",
+    "cast_05.png": "979514901d8d0850af50f327937d2c424d5ad5c3ac149006b932a4586d41d622",
+    "cast_06.png": "8854081504f8fd235f01e3ebfc573bdadd35d46673959765d4e650bdc27dd200",
+    "cast_07.png": "2a40cedce342c268f3eee8e9f74eb15d51c88b40a21a61247c7a751cf01d90e0",
+    "cast_08.png": "0d0eaccc0f35568cc84076d9bec7b50daf888fe5d39d8879133ccbe7b136b082",
+    "cast_09.png": "73f15cd397fc661028f9a7acc704b5e2fbf70ba98c052eb488e289ff64b6fd57",
+    "cast_10.png": "5010ebac3b0b321918019b9a254892fc763d50c58aea7fdf5463f5be7fcb175c",
+    "cast_11.png": "b9502396172b0d2cc6e33d0fa9311f217e0582a4689e16b6cec3f6fe89cf6f2f",
+    "cast_12.png": "a446656527e5935ba5918ba037f313fb19422830182fbde02a0d863a8ecd430e",
+    "critical_00.png": "51bc2cf9ff91483a8c50484dc9a58349732800762b396220262a39a0b81ab021",
+    "critical_01.png": "cf3cf019be200629c8e49871fdefef842a4672c46945b8ae0945405bc57f062f",
+    "death_00.png": "58b24c223f587ec0d5630c59200ddb3c5bb9209630b613cccf93f17b58d2a589",
+    "death_01.png": "8bb281f795eb2581cd8b7937e679e053119672f9d78f7a797be006b3d477a607",
+    "death_02.png": "905f3454e18f2dd16c89942f74b4244fa4d9ddc8be149b1cd18944704f20ea26",
+    "death_03.png": "f1df32c1dc0e9ec508af55171196f1a0e162f7316f1e44316bc39fcabf673e5a",
+    "hurt_00.png": "624df5cfef026105a65d071095f7dd9be4b3dcc9455ee5d7465039149c8f6f42",
+    "hurt_01.png": "34057181509b6e6cb57ef9ffea2f3250b154b0d8593e6f4a50986137cd518948",
+    "hurt_02.png": "33e7bbc37a72d7f50a58edfe2b10ab6d5064b9f6f46645f66c89fd66f9c1a696",
+    "hurt_03.png": "0c551c4459bb4e6bad7574266ba9ddd569ca6ba600d171bffdaa3b98584f471c",
+    "hurt_04.png": "75a956f194c25c1dac35c647579bc51efcc0ff580e1537274417030889975f16",
+    "hurt_05.png": "4f2fbf5a681257c10bd01f2adfea064b20be39e3c5b0fe3c47d1876d97801694",
+    "hurt_06.png": "a446656527e5935ba5918ba037f313fb19422830182fbde02a0d863a8ecd430e",
+    "idle_00.png": "a446656527e5935ba5918ba037f313fb19422830182fbde02a0d863a8ecd430e",
+    "move_00.png": "ba73dce74ae1e2afe2cb54d3a71ecd2d3c2f2a33f1b5de6d8d0bdc1fa31e91b9",
+    "move_01.png": "bb0e17aa7e685d0f82872a6d59d21903b2f6b97ca37f2b74be63e9a737261c6b",
+    "move_02.png": "110dab8785a0c8b4f6ef5ee6275e964c3dcddfb4a399023ca4262d1398315e13",
+    "move_03.png": "2920986524a8d72080594293b63c82c1cab1696d9208b942d9d72a3ab504a7a1",
+    "move_04.png": "127424d4402988e4605601a434baddee636308a7852b7bf44106ad859bf604cf",
+    "move_05.png": "cc399e64407df12ef2a1d4fef1c6f5ea6b9b380cbe82df32ba3b934130deef2b",
+    "move_06.png": "ce45bb38156f70d6299f90909bbec75e352a2b59c48582ba0c0dddc74e38d492",
+    "move_07.png": "bcdebfbad68c404984801829b3e617c886e066222769845472f15a3bbbe4fe18",
+    "ranged_00.png": "b7f9d48fea30fb3b6dc606f587350e564d50777a9076903367b91f069095196d",
+    "ranged_01.png": "beeec4172b55b59d46a23ec88a8bf0c7450293b81fb828cbb9dac1e843477c2d",
+    "ranged_02.png": "715582e701f9bef25b09f462d4cb12226bc1f19d4365cbaf1b55b8f90093a13e",
+    "ranged_03.png": "e43d5e2481931fd9f0b5c6390389e3b8ad015fa1aa996f3fef3b1189128a583e",
+    "ranged_04.png": "55275d58176c8a3cb298ab7c28c1ec7a00492a550138fbeb00a97248b1a225ad",
+    "ranged_05.png": "4bca5d05010e5ec6d3fdfa138051a87eee9a8fbca7c0aba4bd99b18fa593fbce",
+    "ranged_06.png": "a98ddb91851d3a0ccd5dd203dd137f9ad5ba6f1c2c2d0cc4e355a7158dee8457",
+    "ranged_07.png": "101b2ee6fea537ec978e7ce1dc850f0604c635aac452f6f0a10d68961bf99954",
+    "ranged_08.png": "16158acd6ee73caf93fef3c391d7621812a76f428ff130ba1c9225f14f009e8a",
+    "ranged_09.png": "fb72a50f41bc33480e986259df05bf4d002ddb567183a4cb8953ddd72250d264",
+    "ranged_10.png": "032c1b8acf69c8a3c9e1434b6ae3b9a8dcc128d6bee6ae4104a15b8ecb8e6c5e",
+    "ranged_11.png": "f11a2eec832e85ed85a6ae368fa2caa5827f4a527872f3ebeb6ae898e52b9a2a",
+    "ranged_12.png": "a446656527e5935ba5918ba037f313fb19422830182fbde02a0d863a8ecd430e"
+  },
+  "origins": {
+    "idle": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_2H_Aiming",
+      "derived_action": "Ranged_2H_Aiming",
+      "frame_count": 1
+    },
+    "move": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Running_HoldingRifle",
+      "derived_action": "Running_HoldingRifle",
+      "frame_count": 8
+    },
+    "ranged": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_2H_Shoot",
+      "derived_action": "Ranged_2H_Shoot",
+      "frame_count": 13
+    },
+    "cast": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_2H_Shoot",
+      "derived_action": "Cast_Native_Retimed_With_Prop_Deployment",
+      "frame_count": 13
+    },
+    "hurt": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Hit_A",
+      "derived_action": "Hit_A",
+      "frame_count": 7
+    },
+    "critical": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Crouching",
+      "derived_action": "Crouching",
+      "frame_count": 2
+    },
+    "death": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Death_A",
+      "derived_action": "Death_A",
+      "frame_count": 4
+    }
+  },
+  "canvas": [
+    1536,
+    1024
+  ],
+  "display_size": [
+    384.0,
+    256.0
+  ],
+  "anchor": [
+    0.5,
+    0.715820312
+  ],
+  "approval": {
+    "source": "docs/art/tasks/m1-player-cast-animation.md",
+    "date": "2026-10-10",
+    "decision": "approved_final_animation_and_integration",
+    "quote": "可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。"
+  }
+}

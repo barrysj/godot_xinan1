@@ -1,0 +1,557 @@
+{
+  "character": "archer",
+  "version": "asset_002",
+  "previous_version": "tmp_004",
+  "source_character": "Ranger",
+  "source_model": "design/references/animation/kaykit/characters/Ranger.glb",
+  "source_model_sha256": "5b9327c15623e51ab856f524fd24f3a91e5a2691e4e3b7633b6b2963e8564d33",
+  "motion_model": "source/motion.blend",
+  "native_body_action": "Ranged_1H_Shoot",
+  "native_idle_action": "Idle_A",
+  "native_action_sha256": "03be794db589626191ddefc36dad263c21eebe1f0c4e1e8da84ff53cb3e959ba",
+  "derived_action": "Cast_Native_Retimed_With_Prop_Deployment",
+  "body_method": "native pose time remapping + smooth native idle return; no authored bone offsets",
+  "body_mesh_weights_unchanged": true,
+  "body_mesh_sha256": "aac7662fc70013b36c264aadb99ec40a446bf93a61ade5ec4fa9b93c09a0dc7c",
+  "rest_pose_unchanged": true,
+  "rig_sha256": "69c3b8a4fcb2847a4cb93baaf9c3f34f250008f62ca92345939a831828e635a6",
+  "all_original_curves_unchanged": true,
+  "custom_3d_prop_animation": true,
+  "camera_elevation_degrees": 0,
+  "guide_frames": [
+    {
+      "action": "cast",
+      "index": 0,
+      "timeline_frame": 0,
+      "native_body": {
+        "frame": 0,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 0.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_00.png",
+      "sha256": "98fa2cf730ca5f820d2307c474317bef14ac4da1c0ae6a36a16370d119988b6a"
+    },
+    {
+      "action": "cast",
+      "index": 1,
+      "timeline_frame": 6,
+      "native_body": {
+        "frame": 6,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 3.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_01.png",
+      "sha256": "e17d23958516f24a87d554ae9e5bd8b78cdeb0c45413a7c23e94dce3dcd3943f"
+    },
+    {
+      "action": "cast",
+      "index": 2,
+      "timeline_frame": 12,
+      "native_body": {
+        "frame": 12,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 6.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_02.png",
+      "sha256": "9400aa9c86fcc0341e97257b8f5c764a88d5938475489e65b113958f3af2d0fc"
+    },
+    {
+      "action": "cast",
+      "index": 3,
+      "timeline_frame": 18,
+      "native_body": {
+        "frame": 18,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 8.75,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_03.png",
+      "sha256": "1abaff1cf108867141860a1d5828a4071c162b5afc12ab0bd5b6d05beebb180c"
+    },
+    {
+      "action": "cast",
+      "index": 4,
+      "timeline_frame": 24,
+      "native_body": {
+        "frame": 24,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 11.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_04.png",
+      "sha256": "cf0b287f3e892d9a85edd67ed52b1a4e9040b592b06567e98b268023abe48973"
+    },
+    {
+      "action": "cast",
+      "index": 5,
+      "timeline_frame": 27,
+      "native_body": {
+        "frame": 27,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 14.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_05.png",
+      "sha256": "0400e02d9d0ca0468140ebb4717566282f167dfbe1d4644f928a358d2165cc68"
+    },
+    {
+      "action": "cast",
+      "index": 6,
+      "timeline_frame": 30,
+      "native_body": {
+        "frame": 30,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 16.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_06.png",
+      "sha256": "b7849561eec706121c53e7c20a0fbb68b2830835d1842da705c439c8d9a5163b"
+    },
+    {
+      "action": "cast",
+      "index": 7,
+      "timeline_frame": 36,
+      "native_body": {
+        "frame": 36,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 20.333333333333332,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_07.png",
+      "sha256": "3ebafbf3a2d42aa0a6ff3ba34a670ba8eeb7301bae3a9e4d91528f8960b1bf81"
+    },
+    {
+      "action": "cast",
+      "index": 8,
+      "timeline_frame": 42,
+      "native_body": {
+        "frame": 42,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 25.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_08.png",
+      "sha256": "3fe5b1969c51e530c32142318aec749d7b73f1d704a90ada9a90acd5bfa2e958"
+    },
+    {
+      "action": "cast",
+      "index": 9,
+      "timeline_frame": 48,
+      "native_body": {
+        "frame": 48,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 32.0,
+        "native_idle_blend": 0
+      },
+      "file": "model-frames/cast_09.png",
+      "sha256": "c2d87aff93e1f8b625d46a8bf89b30b2825eb0969ef57ebb0d7909b5c2dd97ce"
+    },
+    {
+      "action": "cast",
+      "index": 10,
+      "timeline_frame": 54,
+      "native_body": {
+        "frame": 54,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 32.0,
+        "native_idle_blend": 0.5
+      },
+      "file": "model-frames/cast_10.png",
+      "sha256": "696ecf59fa428ee0c10e29d11d8ee21b9f4c251cf531e08e56a6d22555cdcc32"
+    },
+    {
+      "action": "cast",
+      "index": 11,
+      "timeline_frame": 60,
+      "native_body": {
+        "frame": 60,
+        "source_action": "Ranged_1H_Shoot",
+        "source_frame": 32.0,
+        "native_idle_blend": 1.0
+      },
+      "file": "model-frames/cast_11.png",
+      "sha256": "abf1437d30ffcf9f0ca3c4dec71e3a7be41a5bddc999e2c3a63b92457ab6c561"
+    }
+  ],
+  "timeline": [
+    {
+      "frame": 0,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 0.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 1,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 0.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 2,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 1.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 3,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 1.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 4,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 2.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 5,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 2.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 6,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 3.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 7,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 3.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 8,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 4.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 9,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 4.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 10,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 5.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 11,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 5.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 12,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 6.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 13,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 6.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 14,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 7.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 15,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 7.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 16,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 8.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 17,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 8.375,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 18,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 8.75,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 19,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 9.125,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 20,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 9.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 21,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 9.875,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 22,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 10.25,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 23,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 10.625,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 24,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 11.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 25,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 12.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 26,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 13.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 27,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 14.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 28,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 14.666666666666666,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 29,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 15.333333333333334,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 30,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 16.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 31,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 16.666666666666668,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 32,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 17.333333333333332,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 33,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 18.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 34,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 18.77777777777778,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 35,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 19.555555555555557,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 36,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 20.333333333333332,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 37,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 21.11111111111111,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 38,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 21.88888888888889,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 39,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 22.666666666666668,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 40,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 23.444444444444443,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 41,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 24.22222222222222,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 42,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 25.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 43,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 26.166666666666668,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 44,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 27.333333333333332,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 45,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 28.5,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 46,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 29.666666666666668,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 47,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 30.833333333333332,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 48,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0
+    },
+    {
+      "frame": 49,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.019675925925925927
+    },
+    {
+      "frame": 50,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.07407407407407407
+    },
+    {
+      "frame": 51,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.15625
+    },
+    {
+      "frame": 52,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.25925925925925924
+    },
+    {
+      "frame": 53,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.37615740740740744
+    },
+    {
+      "frame": 54,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.5
+    },
+    {
+      "frame": 55,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.6238425925925927
+    },
+    {
+      "frame": 56,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.7407407407407407
+    },
+    {
+      "frame": 57,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.84375
+    },
+    {
+      "frame": 58,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.925925925925926
+    },
+    {
+      "frame": 59,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 0.9803240740740741
+    },
+    {
+      "frame": 60,
+      "source_action": "Ranged_1H_Shoot",
+      "source_frame": 32.0,
+      "native_idle_blend": 1.0
+    }
+  ],
+  "frame_range": [
+    0,
+    60
+  ],
+  "fps": 30,
+  "model_duration": 2.0,
+  "release_frame": 27,
+  "result": "PASS",
+  "render_visibility_note": "Mage hat/cape hidden only in model guides to expose head/limbs; mesh data retained",
+  "generator_provided_poses": false
+}

@@ -1,0 +1,117 @@
+{
+  "source_version": "tmp_008",
+  "retained_version": "asset_002",
+  "runtime_frame_pixels_unchanged": true,
+  "runtime_frame_sha256": {
+    "cast_00.png": "a3e19b8df4db544d296e169be913a56e341d63523724a2a7b794c8c5eb9f0ab0",
+    "cast_01.png": "43a684ffe168a4c5743d1896c8e3fd791405a1ee425751cf29e11549be40f08b",
+    "cast_02.png": "7ebb916005b501341ec5cf7138dbf621142a3dd063add02adf47d9fffac05d17",
+    "cast_03.png": "60186c4f5e21c8b290f9ba517360fa446972945f05339eaa64d47fd19af1d664",
+    "cast_04.png": "346526c69d99c1328235f0197c0ca9e69d40ba56f7f78535fcfbf09ac2f74af1",
+    "cast_05.png": "a52ad99f15617805acb3cae6229cf40fd20f2508d6aa01edfeba966e5bcdf4cb",
+    "cast_06.png": "1309c7fab8609762b40b924c28b5ba4a07433105b525307189b72dd6d666439a",
+    "cast_07.png": "e948d567646c5c6822cb7398600e864ce4651510e65c82627f98f0de57ade78c",
+    "cast_08.png": "6e7b17baeb0a30a1be9c1a3ac6fec524ebb34367b17bcf14312bd605e6964e87",
+    "cast_09.png": "f8d73d904ac327a7a8e499bc90adf6ab12209bb50d2846ec7488321ca94a4e49",
+    "cast_10.png": "dec2a10ee18e4ab78bfca4521c8ae7bec559408be4adde695bc846848c1872fd",
+    "cast_11.png": "493c999272c63207d6d55d2a065db2425bd8f11d393243f84b60e535067dcdbd",
+    "cast_12.png": "62df79cc8aada91cd5dd1d52fc3bfa1f22ebb1a0b4dcf2c37a54ae69a88c5f87",
+    "critical_00.png": "8b9d14f030647553c0a02e2e12fcfff7e6946fbc6035eb553f6335cd5e8ffb3f",
+    "critical_01.png": "cf43f309561ee29befdd7e4272815bac42f00151bd609b88fec29bc081df5485",
+    "death_00.png": "dc16566d30215194f1afd5f43d41bcef330b9b023e6de8c4f4cdfa7148681acc",
+    "death_01.png": "3c4c9600128f34a17ebfd98300f9a3d5f00fe07ec5fba90421656116e3e3b785",
+    "death_02.png": "1d4ccdf46c27b58321033d031caeef0543fbc7a35bde741147f6c4b30b1a84a4",
+    "death_03.png": "9cd34c8217f5fdb63af313a2131b0d9d2a275d44f74984edd06062d6004e423c",
+    "hurt_00.png": "18c9a41e856eeaf13901ccd16ba0b5349371c5dcaf1ce2f3385937fd5e45232a",
+    "hurt_01.png": "1d4aba50fecc8502db6d0e2625e242c5870b04a73bed22d6ffbbc79b0ea58bfe",
+    "hurt_02.png": "361babe5e2b0a441880b5dcffa6f4a420bce3385dd04abbc2cd52eff46ce36cf",
+    "hurt_03.png": "7d02579bfec8b90086edef9803e392cf8695b5656c8040ba1001da3103eb573e",
+    "hurt_04.png": "02fd5ec613a3abbe058c9d9d85ce0a254524ba80fba336795140709a68d8b777",
+    "hurt_05.png": "a0dbe65284b2c1da21007ef7b64e66ac8e392da5ec3093a44ebd9680f12dff7f",
+    "hurt_06.png": "62df79cc8aada91cd5dd1d52fc3bfa1f22ebb1a0b4dcf2c37a54ae69a88c5f87",
+    "idle_00.png": "62df79cc8aada91cd5dd1d52fc3bfa1f22ebb1a0b4dcf2c37a54ae69a88c5f87",
+    "move_00.png": "7dbd242b72461109a9095c406e535f82fa075c79e838e325952999a35c42121f",
+    "move_01.png": "c1147ba9af4ffbeecb8cdad190b1a2d1ebd1d6f8532b03608efd85024e03b57a",
+    "move_02.png": "2227c97248202616e7d0316c6ba22a1dd33f8106c2fa8f7784e14a06c18596e8",
+    "move_03.png": "a0a3943ca17600b79ece482d166789d765f2d4334d0f8e176c44ce1754f5b78d",
+    "move_04.png": "a5fe40fd547e20bb3ffc7c4fcbbd7369b98324d56817be91888df26ad383393d",
+    "move_05.png": "c66850b8c9604f51cde57637048853e3e520678faee23e12107610b92af55c0a",
+    "move_06.png": "458cf131a8a14184a542dd7454db13512e54e804f0808dd9eb7f66209cdf77c6",
+    "move_07.png": "1a5a59eaf9eb26b73596387c7bf1a30381af826cf48ca8eebbc4f5ff616c4db8",
+    "ranged_00.png": "fb202b445c795d79215d3fe92a478de6fb489cf6af069c23dcc3e23879a9bc5e",
+    "ranged_01.png": "098fcb1d5f792a2af96e5c2d6d4470b160d5c5603017af184929e2bbc0f4d58e",
+    "ranged_02.png": "3011c5d94c87af5a5861394ad21b7d96d817d08d4226eb0ef0dfb75c07e03e56",
+    "ranged_03.png": "0c4c83fae69724b80c6752e0e71f7b9662d054eee1f8f8a8c6f7cc04c3b9c562",
+    "ranged_04.png": "d7b56aead7101eb0b364ebce00cfb71828fc7e6ce4d000cfe3dcd19fee98b7d7",
+    "ranged_05.png": "86fcb58e6af8959eb57a931509c985f70a2baefb551ec21e44ecd7af52c60ed8",
+    "ranged_06.png": "37677648c6b4d5c803374ae3a4213eca6e88da2d0d59e4e444df83a0bc6a45f5",
+    "ranged_07.png": "1ca5a300bd7ef1e1930473e2062df0bd25c9ee6a1ac49d0114133c894ed66203",
+    "ranged_08.png": "f9b95346a713fe339994b3039c37a14957c46621e4501a625d81c6fd7ac48d31",
+    "ranged_09.png": "2e62aee9080cec40ec74f5819264b096c11651bf0e2a4960fc9e203cc7620e5a",
+    "ranged_10.png": "e0e2909feb15e2aa7acf1b6bc91a369da3359f3e59ad820fe55bd301599bc747",
+    "ranged_11.png": "b43cbe1b9ae576bec39b6599477056a93c8048b21498c75c54e80bb01bb13866",
+    "ranged_12.png": "62df79cc8aada91cd5dd1d52fc3bfa1f22ebb1a0b4dcf2c37a54ae69a88c5f87"
+  },
+  "origins": {
+    "idle": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Idle_A",
+      "derived_action": "Idle_A",
+      "frame_count": 1
+    },
+    "move": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Running_A",
+      "derived_action": "Running_A",
+      "frame_count": 8
+    },
+    "ranged": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_1H_Shoot",
+      "derived_action": "Ranged_1H_Shoot",
+      "frame_count": 13
+    },
+    "cast": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Ranged_1H_Shoot",
+      "derived_action": "Cast_Native_Retimed_With_Prop_Deployment",
+      "frame_count": 13
+    },
+    "hurt": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Hit_A",
+      "derived_action": "Hit_A",
+      "frame_count": 7
+    },
+    "critical": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Crouching",
+      "derived_action": "Crouching",
+      "frame_count": 2
+    },
+    "death": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Death_A",
+      "derived_action": "Death_A",
+      "frame_count": 4
+    }
+  },
+  "canvas": [
+    1536,
+    1024
+  ],
+  "display_size": [
+    384.0,
+    256.0
+  ],
+  "anchor": [
+    0.5,
+    0.715820312
+  ],
+  "approval": {
+    "source": "docs/art/tasks/m1-player-cast-animation.md",
+    "date": "2026-10-10",
+    "decision": "approved_final_animation_and_integration",
+    "quote": "可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。"
+  }
+}

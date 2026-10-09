@@ -17,7 +17,10 @@ static func run(preview: Node, manifest_path: String) -> void:
 		preview.get_tree().quit(1)
 		return
 	var animation_size: Vector2 = preview.units[0].battle_animation.display_size
-	var scale_to_256_high := 256.0 / maxf(animation_size.y, 1.0)
+	# Optional authoring override: compare differently padded canvases at the same
+	# logical pixel scale. Existing export jobs retain their 256-high framing.
+	var capture_height := clampf(float(job.get("display_height", 256.0)), 64.0, 1024.0)
+	var scale_to_256_high := capture_height / maxf(animation_size.y, 1.0)
 	job.size = [maxi(352, ceili(animation_size.x * scale_to_256_high) + 96), 352]
 	var viewport := SubViewport.new()
 	viewport.size = Vector2i(int(job.size[0]), int(job.size[1]))

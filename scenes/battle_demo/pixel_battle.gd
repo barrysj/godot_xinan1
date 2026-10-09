@@ -11,6 +11,8 @@ const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd"
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
 const Board = preload("res://scenes/battle_demo/battle_board.gd")
 const Floor = preload("res://scenes/battle_demo/battle_floor.gd")
+const CastVfx = preload("res://scenes/battle_demo/cast_vfx.gd")
+var cast_vfx := CastVfx.new()
 var code_panel: Control
 var inspector: Control
 var battle_background: Texture2D
@@ -169,6 +171,7 @@ func _build_units() -> void:
 	_update_battle_presentations()
 	effects.clear()
 	skill_effects.clear()
+	cast_vfx.clear()
 	banner_time = 0
 
 func _process(delta: float) -> void:
@@ -188,6 +191,7 @@ func _process(delta: float) -> void:
 		effects = effects.filter(func(fx): return fx.life > 0)
 		for fx in skill_effects: fx.age += presentation_delta
 		skill_effects = skill_effects.filter(func(fx): return fx.age < fx.resource.duration())
+		cast_vfx.advance(presentation_delta)
 	super._process(delta)
 	for u in units:
 		var direction: Vector2 = u.presentation.action.get("direction", Vector2.ZERO)
@@ -260,7 +264,7 @@ func _presentation_handles(u: Dictionary) -> bool:
 		"handles_presentation_state", u.animation.state)
 
 func _finish_delay() -> float:
-	var remaining := 0.65
+	var remaining := maxf(0.65, cast_vfx.remaining())
 	for fx in skill_effects:
 		remaining = maxf(remaining, fx.resource.duration() - fx.age)
 	for u in units:
@@ -282,6 +286,10 @@ func _present_simulation_event(event: Dictionary) -> void:
 		simulation.unit(event.target_id).presentation.consume(visual_event)
 	presentation_cue.emit(event.duplicate(true))
 	super._present_simulation_event(event)
+	var source_actor: Dictionary = simulation.unit(event.actor_id)
+	var target_actor: Dictionary = simulation.unit(event.target_id)
+	cast_vfx.consume(event, _cast_style(source_actor), _cast_muzzle(source_actor),
+		_project(event.to) + _hit_offset(target_actor))
 	if event.kind == "action_released" and event.casts:
 		var actor = simulation.unit(event.actor_id)
 		if actor.skill.battle_effect != null and actor.skill.battle_effect.duration() > 0:
@@ -465,6 +473,16 @@ func _projectile_style(shot: Dictionary) -> Resource:
 	var actor = simulation.unit(shot.actor_id)
 	return actor.battle_animation.projectile_style if actor != null and actor.battle_animation != null else null
 
+func _cast_style(actor: Dictionary) -> Resource:
+	return actor.battle_animation.cast_vfx_style if actor.get("battle_animation") != null else null
+
+func _cast_muzzle(actor: Dictionary) -> Vector2:
+	var style := _cast_style(actor)
+	if style == null: return _unit_center(actor)
+	var offset: Vector2 = style.muzzle_offset
+	if not actor.presentation.facing_right: offset.x *= -1
+	return _unit_center(actor) + offset
+
 func _projectile_point(shot: Dictionary, alpha: float) -> Vector2:
 	var target = simulation.unit(shot.target_id)
 	var actor = simulation.unit(shot.actor_id)
@@ -472,12 +490,19 @@ func _projectile_point(shot: Dictionary, alpha: float) -> Vector2:
 	var launch := Vector2(0, -6)
 	if actor.battle_animation != null:
 		launch = actor.battle_animation.launch_offset
+		if shot.special and _cast_style(actor) != null: launch = _cast_style(actor).muzzle_offset
 		if actor.battle_animation.flip_with_facing and _project(target.position).x < _project(shot.origin).x: launch.x *= -1
 	var distance: float = shot.origin.distance_to(target.position)
 	var progress := clampf(shot.origin.distance_to(position) / maxf(0.001, distance), 0, 1)
 	return _project(position) + launch.lerp(_hit_offset(target), progress)
 
 func _draw_effects() -> void:
+	if phase == "battle" and not simulation.closing:
+		for actor in units:
+			var style := _cast_style(actor)
+			var action: Dictionary = actor.presentation.action
+			if style == null or actor.hp <= 0 or action.is_empty() or not action.get("casts", false) or action.get("released", false): continue
+			cast_vfx.draw_charge(self, style, _cast_muzzle(actor), clampf(action.age / maxf(0.001, action.windup), 0, 1), visual_time)
 	for fx in skill_effects:
 		var texture: Texture2D = fx.resource.texture(fx.age)
 		if texture == null: continue
@@ -492,6 +517,10 @@ func _draw_effects() -> void:
 		if direction.is_zero_approx(): direction = Vector2.RIGHT
 		var color = GOLD if shot.special else (TEAL if simulation.unit(shot.actor_id).side == 0 else RED)
 		var projectile_style = _projectile_style(shot)
+		var cast_style := _cast_style(simulation.unit(shot.actor_id))
+		if shot.special and cast_style != null:
+			cast_vfx.draw_projectile(self, cast_style, p, direction, simulation.elapsed - shot.spawn_time)
+			continue
 		if projectile_style != null and projectile_style.usable():
 			var world := Transform2D(0.0, Vector2.ONE * scale_factor, 0.0, origin)
 			var local := Transform2D(direction.angle() + deg_to_rad(projectile_style.rotation_offset_degrees), Vector2.ONE, 0.0, p)
@@ -507,6 +536,7 @@ func _draw_effects() -> void:
 			for tail in range(4):
 				var q: Vector2 = p - direction * tail * 6
 				draw_circle(q, 3.5 - tail * 0.65, Color(color, 1 - tail * 0.2))
+	cast_vfx.draw_bursts(self)
 	for fx in effects:
 		var age: float = 0.65 - fx.life
 		var opacity = clampf(fx.life / 0.2, 0, 1)
@@ -551,7 +581,7 @@ func _draw() -> void:
 	_pixel_panel(Rect2(20, 16, 1220, 62), Color("202027"), Color("132c2d"))
 	_text(Vector2(40, 45), "重返校园", PAPER, 27)
 	_text(Vector2(42, 65), "RETURN TO SUMMER", Color("c0b792"), 11)
-	_text(Vector2(238, 45), "01 / 旧校庭院", PAPER, 20)
+	_text(Vector2(238, 45), demo_options.caption() if not demo_options.difficulty.is_empty() else "01 / 旧校庭院", PAPER, 20)
 	_text(Vector2(238, 66), "悬停角色简览，点击详情与装备。", Color("b2baa0"), 12)
 	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else ("战斗收尾" if simulation.closing else "自走棋战斗"))))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
@@ -593,7 +623,7 @@ func _draw() -> void:
 	if banner_time > 0 and phase == "battle":
 		_pixel_panel(Rect2(267, 99, 418, 40), Color("413b4b"))
 		_center(Vector2(476, 126), banner, GOLD, 21)
-	if get("screen") == null: _pixel_button(3, "切换敌阵", false, phase == "prepare")
+	if get("screen") == null: _pixel_button(3, "切换难度" if not demo_options.difficulty.is_empty() else "切换敌阵", false, phase == "prepare")
 	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or formation.count(-1) == 2)
 	_pixel_button(4, "返回整备")
 	if phase != "prepare":

@@ -1,0 +1,111 @@
+{
+  "source_version": "tmp_005",
+  "retained_version": "asset_002",
+  "runtime_frame_pixels_unchanged": true,
+  "runtime_frame_sha256": {
+    "cast_00.png": "2027fe0d636fabea0e2e03a821e6e699f74d2bf95f9c78964d1b63bac41207b9",
+    "cast_01.png": "3b92884c8b582871342f60af70bcb84c0e9275a545bf22066ec3ee10a74d0b91",
+    "cast_02.png": "4f31dbfd729082afc1cd7c4ebec23af11e0f2a2849d0a3bf91c699caa779a0ee",
+    "cast_03.png": "c9a72239171365309674902df8c5b859db430e46641918441e957f747abb363a",
+    "cast_04.png": "169c48a0841a718684ea917d666bde7ae0851831f32d5190e8b4586ec9112b7d",
+    "cast_05.png": "b8c5ed04480166c6522d0df260b362edcef21e0cfcba69b7b3ca5e59f0490dc7",
+    "cast_06.png": "5528e0e8da3a434fbddee6c156b9fe9a61ad331759cd6a5e5fbc6fac4004a242",
+    "critical_00.png": "f5444c3b77b42854791a111698b7c2045ba92634ea1a5c41534255db02c7eab6",
+    "critical_01.png": "ebbf46e6f5f77529c80cc0ea496392542d0721fe8c905dd69afb0b1a3e932f3a",
+    "death_00.png": "393e1b943b721b21f05ce3de37ab7df2fa7acd471ab9e3f2909d138e34a7109c",
+    "death_01.png": "c199fe72cf21eead202cdffad0cf6bcc5a2cff5cfbb978ad63e658d5f4824848",
+    "death_02.png": "ced935fb7e205502b5c72b49747227ad1efa5c77c1851f48ea642f569fa1de79",
+    "death_03.png": "325b10ced830b948bd55da2cedab4a6f591eac1500c9654ae121966193256ef1",
+    "hurt_00.png": "502408a50fc78816062d87e2d3c5ee3a476e515e56c30362af5c37158d3a2fa6",
+    "hurt_01.png": "d8cad276ac8f3680a94bcaf914c86ffe841492fd7946bf2ce86fc3947cdab0a3",
+    "hurt_02.png": "9e7c2eb3492066fa33c9d849087735b30807003e6a642e135fcc3358e1c5800d",
+    "hurt_03.png": "b9114c1784f65add56575d4004b5c644d46a4e58bcc022fb13fded54337b8f70",
+    "hurt_04.png": "32c98d9686fa2f433f6f93e1dccb8cb48a2da3ab73e221468fd122b15b8c0679",
+    "hurt_05.png": "6e93fd6e034ad04445c732cfc50422938b366979318bd265b00d6f2c6df6e553",
+    "hurt_06.png": "5528e0e8da3a434fbddee6c156b9fe9a61ad331759cd6a5e5fbc6fac4004a242",
+    "idle_00.png": "5528e0e8da3a434fbddee6c156b9fe9a61ad331759cd6a5e5fbc6fac4004a242",
+    "melee_00.png": "3e89896747abd7b9fc20b1cde68418cf6e842dc5544853dc4ec8532fd291b9e5",
+    "melee_01.png": "42032a768a89db2f0df102b3e5b51f13a01a4539330b5654a27f33633cf8b19c",
+    "melee_02.png": "30cebdd4ccc5ea8f3b79c7fcf6c21ebc9633f98a2ba8ad551a893b3826ab34d6",
+    "melee_03.png": "9240a642de6a9766632bb0c085f03db9fb65e37fd357458de6986e0d83f9a0b4",
+    "melee_04.png": "cc46e9be3cc51542f51cb86a14512406e79becb8654e7d9793e0434020b3d980",
+    "melee_05.png": "7ff527bdff93a0b0ef6f7e968fdb78582fabe751bf056c975f0cdbfc092465c6",
+    "melee_06.png": "f6eff60968956e9eaac87390dc4ee20cf3c61e63fad58b77581ca06b8a0f2ed4",
+    "melee_07.png": "564e60938f6d89713f11195cb467110b50d6cca08d7c1956a74dff5d14936aac",
+    "melee_08.png": "953984e9b95577ce54978e62d99968c4d10dc67f11a8a9a3cec0e5f6f67f3860",
+    "melee_09.png": "31ca77642342faa727998712e0ac058c6ecc9d0dff0208b90e2a3d5d8c5773b8",
+    "melee_10.png": "3489af84759c85bba70d4472c4dcd0e7481ea6ccdc2af21e125c88c718d2be81",
+    "melee_11.png": "e529dfbd318563d4268453946c6556a2ac0deb59d303361afc47b1ed0b50888e",
+    "melee_12.png": "5528e0e8da3a434fbddee6c156b9fe9a61ad331759cd6a5e5fbc6fac4004a242",
+    "move_00.png": "8588d9c09011a6b77414dce3c37b888f38c29ac9f5435f0a92300352cd74da8f",
+    "move_01.png": "6527fb1ae740501548847a66e7fdb1c148d1ee7b6eee5503653b201d0f9e6990",
+    "move_02.png": "4d7c849419d7c2876243dac7f8d1194925ac6c56b19e52e33c2c24778168c06b",
+    "move_03.png": "74908362757b213aec2233f40b427f8a37eeb1d9bb73af5d0427a7b9da7550b0",
+    "move_04.png": "51b35012984438353076a4638b4458400054d79fcac1f42cd4e30f3d6198fcd9",
+    "move_05.png": "86f5432cf3382b7fb4d1e29cb9f24bb9d9e20f17d5c8be662d1fb1d64cdc8abd",
+    "move_06.png": "7d4546eacfd844df0636eb18efdf2911145d74c120308660ae4c8570d4921602",
+    "move_07.png": "efbc5c8efdde2f70e2dafe12a304ff556c7de6f42d1853bad7e9b6ccef750125"
+  },
+  "origins": {
+    "idle": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Idle_A",
+      "derived_action": "Idle_A",
+      "frame_count": 1
+    },
+    "move": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Running_B",
+      "derived_action": "Running_B",
+      "frame_count": 8
+    },
+    "melee": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Melee_Dualwield_Attack_Slice",
+      "derived_action": "Melee_Dualwield_Attack_Slice",
+      "frame_count": 13
+    },
+    "cast": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Melee_Dualwield_Attack_Stab",
+      "derived_action": "Melee_Dualwield_Attack_Stab",
+      "frame_count": 7
+    },
+    "hurt": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Hit_A",
+      "derived_action": "Hit_A",
+      "frame_count": 7
+    },
+    "critical": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Crouching",
+      "derived_action": "Crouching",
+      "frame_count": 2
+    },
+    "death": {
+      "method": "native_3d_model_guided_whole_body_redraw",
+      "native_action": "Death_A",
+      "derived_action": "Death_A",
+      "frame_count": 4
+    }
+  },
+  "canvas": [
+    1536,
+    1024
+  ],
+  "display_size": [
+    384.0,
+    256.0
+  ],
+  "anchor": [
+    0.5,
+    0.715820312
+  ],
+  "approval": {
+    "source": "docs/art/tasks/m1-player-cast-animation.md",
+    "date": "2026-10-10",
+    "decision": "approved_final_animation_and_integration",
+    "quote": "可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。"
+  }
+}

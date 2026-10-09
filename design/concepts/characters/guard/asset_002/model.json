@@ -1,0 +1,405 @@
+{
+  "source": "tmp_010 with shield-braced body recoil and luminous shield casting",
+  "head_ratio_target": 3.8,
+  "canvas": [
+    600,
+    520
+  ],
+  "anchor": [
+    0.5,
+    0.8461538461538461
+  ],
+  "visible_alpha_threshold": 30,
+  "clips": {
+    "idle": {
+      "count": 1,
+      "duration": 1,
+      "loop": true
+    },
+    "melee": {
+      "count": 13,
+      "duration": 1.0833333333,
+      "loop": false
+    },
+    "move": {
+      "count": 8,
+      "duration": 0.8,
+      "loop": true
+    },
+    "cast": {
+      "count": 6,
+      "duration": 1.1,
+      "loop": false
+    },
+    "hurt": {
+      "count": 5,
+      "duration": 0.4,
+      "loop": false
+    },
+    "critical": {
+      "count": 2,
+      "duration": 1.2,
+      "loop": true
+    },
+    "death": {
+      "count": 4,
+      "duration": 0.85,
+      "loop": false
+    }
+  },
+  "source_indices": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    21,
+    23
+  ],
+  "crop_rows": [
+    [
+      0,
+      430,
+      395
+    ],
+    [
+      430,
+      760,
+      744
+    ],
+    [
+      760,
+      1086,
+      1045
+    ]
+  ],
+  "cell_bounds": [
+    {
+      "slot": 0,
+      "bbox": [
+        74,
+        100,
+        315,
+        392
+      ],
+      "row_baseline": 395,
+      "offset": [
+        119,
+        45
+      ]
+    },
+    {
+      "slot": 1,
+      "bbox": [
+        58,
+        45,
+        310,
+        393
+      ],
+      "row_baseline": 395,
+      "offset": [
+        119,
+        45
+      ]
+    },
+    {
+      "slot": 2,
+      "bbox": [
+        69,
+        69,
+        300,
+        393
+      ],
+      "row_baseline": 395,
+      "offset": [
+        119,
+        45
+      ]
+    },
+    {
+      "slot": 3,
+      "bbox": [
+        54,
+        101,
+        319,
+        394
+      ],
+      "row_baseline": 395,
+      "offset": [
+        119,
+        45
+      ]
+    },
+    {
+      "slot": 4,
+      "bbox": [
+        80,
+        24,
+        360,
+        310
+      ],
+      "row_baseline": 744,
+      "offset": [
+        119,
+        126
+      ]
+    },
+    {
+      "slot": 5,
+      "bbox": [
+        23,
+        51,
+        325,
+        311
+      ],
+      "row_baseline": 744,
+      "offset": [
+        119,
+        126
+      ]
+    },
+    {
+      "slot": 6,
+      "bbox": [
+        1,
+        42,
+        348,
+        310
+      ],
+      "row_baseline": 744,
+      "offset": [
+        119,
+        126
+      ]
+    },
+    {
+      "slot": 7,
+      "bbox": [
+        14,
+        37,
+        319,
+        311
+      ],
+      "row_baseline": 744,
+      "offset": [
+        119,
+        126
+      ]
+    },
+    {
+      "slot": 8,
+      "bbox": [
+        51,
+        19,
+        325,
+        283
+      ],
+      "row_baseline": 1045,
+      "offset": [
+        119,
+        155
+      ]
+    },
+    {
+      "slot": 9,
+      "bbox": [
+        58,
+        15,
+        314,
+        283
+      ],
+      "row_baseline": 1045,
+      "offset": [
+        119,
+        155
+      ]
+    },
+    {
+      "slot": 10,
+      "bbox": [
+        81,
+        16,
+        309,
+        282
+      ],
+      "row_baseline": 1045,
+      "offset": [
+        119,
+        155
+      ]
+    },
+    {
+      "slot": 11,
+      "bbox": [
+        66,
+        15,
+        300,
+        284
+      ],
+      "row_baseline": 1045,
+      "offset": [
+        119,
+        155
+      ]
+    }
+  ],
+  "notes": [
+    "Only hurt/cast replaced",
+    "Formal guard hurt_03/cast_04 are motion/effect references, not proportion references",
+    "User requested stronger cast light; intentional broad barrier glow",
+    "Eight generated poses, hurt return uses inherited idle, cast recovery uses old lowered shield and idle"
+  ],
+  "layout": [
+    {
+      "action": "hurt",
+      "index": 0,
+      "bounds": [
+        103,
+        95,
+        347,
+        420
+      ],
+      "source_rect": [
+        0,
+        0,
+        444,
+        460
+      ],
+      "scale": 1.11,
+      "row_ground": 420
+    },
+    {
+      "action": "hurt",
+      "index": 1,
+      "bounds": [
+        108,
+        97,
+        403,
+        418
+      ],
+      "source_rect": [
+        444,
+        0,
+        887,
+        460
+      ],
+      "scale": 1.11,
+      "row_ground": 420
+    },
+    {
+      "action": "hurt",
+      "index": 2,
+      "bounds": [
+        79,
+        134,
+        379,
+        420
+      ],
+      "source_rect": [
+        887,
+        0,
+        1331,
+        460
+      ],
+      "scale": 1.11,
+      "row_ground": 420
+    },
+    {
+      "action": "hurt",
+      "index": 3,
+      "bounds": [
+        93,
+        96,
+        338,
+        420
+      ],
+      "source_rect": [
+        1331,
+        0,
+        1774,
+        460
+      ],
+      "scale": 1.11,
+      "row_ground": 420
+    },
+    {
+      "action": "cast",
+      "index": 0,
+      "bounds": [
+        56,
+        64,
+        361,
+        359
+      ],
+      "source_rect": [
+        0,
+        460,
+        444,
+        887
+      ],
+      "scale": 1.11,
+      "row_ground": 823
+    },
+    {
+      "action": "cast",
+      "index": 1,
+      "bounds": [
+        37,
+        59,
+        390,
+        365
+      ],
+      "source_rect": [
+        444,
+        460,
+        887,
+        887
+      ],
+      "scale": 1.11,
+      "row_ground": 823
+    },
+    {
+      "action": "cast",
+      "index": 2,
+      "bounds": [
+        29,
+        45,
+        403,
+        361
+      ],
+      "source_rect": [
+        887,
+        460,
+        1331,
+        887
+      ],
+      "scale": 1.11,
+      "row_ground": 823
+    },
+    {
+      "action": "cast",
+      "index": 3,
+      "bounds": [
+        82,
+        65,
+        381,
+        365
+      ],
+      "source_rect": [
+        1331,
+        460,
+        1774,
+        887
+      ],
+      "scale": 1.11,
+      "row_ground": 823
+    }
+  ],
+  "motion_model": "source/motion.blend",
+  "status": "approved and retained 2026-10-10; historical source labels are provenance only"
+}

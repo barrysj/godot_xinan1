@@ -16,6 +16,80 @@ func capture(hub, filename: String) -> void:
 	await RenderingServer.frame_post_draw
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/" + filename + ".png")
 
+func take_campaign_reward(hub) -> void:
+	hub._campaign_action("reward:0")
+	if hub.journey.data.screen == "reward_owner":
+		var owner: int = hub.run.roster[0]
+		if hub.journey.data.pending_offer.target in ["lens","backup"]:
+			owner = hub.run.roster.filter(func(role): return hub.run.combat_gear_available(role))[0]
+		hub._campaign_action("reward_owner:"+hub.RunModel.Content.role_id(owner))
+	verify(hub.journey.visit.data.reward_taken,"debug traversal finishes reward owner selection")
+
+func check_difficulty(hub) -> void:
+	var build: Dictionary = hub.run.to_dict()
+	var formation: Array = hub.formation.duplicate()
+	var encounter: String = hub.encounter_id
+	var base_enemies: Array = hub.units.filter(func(u): return u.side == 1).map(func(u): return [u.content_id,u.max_hp,u.atk])
+	verify(not Commands.execute(hub,"difficulty","invalid"),"unknown difficulty is rejected")
+	for difficulty in ["hard","hard","easy","normal"]:
+		hub._start()
+		var checkpoint: Dictionary = hub.progress.active_run.duplicate(true)
+		hub._process(2.0)
+		verify(hub.elapsed > 0,"difficulty change follows a running battle")
+		hub.debug_panel.open()
+		var old_level: String = hub.debug_battle_difficulty
+		var old_elapsed: float = hub.elapsed
+		var selector: OptionButton = hub.debug_panel.difficulty_selector
+		selector.select(Commands.Difficulties.ORDER.find(difficulty))
+		selector.item_selected.emit(selector.selected)
+		hub._process(1.0)
+		verify(hub.debug_battle_difficulty == old_level and hub.elapsed == old_elapsed,"selecting difficulty alone does not apply it or advance battle")
+		if difficulty == "hard" and old_level == "normal" and DisplayServer.get_name() != "headless":
+			for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+				hub.get_window().size = resolution
+				await capture(hub,"debug-difficulty-menu-%dx%d" % [resolution.x,resolution.y])
+				verify(hub.get_viewport().get_texture().get_image().get_size() == resolution,"difficulty popup capture resolution")
+				verify(hub.debug_panel.panel.get_global_rect().encloses(hub.debug_panel.difficulty_apply.get_global_rect()),"difficulty action stays inside the popup")
+		if DisplayServer.get_name() == "headless":
+			hub.debug_panel.difficulty_apply.pressed.emit()
+		else:
+			await hub.get_tree().process_frame
+			var click = InputEventMouseButton.new()
+			click.button_index = MOUSE_BUTTON_LEFT
+			click.position = hub.debug_panel.difficulty_apply.get_global_rect().get_center()
+			click.pressed = true
+			hub.get_viewport().push_input(click,true)
+			click = click.duplicate()
+			click.pressed = false
+			hub.get_viewport().push_input(click,true)
+		verify(hub.debug_battle_difficulty == difficulty and hub.phase == "battle" and hub.screen == "battle" and hub.elapsed == 0,"apply difficulty immediately restarts the real battle")
+		verify(not hub.paused and not hub.debug_panel.panel.visible,"difficulty restart closes debug and resumes")
+		verify(hub.run.to_dict() == build and hub.formation == formation and hub.encounter_id == encounter,"difficulty restart preserves build, formation and encounter")
+		var stored: Dictionary = hub.progress.active_run.duplicate(true)
+		# Legacy checkpoints legitimately retain total expedition play time.
+		checkpoint.erase("seconds")
+		stored.erase("seconds")
+		verify(stored == checkpoint,"difficulty is not serialized into the checkpoint")
+		verify(hub.units.all(func(u): return u.hp == u.max_hp and u.damage == 0 and u.healing == 0),"difficulty restart restores health and statistics")
+		var expected: Dictionary = Commands.Difficulties.preset(difficulty)
+		var enemies: Array = hub.units.filter(func(u): return u.side == 1)
+		for index in enemies.size():
+			verify(enemies[index].content_id == base_enemies[index][0] and enemies[index].max_hp == roundf(base_enemies[index][1]*expected.health) and enemies[index].atk == roundf(base_enemies[index][2]*expected.attack),"enemy difficulty applies once after original encounter power")
+		if difficulty == "hard" and old_level == "normal":
+			hub._process(2.0)
+			await capture(hub,"debug-difficulty-restarted")
+	var missing_slot: int = hub.formation.find(0)
+	hub.formation[missing_slot] = -1
+	verify(not Commands.execute(hub,"difficulty","hard"),"incomplete formation cannot start via difficulty command")
+	hub.formation = formation
+	var valid_path: String = hub.progress.path
+	var committed: Dictionary = hub.progress.active_run.duplicate(true)
+	hub.progress.path = "res://.godot/nonexistent-debug-directory/profile.json"
+	verify(not Commands.execute(hub,"difficulty","hard"),"difficulty restart reports failed checkpoint")
+	verify(hub.debug_battle_difficulty == "normal" and hub.progress.active_run == committed,"failed checkpoint does not apply difficulty or change stored progress")
+	hub.progress.path = valid_path
+	hub._continue_run()
+
 func run_checks(hub) -> void:
 	hub.set_process(false)
 	var normal_path: String = hub.ProgressModel.new().path
@@ -23,8 +97,8 @@ func run_checks(hub) -> void:
 	verify(hub.progress.path == "res://.godot/debug-check-profile.json","check profile isolated before load")
 	var enabled: bool = hub.debug_enabled
 	hub.debug_enabled = false
-	for command in ["skip","restart","reroll"]:
-		verify(not Commands.execute(hub,command),"normal mode rejects " + command)
+	for command in ["skip","restart","reroll","difficulty"]:
+		verify(not Commands.execute(hub,command,"hard"),"normal mode rejects " + command)
 	hub.debug_enabled = enabled
 	if not enabled:
 		verify(not is_instance_valid(hub.debug_panel),"normal mode has no debug panel")
@@ -36,6 +110,7 @@ func run_checks(hub) -> void:
 	hub.progress.complete_tutorial_dispatch()
 	hub._home()
 	verify(not Commands.execute(hub,"skip"),"home cannot skip unrelated progress")
+	verify(not Commands.execute(hub,"difficulty","hard"),"home cannot change battle difficulty")
 	hub._begin_region("library")
 	hub._campaign_action("enter:0")
 	var old_memory: String = hub.journey.visit.data.hotspots[1].id
@@ -97,6 +172,7 @@ func run_checks(hub) -> void:
 	verify(hub.screen == "battle" and hub.phase == "prepare" and hub.elapsed == 0,"UI restart resets battle to deployment")
 	verify(hub.formation == formation and hub.run.to_dict() == build,"restart preserves whole build")
 	verify(hub.units.all(func(u): return u.hp == u.max_hp and u.damage == 0 and u.healing == 0),"restart restores HP and statistics")
+	await check_difficulty(hub)
 	hub._open_pause()
 	hub.debug_panel.open()
 	hub.debug_panel.close()
@@ -130,7 +206,7 @@ func run_checks(hub) -> void:
 	hub.debug_panel.open()
 	hub.debug_panel._action("skip")
 	verify(hub.journey.data.screen == "reward" and hub.journey.visit.data.guard_won,"UI skip reaches normal reward")
-	verify(not Commands.execute(hub,"skip") and not Commands.execute(hub,"restart"),"settled guard cannot duplicate battle reward")
+	verify(not Commands.execute(hub,"skip") and not Commands.execute(hub,"restart") and not Commands.execute(hub,"difficulty","hard"),"settled guard cannot duplicate battle reward")
 	var offers = hub.journey.data.offers.duplicate(true)
 	hub.progress.path = "res://.godot/nonexistent-debug-directory/profile.json"
 	verify(not Commands.execute(hub,"reroll") and hub.journey.data.offers == offers,"failed reroll restores old offers")
@@ -144,7 +220,7 @@ func run_checks(hub) -> void:
 	hub.debug_panel.open()
 	await capture(hub,"debug-reward-panel")
 	hub.debug_panel.close()
-	hub._campaign_action("reward:0")
+	take_campaign_reward(hub)
 	build = hub.run.to_dict()
 	hub._campaign_action("reward:0")
 	verify(hub.run.to_dict() == build,"reward still single claim")
@@ -157,8 +233,13 @@ func run_checks(hub) -> void:
 		if hub.campaign_mode.is_empty() or hub.journey.data.region != region: hub._begin_region(region)
 		while not hub.campaign_mode.is_empty():
 			if hub.journey.visit.data.is_empty(): hub._campaign_action("enter:0")
-			verify(Commands.execute(hub,"skip"),"skip region guard")
-			hub._campaign_action("reward:0")
+			var skipped: bool = Commands.execute(hub,"skip")
+			verify(skipped,"skip region guard")
+			if not skipped:
+				print("DEBUG_SKIP_BLOCKED reason=",Commands.reason(hub,"skip")," paused=",hub.paused," screen=",hub.screen," journey=",hub.journey.data.screen," region=",hub.journey.data.region," error=",hub.progress.error_message)
+				finish(hub)
+				return
+			take_campaign_reward(hub)
 			hub._campaign_action("leave")
 		verify(hub.progress.campaign.terminals.has(region),"normal terminal settlement")
 	hub._begin_region("library","finale")
@@ -182,6 +263,7 @@ func run_checks(hub) -> void:
 	hub._start()
 	hub._process(1.0)
 	verify(Commands.execute(hub,"restart") and hub.elapsed == 0 and hub.phase == "prepare","legacy battle restart")
+	await check_difficulty(hub)
 	verify(Commands.execute(hub,"skip") and hub.screen == "reward","legacy battle skip")
 	verify(Commands.execute(hub,"reroll") and not hub.Checkpoint.decode(hub.progress.active_run).is_empty(),"legacy rerolled rewards restore")
 	hub._choose_reward(0)

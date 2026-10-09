@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/walk-pair-guide.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png"
+    ],
+    "prompt": "Use case: style-transfer. Create exactly TWO columns x FOUR rows, eight transparent anime sprites. Image 1 is an actual unchanged KayKit Mage Walking_B 3D animation: copy the precise EIGHT arm/leg arrangements and hip-knee-ankle connections in their respective slots, without inventing a running gait. Image 2 supplies only student identity, clothing, equipment and FOUR-head teenage proportions. The actual guide is a gentle WALK, upright torso, feet closer to floor, small alternating arm swings with BOTH HANDS DOWN AT THEIR RESPECTIVE HIP SIDES, rather than typing in front of the chest. Transfer the poses from image1's squat agent to image2's longer 4-head teen anatomy without scaling the head huge. Left and right columns are opposing phases, and hip/thigh overlap must differ as in the guide. TWO separate GREEN HOLOGRAPHIC KEYBOARDS follow their respective hand/wrist at the hip sides: during WALK their planes can tilt down/vertical, and the far keyboard can be partially occluded by the body, as the actual guide shows. Do not freeze both arms in image2's idle typing posture; do not place both keyboard rectangles in front. Both trouser legs charcoal, normal white cyan trim sneakers. Curly brown hair, slim rectangular glasses, mint long sleeve crewneck, dark teal badge lanyard, black backpack/pixel charm. Do not copy Mage hat, robes or cartoon anatomy. Keep a recognizable 3/4 face but horizontal eye-level viewpoint and precise guide limb arrangements. Coherent small head scale and limb proportions in every cell; thin anime outlines, flat cel shading; all 8 sprites have full uncut body/equipment, wide empty transparent margins and horizontal/vertical alpha gutters. Absolutely no backdrop, gray wash, fog, cast ground shadow, text, labels, grids or watermarks. Preserve exactly eight poses in guide slots; no additional drawings."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/walk-pair-guide.png",
+      "sha256": "7e5bf8b10d571ac6d506404d001d2f230ad5b21ed634fe60cf242ee4bb00fc3f"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "sha256": "ca72107ab6abaf642ca603ca2fc0d46c857141138093092724b43c3ea8430871"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-dbc175f2-bf31-495c-ade9-0dcc85546542.png",
+  "output": "source/move-redraw-v5.png",
+  "output_sha256": "0bba111cc75b62d4b44b30a8be394800421354e30a0764f6886a92112ab679be",
+  "mode": "RGBA",
+  "size": [
+    953,
+    1651
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/locomotion-redraw-v1.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/locomotion-guide.png"
+    ],
+    "prompt": "Edit image 1's existing sprite atlas only to correct the student's head/body proportion drift. Image 2 is the LOCKED idle identity and anatomy reference. Image 3 gives the real native 3D pose in every cell, preserving slot order. The atlas currently makes him too squat with a bulbous head compared with the reference idle. REDUCE skull + facial features + hair as a unit by about 18-20 percent relative to the same torso and legs. Keep torso, leg lengths, prop size, limb pose and the overall standing height unchanged; this brings him toward image2's approximately FOUR-head teenage build, away from a toddler chibi. Do not uniformly shrink the whole figure. After this edit, head width relative to shoulders and body must match image2; no gigantic hair cap. Maintain one fixed skull size across all cells, including leaning/crouching/fallen poses. Draw the head freshly as a connected anatomical part of this same boy, no pasted head, floating neck, elongated neck, giant hands or boots. Preserve the existing silhouette joint directions where they follow image3 and do not invent new motion.  Retain rectangular glasses, brown tousled curls, mint LONG SLEEVE crewneck, dark lanyard and white badge, black backpack and pixel pendant, charcoal trousers, white cyan-trim sneakers, two separate green keyboards and wrist rings. Keep 4 columns x 4 rows exactly; no new or missing cell, no reordering. Fine Japanese anime outlines and flat cel colors matching image2. Completely transparent alpha background and margins, no gray gradients, ground shadows, fog, watermarks, labels or grid lines. Full silhouettes including all gun tips, feet and hair stay inside each slot."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/locomotion-redraw-v1.png",
+      "sha256": "9cd4d5bdc9608ab08c57d732089be7943bb8b966d953b904f7b7499f70b21225"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "sha256": "ca72107ab6abaf642ca603ca2fc0d46c857141138093092724b43c3ea8430871"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/locomotion-guide.png",
+      "sha256": "b2fa377d46dd4535557a1a5483cf7a14a3697929e4ac8af6ca7cc170cc9de77e"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-3bbd8df9-1474-4ee5-8f28-18f6908a794f.png",
+  "output": "source/locomotion-redraw-v2.png",
+  "output_sha256": "3cc58398f65f982f5876b0c56eef4918cde58964c14ce21391abf4051bc073e9",
+  "mode": "RGBA",
+  "size": [
+    1346,
+    1168
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

@@ -1,33 +1,91 @@
-# Run from PowerShell 7. Override -EnginePath if Godot is moved.
+# PowerShell 7 launcher. Interactive choices select game mode; fixtures stay explicit.
 param(
     [string]$EnginePath = 'F:\Applications\Godot_v4.7.2-stable_mono_win64\Godot_v4.7.2-stable_mono_win64.exe',
+    [ValidateSet('Debug', 'Release')][string]$Mode = '',
+    [ValidateSet('Easy', 'Normal', 'Hard', 'Manual')][string]$Difficulty = '',
+    [ValidateSet('Current', 'Formal')][string]$Animations = '',
+    [ValidateSet('1920x1080', '2560x1440', '1920x1200')][string]$Size = '1920x1080',
     [switch]$Smoke,
+    [switch]$Capture,
+    [ValidateRange(0.1, 90.0)][double]$CaptureAt = 10.6,
     [switch]$CodeCheck,
     [switch]$CodeCapture
 )
-
-if ($PSVersionTable.PSVersion.Major -lt 7) {
-    throw 'Please run this script with pwsh.exe (PowerShell 7).'
-}
-if (-not (Test-Path -LiteralPath $EnginePath)) {
-    throw "Godot was not found at $EnginePath. Supply -EnginePath with your executable path."
-}
+if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use pwsh.exe (PowerShell 7).' }
+if (-not (Test-Path -LiteralPath $EnginePath -PathType Leaf)) { throw "Godot was not found at $EnginePath. Supply -EnginePath." }
+$verificationModes = @($Smoke, $Capture, $CodeCheck, $CodeCapture) | Where-Object { $_ }
+if (@($verificationModes).Count -gt 1) { throw 'Choose one verification mode: -Smoke, -Capture, -CodeCheck or -CodeCapture.' }
+if ($Mode -and $Difficulty) { throw 'Adjust difficulty in the Debug menu. -Difficulty is an explicit standalone fixture and cannot be combined with -Mode.' }
+$cacheRoot = Join-Path $PSScriptRoot '.godot'
+New-Item -ItemType Directory -Path $cacheRoot -Force | Out-Null
+$legacyFixture = $Difficulty -or (($Smoke -or $Capture) -and -not $Mode)
+$integrationCheck = $CodeCheck -or $CodeCapture -or ($Mode -eq 'Release' -and $Capture)
 if ($CodeCheck -or $CodeCapture) {
-	if ($CodeCheck -and $CodeCapture) { throw 'Choose either -CodeCheck or -CodeCapture.' }
-	$scene = 'res://scenes/battle_demo/code_integration_check.tscn'
-    $arguments = @('--path', $PSScriptRoot, '--log-file', (Join-Path $PSScriptRoot '.godot/main-code-integration.log'))
-    if ($CodeCheck) { $arguments += @('--headless', '--quit-after', '3000') }
-    $arguments += $scene
-    if ($CodeCapture) { $arguments += @('--', '--capture', '--size=1920x1080') }
-    & $EnginePath @arguments
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    $output = Get-Content -LiteralPath (Join-Path $PSScriptRoot '.godot/main-code-integration.log') -Raw
-    if ($output -match 'SCRIPT ERROR' -or $output -notmatch '(?m)MAIN_CODE_CHECK checks=\d+ failures=0') { throw 'Original battle integration verification did not pass.' }
-    exit 0
+    if ($Mode -or $Difficulty -or $PSBoundParameters.ContainsKey('Animations')) { throw '-CodeCheck/-CodeCapture use the original integration fixture; do not combine them with mode, difficulty or animation options.' }
+    $Animations = 'Formal'
+} elseif ($legacyFixture) {
+    if (-not $Difficulty) { $Difficulty = 'Manual' }
+    if (-not $Animations) { $Animations = 'Formal' }
+} else {
+    if (-not $Mode) {
+        Write-Host '启动模式'
+        Write-Host '1 Debug    2 Release    0 退出'
+        do { $choice = Read-Host '选择模式（回车为 Debug）' } until ($choice -in @('', '0', '1', '2'))
+        if ($choice -eq '0') { exit 0 }
+        $Mode = if ($choice -eq '2') { 'Release' } else { 'Debug' }
+    }
+    if (-not $Animations) { $Animations = 'Formal' }
+    if ($Mode -eq 'Release' -and $Animations -ne 'Formal') { throw 'Release uses formal assets. Use -Mode Debug for development controls.' }
 }
-$demoArguments = @('--path', $PSScriptRoot, '--rendering-method', 'gl_compatibility',
-    '--log-file', (Join-Path $PSScriptRoot '.godot/battle-demo.log'))
-if ($Smoke) { $demoArguments += '--headless' }
-$demoArguments += 'res://scenes/battle_demo/battle_demo.tscn'
-if ($Smoke) { $demoArguments += @('--', '--demo-smoke') }
-& $EnginePath @demoArguments
+if ($Animations -eq 'Current') {
+    foreach ($candidate in @('guard', 'archer', 'striker', 'healer', 'inventor')) {
+        $candidatePath = Join-Path $PSScriptRoot "assets/art/characters/$candidate/battle_animation.tres"
+        if (-not (Test-Path -LiteralPath $candidatePath -PathType Leaf)) { throw "Formal animation is missing in this checkout: $candidatePath." }
+        foreach ($match in [regex]::Matches([IO.File]::ReadAllText($candidatePath), 'path="res://([^"\r\n]+\.png)"')) {
+            $framePath = Join-Path $PSScriptRoot $match.Groups[1].Value
+            if (-not (Test-Path -LiteralPath $framePath -PathType Leaf)) { throw "Formal frame is missing: $framePath" }
+        }
+    }
+}
+if ($integrationCheck) {
+    $logPath = Join-Path $cacheRoot 'main-code-integration.log'
+    $arguments = @('--path', $PSScriptRoot, '--rendering-method', 'gl_compatibility', '--log-file', $logPath)
+    if ($CodeCheck) { $arguments += @('--headless', '--quit-after', '3000') }
+    $arguments += 'res://scenes/battle_demo/code_integration_check.tscn'
+    if ($CodeCapture -or $Capture) { $arguments += @('--', '--capture', "--size=$Size") }
+} elseif ($legacyFixture) {
+    $logPath = Join-Path $cacheRoot 'battle-demo.log'
+    $arguments = @('--path', $PSScriptRoot, '--rendering-method', 'gl_compatibility', '--log-file', $logPath, '--resolution', $Size)
+    if ($Smoke) { $arguments += '--headless' }
+    $arguments += @('res://scenes/battle_demo/battle_demo.tscn', '--', "--demo-difficulty=$($Difficulty.ToLowerInvariant())", "--demo-animations=$($Animations.ToLowerInvariant())", "--demo-size=$Size")
+    if ($Smoke) { $arguments += '--demo-smoke' }
+    if ($Capture) { $arguments += @('--demo-capture', "--demo-capture-at=$($CaptureAt.ToString([Globalization.CultureInfo]::InvariantCulture))") }
+    Write-Host "战斗样本：$Difficulty / $Animations"
+} else {
+    $logPath = Join-Path $cacheRoot "battle-demo-$($Mode.ToLowerInvariant()).log"
+    $arguments = @('--path', $PSScriptRoot, '--rendering-method', 'gl_compatibility', '--log-file', $logPath, '--resolution', $Size)
+    if ($Smoke) { $arguments += @('--headless', '--quit-after', '3000') }
+    $arguments += @('res://scenes/expedition/expedition.tscn', '--', "--demo-animations=$($Animations.ToLowerInvariant())", "--demo-size=$Size")
+    if ($Mode -eq 'Debug') {
+        $arguments += @('--campus-debug', '--debug-battle')
+        if ($Smoke -or $Capture) { $arguments += '--debug-battle-check' }
+        if ($Capture) { $arguments += '--debug-battle-capture' }
+    } elseif ($Smoke) { $arguments += '--debug-check' }
+}
+if ($Mode) { Write-Host "启动模式：$Mode / $Animations" }
+$quotedArguments = $arguments | ForEach-Object { '"{0}"' -f $_ }
+$windowStyle = if ($Smoke -or $Capture -or $CodeCheck -or $CodeCapture) { 'Hidden' } else { 'Normal' }
+$gameProcess = Start-Process -FilePath $EnginePath -ArgumentList $quotedArguments -WorkingDirectory $PSScriptRoot -WindowStyle $windowStyle -Wait -PassThru
+if ($gameProcess.ExitCode -ne 0) { exit $gameProcess.ExitCode }
+$output = Get-Content -LiteralPath $logPath -Raw
+if ($output -match 'SCRIPT ERROR|Parse Error|Assertion failed|Cannot load formal animation|Missing formal frame') { throw "Launch failed. See $logPath" }
+if ($integrationCheck) {
+    if ($output -notmatch '(?m)MAIN_CODE_CHECK checks=\d+ failures=0') { throw 'Original battle integration verification did not pass.' }
+} elseif ($Mode -and ($Smoke -or $Capture)) {
+    $marker = if ($Mode -eq 'Debug') { 'DEBUG_BATTLE_CHECK' } else { 'DEBUG_CHECK' }
+    if ($output -notmatch "(?m)$marker \d+ checks / 0 failures") { throw "Mode verification did not complete. See $logPath" }
+} elseif ($Smoke) {
+    $marker = if ($Difficulty -eq 'Manual') { 'DEMO_SPEED' } else { 'DEMO_DIFFICULTY_CHECK result=PASS' }
+    if (-not $output.Contains($marker)) { throw "Battle verification did not complete. See $logPath" }
+}
+exit 0

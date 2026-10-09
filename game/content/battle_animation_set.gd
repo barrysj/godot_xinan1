@@ -2,6 +2,7 @@ extends Resource
 ## Both backends use idle/move/melee/ranged/cast/hurt/critical/death.
 ## Single-shot clips ignore their SpriteFrames loop flag; idle/critical always loop.
 const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
+const CastVfxStyle = preload("res://game/content/battle_cast_vfx_style.gd")
 
 @export var frames: SpriteFrames
 ## Optional rigid/mesh presentation. States it declines fall back to SpriteFrames.
@@ -31,3 +32,5 @@ func frame_clip(action: StringName, attack_modes: int = 1) -> StringName:
 @export var hit_offset := Vector2(0, -6)
 ## Optional visual head; absent styles keep the legacy four-dot projectile.
 @export var projectile_style: ProjectileStyle
+## Independent charge/release/projectile/impact effects, optional per appearance.
+@export var cast_vfx_style: CastVfxStyle

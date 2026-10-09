@@ -1,0 +1,223 @@
+{
+  "result": "PASS_WITH_NOTES",
+  "date": "2026-10-10",
+  "baseline": "667e60e plus approved closeout",
+  "owner_asset_and_integration_approval": true,
+  "no_pixel_or_timing_changes": true,
+  "unchanged_runtime_frames": 225,
+  "legacy_guard_retained_frames": 62,
+  "objects": [
+    {
+      "id": "striker",
+      "active_variant": "asset_002",
+      "status": "matched",
+      "integrity": {
+        "matched": 197,
+        "mismatch": 0,
+        "missing": 0,
+        "unset": 0
+      }
+    },
+    {
+      "id": "inventor",
+      "active_variant": "asset_002",
+      "status": "matched",
+      "integrity": {
+        "matched": 245,
+        "mismatch": 0,
+        "missing": 0,
+        "unset": 0
+      }
+    },
+    {
+      "id": "guard",
+      "active_variant": "asset_002",
+      "status": "matched",
+      "integrity": {
+        "matched": 246,
+        "mismatch": 0,
+        "missing": 0,
+        "unset": 0
+      }
+    },
+    {
+      "id": "healer",
+      "active_variant": "asset_002",
+      "status": "matched",
+      "integrity": {
+        "matched": 257,
+        "mismatch": 0,
+        "missing": 0,
+        "unset": 0
+      }
+    },
+    {
+      "id": "archer",
+      "active_variant": "asset_002",
+      "status": "matched",
+      "integrity": {
+        "matched": 229,
+        "mismatch": 0,
+        "missing": 0,
+        "unset": 0
+      }
+    }
+  ],
+  "deterministic_promotions": 5,
+  "native_models_reopened": 7,
+  "native_clips_verified": 28,
+  "individual_seven_action_previews": 5,
+  "legacy_guard_seven_action_check": "PASS",
+  "latest_motion_gifs": 35,
+  "all_action_gifs": 5,
+  "art_catalog_unit_tests": "39 / 0 failures",
+  "authored_resolution_screenshots": 6,
+  "real_gameplay": {
+    "result": "PASS_WITH_NOTES",
+    "scene": "res://scenes/expedition/expedition.tscn",
+    "formal_packages": true,
+    "fps": 30,
+    "capture_fps": 15,
+    "seconds": 22.6,
+    "captured_frames": 339,
+    "simulation_steps": 678,
+    "events": 344,
+    "event_and_numeric_trail_identical_to_approved_candidate": true,
+    "three_role_cast_coverage": "PASS",
+    "healer_inventor_seven_state_coverage": "PASS",
+    "state_frame_counts": {
+      "archer": {
+        "cast": 54,
+        "death": 84,
+        "hurt": 39,
+        "idle": 365,
+        "move": 14,
+        "ranged": 122
+      },
+      "guard": {
+        "cast": 29,
+        "critical": 24,
+        "death": 312,
+        "hurt": 69,
+        "idle": 149,
+        "melee": 81,
+        "move": 14
+      },
+      "healer": {
+        "cast": 39,
+        "critical": 41,
+        "death": 84,
+        "hurt": 20,
+        "idle": 389,
+        "move": 14,
+        "ranged": 91
+      },
+      "inventor": {
+        "cast": 26,
+        "critical": 9,
+        "death": 233,
+        "hurt": 81,
+        "idle": 237,
+        "move": 27,
+        "ranged": 65
+      }
+    },
+    "mp4_complete_decode": "PASS",
+    "known_boundary": "Inventor critical is 9 simulation frames (0.3s); Archer critical did not occur naturally in this recording. All five seven clips are separately verified and previewed."
+  },
+  "checks": {
+    "authored": "AUTHORED_ASSETS_CHECK models=5 failures=0",
+    "cast_vfx": "CAST_VFX_CHECK 26 checks / 0 failures",
+    "debug": "DEBUG_BATTLE_CHECK 39 checks / 0 failures",
+    "release": "DEBUG_CHECK 6 checks / 0 failures"
+  },
+  "cleanup": {
+    "date": "2026-10-10",
+    "retention_proof": "retention-check.json",
+    "removed_paths": 65,
+    "removed_bytes": 5973138110.0
+  },
+  "intermediate_asset_directories_remaining": 0,
+  "used_open_source_inputs_and_licenses_preserved": true,
+  "historical_tools_archived": true,
+  "warnings": "Existing host certificate/editor-settings and old pixel image-load warnings; no script or drawing errors. Static idle, kneeling critical placeholders, brief actual critical windows and full-body redraw interpretations remain. No Web/mobile export revalidation.",
+  "obsolete_owned_cache_cleanup": {
+    "removed_bytes": 15880933929.0,
+    "date": "2026-10-10",
+    "removed_paths": 26,
+    "latest_audit": "gameplay-audit.json"
+  },
+  "post_cache_cleanup_preview": "MOTION_PREVIEW_CHECK failures=0",
+  "total_removed_GiB": 20.35,
+  "local_main_squash": {
+    "result": "PASS_WITH_NOTES",
+    "date": "2026-10-10",
+    "main_base": "2eaa397",
+    "approved_source": "36b5a327052b5a621270836ffb36f88111a75dba",
+    "user_merge_authorization": true,
+    "initial_squash_index_equals_approved_source_tree": true,
+    "conflicts": 0,
+    "runtime_resource_changes_from_source": 0,
+    "mode": "squash",
+    "engine": "Godot 4.7.2",
+    "debug_entry_and_difficulty_restart": "39 checks / 0 failures",
+    "release_entry": "6 checks / 0 failures",
+    "art_catalog": "39 tests / 0 failures",
+    "deterministic_formal_promotions": 5,
+    "authored_assets": "5 roles, seven states each, 0 failures",
+    "legal_four_unit_parties": 2,
+    "screenshot_resolutions": [
+      "1920x1080",
+      "2560x1440",
+      "1920x1200"
+    ],
+    "actual_screenshot_cache": [
+      {
+        "cache_path": ".godot/characters-battle-party1-1920x1080.png",
+        "sha256": "a010e39a68a3eaa96028b712f45acf349d9fb4fb8ef3a1abff8993e58aebcaba"
+      },
+      {
+        "cache_path": ".godot/characters-battle-party1-2560x1440.png",
+        "sha256": "a010e39a68a3eaa96028b712f45acf349d9fb4fb8ef3a1abff8993e58aebcaba"
+      },
+      {
+        "cache_path": ".godot/characters-battle-party1-1920x1200.png",
+        "sha256": "a311aba649a575092d79840858deba91bcd3a3af2e3899aab60c5fe0b56d7626"
+      },
+      {
+        "cache_path": ".godot/characters-battle-party2-1920x1080.png",
+        "sha256": "69c95f08620fd99760841baf0aa75f01fa28930047296d8abe7db167fd94fd0d"
+      },
+      {
+        "cache_path": ".godot/characters-battle-party2-2560x1440.png",
+        "sha256": "0210b7833b18311f8f866fa6bfe0bea2e44e49f02d15081a1c32a4410bb7bc25"
+      },
+      {
+        "cache_path": ".godot/characters-battle-party2-1920x1200.png",
+        "sha256": "35b951afa0525fc955efdc6c00458f2a3f6b4642fcf1f7a2bc5159c384ec7559"
+      }
+    ],
+    "cast_vfx": "26 checks / 0 failures",
+    "action": "PASS",
+    "presentation": "PASS",
+    "animation": "PASS",
+    "commands": [
+      "pwsh.exe -File run-battle-demo.ps1 -Mode Debug -Capture",
+      "pwsh.exe -File run-battle-demo.ps1 -Mode Release -Smoke",
+      "python.exe -m unittest discover -s tools/art/asset_manager/tests -q",
+      "python.exe tools/art/promotion/promote_animation.py <guard|archer|striker|healer|inventor> --check",
+      "Godot --path . --rendering-method gl_compatibility res://scenes/battle_demo/authored_assets_check.tscn -- --capture",
+      "Godot --headless --path . res://scenes/battle_demo/cast_vfx_check.tscn",
+      "Godot --headless --path . res://game/combat/action_check.tscn",
+      "Godot --headless --path . res://scenes/battle_demo/presentation_check.tscn",
+      "Godot --headless --path . res://scenes/battle_demo/animation_check.tscn"
+    ],
+    "known_environment_warnings": [
+      "root certificate store",
+      "sandbox editor settings write",
+      "legacy pixel atlas direct image loading"
+    ],
+    "new_script_or_drawing_errors": 0,
+    "remote_pushed": false
+  }
+}

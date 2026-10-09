@@ -17,6 +17,8 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 
 探索简称指 [expedition.tscn](../../scenes/expedition/expedition.tscn)；测试进入独立 `.godot/` 档案，未操作玩家 `user://` 存档。图形检查中断或断言失败时不能只看进程退出码，应核对完成标记。
 
+开发难度样本重跑入口（2026-10-09）：`pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Difficulty Easy/Normal/Hard -Smoke`，其中难度参数每次取一个值。默认使用本工作区候选动画，其他工作区可加 `-Animations Formal`。完成标记为 `DEMO_DIFFICULTY_CHECK result=PASS`；程序检查三档真实战斗、暂停、重试、循环切换及共享资源不变，困难候选还检查三名角色各七个动画状态。图形模式加 `-Capture` 并移除 `-Smoke`；实际像素尺寸检查与本轮结果见 [COMBAT-04](combat-04.md)。
+
 | 证据 | 场景／用户参数 | 最近登记结果与范围 | 日志后缀 |
 | --- | --- | --- | --- |
 | E01 | [action_check.tscn](../../game/combat/action_check.tscn) | PASS，failures=0；前后摇、死亡取消、弹道、同时结算、高攻速 | action |
@@ -111,6 +113,14 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 本轮未重新检验ART-03的120 Hz姿态等价边界，也未做Android/陌生玩家/时长验收；既有证书、原图及编辑器设置权限警告不作为脚本回归成功的替代证据。E20/E21的浏览器操作记录是此前版本证据。
 
 ## Debug 与重开存档 E23
+
+2026-10-10 人物正式收尾（基线667e60e＋工作树）：五人 asset_002 稳定路径、守护者旧 asset_001 保留；225运行PNG与批准稿 SHA 一致，确定性提升五包通过、正式五人资源／0失败、两阵容三尺寸截图、共享特效26／0、ACTION／PRESENTATION／ANIMATION通过。最新实录678模拟步／344事件与已批准候选一致，录像完整解码通过；逐人七态预览及源模型检查通过。最终清理／启动／资源台结果归人物任务和 release-verification.json；旧试验路径已移除。待统筹。
+
+2026-10-09 战斗启动修复（基线 `d269b50` 加功能改动）：`run-battle-demo.ps1 -Mode Debug -Smoke` 为 `DEBUG_BATTLE_CHECK 37 checks / 0 failures`，加 `-Animations Formal` 为 34／0；换成 `-Capture` 为 42／0。检查实际启动状态与原战斗推进、F8、鼠标调难度重开及三尺寸截图，不再由旧检查自行创建战斗。完整校园 `run-debug.ps1 -Check` 169／0，Release `-Smoke` 6／0，原 `-CodeCheck` 39／0。此前启动菜单记录没有覆盖默认进入战斗，当前行为、隔离边界与截图见 [DEV-01](dev-01.md)。
+
+2026-10-09 启动菜单（基线 `63ab01a` 加功能改动）：`pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Mode Debug -Smoke` 为 169／0，换成 `-Capture` 为 193／0；`-Mode Release -Smoke` 为 6／0，换成 `-Capture` 为主线集成 41／0。Debug 加 `-Animations Formal -Smoke` 为 169／0。无参数菜单只提供 Debug / Release，非法输入重试与退出正常；模式参数冲突拒绝。旧无模式 `-Smoke`、显式 `-Difficulty Hard -Smoke` 及 `-CodeCheck` 兼容检查通过，截图与边界见 [DEV-01](dev-01.md)。
+
+2026-10-09 游戏内难度选项（基线 `6173ad7` 加功能改动）：`run-debug.ps1 -Check` 为 169 checks / 0 failures，`-Capture` 为 193 checks / 0 failures；关闭模式 `--debug-check` 为 6 checks / 0 failures，主线 `--campaign-flow-check` 为 148 checks / 0 failures，原 `run-battle-demo.ps1 -CodeCheck` 为 39 checks / 0 failures。实际点击应用重开、三档与重复应用、构筑／敌阵／存档边界及三尺寸截图见 [DEV-01](dev-01.md)；按下方命令可重跑。
 
 2026-09-17 弹窗修订（基线 `7160568`）：`pwsh.exe -File .\run-debug.ps1 -Capture` 为 71 checks / 0 failures，新增背景可见与遮罩点击不穿透；其余命令语义不变，下表 69 项为此前版本记录。当前截图 `debug-battle-panel.png`、`debug-reward-panel.png` 已更新为居中弹窗。
 

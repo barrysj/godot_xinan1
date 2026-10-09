@@ -1,0 +1,94 @@
+{
+  "source_version": "tmp_001",
+  "retained_version": "asset_002",
+  "runtime_frame_pixels_unchanged": true,
+  "runtime_frame_sha256": {
+    "cast_00.png": "c4c354a1b3cd1990ddcca37364e63a1e7bf2732072e11f214b31038d4482b22f",
+    "cast_01.png": "9b093bf9ab0efa005751e7e6e0e1ed606c8d9431299c0978699c91cd0fc4aa9e",
+    "cast_02.png": "98ea4ffa80134f55aab0369ea54a8f83acb2b460510c053be12a549c0c0aa272",
+    "cast_03.png": "4a96e0718ae1fc58d7e3ed9da53d77fe8af5a73f76e5eefa6b53a3c4406b580b",
+    "cast_04.png": "b471f7af377bcc183ccb51e117a72c9415624eb17214584aedaa5e767376ccee",
+    "cast_05.png": "485506f406b3840600fa442d7daffe66fbbdf0576100432a904c3b8541eafa03",
+    "critical_00.png": "4ce1c445636aa3def201de64f6175721cb6f66073eaad5a4920c9e338424c684",
+    "critical_01.png": "e684fea3e30ea594205d33cbed85d27154aad4b060c690e6d988b66a3f3ffe17",
+    "death_00.png": "ab5a87c73874188cbc5ce27a807f842f109fb1cdd67cd617efb16b049ea15a52",
+    "death_01.png": "4866ecff59b7b0054b34b0e7efb5b0fa7ee2b0f91faef29a52d239b63c243691",
+    "death_02.png": "84208b08642e13350e523d28fa7c6c4cff9049d4ff997d8566d6f57a24183bd8",
+    "death_03.png": "5ceda6486969b15b03c028f277a59ef38f3b1dead3d00e8f06f22a5a4e6f423a",
+    "hurt_00.png": "1f228249f92bdc5c05cd999ad53124d1cdd27b4f2bc60c7c67d34d858cb0d157",
+    "hurt_01.png": "65fc26868b9ad3b71ffbf53501ea025a35eba63bd540d896dcc3c7f26db254ec",
+    "hurt_02.png": "6aaf2c14651c7d8a03bd82ff5bda2fc13fb9b483b1669ebf96009bd049b761f2",
+    "hurt_03.png": "a989a7e3c4a86c331ad9113655773395cba3e5dda45b0a1b8f735ddaf48e137e",
+    "hurt_04.png": "485506f406b3840600fa442d7daffe66fbbdf0576100432a904c3b8541eafa03",
+    "idle_00.png": "485506f406b3840600fa442d7daffe66fbbdf0576100432a904c3b8541eafa03",
+    "melee_00.png": "485506f406b3840600fa442d7daffe66fbbdf0576100432a904c3b8541eafa03",
+    "melee_01.png": "5a2dae2d124156c197f9f712d575b724ed56447a02391267787e68b151ddc9a7",
+    "melee_02.png": "5f24ba27a7981b49cebc335851ba18bd96850b06995d9a19c079fe4a6af921e4",
+    "melee_03.png": "227e16e6ff8d95de6c3093ef9908fee1c5b659d6f835b4cc680f339b8dbb12db",
+    "melee_04.png": "811eebffbf71ce6c64a7c66980041b90c46cc877249bf6a2d5262ed299a05244",
+    "melee_05.png": "04b4e309627962ae91023a8c3b3b068dd5200d28a867b8c1a4e345db1d68d4c2",
+    "melee_06.png": "0205938a966c6fefa82d7619070f077a53adc2540584cb8af9e7e35d1e1ec3db",
+    "melee_07.png": "6d873632beb672e9cd810a650af5cfbb9b1232af2f5e089ec173734dd26c0432",
+    "melee_08.png": "415ec7bbe65d87726b674b1951880a1ace3a3d87213a9b9504ee867d7503b45f",
+    "melee_09.png": "56b063db7b2a33c07268815dfb4753ab3bff1f50ca80bc6a3edddcb0a26c26d4",
+    "melee_10.png": "48d6de89e9b08784fe78de18fa70ed4eb7b935f8c1e6dec5ebaf9722aed5b8d1",
+    "melee_11.png": "1e191daf6f80a49d232f49d898b27671383770c1ac3f39785b204b98c33efe69",
+    "melee_12.png": "485506f406b3840600fa442d7daffe66fbbdf0576100432a904c3b8541eafa03",
+    "move_00.png": "0a50b9efc9f452932fe0e3e1ee58deeb473fb7536c53609b136af4e190d2d263",
+    "move_01.png": "60641b53ed8d72bf0d2e06d7c3185d0b756e626182883f8d3394fb30ea43c115",
+    "move_02.png": "d039136da2d5f9b6d4efce3fba5822c97621b25f674e993f230bea2931094bea",
+    "move_03.png": "a4b106488ff2ad745536da2592ca303a8b5eb8dc586f34403f53f9f83f33bfb5",
+    "move_04.png": "83c69c680873a3d57ec7f04657ed16af4b38c042165b61119992b2d7633d5e62",
+    "move_05.png": "42f743d3128e6606689ce2810ff491d6ff2fefd57bc6db80124941a92fcc0fd3",
+    "move_06.png": "37c2bff65c2e60d03c6b22660f4db6e11b11f66dedf0b28b73064af30d6684c8",
+    "move_07.png": "e48324991a819bf88c1f91447cf3f05f738bf8d1e0dc060f34ce010f1e9c8662"
+  },
+  "origins": {
+    "idle": {
+      "method": "native_3d_guided_redraw_static_pose",
+      "frame_count": 1
+    },
+    "melee": {
+      "method": "native_3d_guided_whole_body_redraw",
+      "frame_count": 13
+    },
+    "move": {
+      "method": "native_3d_guided_whole_body_redraw",
+      "frame_count": 8
+    },
+    "cast": {
+      "method": "direct_2d_key_poses_plus_inherited_recovery",
+      "frame_count": 6
+    },
+    "hurt": {
+      "method": "direct_2d_key_poses_plus_exact_idle_return",
+      "frame_count": 5
+    },
+    "critical": {
+      "method": "direct_2d_key_poses",
+      "frame_count": 2
+    },
+    "death": {
+      "method": "direct_2d_key_poses",
+      "frame_count": 4
+    }
+  },
+  "canvas": [
+    1024,
+    896
+  ],
+  "display_size": [
+    256.0,
+    224.0
+  ],
+  "anchor": [
+    0.5,
+    0.818080357
+  ],
+  "approval": {
+    "source": "docs/art/tasks/m1-player-cast-animation.md",
+    "date": "2026-10-10",
+    "decision": "approved_final_animation_and_integration",
+    "quote": "可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。"
+  }
+}

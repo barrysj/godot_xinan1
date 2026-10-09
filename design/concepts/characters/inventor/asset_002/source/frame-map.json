@@ -1,0 +1,921 @@
+{
+  "frames": [
+    {
+      "action": "ranged",
+      "index": 0,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        419,
+        348
+      ],
+      "empty_margin_crop": [
+        79,
+        3,
+        335,
+        348
+      ],
+      "model_pose": "model-frames/ranged_00.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 326,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 1,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 1,
+      "source_rect": [
+        419,
+        0,
+        808,
+        348
+      ],
+      "empty_margin_crop": [
+        55,
+        3,
+        342,
+        348
+      ],
+      "model_pose": "model-frames/ranged_01.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 326,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 2,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 2,
+      "source_rect": [
+        808,
+        0,
+        1201,
+        348
+      ],
+      "empty_margin_crop": [
+        51,
+        4,
+        337,
+        348
+      ],
+      "model_pose": "model-frames/ranged_02.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 326,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 3,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 3,
+      "source_rect": [
+        1201,
+        0,
+        1556,
+        348
+      ],
+      "empty_margin_crop": [
+        35,
+        4,
+        320,
+        348
+      ],
+      "model_pose": "model-frames/ranged_03.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 326,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 4,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 4,
+      "source_rect": [
+        0,
+        348,
+        419,
+        680
+      ],
+      "empty_margin_crop": [
+        78,
+        0,
+        373,
+        332
+      ],
+      "model_pose": "model-frames/ranged_04.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 657,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 5,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 5,
+      "source_rect": [
+        419,
+        348,
+        808,
+        680
+      ],
+      "empty_margin_crop": [
+        56,
+        0,
+        342,
+        332
+      ],
+      "model_pose": "model-frames/ranged_05.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 657,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 6,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 6,
+      "source_rect": [
+        808,
+        348,
+        1201,
+        680
+      ],
+      "empty_margin_crop": [
+        49,
+        0,
+        345,
+        332
+      ],
+      "model_pose": "model-frames/ranged_06.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 657,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 7,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 7,
+      "source_rect": [
+        1201,
+        348,
+        1556,
+        680
+      ],
+      "empty_margin_crop": [
+        35,
+        0,
+        337,
+        332
+      ],
+      "model_pose": "model-frames/ranged_07.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 657,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 8,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 8,
+      "source_rect": [
+        0,
+        680,
+        419,
+        1011
+      ],
+      "empty_margin_crop": [
+        74,
+        0,
+        382,
+        328
+      ],
+      "model_pose": "model-frames/ranged_08.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 978,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 9,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 9,
+      "source_rect": [
+        419,
+        680,
+        808,
+        1011
+      ],
+      "empty_margin_crop": [
+        49,
+        0,
+        351,
+        328
+      ],
+      "model_pose": "model-frames/ranged_09.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 978,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 10,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 10,
+      "source_rect": [
+        808,
+        680,
+        1201,
+        1011
+      ],
+      "empty_margin_crop": [
+        44,
+        0,
+        360,
+        328
+      ],
+      "model_pose": "model-frames/ranged_10.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 978,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 11,
+      "sheet": "source/attack-redraw-v2.png",
+      "cell": 11,
+      "source_rect": [
+        1201,
+        680,
+        1556,
+        1011
+      ],
+      "empty_margin_crop": [
+        37,
+        0,
+        340,
+        328
+      ],
+      "model_pose": "model-frames/ranged_11.png",
+      "shared_sheet_scale": 1.019107315272033,
+      "shared_row_ground": 978,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "hurt",
+      "index": 0,
+      "sheet": "source/support-redraw-v2.png",
+      "cell": 6,
+      "source_rect": [
+        0,
+        680,
+        420,
+        1003
+      ],
+      "empty_margin_crop": [
+        73,
+        0,
+        383,
+        323
+      ],
+      "model_pose": "model-frames/hurt_00.png",
+      "shared_sheet_scale": 1.015043493560152,
+      "shared_row_ground": 982,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "hurt",
+      "index": 1,
+      "sheet": "source/support-redraw-v2.png",
+      "cell": 7,
+      "source_rect": [
+        420,
+        680,
+        808,
+        1003
+      ],
+      "empty_margin_crop": [
+        38,
+        0,
+        351,
+        323
+      ],
+      "model_pose": "model-frames/hurt_01.png",
+      "shared_sheet_scale": 1.015043493560152,
+      "shared_row_ground": 982,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "hurt",
+      "index": 2,
+      "sheet": "source/support-redraw-v2.png",
+      "cell": 8,
+      "source_rect": [
+        808,
+        680,
+        1166,
+        1003
+      ],
+      "empty_margin_crop": [
+        41,
+        0,
+        355,
+        323
+      ],
+      "model_pose": "model-frames/hurt_02.png",
+      "shared_sheet_scale": 1.015043493560152,
+      "shared_row_ground": 982,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "hurt",
+      "index": 3,
+      "sheet": "source/support-redraw-v2.png",
+      "cell": 9,
+      "source_rect": [
+        0,
+        1003,
+        420,
+        1349
+      ],
+      "empty_margin_crop": [
+        75,
+        0,
+        383,
+        328
+      ],
+      "model_pose": "model-frames/hurt_03.png",
+      "shared_sheet_scale": 1.015043493560152,
+      "shared_row_ground": 1301,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "hurt",
+      "index": 4,
+      "sheet": "source/support-redraw-v2.png",
+      "cell": 10,
+      "source_rect": [
+        420,
+        1003,
+        808,
+        1349
+      ],
+      "empty_margin_crop": [
+        39,
+        0,
+        342,
+        328
+      ],
+      "model_pose": "model-frames/hurt_04.png",
+      "shared_sheet_scale": 1.015043493560152,
+      "shared_row_ground": 1301,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "hurt",
+      "index": 5,
+      "sheet": "source/support-redraw-v2.png",
+      "cell": 11,
+      "source_rect": [
+        808,
+        1003,
+        1166,
+        1349
+      ],
+      "empty_margin_crop": [
+        47,
+        0,
+        354,
+        328
+      ],
+      "model_pose": "model-frames/hurt_05.png",
+      "shared_sheet_scale": 1.015043493560152,
+      "shared_row_ground": 1301,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "idle",
+      "index": 0,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 8,
+      "source_rect": [
+        0,
+        606,
+        358,
+        889
+      ],
+      "empty_margin_crop": [
+        68,
+        0,
+        335,
+        283
+      ],
+      "model_pose": "model-frames/idle_00.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 876,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "critical",
+      "index": 0,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 9,
+      "source_rect": [
+        358,
+        606,
+        682,
+        889
+      ],
+      "empty_margin_crop": [
+        44,
+        18,
+        320,
+        283
+      ],
+      "model_pose": "model-frames/critical_00.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 876,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "critical",
+      "index": 1,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 10,
+      "source_rect": [
+        682,
+        606,
+        1008,
+        889
+      ],
+      "empty_margin_crop": [
+        60,
+        33,
+        326,
+        283
+      ],
+      "model_pose": "model-frames/critical_01.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 876,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "death",
+      "index": 0,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 12,
+      "source_rect": [
+        0,
+        889,
+        358,
+        1168
+      ],
+      "empty_margin_crop": [
+        60,
+        0,
+        331,
+        271
+      ],
+      "model_pose": "model-frames/death_00.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 1130,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "death",
+      "index": 1,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 13,
+      "source_rect": [
+        358,
+        889,
+        682,
+        1168
+      ],
+      "empty_margin_crop": [
+        24,
+        20,
+        279,
+        256
+      ],
+      "model_pose": "model-frames/death_01.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 1130,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "death",
+      "index": 2,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 14,
+      "source_rect": [
+        682,
+        889,
+        1008,
+        1168
+      ],
+      "empty_margin_crop": [
+        5,
+        33,
+        314,
+        266
+      ],
+      "model_pose": "model-frames/death_02.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 1130,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "death",
+      "index": 3,
+      "sheet": "source/locomotion-redraw-v2.png",
+      "cell": 15,
+      "source_rect": [
+        1008,
+        889,
+        1346,
+        1168
+      ],
+      "empty_margin_crop": [
+        0,
+        37,
+        285,
+        268
+      ],
+      "model_pose": "model-frames/death_03.png",
+      "shared_sheet_scale": 1.151801334810543,
+      "shared_row_ground": 1130,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 0,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        498,
+        412
+      ],
+      "empty_margin_crop": [
+        109,
+        0,
+        432,
+        412
+      ],
+      "model_pose": "side-model-frames/move_00.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 399,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 4,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 1,
+      "source_rect": [
+        498,
+        0,
+        953,
+        412
+      ],
+      "empty_margin_crop": [
+        80,
+        0,
+        363,
+        412
+      ],
+      "model_pose": "side-model-frames/move_04.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 399,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 1,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 2,
+      "source_rect": [
+        0,
+        412,
+        498,
+        814
+      ],
+      "empty_margin_crop": [
+        113,
+        0,
+        431,
+        402
+      ],
+      "model_pose": "side-model-frames/move_01.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 801,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 5,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 3,
+      "source_rect": [
+        498,
+        412,
+        953,
+        814
+      ],
+      "empty_margin_crop": [
+        90,
+        0,
+        376,
+        402
+      ],
+      "model_pose": "side-model-frames/move_05.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 801,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 2,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 4,
+      "source_rect": [
+        0,
+        814,
+        498,
+        1210
+      ],
+      "empty_margin_crop": [
+        120,
+        0,
+        404,
+        396
+      ],
+      "model_pose": "side-model-frames/move_02.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 1189,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 6,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 5,
+      "source_rect": [
+        498,
+        814,
+        953,
+        1210
+      ],
+      "empty_margin_crop": [
+        85,
+        0,
+        371,
+        396
+      ],
+      "model_pose": "side-model-frames/move_06.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 1189,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 3,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 6,
+      "source_rect": [
+        0,
+        1210,
+        498,
+        1650
+      ],
+      "empty_margin_crop": [
+        107,
+        0,
+        413,
+        378
+      ],
+      "model_pose": "side-model-frames/move_03.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 1561,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "move",
+      "index": 7,
+      "sheet": "source/move-redraw-v4.png",
+      "cell": 7,
+      "source_rect": [
+        498,
+        1210,
+        953,
+        1650
+      ],
+      "empty_margin_crop": [
+        86,
+        0,
+        374,
+        381
+      ],
+      "model_pose": "side-model-frames/move_07.png",
+      "shared_sheet_scale": 0.8275425394866801,
+      "shared_row_ground": 1561,
+      "pixel_processing": "crop + isotropic whole-sheet scale + row baseline; no painting or new poses"
+    },
+    {
+      "action": "ranged",
+      "index": 12,
+      "source": "exact idle return; not a new generated/model pose"
+    },
+    {
+      "action": "hurt",
+      "index": 6,
+      "source": "exact idle return; not a new generated/model pose"
+    }
+  ],
+  "sheets": {
+    "attack": {
+      "file": "source/attack-redraw-v2.png",
+      "size": [
+        1556,
+        1011
+      ],
+      "columns": 4,
+      "rows": 3,
+      "scale": 1.019107315272033,
+      "row_ground": [
+        326,
+        657,
+        978
+      ],
+      "column_cuts": [
+        0,
+        419,
+        808,
+        1201,
+        1556
+      ],
+      "row_cuts": [
+        0,
+        348,
+        680,
+        1011
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "landmark_points": [
+        [
+          184,
+          67
+        ],
+        [
+          207,
+          140
+        ]
+      ],
+      "source_head_length": 76.53757247260981,
+      "target_head_length": 78.00000000000003,
+      "guide": "source/attack-guide.png",
+      "guide_sha256": "1f5bad12ee600655067850c36fdb5468600b634b092650ceee4f1335ac9f6bed",
+      "sha256": "4d0c736c03e8233f43b038524508883344d6067d9d7c438e360b3894432563a1"
+    },
+    "support": {
+      "file": "source/support-redraw-v2.png",
+      "size": [
+        1166,
+        1349
+      ],
+      "columns": 3,
+      "rows": 4,
+      "scale": 1.015043493560152,
+      "row_ground": [
+        322,
+        652,
+        982,
+        1301
+      ],
+      "column_cuts": [
+        0,
+        420,
+        808,
+        1166
+      ],
+      "row_cuts": [
+        0,
+        346,
+        680,
+        1003,
+        1349
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "landmark_points": [
+        [
+          180,
+          67
+        ],
+        [
+          204,
+          140
+        ]
+      ],
+      "source_head_length": 76.84399781375251,
+      "target_head_length": 78.00000000000003,
+      "guide": "source/support-guide.png",
+      "guide_sha256": "bf0afdd5301e3bd77613818ed87fad99d5374e9325ce7805a18e8f2113011001",
+      "sha256": "4ba6808bc6efe0de979fbba5fc92621b20604480ebba1a32a53a2f687cd04e79"
+    },
+    "locomotion": {
+      "file": "source/locomotion-redraw-v2.png",
+      "size": [
+        1346,
+        1168
+      ],
+      "columns": 4,
+      "rows": 4,
+      "scale": 1.151801334810543,
+      "row_ground": [
+        293,
+        595,
+        876,
+        1130
+      ],
+      "column_cuts": [
+        0,
+        358,
+        682,
+        1008,
+        1346
+      ],
+      "row_cuts": [
+        0,
+        320,
+        606,
+        889,
+        1168
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "landmark_points": [
+        [
+          190,
+          82
+        ],
+        [
+          209,
+          147
+        ]
+      ],
+      "source_head_length": 67.72001181334805,
+      "target_head_length": 78.00000000000003,
+      "guide": "source/locomotion-guide.png",
+      "guide_sha256": "6ac74ba1b13a0ab00807a9c79c0f2a6b89f22ef79188e753ad40ab07dd2a406e",
+      "sha256": "357d22423184f160c1bad41d72509b358514df402ac57f6251b08d9f813be986"
+    },
+    "move": {
+      "file": "source/move-redraw-v4.png",
+      "size": [
+        953,
+        1650
+      ],
+      "columns": 2,
+      "rows": 4,
+      "scale": 0.8275425394866801,
+      "row_ground": [
+        399,
+        801,
+        1189,
+        1561
+      ],
+      "column_cuts": [
+        0,
+        498,
+        953
+      ],
+      "row_cuts": [
+        0,
+        412,
+        814,
+        1210,
+        1650
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "landmark_points": [
+        [
+          305,
+          89
+        ],
+        [
+          333,
+          179
+        ]
+      ],
+      "source_head_length": 94.25497334358543,
+      "target_head_length": 78.00000000000003,
+      "guide": "source/move-pair-guide.png",
+      "guide_sha256": "3b3371fe8decbe75046abb160b85b9f542ad7c15e2f0ed64616748692d01aef9",
+      "sha256": "e2db24343f8199329542b7e6df2a8b2c5ce0e5e17871e1bf64e79ac38ef76133"
+    }
+  }
+}

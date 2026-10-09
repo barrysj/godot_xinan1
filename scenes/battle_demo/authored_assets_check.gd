@@ -21,7 +21,7 @@ func _ready() -> void:
 		check(model.resource_path == prefix + "battle_animation.tres", unit.id + " uses the formal package")
 		check(unit.portrait is AtlasTexture and unit.portrait.atlas.resource_path.begins_with(prefix + "frames/"), unit.id + " portrait uses the new identity")
 		var attack: StringName = &"ranged" if unit.resolved_attack_modes() == 2 else &"melee"
-		var canvas := Vector2(1024, 512) if unit.id == "guard" else Vector2(512, 512)
+		var canvas := Vector2(1024, 896) if unit.id == "guard" else Vector2(1536, 1024)
 		for clip in [&"idle", &"move", attack, &"cast", &"hurt", &"critical", &"death"]:
 			check(model.frames.has_animation(clip), unit.id + " has " + clip)
 			if not model.frames.has_animation(clip): continue
@@ -43,9 +43,10 @@ func _ready() -> void:
 		animator.sync_health(0, 100)
 		animator.sync_motion(false, {})
 		animator.advance(5)
-		check(animator.state == &"death" and animator.texture() == death, unit.id + " death holds fallen pose")
-		if unit.id != "guard":
-			check(model.presentation_scene != null and model.animation_library != null, unit.id + " has hybrid presentation")
+		var fallen = model.frames.get_frame_texture(&"death", model.frames.get_frame_count(&"death") - 1)
+		check(animator.state == &"death" and animator.texture() == fallen, unit.id + " death holds the final fallen pose")
+		check(model.presentation_scene == null and model.animation_library == null, unit.id + " uses the approved whole-body frame package")
+		check(model.anchor.is_equal_approx(Vector2(0.5, 0.81808036) if unit.id == "guard" else Vector2(0.5, 0.715820312)), unit.id + " fixed foot anchor")
 		print("AUTHORED_MODEL ", unit.id, " seven clips validated")
 	check(models == ROLES.size(), "All five approved roles are integrated")
 	if "--capture" in OS.get_cmdline_user_args():

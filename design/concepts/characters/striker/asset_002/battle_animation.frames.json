@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "canvas": [
+    1536,
+    1024
+  ],
+  "display_size": [
+    384.0,
+    256.0
+  ],
+  "anchor": [
+    0.5,
+    0.715820312
+  ],
+  "clips": {
+    "idle": {
+      "fps": 0.9375,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/idle_00.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "idle_00"
+      ]
+    },
+    "move": {
+      "fps": 10.0,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/move_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/move_07.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "move_00",
+        "move_01",
+        "move_02",
+        "move_03",
+        "move_04",
+        "move_05",
+        "move_06",
+        "move_07"
+      ]
+    },
+    "melee": {
+      "fps": 11.14285714,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/melee_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_06.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_07.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_08.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_09.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_10.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_11.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/melee_12.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "melee_00",
+        "melee_01",
+        "melee_02",
+        "melee_03",
+        "melee_04",
+        "melee_05",
+        "melee_06",
+        "melee_07",
+        "melee_08",
+        "melee_09",
+        "melee_10",
+        "melee_11",
+        "melee_12"
+      ]
+    },
+    "cast": {
+      "fps": 4.375,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/cast_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/cast_06.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "cast_00",
+        "cast_01",
+        "cast_02",
+        "cast_03",
+        "cast_04",
+        "cast_05",
+        "cast_06"
+      ]
+    },
+    "hurt": {
+      "fps": 10.5,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/hurt_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_03.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_04.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_05.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/hurt_06.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "hurt_00",
+        "hurt_01",
+        "hurt_02",
+        "hurt_03",
+        "hurt_04",
+        "hurt_05",
+        "hurt_06"
+      ]
+    },
+    "critical": {
+      "fps": 1.875,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/critical_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/critical_01.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "critical_00",
+        "critical_01"
+      ]
+    },
+    "death": {
+      "fps": 5.0,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/death_00.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_01.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_02.png",
+          "duration": 1.0
+        },
+        {
+          "file": "frames/death_03.png",
+          "duration": 1.0
+        }
+      ],
+      "poses": [
+        "death_00",
+        "death_01",
+        "death_02",
+        "death_03"
+      ]
+    }
+  },
+  "impact_ratio": 0.45,
+  "flip_with_facing": true
+}

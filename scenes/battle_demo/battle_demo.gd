@@ -16,6 +16,8 @@ const TEAL = Color("62e4c1")
 const RED = Color("ff8c82")
 const GOLD = Color("f7cc78")
 const Content = preload("res://game/content/content_db.gd")
+const DemoOptions = preload("res://scenes/battle_demo/demo_options.gd")
+var demo_options = DemoOptions.new()
 var ROLES = Content.characters().map(func(item): return item.display_name)
 var SKILLS = Content.characters().map(func(item): return item.skill.display_name+"："+item.skill.description if item.skill != null else "未配置技能")
 var encounter_id = ""
@@ -45,11 +47,23 @@ func _ready() -> void:
 			encounter_id = argument.trim_prefix("--demo-encounter=")
 		elif argument.begins_with("--demo-capture-at="):
 			capture_at = clampf(argument.trim_prefix("--demo-capture-at=").to_float(), 0.1, 90.0)
+	if not demo_options.configure(OS.get_cmdline_user_args()):
+		push_error(demo_options.error)
+		get_tree().quit(1)
+		return
+	if demo_options.resolution != Vector2i.ZERO and DisplayServer.get_name() != "headless":
+		get_window().mode = Window.MODE_WINDOWED
+		get_window().size = demo_options.resolution
+	if not demo_options.difficulty.is_empty():
+		encounter_id = demo_options.preset().encounter
+		encounter = 1 if encounter_id == "encounter_final" else 0
+		formation = [0, -1, 3, 2, 1, -1]
 	font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	_build_units()
 	_note("点击卡片后选择空格预览，或直接拖动部署。")
 	if "--demo-smoke" in OS.get_cmdline_user_args():
-		_smoke()
+		if demo_options.difficulty.is_empty(): _smoke()
+		else: call_deferred("_difficulty_smoke")
 	elif "--demo-capture" in OS.get_cmdline_user_args():
 		await RenderingServer.frame_post_draw
 		await RenderingServer.frame_post_draw
@@ -58,8 +72,20 @@ func _ready() -> void:
 		_start()
 		await get_tree().create_timer(capture_at).timeout
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://.godot/battle_demo_combat.png")
+		var screenshot = get_viewport().get_texture().get_image()
+		if demo_options.resolution != Vector2i.ZERO and screenshot.get_size() != demo_options.resolution:
+			push_error("Demo capture resolution does not match the requested size")
+			get_tree().quit(1)
+			return
+		if screenshot.save_png("res://.godot/battle_demo_combat.png") != OK:
+			get_tree().quit(1)
+			return
 		get_tree().quit()
+	elif not demo_options.difficulty.is_empty():
+		call_deferred("_start")
+
+func _difficulty_smoke() -> void:
+	preload("res://scenes/battle_demo/demo_options_check.gd").run(self)
 
 func _unit(label: String, role: int, side: int, slot: int, hp: float, atk: float, interval: float, defense: float) -> Dictionary:
 	return {"name": label, "role": role, "side": side, "slot": slot,
@@ -283,9 +309,14 @@ func _gui_input(event: InputEvent) -> void:
 			equipment = selected
 			_build_units()
 		elif _action_rect(3).has_point(point):
-			encounter = 1 - encounter
+			if demo_options.difficulty.is_empty():
+				encounter = 1 - encounter
+			else:
+				demo_options.cycle()
+				encounter_id = demo_options.preset().encounter
+				encounter = 1 if encounter_id == "encounter_final" else 0
 			_build_units()
-			_note("敌方技能：" + ("守卫提供护盾，广播治疗残血，飞页投手攻击后排。" if encounter == 0 else "黑板每 3 次普攻打击一整排；分散布阵可以减少受击人数。"))
+			_note(demo_options.caption() if not demo_options.difficulty.is_empty() else "敌方技能：" + ("守卫提供护盾，广播治疗残血，飞页投手攻击后排。" if encounter == 0 else "黑板每 3 次普攻打击一整排；分散布阵可以减少受击人数。"))
 		else:
 			for slot in range(6):
 				if _slot_rect(0, slot).has_point(point):
@@ -361,4 +392,11 @@ func _from_definition(definition, role: int, side: int, slot: int) -> Dictionary
 	unit.battle_animation = definition.battle_animation
 	unit.action_profile = definition.action_profile
 	unit.badge_color = definition.badge_color
+	if side == 0 and demo_options.overrides.has(definition.id):
+		unit.battle_animation = demo_options.overrides[definition.id]
+	elif side == 1 and not demo_options.difficulty.is_empty():
+		var preset: Dictionary = demo_options.preset()
+		unit.max_hp = roundf(unit.max_hp * preset.health)
+		unit.hp = unit.max_hp
+		unit.atk = roundf(unit.atk * preset.attack)
 	return unit

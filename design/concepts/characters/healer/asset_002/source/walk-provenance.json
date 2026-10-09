@@ -1,0 +1,80 @@
+{
+  "clip": {
+    "source_action": "Walking_B",
+    "baked_action": "Walking_B",
+    "start": 0.0,
+    "end": 32.0,
+    "duration": 1.0666666666666667,
+    "count": 8,
+    "loop": true,
+    "unedited_action_sha256": "16c92af75536161bff53beb233da156f30c87c9293fad6ddb75e0583cbddb294"
+  },
+  "source_blend": "source/base-motion.blend",
+  "source_blend_sha256": "a71290a05a2f5aee7aeeec162a1306c8ee09a7b3618d89627225bb8aaf5d6940",
+  "camera_location": [
+    -12.0,
+    -3.0,
+    0.8999999761581421
+  ],
+  "camera_elevation_degrees": 0,
+  "native_curves_changed": false,
+  "guide_changes": "Mage hat and cape hidden for joint readability. Original mesh, weights, rig and native Walking_B curves unchanged.",
+  "frames": [
+    {
+      "action": "move",
+      "index": 0,
+      "model_frame": 0.0,
+      "file": "walk-model-frames/move_00.png",
+      "sha256": "1be2e9c182d7fc6cbe882714aa0a11734a878a47d15037928bd132ae51d2e83f"
+    },
+    {
+      "action": "move",
+      "index": 1,
+      "model_frame": 4.0,
+      "file": "walk-model-frames/move_01.png",
+      "sha256": "2c7e8b33c6df7bf8c0036d43038f1d702451a231317242f895469b52003c5d9b"
+    },
+    {
+      "action": "move",
+      "index": 2,
+      "model_frame": 8.0,
+      "file": "walk-model-frames/move_02.png",
+      "sha256": "1a26c923ffc2eb62992b5a0c6319ac1262612f80cf98de47dba4dc960f79e045"
+    },
+    {
+      "action": "move",
+      "index": 3,
+      "model_frame": 12.0,
+      "file": "walk-model-frames/move_03.png",
+      "sha256": "f56117005fbb3f789c7e00126243baa56275e4b80a22c61b8152395fdf81936e"
+    },
+    {
+      "action": "move",
+      "index": 4,
+      "model_frame": 16.0,
+      "file": "walk-model-frames/move_04.png",
+      "sha256": "8963e8da713440d5a17ad0129486ff23fe0765da42577f97175a6f3ab15e0f52"
+    },
+    {
+      "action": "move",
+      "index": 5,
+      "model_frame": 20.0,
+      "file": "walk-model-frames/move_05.png",
+      "sha256": "5ffd0286a4e15ee319ec97c04d43dc6d058f010b18af8099619ad7e257ed6040"
+    },
+    {
+      "action": "move",
+      "index": 6,
+      "model_frame": 24.0,
+      "file": "walk-model-frames/move_06.png",
+      "sha256": "8655fc489cf4b93dd2f72fb33d497233aff12b01cbaa9efc28f5862f1b828b0f"
+    },
+    {
+      "action": "move",
+      "index": 7,
+      "model_frame": 28.0,
+      "file": "walk-model-frames/move_07.png",
+      "sha256": "d9f58d6f5d1f5fc2f54cbf8ca27cb93b677a62e8bc67be7dc4d2af3f796db19a"
+    }
+  ]
+}

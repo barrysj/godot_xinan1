@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/move-pair-guide.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/identity-master.png"
+    ],
+    "prompt": "Use case: style-transfer. EXACTLY redraw image 1's eight actual 3D poses into image 2's anime student. Strict TWO columns x FOUR rows. Poses are paired opposites, not chronological. Preserve every slot's arm and leg arrangement. EACH ROW has TWO DIFFERENT LEG PHASES: the left sprite leads with the model BLUE FAR leg while the orange closer leg folds behind, the right sprite leads with the model ORANGE NEAR leg while the blue far leg folds behind (row 3 is passing phase as in guide). Track hip->knee->ankle connections rather than copying the same trouser silhouette. In the right column, the near thigh crosses forward OVER the far thigh, while in the left column the near thigh folds backwards and the far thigh is in front. Distinct overlap and visible shoe sole directions are essential. Keep source torso lean/arm swing, without freely inventing running poses. The source blue/orange are DIAGNOSTIC ONLY: both trouser legs must be CHARCOAL and BOTH sneakers the student's normal white/gray color; no diagnostic colors on shoes, cuffs or clothing. This more side-oriented actual 3D guide helps expose the hips, but keep the student's recognizable three-quarter anime face and horizontal viewpoint. Copy image2's FOUR-head teenager proportions: small moderate cranium and hands, adequate torso and leg length; never the guide's squat toy anatomy or toddler head. Same skull/body scale in all eight cells. Closed navy short sleeve workshirt, badge, backpack, brown hair; carry the twin-white-rail cyber cannon above the shoulder in the model's single lifted hand, other arm swings. Keep orange circular receiver and cyan panels, generous margins above weapon tip; do not change to two-hand chest-level carry. Complete uncut 2D silhouettes, thin anime outlines/flat cel shading. Wide transparent margins and alpha gutters, absolutely no backdrop, gray gradients, cast shadows, fog, text, labels, watermarks or grid lines."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/move-pair-guide.png",
+      "sha256": "3b3371fe8decbe75046abb160b85b9f542ad7c15e2f0ed64616748692d01aef9"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/inventor/tmp_001/source/identity-master.png",
+      "sha256": "bc31f11be05a3c9af30c1c29fce7798d73f00dd0d7ed25560076bcb149ee74c2"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-d330329b-ee28-401f-a7ce-3db25ee746e8.png",
+  "output": "source/move-redraw-v4.png",
+  "output_sha256": "e2db24343f8199329542b7e6df2a8b2c5ce0e5e17871e1bf64e79ac38ef76133",
+  "mode": "RGBA",
+  "size": [
+    953,
+    1650
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

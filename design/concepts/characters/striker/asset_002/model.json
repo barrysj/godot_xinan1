@@ -1,0 +1,135 @@
+{
+  "character": "striker",
+  "source_character": "Rogue",
+  "source_character_file": "design/references/animation/kaykit/characters/Rogue.glb",
+  "source_character_sha256": "cae5d9b2f08d53f7b4ab2617d9f42f021c546eb10920455fdcd82a110867fae4",
+  "source_mesh_sha256": "e44be010d401674c65b8cb29bff4c997e3161ab357c8951ad6d2b7d459a5c812",
+  "source_rig_sha256": "69c3b8a4fcb2847a4cb93baaf9c3f34f250008f62ca92345939a831828e635a6",
+  "pipeline": "original KayKit character and unedited native actions -> guides -> whole-body 2D redraw",
+  "clips": {
+    "idle": {
+      "source_action": "Idle_A",
+      "baked_action": "Idle_A",
+      "start": 0.0,
+      "end": 32.0,
+      "duration": 1.0666666666666667,
+      "loop": true,
+      "count": 1,
+      "unedited_action_sha256": "c375cf774df17e9a508aab645f29bdfdf5e7fd18bb6182aa88bfd35c70418431"
+    },
+    "move": {
+      "source_action": "Running_B",
+      "baked_action": "Running_B",
+      "start": 0.0,
+      "end": 24.0,
+      "duration": 0.8,
+      "loop": true,
+      "count": 8,
+      "unedited_action_sha256": "95b599091f7351e294e85db225dbc69d1d62b8bc12b1d688a66c31dffa75492a"
+    },
+    "melee": {
+      "source_action": "Melee_Dualwield_Attack_Slice",
+      "baked_action": "Melee_Dualwield_Attack_Slice",
+      "start": 0.0,
+      "end": 35.0,
+      "duration": 1.1666666666666667,
+      "loop": false,
+      "count": 13,
+      "unedited_action_sha256": "1815dbf80b303b3c06eefba22a41d010aa8cb69c71d2f2cd7c73d3ade6d0a0d7"
+    },
+    "cast": {
+      "source_action": "Melee_Dualwield_Attack_Stab",
+      "baked_action": "Melee_Dualwield_Attack_Stab",
+      "start": 0.0,
+      "end": 48.0,
+      "duration": 1.6,
+      "loop": false,
+      "count": 7,
+      "unedited_action_sha256": "1f539acb5f4679612f938fd734d8cc0636c4d208e1b1a6f1d09541144c05bd06"
+    },
+    "hurt": {
+      "source_action": "Hit_A",
+      "baked_action": "Hit_A",
+      "start": 0.0,
+      "end": 20.0,
+      "duration": 0.6666666666666666,
+      "loop": false,
+      "count": 7,
+      "unedited_action_sha256": "4ec3bc2fb293a80e59fc4a6b53632b31ae2a1145274f4abd53642c0d872e23ca"
+    },
+    "critical": {
+      "source_action": "Crouching",
+      "baked_action": "Crouching",
+      "start": 0.0,
+      "end": 32.0,
+      "duration": 1.0666666666666667,
+      "loop": true,
+      "count": 2,
+      "unedited_action_sha256": "702e4adc4cbde834ab8052df6fa884215be4dd2f3095011e787f6b5b96fb6efd"
+    },
+    "death": {
+      "source_action": "Death_A",
+      "baked_action": "Death_A",
+      "start": 0.0,
+      "end": 24.0,
+      "duration": 0.8,
+      "loop": false,
+      "count": 4,
+      "unedited_action_sha256": "3cb28468fa10e474b37323aa5bb0ea8de0e2fe15cb92618e9bd99a7dc56d76d0"
+    }
+  },
+  "canvas": [
+    800,
+    640
+  ],
+  "anchor": [
+    0.5,
+    0.84375
+  ],
+  "camera_elevation_degrees": 0,
+  "target_bones": 23,
+  "weapon_count": 2,
+  "motion_model": "source/motion.blend",
+  "rig_checks": [
+    {
+      "file": "Rig_Medium_General.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "5f725c0f745f36078c7238968cd5c04843cbc6260689eb6e7f5e2bbd7ffdd7ad"
+    },
+    {
+      "file": "Rig_Medium_MovementBasic.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "11422afd50abf7e8c92ea107e2e0bc94abd38023d6d15f55ad580347efbfa29e"
+    },
+    {
+      "file": "Rig_Medium_MovementAdvanced.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56"
+    },
+    {
+      "file": "Rig_Medium_CombatMelee.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "c55e6ec1c79e83ae21d46fe1cd921c1b64be8b9a524a24517e51c6ba99231459"
+    },
+    {
+      "file": "Rig_Medium_CombatRanged.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "7fef1fc0e7b0feafd34b8e12d23f514c8c1f9d068047a691b854b56f1774dff5"
+    }
+  ],
+  "geometry_changed": false,
+  "animation_curves_changed": false,
+  "notes": [
+    "Whole-body redraw may reinterpret individual joint/equipment angles; not exact skeletal reproduction.",
+    "Idle weapons corrected from004; returns exactly reuse current005 idle; no claim of body pixel identity.",
+    "One isotropic cranial-length scale per sheet and one baseline per row; no per-pose normalization."
+  ],
+  "visible_alpha_threshold": 30,
+  "source": "008 workflow; each generated sheet supplied with actual original KayKit Ranger/Rogue 3D guide",
+  "status": "approved and retained 2026-10-10; historical source labels are provenance only"
+}

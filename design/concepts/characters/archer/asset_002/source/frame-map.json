@@ -1,0 +1,628 @@
+{
+  "frames": [
+    {
+      "action": "ranged",
+      "index": 0,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        389,
+        344
+      ],
+      "model_pose": "model-frames/ranged_00.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 1,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 1,
+      "source_rect": [
+        389,
+        0,
+        778,
+        344
+      ],
+      "model_pose": "model-frames/ranged_01.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 2,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 2,
+      "source_rect": [
+        778,
+        0,
+        1166,
+        344
+      ],
+      "model_pose": "model-frames/ranged_02.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 3,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 3,
+      "source_rect": [
+        1166,
+        0,
+        1555,
+        344
+      ],
+      "model_pose": "model-frames/ranged_03.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 4,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 4,
+      "source_rect": [
+        0,
+        344,
+        389,
+        670
+      ],
+      "model_pose": "model-frames/ranged_04.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 625,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 5,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 5,
+      "source_rect": [
+        389,
+        344,
+        778,
+        670
+      ],
+      "model_pose": "model-frames/ranged_05.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 625,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 6,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 6,
+      "source_rect": [
+        778,
+        344,
+        1166,
+        670
+      ],
+      "model_pose": "model-frames/ranged_06.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 625,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 7,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 7,
+      "source_rect": [
+        1166,
+        344,
+        1555,
+        670
+      ],
+      "model_pose": "model-frames/ranged_07.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 625,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 8,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 8,
+      "source_rect": [
+        0,
+        670,
+        389,
+        1011
+      ],
+      "model_pose": "model-frames/ranged_08.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 950,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 9,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 9,
+      "source_rect": [
+        389,
+        670,
+        778,
+        1011
+      ],
+      "model_pose": "model-frames/ranged_09.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 950,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 10,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 10,
+      "source_rect": [
+        778,
+        670,
+        1166,
+        1011
+      ],
+      "model_pose": "model-frames/ranged_10.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 950,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "ranged",
+      "index": 11,
+      "sheet": "source/attack-headfix-v1.png",
+      "cell": 11,
+      "source_rect": [
+        1166,
+        670,
+        1555,
+        1011
+      ],
+      "model_pose": "model-frames/ranged_11.png",
+      "shared_sheet_scale": 1.3203281696777884,
+      "shared_row_ground": 950,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 0,
+      "sheet": "source/support-headfix-v1.png",
+      "cell": 6,
+      "source_rect": [
+        0,
+        706,
+        389,
+        1012
+      ],
+      "model_pose": "model-frames/hurt_00.png",
+      "shared_sheet_scale": 1.1621099109210984,
+      "shared_row_ground": 984,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 1,
+      "sheet": "source/support-headfix-v1.png",
+      "cell": 7,
+      "source_rect": [
+        389,
+        706,
+        778,
+        1012
+      ],
+      "model_pose": "model-frames/hurt_01.png",
+      "shared_sheet_scale": 1.1621099109210984,
+      "shared_row_ground": 984,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 2,
+      "sheet": "source/support-headfix-v1.png",
+      "cell": 8,
+      "source_rect": [
+        778,
+        706,
+        1167,
+        1012
+      ],
+      "model_pose": "model-frames/hurt_02.png",
+      "shared_sheet_scale": 1.1621099109210984,
+      "shared_row_ground": 984,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 3,
+      "sheet": "source/support-headfix-v1.png",
+      "cell": 9,
+      "source_rect": [
+        0,
+        1012,
+        389,
+        1347
+      ],
+      "model_pose": "model-frames/hurt_03.png",
+      "shared_sheet_scale": 1.1621099109210984,
+      "shared_row_ground": 1298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 4,
+      "sheet": "source/support-headfix-v1.png",
+      "cell": 10,
+      "source_rect": [
+        389,
+        1012,
+        778,
+        1347
+      ],
+      "model_pose": "model-frames/hurt_04.png",
+      "shared_sheet_scale": 1.1621099109210984,
+      "shared_row_ground": 1298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "hurt",
+      "index": 5,
+      "sheet": "source/support-headfix-v1.png",
+      "cell": 11,
+      "source_rect": [
+        778,
+        1012,
+        1167,
+        1347
+      ],
+      "model_pose": "model-frames/hurt_05.png",
+      "shared_sheet_scale": 1.1621099109210984,
+      "shared_row_ground": 1298,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 0,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 0,
+      "source_rect": [
+        0,
+        0,
+        336,
+        314
+      ],
+      "model_pose": "model-frames/move_00.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 283,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 1,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 1,
+      "source_rect": [
+        336,
+        0,
+        673,
+        314
+      ],
+      "model_pose": "model-frames/move_01.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 283,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 2,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 2,
+      "source_rect": [
+        673,
+        0,
+        1010,
+        314
+      ],
+      "model_pose": "model-frames/move_02.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 283,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 3,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 3,
+      "source_rect": [
+        1010,
+        0,
+        1346,
+        314
+      ],
+      "model_pose": "model-frames/move_03.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 283,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 4,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 4,
+      "source_rect": [
+        0,
+        314,
+        336,
+        610
+      ],
+      "model_pose": "model-frames/move_04.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 587,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 5,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 5,
+      "source_rect": [
+        336,
+        314,
+        673,
+        610
+      ],
+      "model_pose": "model-frames/move_05.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 587,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 6,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 6,
+      "source_rect": [
+        673,
+        314,
+        1010,
+        610
+      ],
+      "model_pose": "model-frames/move_06.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 587,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "move",
+      "index": 7,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 7,
+      "source_rect": [
+        1010,
+        314,
+        1346,
+        610
+      ],
+      "model_pose": "model-frames/move_07.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 587,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "critical",
+      "index": 0,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 9,
+      "source_rect": [
+        336,
+        610,
+        673,
+        905
+      ],
+      "model_pose": "model-frames/critical_00.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 881,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "critical",
+      "index": 1,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 10,
+      "source_rect": [
+        673,
+        610,
+        1010,
+        905
+      ],
+      "model_pose": "model-frames/critical_01.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 881,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 0,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 12,
+      "source_rect": [
+        0,
+        905,
+        336,
+        1168
+      ],
+      "model_pose": "model-frames/death_00.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 1136,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 1,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 13,
+      "source_rect": [
+        336,
+        905,
+        673,
+        1168
+      ],
+      "model_pose": "model-frames/death_01.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 1136,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 2,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 14,
+      "source_rect": [
+        673,
+        905,
+        1010,
+        1168
+      ],
+      "model_pose": "model-frames/death_02.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 1136,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "death",
+      "index": 3,
+      "sheet": "source/locomotion-headfix-v1.png",
+      "cell": 15,
+      "source_rect": [
+        1010,
+        905,
+        1346,
+        1168
+      ],
+      "model_pose": "model-frames/death_03.png",
+      "shared_sheet_scale": 1.3516756367660945,
+      "shared_row_ground": 1136,
+      "pixel_processing": "crop + same affine per sheet/row; no painting"
+    },
+    {
+      "action": "idle",
+      "index": 0,
+      "source": "../tmp_003/frames/idle_00.png",
+      "source_sha256": "7c694f52aef6a3a68388a257b0e8f77aa462b205c70af75161ea433cfd5191aa",
+      "model_pose": "model-frames/idle_00.png",
+      "pixel_processing": "exact previous native-guided idle; no redraw"
+    },
+    {
+      "action": "ranged",
+      "index": 12,
+      "source": "exact idle return; not a new generated/model pose"
+    },
+    {
+      "action": "hurt",
+      "index": 6,
+      "source": "exact idle return; not a new generated/model pose"
+    }
+  ],
+  "sheets": {
+    "attack": {
+      "file": "source/attack-headfix-v1.png",
+      "size": [
+        1555,
+        1011
+      ],
+      "columns": 4,
+      "rows": 3,
+      "scale": 1.3203281696777884,
+      "row_ground": [
+        298,
+        625,
+        950
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "source_head_length": 59.07622195096772,
+      "target_head_length": 78.0,
+      "reference_cell": 0,
+      "landmark_points": [
+        [
+          206,
+          65
+        ],
+        [
+          203,
+          124
+        ]
+      ],
+      "sha256": "37b2ef689c789384650ca7e2941f26f43f2f8abe6c70f9553789b653020206ba"
+    },
+    "support": {
+      "file": "source/support-headfix-v1.png",
+      "size": [
+        1167,
+        1347
+      ],
+      "columns": 3,
+      "rows": 4,
+      "scale": 1.1621099109210984,
+      "row_ground": [
+        340,
+        674,
+        984,
+        1298
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "source_head_length": 67.11929677819934,
+      "target_head_length": 78.0,
+      "reference_cell": 0,
+      "landmark_points": [
+        [
+          225,
+          75
+        ],
+        [
+          229,
+          142
+        ]
+      ],
+      "sha256": "af80bc36101cb1dc7e3a90c9508b7c405cecb5477290889cf4f76b2901c6ba14"
+    },
+    "locomotion": {
+      "file": "source/locomotion-headfix-v1.png",
+      "size": [
+        1346,
+        1168
+      ],
+      "columns": 4,
+      "rows": 4,
+      "scale": 1.3516756367660945,
+      "row_ground": [
+        283,
+        587,
+        881,
+        1136
+      ],
+      "calibration": "cranial crown-to-chin length",
+      "source_head_length": 57.706152185014034,
+      "target_head_length": 78.0,
+      "reference_cell": 0,
+      "landmark_points": [
+        [
+          183,
+          63
+        ],
+        [
+          192,
+          120
+        ]
+      ],
+      "sha256": "f3382dfef4180a7696a5041363cb0d2340517424f687494528fe54f82eb35b37"
+    }
+  }
+}

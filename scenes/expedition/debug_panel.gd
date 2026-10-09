@@ -5,6 +5,8 @@ var panel: PanelContainer
 var entry: Button
 var was_paused = false
 var backdrop: ColorRect
+var difficulty_selector: OptionButton
+var difficulty_apply: Button
 
 func _ready() -> void:
 	layer = 20
@@ -78,7 +80,28 @@ func open() -> void:
 
 func _refresh(message: String = "") -> void:
 	panel.clear("DEBUG · 调试模式", "独立调试存档 · 不影响正式进度\n面板打开时战斗暂停。地点路线、已领取奖励和永久记录不随重抽重置。")
+	panel.page_scroll.scroll_vertical = 0
 	if not message.is_empty(): panel.text(message,20)
+	panel.text("战斗难度 · 当前：" + Commands.Difficulties.preset(hub.debug_battle_difficulty).name,22)
+	var difficulty_row = HBoxContainer.new()
+	difficulty_row.add_theme_constant_override("separation",16)
+	panel.column.add_child(difficulty_row)
+	var difficulty_blocked = Commands.reason(hub,"difficulty")
+	difficulty_selector = OptionButton.new()
+	difficulty_selector.custom_minimum_size = Vector2(220,58)
+	difficulty_selector.add_theme_font_size_override("font_size",24)
+	preload("res://scenes/ui/campus_ui.gd").apply_button(difficulty_selector,"daily")
+	for id in Commands.Difficulties.ORDER:
+		difficulty_selector.add_item(Commands.Difficulties.preset(id).name)
+		difficulty_selector.set_item_metadata(difficulty_selector.item_count-1,id)
+	difficulty_selector.select(Commands.Difficulties.ORDER.find(hub.debug_battle_difficulty))
+	difficulty_selector.disabled = not difficulty_blocked.is_empty()
+	difficulty_selector.tooltip_text = difficulty_blocked
+	difficulty_row.add_child(difficulty_selector)
+	difficulty_apply = panel.button("应用重开","difficulty",difficulty_blocked.is_empty(),difficulty_row)
+	difficulty_apply.custom_minimum_size.x = 180
+	difficulty_apply.tooltip_text = difficulty_blocked
+	panel.text("保留当前敌阵与构筑，满血重启并立即开战；难度仅在本次 Debug 运行生效。" if difficulty_blocked.is_empty() else difficulty_blocked,18)
 	for item in [["skip","跳过战斗","按胜利处理当前战斗，继续领奖或终局操作。"], ["restart","重开战斗","保留阵容、装备和局内成长，恢复全体状态并返回战前部署。"], ["reroll","重抽事件","地点页更换未查看记录；旧事件页更换未选择事件；奖励页更换候选。"]]:
 		var blocked = Commands.reason(hub,item[0])
 		panel.button(item[1],item[0],blocked.is_empty())
@@ -103,10 +126,11 @@ func _action(id: String) -> void:
 		hub._show_library_environment_preview()
 		return
 	if not Commands.reason(hub,id).is_empty(): return
+	var difficulty: String = str(difficulty_selector.get_selected_metadata()) if id == "difficulty" else ""
 	panel.hide()
 	entry.show()
 	hub._resume_battle()
-	if not Commands.execute(hub,id):
+	if not Commands.execute(hub,id,difficulty):
 		open()
 		_refresh("操作未完成：" + hub.progress.error_message)
 

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/attack-redraw-v3.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/attack-guide.png"
+    ],
+    "prompt": "Edit image 1's existing sprite atlas only to correct the student's head/body proportion drift. Image 2 is the LOCKED idle identity and anatomy reference. Image 3 gives the real native 3D pose in every cell, preserving slot order. The atlas currently makes him too squat with a bulbous head compared with the reference idle. REDUCE skull + facial features + hair as a unit by about 18-20 percent relative to the same torso and legs. Keep torso, leg lengths, prop size, limb pose and the overall standing height unchanged; this brings him toward image2's approximately FOUR-head teenage build, away from a toddler chibi. Do not uniformly shrink the whole figure. After this edit, head width relative to shoulders and body must match image2; no gigantic hair cap. Maintain one fixed skull size across all cells, including leaning/crouching/fallen poses. Draw the head freshly as a connected anatomical part of this same boy, no pasted head, floating neck, elongated neck, giant hands or boots. Preserve the existing silhouette joint directions where they follow image3 and do not invent new motion. Keep the actual single forearm lifting/withdrawing motion, OTHER hand low, and both separate green keyboard surfaces visible in all cells. Retain rectangular glasses, brown tousled curls, mint LONG SLEEVE crewneck, dark lanyard and white badge, black backpack and pixel pendant, charcoal trousers, white cyan-trim sneakers, two separate green keyboards and wrist rings. Keep 4 columns x 3 rows exactly; no new or missing cell, no reordering. Fine Japanese anime outlines and flat cel colors matching image2. Completely transparent alpha background and margins, no gray gradients, ground shadows, fog, watermarks, labels or grid lines. Full silhouettes including all gun tips, feet and hair stay inside each slot."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/attack-redraw-v3.png",
+      "sha256": "a3e7731e88d0fc841fe33bad308ccc09a2f4c9772df5c9906d64daf3b6a95b2a"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "sha256": "ca72107ab6abaf642ca603ca2fc0d46c857141138093092724b43c3ea8430871"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/attack-guide.png",
+      "sha256": "5ce94211d48ab234a9c324b71804ab5e8099490b5dcf33f8ddef18ca1b6d7cc3"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-587f90a5-366d-4b84-8d8c-fb6ace44fda9.png",
+  "output": "source/attack-redraw-v4.png",
+  "output_sha256": "adb4ed576ab320e6401ea34e728a8a1737a4936885b1b5d798ef1aabd4f1c57e",
+  "mode": "RGBA",
+  "size": [
+    1556,
+    1011
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

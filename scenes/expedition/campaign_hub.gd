@@ -9,7 +9,10 @@ var campaign_enabled = false
 var detail_return = "visit"
 var reset_pending = false
 var debug_enabled = false
+var debug_battle_preview = false
 var debug_panel: CanvasLayer
+var debug_battle_difficulty := "normal"
+const DebugCommands = preload("res://game/debug/campus_debug.gd")
 const OPERATIONS = ["修正目标","撤销越权","限制写入"]
 const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当前 AI：目标是维护一个容纳变化的校园，而不是永远保持初始版本。",
 	"前代：我将撤销对管理员新开发的自动覆盖权限。\n管理员：保留你的记忆，停止替我们决定什么应该存在。",
@@ -17,7 +20,9 @@ const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当�
 
 func _ready() -> void:
 	debug_enabled = "--campus-debug" in OS.get_cmdline_user_args()
+	debug_battle_preview = debug_enabled and "--debug-battle" in OS.get_cmdline_user_args()
 	if debug_enabled: progress.path = "user://campus_debug_progress.json"
+	if debug_battle_preview: progress.path = "res://.godot/debug-battle-preview.json"
 	if "--debug-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/debug-check-profile.json"
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		progress.path = "res://.godot/profile-reset-ui.json"
@@ -42,6 +47,10 @@ func _ready() -> void:
 		debug_panel = preload("res://scenes/expedition/debug_panel.gd").new()
 		debug_panel.hub = self
 		add_child(debug_panel)
+	if debug_battle_preview: _launch_debug_battle()
+	if "--debug-battle-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/debug_battle_check.gd").new()
+		test_runner.run_checks(self)
 	if "--debug-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/debug_check.gd").new()
 		test_runner.run_checks(self)
@@ -51,6 +60,31 @@ func _ready() -> void:
 	if "--campaign-flow-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/campaign_flow_check.gd").new()
 		test_runner.run_checks(self)
+
+func _launch_debug_battle() -> void:
+	# Use the ordinary prologue encounter, deployment, checkpoint and simulation.
+	# A fresh preview never consumes or depends on either player's progress file.
+	var lineup: Array = RunModel.new().formation.duplicate()
+	_begin_region("library", "prologue")
+	if not last_save_ok: return
+	formation = lineup
+	_guard()
+	if not last_save_ok: return
+	_start()
+	if last_save_ok and screen == "battle" and phase == "battle":
+		print("DEBUG_BATTLE_STARTED encounter=", encounter_id, " allies=", _living(0).size())
+	queue_redraw()
+
+func _build_units() -> void:
+	super._build_units()
+	if not debug_enabled: return
+	# Apply only enemy multipliers, after the current encounter's ordinary power.
+	var difficulty: Dictionary = DebugCommands.Difficulties.preset(debug_battle_difficulty)
+	for unit in units:
+		if unit.side != 1: continue
+		unit.max_hp = roundf(unit.max_hp * difficulty.health)
+		unit.hp = unit.max_hp
+		unit.atk = roundf(unit.atk * difficulty.attack)
 
 func _show_library_environment_preview() -> void:
 	if not campaign_enabled or not is_instance_valid(campaign_panel):

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_003/source/cast-interface-v1.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_003/source/cast-guide-tight.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/guard/tmp_001/frames/cast_03.png"
+    ],
+    "prompt": "Edit IMAGE 1's existing TWELVE-sprite atlas ONLY to strengthen and correctly time the modelled spell VFX. IMAGE 2 is the actual 3D model phase guide; all body gestures and all hologram geometry have already been made in the model. IMAGE 3 is ONLY the intended spell glow strength, luminous-contour and halo reference, not its character/shield/sword/purple color. Preserve the current character's face, hair, glasses, head/body proportions, mint clothes, backpack, sneakers, both hands typing over the compact twin keyboard screens, whole-body poses, scale and layout. Do not redesign, enlarge, shrink or move any character. Preserve all existing curved interface screens, green command circle with wireframe cube and few lime data tiles.\nSpecific correction: the SECOND ROW, SECOND COLUMN is the model's frame 27 RELEASE. It MUST already show an initial bright expanding horizontal ring pulse, like but slightly smaller than the existing pulse in SECOND ROW THIRD COLUMN (model frame 30). Keep that third-column pulse larger as it expands. Correct the release timing in the second-column VFX; do not invent a new body pose. Across frames 4-8, make the activated large interface visibly more radiant: intense mint-white/cyan-green luminous contour bands, bright wrist rings and command-circle/cube core, equipment-centered translucent green aura with enough saturation to read clearly at ~110px character height, comparable in signal strength to image 3's shield. Use a bounded connected glow region around keyboards, forearms, curved screens and command icon, not a global mist background. All controls should feel powered; keep transparent screen interior and the face, glasses, hand contacts and torso readable. Do not replace the structure with a white bloom blob. Frames 1-2 and 11-12 remain much quieter, frames 9-10 withdraw/dim; preserve this progression.\nThe atlas remains EXACTLY four columns by three rows, twelve whole-body sprites, identical identity/pose order. Genuine alpha transparency. Keep generous empty transparent margins/gutters, every shoe and ALL ring/glow/data-tile endpoints fully inside its own cell, no overlap between cells and no clipping. No opaque backdrop, floor shadows, text/captions/borders/watermark, extra limbs, floating heals/hearts or unrelated new effect shapes. This is a VFX intensity/release-timing edit over 3D-guided whole-body sprites; leave the body and existing keyboard operation intact."
+  },
+  "output_original": "C:/Users/SongJun/.codex/generated_images/01a114fb-e9ef-7400-8350-52b34cf7f0e5/exec-b3f3f5d7-e72d-4b34-bdb1-04966bfa8ff4.png",
+  "output": "source/cast-interface-glow-v2.png",
+  "status": "candidate; stronger shield-referenced light and pulse in model release frame 27; QA pending",
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_003/source/cast-interface-v1.png",
+      "sha256": "7b1dcb90877e3627d3438d677b057f59a7ee57a4f7c45f51caeb7c13e1b2618b"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_003/source/cast-guide-tight.png",
+      "sha256": "ad89451dfafd93fc236d602e3a951d4d1c3879ad1d753a680df2f30b271b6b53"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/guard/tmp_001/frames/cast_03.png",
+      "sha256": "b882540361eb44acc433ce5c7d7ea27062a0ceec8356e262b3bc8fc7aa7e33b2"
+    }
+  ],
+  "output_sha256": "f20e769b0394ad6150945780bebae3ee8bb0985b6edb8a917a6906f346a4271c",
+  "output_mode": "RGBA",
+  "output_size": [
+    1536,
+    1024
+  ]
+}

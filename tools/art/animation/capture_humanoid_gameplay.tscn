@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://tools/art/animation/capture_humanoid_gameplay.gd" id="s"]
+[node name="HumanoidGameplayCapture" type="Node"]
+script = ExtResource("s")

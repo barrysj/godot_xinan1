@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/hurt-guide.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/move-redraw-v5.png"
+    ],
+    "prompt": "Use case: style-transfer. Exactly THREE columns by TWO rows, six ordered poses. Image1 is SIX actual native Mage Hit_A 3D poses, not a suggestion: transfer its arm, shoulder, trunk, hip and leg arrangements slot by slot. Image2 is identity and outfit reference ONLY; image3 helps show the correct down-at-sides keyboard positions. This is a short body impact and recovery, not casting/typing. BOTH ARMS are DOWN near the hips throughout as in the 3D guide; hands not forward chest level. The two green holographic keyboards FOLLOW THE TWO DOWNWARD HANDS separately at their corresponding hip sides, with slightly vertical/tilted planes and perspective occlusion as in the guide. Don't lock arms to image2's typing posture. Most visible compression is slot2 (top middle): upper body dips/rounds forward, shoulder lowers with impact; neck remains aligned with thorax, never hinge head backwards. Copy source recovery in remaining cells. Target 4-head teen student proportions with modest skull/hands, normal torso/legs; preserve student's brown curly hair, glasses, mint LONG sleeve crewneck, dark badge, black backpack/pixel charm, charcoal trousers, white cyan trimmed shoes. No wizard clothes/hat/staff. Fixed same proportions and head size for every cell, equal open transparent gutters. Do not improvise six different attack poses or add effects; keyboards green light can subdue on impact. Full silhouettes and uncut props, genuine alpha, thin Japanese anime lines and flat cel shading. No background wash, gray plane, shadows, fog, text, labels or watermark."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/hurt-guide.png",
+      "sha256": "80804c320da5751c77c2387cc80beed3cf1be0e677908e255f9cce0c72203f82"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "sha256": "ca72107ab6abaf642ca603ca2fc0d46c857141138093092724b43c3ea8430871"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/move-redraw-v5.png",
+      "sha256": "0bba111cc75b62d4b44b30a8be394800421354e30a0764f6886a92112ab679be"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-54a96e04-b3f7-455e-9df1-a6d49c7d1e26.png",
+  "output": "source/hurt-redraw-v1.png",
+  "output_sha256": "1b9e5c42c08a90bd4f70128a83c7a772e2c19d94a24b6e520dcc7cdf2ba0078c",
+  "mode": "RGBA",
+  "size": [
+    1650,
+    953
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

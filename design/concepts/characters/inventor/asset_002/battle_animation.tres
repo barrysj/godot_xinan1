@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="BattleAnimationSet" format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/idle_00.png" id="f0"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_00.png" id="f1"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_01.png" id="f2"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_02.png" id="f3"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_03.png" id="f4"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_04.png" id="f5"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_05.png" id="f6"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_06.png" id="f7"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/move_07.png" id="f8"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_00.png" id="f9"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_01.png" id="f10"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_02.png" id="f11"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_03.png" id="f12"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_04.png" id="f13"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_05.png" id="f14"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_06.png" id="f15"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_07.png" id="f16"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_08.png" id="f17"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_09.png" id="f18"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_10.png" id="f19"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_11.png" id="f20"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/ranged_12.png" id="f21"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_00.png" id="f22"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_01.png" id="f23"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_02.png" id="f24"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_03.png" id="f25"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_04.png" id="f26"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_05.png" id="f27"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_06.png" id="f28"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_07.png" id="f29"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_08.png" id="f30"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_09.png" id="f31"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_10.png" id="f32"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_11.png" id="f33"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/cast_12.png" id="f34"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_00.png" id="f35"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_01.png" id="f36"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_02.png" id="f37"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_03.png" id="f38"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_04.png" id="f39"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_05.png" id="f40"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/hurt_06.png" id="f41"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/critical_00.png" id="f42"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/critical_01.png" id="f43"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/death_00.png" id="f44"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/death_01.png" id="f45"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/death_02.png" id="f46"]
+[ext_resource type="Texture2D" path="res://design/concepts/characters/inventor/asset_002/frames/death_03.png" id="f47"]
+
+[ext_resource type="Script" path="res://game/content/battle_cast_vfx_style.gd" id="vfx_script"]
+
+[sub_resource type="Resource" id="cast_vfx"]
+script = ExtResource("vfx_script")
+shape = 1
+muzzle_offset = Vector2(61.100, -40.580)
+intensity = 1.0
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{"frames": [{"duration": 1.0, "texture": ExtResource("f0")}], "loop": true, "name": &"idle", "speed": 0.62500000},
+{"frames": [{"duration": 1.0, "texture": ExtResource("f1")}, {"duration": 1.0, "texture": ExtResource("f2")}, {"duration": 1.0, "texture": ExtResource("f3")}, {"duration": 1.0, "texture": ExtResource("f4")}, {"duration": 1.0, "texture": ExtResource("f5")}, {"duration": 1.0, "texture": ExtResource("f6")}, {"duration": 1.0, "texture": ExtResource("f7")}, {"duration": 1.0, "texture": ExtResource("f8")}], "loop": true, "name": &"move", "speed": 10.00000000},
+{"frames": [{"duration": 1.0, "texture": ExtResource("f9")}, {"duration": 1.0, "texture": ExtResource("f10")}, {"duration": 1.0, "texture": ExtResource("f11")}, {"duration": 1.0, "texture": ExtResource("f12")}, {"duration": 1.0, "texture": ExtResource("f13")}, {"duration": 1.0, "texture": ExtResource("f14")}, {"duration": 1.0, "texture": ExtResource("f15")}, {"duration": 1.0, "texture": ExtResource("f16")}, {"duration": 1.0, "texture": ExtResource("f17")}, {"duration": 1.0, "texture": ExtResource("f18")}, {"duration": 1.0, "texture": ExtResource("f19")}, {"duration": 1.0, "texture": ExtResource("f20")}, {"duration": 1.0, "texture": ExtResource("f21")}], "loop": false, "name": &"ranged", "speed": 12.18750000},
+{"frames": [{"duration": 1.0, "texture": ExtResource("f22")}, {"duration": 1.0, "texture": ExtResource("f23")}, {"duration": 1.0, "texture": ExtResource("f24")}, {"duration": 1.0, "texture": ExtResource("f25")}, {"duration": 1.0, "texture": ExtResource("f26")}, {"duration": 1.0, "texture": ExtResource("f27")}, {"duration": 1.0, "texture": ExtResource("f28")}, {"duration": 1.0, "texture": ExtResource("f29")}, {"duration": 1.0, "texture": ExtResource("f30")}, {"duration": 1.0, "texture": ExtResource("f31")}, {"duration": 1.0, "texture": ExtResource("f32")}, {"duration": 1.0, "texture": ExtResource("f33")}, {"duration": 1.0, "texture": ExtResource("f34")}], "loop": false, "name": &"cast", "speed": 12.18750000},
+{"frames": [{"duration": 1.0, "texture": ExtResource("f35")}, {"duration": 1.0, "texture": ExtResource("f36")}, {"duration": 1.0, "texture": ExtResource("f37")}, {"duration": 1.0, "texture": ExtResource("f38")}, {"duration": 1.0, "texture": ExtResource("f39")}, {"duration": 1.0, "texture": ExtResource("f40")}, {"duration": 1.0, "texture": ExtResource("f41")}], "loop": false, "name": &"hurt", "speed": 10.50000000},
+{"frames": [{"duration": 1.0, "texture": ExtResource("f42")}, {"duration": 1.0, "texture": ExtResource("f43")}], "loop": true, "name": &"critical", "speed": 1.87500000},
+{"frames": [{"duration": 1.0, "texture": ExtResource("f44")}, {"duration": 1.0, "texture": ExtResource("f45")}, {"duration": 1.0, "texture": ExtResource("f46")}, {"duration": 1.0, "texture": ExtResource("f47")}], "loop": false, "name": &"death", "speed": 5.00000000}]
+
+[resource]
+script = ExtResource("script")
+frames = SubResource("frames")
+display_size = Vector2(384, 256)
+anchor = Vector2(0.500000000, 0.715820312)
+impact_ratio = 0.45
+flip_with_facing = true
+
+cast_vfx_style = SubResource("cast_vfx")

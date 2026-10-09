@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/death-guide.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png"
+    ],
+    "prompt": "Use case: style-transfer. Redraw the four actual 3D falling poses of image 1 into the exact compact four-head Japanese anime boy of image 2. Four columns, ONE row, transparent sprite strip. Slot 1 must start UPRIGHT standing just like source pose 1. Slot 2 tilts torso BACKWARDS while knees flex and feet lift, like source pose 2. Slots 3 and 4 lie completely on the back, full body horizontal, knees slightly bent and feet raised, exactly like corresponding source poses. No extra invented intermediate or sitting pose in the first slot. Maintain exact head size, clothing, mint LONG sleeves, glasses, black backpack and pixel pendant, lanyard/badge, charcoal trousers, white cyan shoes, and TWO small green keyboard panels attached to each hand. Preserve same single scale and camera in all four slots; the horizontal body naturally occupies more width. Full silhouette fits each slot with generous transparent margins. Fine clean 2D linework, flat cel shading, no 3D rendering. Entire background alpha transparent, no floor, ground shadow, fog, gradients, divider lines, words or watermark."
+  },
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/death-guide.png",
+      "sha256": "13efd2cbe989430ccfd45e7652330c6cd7d3bc7802b8edcf145797fac3906bfb"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/healer/tmp_001/source/identity-master.png",
+      "sha256": "ca72107ab6abaf642ca603ca2fc0d46c857141138093092724b43c3ea8430871"
+    }
+  ],
+  "output_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-ead7f8d4-bb97-4caf-a340-85ea9dccedd7.png",
+  "output": "source/death-redraw-v2.png",
+  "output_sha256": "e7229e90a90a735eeb8cdf3f0ec61dd3c13c4d60d69dde5aadb56b0a9c5a4451",
+  "mode": "RGBA",
+  "size": [
+    2172,
+    724
+  ],
+  "status": "candidate; requires pose and identity QA"
+}

@@ -1,0 +1,41 @@
+{
+  "result": "PASS",
+  "source_character": "Rogue",
+  "body_meshes": 8,
+  "bones": 23,
+  "guide_frames": 39,
+  "geometry_weights_rest_pose_unchanged": true,
+  "all_source_animation_curves_unchanged": true,
+  "rest_matrix_checks": [
+    {
+      "file": "Rig_Medium_General.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "5f725c0f745f36078c7238968cd5c04843cbc6260689eb6e7f5e2bbd7ffdd7ad"
+    },
+    {
+      "file": "Rig_Medium_MovementBasic.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "11422afd50abf7e8c92ea107e2e0bc94abd38023d6d15f55ad580347efbfa29e"
+    },
+    {
+      "file": "Rig_Medium_MovementAdvanced.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "8b2317cf81e3f24149e4b791c27e1932bebd46cd378ed962e7d27d642fad8c56"
+    },
+    {
+      "file": "Rig_Medium_CombatMelee.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "c55e6ec1c79e83ae21d46fe1cd921c1b64be8b9a524a24517e51c6ba99231459"
+    },
+    {
+      "file": "Rig_Medium_CombatRanged.glb",
+      "bones": 23,
+      "max_rest_matrix_difference": 0.0,
+      "sha256": "7fef1fc0e7b0feafd34b8e12d23f514c8c1f9d068047a691b854b56f1774dff5"
+    }
+  ]
+}

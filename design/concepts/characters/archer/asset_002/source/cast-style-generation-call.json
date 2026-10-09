@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-09",
+  "tool": "image_gen.imagegen",
+  "purpose": "Repair cast drawing style against accepted non-cast motions, preserve rendered native 3D pose guide",
+  "arguments": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/archer/tmp_007/source/accepted-motion-style.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/archer/tmp_006/source/cast-glow-v1.png",
+      "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/archer/tmp_007/source/cast-guide-tight.png"
+    ],
+    "prompt": "Repair continuity of a Japanese 2D anime game cast animation. IMAGE1 is the AUTHORITATIVE appearance of the same girl in currently accepted idle, ranged attack, hurt and crouch. Upper row full bodies, lower row magnified details. COPY THIS drawing language, identity, age, head/body ratio, muted palette and line weight exactly. IMAGE2 is the edit target, a 4x3 cast atlas with inconsistent too rounded face, stocky shortened torso and broad dirty gray/cyan bloom. IMAGE3 is the ACTUAL saved3D native Ranger Ranged_1H_Shoot sequence plus telescoping weapon; ONLY guide for body joint ANGLES, pose chronology and equipment deployment, not costume, materials, face or chibi proportions. Return ONE transparent RGBA 4-column x3-row cast atlas, exactly12 chronological poses matching image2 and image3 joint angles. Make every pose the SAME student as image1: narrow soft anime face, small calm brown eyes and slender neck, same black-gray ponytail with cyan cross pin, same medium blue tee, green lanyard white ID card, black cargo pants/backpack/gamecontrollercharm/white shoes. Full standing figure about3.8heads tall, same head diameter and body length across12poses; reference1 idle/ranged lengths invariant, not stubby chibi. Thin gray-black contours, simplified matte hair with a few clear shadow masses and sparse fine highlights, softer limited cel shading identicalreference1; no realistic3D highlights, volumetric hair streaks, plastic skin, glossy bulky clothing, thick black outline or warm saturated rimlight. DO NOT invent new body actions. Native right-arm aim, extend precision gun, release at row2 col2, slightnative recoil col3, lower/retract into same neutralready posture at end. Preserve white/cyan rectangular telescoping gun and small orange core; thinlongprecisionbeam only at row2cols2-3, no thickheavyblast. Light must be handdrawn2D: brighter cyanwhite rail strip, tiny sharp star at barrel, very restrained translucent cyanedge. No gray/black smokehalo, bluecloud, hugeglow, orangebodyrimlight, circular3D shockwaves. Light must stay separate from face/hair/clothes. Keep all12feet on common row baselines with same pose scale, evenly spaced 4x3 cells, generous transparent margins at all cell edges, no clipping. Entire full bodies visible. No text/grid/background/shadows/signature/referenceboardlabels. This is restyling existing native-model-guided cast poses to match accepted other actions, not a new freely invented pose sequence."
+  },
+  "generated_original": "C:\\Users\\SongJun\\.codex\\generated_images\\01a114fb-e9ef-7400-8350-52b34cf7f0e5\\exec-b4744659-518a-4c12-89e7-1d835df86c5b.png",
+  "output": "source/cast-style-v1.png",
+  "status": "candidate awaiting quality and engine checks",
+  "output_sha256": "2503db3807a523d58796c99ecf905b8342cae64eb39e81a887a991d31aa925d2",
+  "references": [
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/archer/tmp_007/source/accepted-motion-style.png",
+      "sha256": "c0794af7aa823c934bd28860687afec9a06476ff123a95304d19e1033257e0c2"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/archer/tmp_006/source/cast-glow-v1.png",
+      "sha256": "23c2db7282f1719ddd230c57c6b8f82654d5805baf65164f8ed83ccf52022b60"
+    },
+    {
+      "file": "C:/Users/SongJun/.codex/worktrees/b4a9/godot_xinan1/design/concepts/characters/archer/tmp_007/source/cast-guide-tight.png",
+      "sha256": "6fe238379435c12ba4f2723a9cb095b7a26ae558bd7a39bde018f945c6a8d2f6"
+    }
+  ],
+  "output_size": [
+    1556,
+    1011
+  ],
+  "candidate_status": "quality reviewed; actual engine verified; pending human style approval"
+}
