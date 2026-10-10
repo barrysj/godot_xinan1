@@ -210,3 +210,5 @@ choice_semantics_check实机三尺寸214／0、choice_pages200／0、状态55／
 PowerShell 7／Godot4.7.2：五包promote_animation.py --variant asset_002 --check通过；authored_assets_check.tscn GUI -- --capture五人／0失败，两组合法阵容三规定尺寸；status_hud_check105／0、playback_controls_check51／0、feedback_progress_check15／0；cast_vfx_check26／0，ACTION／PRESENTATION／ANIMATION通过。真实启动run-battle-demo.ps1 -Mode Debug -Capture39／0；run-debug.ps1 -Check174／0；完整战役149／0，流程资源预览--flow-preview-check120／0；choice_pages197／0、screen_cleanup52／0。地图编辑器Node两套测试12／0，资源台40／0，扫描54对象／2383文件且0缺失／不一致／错误。
 
 实际截图与日志为.godot/campus-main-merge-*、characters-battle-party*、status-hud-*及debug-battle-launch-*；1080画面已在对话展示。合并验证清理了仅对应已删除图片的未跟踪.import缓存，未删除活动图或改变素材批准。HUD概念批准哈希仍保留于概念metadata.json与任务记录，Manifest撤掉重复字段以遵循现有无存储哈希契约。首次导入新帧前的缺资源提示已由导入解决；既有根证书、像素原图读取与编辑器设置权限提示保留，未重验Web／手机；全局总览与Roadmap未改。
+
+合入后进一步联合复核：2026-10-10、本地main7ad0c84加QA修复，原Campaign两组四人阵容自然完成教室战斗，五名人物正式攻击／施法帧持续推进且与HUD计时一致，联合GUI42／0、状态105／0、反馈81／0。修复仅涉及提示排布和检查夹具；五包、源资料、工作流及审批未改。实机证据、其他专项与覆盖边界统一见[UI-02](ui-02.md#合入后人物动画与战斗-hud-联合验证2026-10-10待统筹)和[验证目录](verification.md#合入后人物动画与战斗-hud-联合验证)。

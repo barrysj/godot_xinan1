@@ -800,3 +800,22 @@ Godot `--headless --editor --path . --quit --log-file .godot/campus-flow-final-i
 `node --check tools/campus-map-editor/server.mjs` 通过；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs` 为12／0。新增Windows只读临时文件夹具：修复前返回原始EPERM导致恢复提示断言失败，修复后提示包含不可写／重启／导出；原地图及保存前备份与原字节一致。其余几何、读取、坏数据／过期版本拒绝、隔离保存及备份原检查保留。Windows夹具在其他系统跳过，不宣称跨平台权限检查。
 
 真实浏览器1280×720在独立验证页修改选区名称，点击保存后显示已同步／保存成功，并核对真实JSON写入与备份；撤销到原名称并再次保存也成功，控制台错误0。最终用户 `expanded_campus_layout.json` SHA256为 `C3C5665C66C8FC0C567AA1A9EB91DAD9479C4A3481EA8B019886F5CCDDA55292`，与验证前一致，用户已有未提交布局修改保留。实际截图 `.godot/map-editor-save-fixed.jpg` 已查看并在对话展示，本地缓存不入Git；临时复现脚本在收尾删除。只改工具后端失败提示并恢复当前服务运行权限，未改Godot规则，未重复无关战斗测试。
+
+## 合入后人物动画与战斗 HUD 联合验证
+
+2026-10-10，基线本地main `7ad0c84`（当前967301e同树）加QA修复；PowerShell7／Godot4.7.2 console，项目根目录。所有场景使用独立 `.godot` 进度路径，不写玩家档。以下参数均放在 `--path . --quit-after 3000 --log-file .godot/<日志名>.log` 之后；GUI加 `--rendering-method gl_compatibility`，无头加 `--headless`。
+
+| 场景／参数 | 结果 | 日志与覆盖 |
+| --- | --- | --- |
+| `scenes/battle_demo/authored_assets_check.tscn -- --combat --capture` GUI | 42／0，5包／0失败 | postmerge-authored-combat；原Campaign两场自然教室战斗、两组四人阵容覆盖五人正式帧、攻击／施法推进、恢复、暂停／慢速／倍速、战报隐藏；四张实机图 |
+| 同场景 `-- --combat` 无头 | 38／0，5包／0失败 | postmerge-authored-combat-scan；相同核心行为，无截图附加断言 |
+| `scenes/battle_demo/status_hud_check.tscn -- --capture` GUI | 105／0 | postmerge-status-fixed；三桌面尺寸、真实意图鼠标／Esc、血盾填充、唯一行动条、图标底色、密集避让 |
+| `scenes/battle_demo/battle_feedback_check.tscn -- --capture` GUI | 81／0 | postmerge-feedback-final；三敌阵三尺寸，键盘／鼠标程序与道具、真实预警／释放／恢复，横幅和库存不重叠、预警与日志分行、父子刷新顺序一致、菜单夹具清理 |
+| `scenes/battle_demo/feedback_progress_check.tscn -- --capture` GUI | 15／0 | postmerge-battle-progress；真实第三格全亮、收拢／飞码、伤害、暂停冻结、新战满血 |
+| `scenes/battle_demo/playback_controls_check.tscn -- --capture` GUI | 51／0 | postmerge-battle-playback；独立暂停／菜单、0.5／1／1.5／2倍速及状态恢复 |
+| `scenes/battle_demo/actor_depth_check.tscn -- --capture` GUI | 22／0 | postmerge-battle-depth；三尺寸真实混合／帧角色上下互换、统一脚底排序 |
+| `scenes/expedition/screen_cleanup_check.tscn -- --capture` GUI | 52／0 | postmerge-battle-cleanup；战报→领奖→地点及其他原页面，无人物／奖励说明残留 |
+| `scenes/battle_demo/cast_vfx_check.tscn` 无头 | 26／0 | postmerge-battle-cast；独立蓄力、释放、音爆环、暂停倍速与消隐 |
+| `scenes/battle_demo/animation_check.tscn` 无头 | PASS | postmerge-battle-animation；基础状态／生命周期／时钟 |
+
+静态五人七片段与两合法阵容三分辨率另由原 `authored_assets_check.tscn -- --capture` 验证5包／0失败，日志postmerge-battle-authored。自然两战不强制濒死／死亡来追求状态覆盖，不代表全流程招募或平衡；生命、盾和动作均来自原模拟。最终查看并展示守护／发明家释放与敌人施法预警实机图；所有缓存仍归 `.godot`，无需新美术版本。修改和边界统一见UI-02；ART-02引用该结果。既有环境根证书／Kenney读图警告保留，最终无Script／Parse错误；未重新导出Web或验证触控／实体手柄。

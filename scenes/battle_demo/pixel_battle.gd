@@ -6,6 +6,7 @@ const DARK = Color("181820")
 const GRASS = Color("718951")
 const BRICK = Color("b58360")
 const ROLE_COLORS = [Color("71b8dc"), Color("eab765"), Color("99c983"), Color("d68c8c"), Color("ad98d2")]
+const BATTLE_BANNER_RECT = Rect2(267, 126, 418, 40)
 signal presentation_cue(event: Dictionary)
 const UnitPresentation = preload("res://scenes/battle_demo/unit_presentation.gd")
 const BattleAnimation = preload("res://scenes/battle_demo/battle_animation.gd")
@@ -601,6 +602,11 @@ func _pixel_button(index: int, text: String, active: bool = false, enabled: bool
 	_pixel_panel(rect, fill)
 	_center(rect.get_center() + Vector2(0, 7), text, DARK, 20 if index == 0 else 16)
 
+func _battle_log_at() -> Vector2:
+	# The parent canvas can draw before its child HUD refreshes this frame.
+	var warning_visible: bool = phase == "battle" and simulation.warnings.keys().any(func(id): return simulation.unit(id).hp > 0)
+	return Vector2(52, 693 if warning_visible else 677)
+
 func _draw() -> void:
 	if town == null:
 		return
@@ -651,8 +657,8 @@ func _draw() -> void:
 		_draw_unit(u)
 	_draw_effects()
 	if banner_time > 0 and phase == "battle":
-		_pixel_panel(Rect2(267, 99, 418, 40), Color("413b4b"))
-		_center(Vector2(476, 126), banner, GOLD, 21)
+		_pixel_panel(BATTLE_BANNER_RECT, Color("413b4b"))
+		_center(BATTLE_BANNER_RECT.get_center() + Vector2(0,7), banner, GOLD, 21)
 	if get("screen") == null: _pixel_button(3, "切换难度" if not demo_options.difficulty.is_empty() else "切换敌阵", false, phase == "prepare")
 	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or formation.count(-1) == 2)
 	_pixel_button(4, "返回整备")
@@ -662,7 +668,7 @@ func _draw() -> void:
 		var message: String = logs[0] if not logs.is_empty() else "准备出发。"
 		while font.get_string_size(message, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x > 300:
 			message = message.left(message.length()-2) + "…"
-		_text(Vector2(52, 677), message, PAPER, 15)
+		_text(_battle_log_at(), message, PAPER, 15)
 		_pixel_button(1, "速度 %s×" % str(speed))
 
 func _gui_input(event: InputEvent) -> void:

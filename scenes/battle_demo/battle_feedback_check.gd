@@ -109,7 +109,9 @@ func _ready() -> void:
 	game.paused = true
 	key(KEY_ESCAPE)
 	verify(not panel.program_preview.visible,"Manual pause cannot reopen a program")
+	if game.pause_overlay.visible: game._resume_battle()
 	game.paused = false
+	verify(not game.pause_overlay.visible,"Close the Escape menu before natural cast captures")
 	# Actual timed windup and release; observe simulation events, not removed visual caches.
 	for encounter in ["patrol","classroom","final"]:
 		get_window().size = Vector2i(1920,1080) if encounter == "patrol" else Vector2i(2560,1440) if encounter == "classroom" else Vector2i(1920,1200)
@@ -132,10 +134,20 @@ func _ready() -> void:
 			if not game.simulation.warnings.is_empty():
 				warned = true
 				if not warning_captured and game.simulation.elapsed >= 10.0:
+					panel.warning_row.hide()
+					var before_hud: Vector2 = game._battle_log_at()
+					panel._update_hud()
+					verify(before_hud == game._battle_log_at(),"Log layout follows real warnings before the child HUD refresh")
 					await capture(encounter+"-warning")
 					warning_captured = true
 					panel._process(0)
 					verify(panel.warning_row.visible and panel.warning_text.text.contains("秒"),"Warning countdown stays in the dedicated footer")
+					var log_at: Vector2 = game.origin + game._battle_log_at()*game.scale_factor
+					var log_bounds := Rect2(log_at-Vector2(0,game.font.get_ascent(15)*game.scale_factor),Vector2(300,game.font.get_height(15))*game.scale_factor)
+					verify(not log_bounds.intersects(panel.warning_text.get_global_rect()),"Enemy warning and real battle log occupy separate lines")
+					verify(log_bounds.end.y <= game.origin.y+703*game.scale_factor,"Battle log stays inside the footer")
+					var banner_bounds := Rect2(game.origin+game.BATTLE_BANNER_RECT.position*game.scale_factor,game.BATTLE_BANNER_RECT.size*game.scale_factor)
+					verify(panel.bank_labels.values().all(func(chip): return not banner_bounds.intersects(chip.get_global_rect())),"Skill banner clears all code inventory cards")
 			if not release_ids.is_empty():
 				released = true
 				var actor = game.simulation.unit(release_ids[0])
