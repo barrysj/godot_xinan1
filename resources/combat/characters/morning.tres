@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CampusCombatCharacter" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/combat_character_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "morning"
+display_name = "晨读生"
+tags = Array[String](["analysis"])
+code_type = "blue"

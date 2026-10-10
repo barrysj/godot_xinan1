@@ -43,7 +43,7 @@
 ## 已知边界与待统筹
 
 - Windows Godot 4.7.2 Compatibility 图形与 headless 已验证；本功能尚未做 Web／Android 导出与交互验收，启动脚本为 Windows PowerShell 7。
-- 启动菜单的 Release 是本地正常试玩模式，不执行发行包导出。Debug 默认候选依赖当前工作区，缺少候选时可显式使用 `-Animations Formal`。
+- 启动菜单的 Release 是本地正常试玩模式，不执行发行包导出。Debug／Release 默认使用正式动画；Current 兼容正式路径，不依赖已经清理的中间候选。
 - 不增加事件内容、不重抽固定地图；已消费结果不回退；不提供正式档导入调试档按钮。独立战斗实验室不接入此主流程 Debug 面板。
 - 待统筹：新增开发启动方式和独立档案路径；正式基地重开能力见 SAVE-02。未改高层总览／Roadmap。
 - 待统筹：本次新增战斗中 Debug 难度调整与即时重开，仅在显式启用模式下给现有遭遇临时应用属性倍率；共用原重开、保存与战斗入口，不改变正式难度、存档 schema 或主线节点。
@@ -51,3 +51,20 @@
 
 
 清理后最终复验：资源台39项单测／0失败，五对象 warnings=[]、正式内容全部 matched、缺失／不一致 0；五人各七态与守护者旧 asset_001 检查通过，35 动作 GIF＋5 巡演已重录；7 个原配／派生源模型重开，28 动作原始曲线指纹通过。Debug 正式启动捕获39／0、Release6／0，Current兼容38／0；正式实录22.6秒／339帧／678步／344事件与批准候选一致，MP4完整解码通过。65个已核验目标清理约5.56GiB，最终资源、许可证、旧守护者62帧保留；历史有效工具归档。验证日期2026-10-10，基线667e60e＋收尾工作树。
+
+## 调试自检适配强化归属（2026-10-07）
+
+基线9a52d06合并敌人资产后的工作树。run-debug -Check首次复验暴露debug_check.gd旧流程只点reward:0、未处理reward_owner，导致无法离站却无限重复skip region guard。仅更新自检：完成合法强化归属、核验奖励领取，遍历设有上限，skip失败立即退出；玩家调试命令与存档格式不变。
+
+PowerShell7执行 ./run-debug.ps1 -Check，通过72检查／0失败，正常档字节未变。日志.godot/debug-mode.log。本次初次失败不计作通过；旧原图直接读取提示仍在。待统筹：自检覆盖当前对象型强化步骤。
+
+
+## 独立暂停兼容（2026-10-08，待统筹）
+
+基线45a6513＋当前HUD试用工作树。调试面板不再通过打开再隐藏菜单来暂停，而是保存paused和菜单可见性，直接冻结；关闭后恢复原状态，不让手动暂停变成菜单，也不污染pause_before_menu。跳过／重开等调试命令清掉暂停后进入既有主线操作。入口debug_panel.gd，回归debug_check.gd，隔离调试档与玩家原档不变。
+
+PowerShell7 / Godot4.7.2 Compatibility：`./run-debug.ps1 -Check -EnginePath <Godot console>`为74／0；`-Capture`为86／0，包含真实调试按钮点击、三桌面尺寸、手动暂停退出调试、从菜单进入再关闭菜单恢复运行。此前失败为Escape关闭调试后残留暂停，已修复。实际截图debug-panel-pause.png保存在design/concepts/battle-status-components/review/codex-workflow，已查看。未验证Web／移动端。待统筹：兼容UI-01独立暂停；不增加存档字段。
+
+## 正式动画与独立暂停合并验证（2026-10-10，待统筹）
+
+基线ed4d275＋main c3dc5c2。debug_panel保留独立暂停和原菜单可见性恢复，同时将所选难度传给main新增命令；debug_check沿用完整奖励归属筛选，并按真实事件选项结束多轮记忆后再离站，保留重抽拒绝、遍历上限和失败诊断。没有修改玩家事件或存档规则。PowerShell7执行run-debug.ps1 -Check为174／0，run-battle-demo.ps1 -Mode Debug -Smoke34／0、-Capture39／0；三规定尺寸实机图debug-battle-launch-*已核验，原玩家档保持不变。完整战役149／0、独立暂停与慢速51／0、多轮事件GUI197／0。日志.godot/campus-main-merge-*及debug-mode.log；Web／移动端未验证。

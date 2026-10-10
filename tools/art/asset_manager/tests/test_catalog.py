@@ -154,6 +154,41 @@ relationships:
 
 
 class CatalogTests(unittest.TestCase):
+
+    def test_enemy_category_and_generated_assets_require_real_asset_output(self):
+        fixture = ProjectFixture()
+        self.addCleanup(fixture.close)
+        fixture.install_index(['library_boss'])
+        fixture.file('design/concepts/library_boss/asset_001/idle.png')
+        manifest_path = fixture.text('assets/art/manifests/library_boss.yaml', '''schema_version: 3
+object:
+  id: library_boss
+  display_name: 图书管理员
+  type: character
+  subtype: boss
+variants:
+  asset_001:
+    stage: asset
+    approval: review
+    root: design/concepts/library_boss/asset_001
+    files:
+      idle: idle.png
+integration:
+  status: not_integrated
+  active_variant: null
+''')
+        def scan():
+            return AssetCatalog(fixture.root).scan()['objects'][0]
+        enemy = scan()
+        self.assertEqual(enemy['category'], '敌人')
+        self.assertTrue(enemy['has_generated_assets'])
+        self.assertEqual(enemy['integration']['verified_status'], 'not_integrated')
+        manifest_path.write_text(manifest_path.read_text(encoding='utf-8').replace('stage: asset', 'stage: concept'), encoding='utf-8')
+        self.assertFalse(scan()['has_generated_assets'])
+        manifest_path.write_text(manifest_path.read_text(encoding='utf-8').replace('stage: concept', 'stage: asset'), encoding='utf-8')
+        (fixture.root / 'design/concepts/library_boss/asset_001/idle.png').unlink()
+        self.assertFalse(scan()['has_generated_assets'])
+
     def setUp(self):
         self.fixture = ProjectFixture()
 
@@ -197,6 +232,8 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual("matched", chalk["relationships"][0]["status"])
         projectile = next(obj for obj in result["objects"] if obj["id"] == "chalk_projectile")
         self.assertEqual(["enemy", "effects"], projectile["collection"])
+        self.assertEqual('敌人', chalk['category'])
+        self.assertEqual('特效', projectile['category'])
 
     def test_nested_collections_report_cycle_duplicate_and_escaping_path(self):
         self.fixture.character_manifest()

@@ -155,20 +155,21 @@ func refresh() -> void:
 	slot_box.visible = tab == 0
 	actions.visible = tab == 1
 	var equipped = game.run.worn_gear(selected_role)
-	var definition = game.Content.gear(equipped)
+	var definition = game.run.gear_definition(equipped)
 	var gear = definition.display_name+" · "+definition.description if definition != null else "未装备"
 
 	match tab:
 		0:
-			details.text = "当前装备    "+gear+"\n\n本局训练    %d 级（每级生命 +50 / 攻击 +5）\n永久加成    生命 +%d\n\n" % [game.run.training.get(selected_role,0),game.run.permanent_hp]
+			var training_text := "%d 份 / 2（每份生命 +10%% / 攻击 +8%%）" % game.run.training_count(selected_role) if game.run.growth_rules >= 2 else "%d 级（每级生命 +50 / 攻击 +5）" % game.run.training.get(selected_role,0)
+			details.text = "当前装备    "+gear+"\n\n本局训练    "+training_text+"\n永久加成    生命 +%d\n\n" % game.run.permanent_hp
 			details.text += "点击格子换位；选择候补再点已占用格可替换同学。" if editable else "战斗中阵型锁定。"
 			for i in range(6):
 				var occupant = game.formation[i]
 				box_button(slot_box,("前" if i < 3 else "后")+str(i%3+1)+" · "+(game.ROLES[occupant] if occupant >= 0 else "空"),assign_slot.bind(i),editable and (game.formation.has(selected_role) or occupant >= 0 or game.formation.count(-1) > 2))
 		1:
-			details.text = "当前装备    "+gear+"\n\n篮球鞋    缩短普通攻击间隔 25%\n厚笔记本    装备者生命上限 +80\n\n每人一件；换装时另一件自动退回背包。"
-			box_button(actions,"篮球鞋",equip.bind("shoe"),editable)
-			box_button(actions,"厚笔记本" if game.run.badge_owned else "未获得",equip.bind("badge"),editable and game.run.badge_owned)
+			details.text = "当前装备    "+gear+"\n\n篮球鞋    "+game.run.gear_definition("shoe").description+"\n厚笔记本    "+game.run.gear_definition("badge").description+"\n\n每人一件；换装时另一件自动退回背包。"
+			box_button(actions,"篮球鞋",equip.bind("shoe"),editable and game.run.can_equip_gear("shoe",selected_role))
+			box_button(actions,"厚笔记本" if game.run.badge_owned else "未获得",equip.bind("badge"),editable and game.run.badge_owned and game.run.can_equip_gear("badge",selected_role))
 			box_button(actions,"卸下装备",equip.bind("none"),editable)
 		2:
 			details.text = game.SKILLS[selected_role]+"\n\n触发规则    每 %d 次普攻自动释放。\n" % game.Content.character(selected_role).skill.attacks_to_trigger

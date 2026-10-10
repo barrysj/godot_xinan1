@@ -1,0 +1,255 @@
+{
+  "version": "asset_001",
+  "assets": [
+    {
+      "id": "stock_frame",
+      "path": "frames/stock_frame.svg",
+      "size": [
+        174,
+        52
+      ],
+      "usage": "team_stock",
+      "nine_slice": [
+        10,
+        8,
+        10,
+        8
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "counter_frame",
+      "path": "frames/counter_frame.svg",
+      "size": [
+        96,
+        26
+      ],
+      "usage": "personal_code_progress",
+      "nine_slice": [
+        7,
+        7,
+        7,
+        7
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "absorb_frame",
+      "path": "frames/absorb_frame.svg",
+      "size": [
+        174,
+        52
+      ],
+      "usage": "team_shield_absorption",
+      "nine_slice": [
+        10,
+        8,
+        10,
+        8
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "intent_plate",
+      "path": "frames/intent_plate.svg",
+      "size": [
+        32,
+        32
+      ],
+      "usage": "enemy_intent",
+      "nine_slice": [
+        7,
+        7,
+        7,
+        7
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "tooltip_frame",
+      "path": "frames/tooltip_frame.svg",
+      "size": [
+        64,
+        64
+      ],
+      "usage": "skill_details",
+      "nine_slice": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "shield_plate",
+      "path": "frames/shield_plate.svg",
+      "size": [
+        44,
+        18
+      ],
+      "usage": "shield_amount",
+      "nine_slice": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "intent_focus",
+      "path": "frames/intent_focus.svg",
+      "size": [
+        32,
+        32
+      ],
+      "usage": "hover_and_focus_overlay",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "stock_focus",
+      "path": "frames/stock_focus.svg",
+      "size": [
+        174,
+        52
+      ],
+      "usage": "gain_pulse_overlay",
+      "nine_slice": [
+        10,
+        8,
+        10,
+        8
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "bar_frame",
+      "path": "frames/bar_frame.svg",
+      "size": [
+        104,
+        14
+      ],
+      "usage": "hp_or_single_action_track",
+      "nine_slice": [
+        5,
+        5,
+        5,
+        5
+      ],
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "bar_fill",
+      "path": "frames/bar_fill.svg",
+      "size": [
+        98,
+        8
+      ],
+      "usage": "modulate_and_clip_to_actual_ratio",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "action_tip",
+      "path": "frames/action_tip.svg",
+      "size": [
+        12,
+        8
+      ],
+      "usage": "optional_action_release_edge",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "slot_empty",
+      "path": "frames/slot_empty.svg",
+      "size": [
+        12,
+        12
+      ],
+      "usage": "empty_code_node",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "slot_filled",
+      "path": "frames/slot_filled.svg",
+      "size": [
+        12,
+        12
+      ],
+      "usage": "filled_code_node_modulate",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "code_tile",
+      "path": "frames/code_tile.svg",
+      "size": [
+        30,
+        30
+      ],
+      "usage": "typed_code_icon_tile_modulate",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    },
+    {
+      "id": "tooltip_tail",
+      "path": "frames/tooltip_tail.svg",
+      "size": [
+        10,
+        18
+      ],
+      "usage": "optional_detached_detail_pointer",
+      "nine_slice": null,
+      "filter": "linear",
+      "mipmaps": false,
+      "pivot": "top_left",
+      "text_baked": false
+    }
+  ]
+}

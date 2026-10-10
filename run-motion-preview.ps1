@@ -105,8 +105,21 @@ $previewArgs += "--preview-speed=$($Speed.ToString([System.Globalization.Culture
 # The Windows GUI executable otherwise returns before capture/check completion.
 $quotedArgs = $previewArgs | ForEach-Object { '"{0}"' -f $_ }
 $windowStyle = if ($Check -or $Capture -or $ExportPreviews) { 'Hidden' } else { 'Normal' }
+$previewStartedAt = [DateTime]::UtcNow
 $process = Start-Process -FilePath $EnginePath -ArgumentList $quotedArgs -WorkingDirectory $PSScriptRoot -WindowStyle $windowStyle -Wait -PassThru
 if ($process.ExitCode -ne 0) { exit $process.ExitCode }
+if ($Check -or $Capture) {
+    $previewLog = Join-Path $PSScriptRoot '.godot/motion-preview.log'
+    if (-not (Test-Path -LiteralPath $previewLog) -or (Get-Item -LiteralPath $previewLog).LastWriteTimeUtc -lt $previewStartedAt) {
+        throw 'Preview did not produce a fresh log; its exit code alone is not verification.'
+    }
+    $previewOutput = Get-Content -LiteralPath $previewLog -Raw
+    if ($previewOutput -match 'SCRIPT ERROR') { throw 'Preview reported a script error.' }
+    if ($Check -and $previewOutput -notmatch 'MOTION_PREVIEW_CHECK failures=0') { throw 'Preview check did not complete successfully.' }
+    if ($Capture -and (($previewOutput -notmatch 'MOTION_CAPTURE_POSE') -or ([regex]::Matches($previewOutput, '(?m)^MOTION_PREVIEW_CAPTURE ').Count -ne 3))) {
+        throw 'Preview capture did not complete all three resolutions with active poses.'
+    }
+}
 if ($ExportPreviews) {
     & $PythonPath @pythonArgs $producer encode --manifest $captureManifest
     exit $LASTEXITCODE

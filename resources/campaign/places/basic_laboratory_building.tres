@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/campus_route_place.gd" id="s"]
+[resource]
+resource_name = "基础实验大楼"
+script = ExtResource("s")
+id = "basic_laboratory_building"
+display_name = "基础实验大楼"
+landmark = "pinxue"
+offset = Vector2(0, -175)
+background_id = "basic_laboratory_building"
+library_interior = false

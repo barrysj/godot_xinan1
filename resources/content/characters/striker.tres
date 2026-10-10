@@ -13,8 +13,10 @@ display_name = "冲刺手"
 description = "冲刺手：追击残血敌人，造成 2.1 倍攻击伤害。"
 portrait = SubResource("portrait")
 battle_animation = ExtResource("animation")
-health = 210
-attack = 29
+health = 290
+attack = 30
 interval = 1.25
-defense = 10
+defense = 12
 skill = ExtResource("skill")
+
+attack_range = 1.45

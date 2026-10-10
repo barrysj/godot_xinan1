@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+LIBRARY_ENEMY_CONTRACT keycap-brawler keys=185
+LIBRARY_ENEMY_CONTRACT projector keys=216
+LIBRARY_ENEMY_CONTRACT return-stamp keys=224
+LIBRARY_ENEMY_CONTRACT great-volume-boss keys=241
+LIBRARY_ENEMY_CONTRACT cyber-librarian keys=277
+LIBRARY_ENEMY_CONTRACT_CHECK checks=13160 failures=0

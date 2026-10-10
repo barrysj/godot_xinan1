@@ -318,5 +318,6 @@ integration:
     campaign_place: gate
     gameplay_state: anomaly
     preview_states: [daily, anomaly]
+    binding: game/run/campus_presentation.gd
   visual_review: pending
   evidence: docs/art/tasks/m1-campus-locations.md

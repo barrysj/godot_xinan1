@@ -1,0 +1,256 @@
+{
+  "engine": "4.7.2-stable (official)",
+  "growth_rules": 2,
+  "policy": "core immediately when legal; repair at hp<=40% and missing>=60; no items; first legal reward; first route branch; original prologue and four library-region locations",
+  "samples": [
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 13.0500000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 10.2,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "d31d6ed9c6cdd0a846610ff3ebba2d8f",
+      "offered_rewards": [
+        "combat_lens",
+        "combat_training",
+        "ribbon"
+      ],
+      "power": 0.62,
+      "repair_casts": 0,
+      "stage": "prologue"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 13.0500000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 10.2,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "ef62fc104fd23c1794b9edf3ea0aefb0",
+      "offered_rewards": [
+        "combat_lens",
+        "combat_training",
+        "archer_training"
+      ],
+      "power": 0.62,
+      "repair_casts": 0,
+      "stage": "0"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 15.1000000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 6.79999999999998,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "ef62fc104fd23c1794b9edf3ea0aefb0",
+      "offered_rewards": [
+        "combat_pierce",
+        "healer_training",
+        "combat_backup"
+      ],
+      "power": 0.7,
+      "repair_casts": 0,
+      "stage": "1"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 16.8000000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 6.79999999999998,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "ef62fc104fd23c1794b9edf3ea0aefb0",
+      "offered_rewards": [
+        "combat_verify",
+        "striker_training",
+        "combat_backup"
+      ],
+      "power": 0.78,
+      "repair_casts": 0,
+      "stage": "2"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 2,
+      "elapsed": 22.8000000000002,
+      "encounter_id": "encounter_final",
+      "first_core": 6.79999999999998,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "ef62fc104fd23c1794b9edf3ea0aefb0",
+      "offered_rewards": [
+        "combat_training",
+        "striker_training",
+        "guard_training"
+      ],
+      "power": 1.0,
+      "repair_casts": 1,
+      "stage": "3"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 1,
+      "elapsed": 16.2500000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 12.4,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "healer",
+        "archer",
+        ""
+      ],
+      "journey_id": "26540829891587cd0e3a95bf120528fc",
+      "offered_rewards": [
+        "combat_cover",
+        "ribbon",
+        "healer_training"
+      ],
+      "power": 0.62,
+      "repair_casts": 0,
+      "stage": "prologue"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 1,
+      "elapsed": 19.1000000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 10.8,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "45cc5ded42b36453e2579b191938185b",
+      "offered_rewards": [
+        "combat_isolation",
+        "guard_training",
+        "badge"
+      ],
+      "power": 0.62,
+      "repair_casts": 0,
+      "stage": "0"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 1,
+      "elapsed": 19.1000000000001,
+      "encounter_id": "encounter_patrol",
+      "first_core": 9.2,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "45cc5ded42b36453e2579b191938185b",
+      "offered_rewards": [
+        "combat_buffer",
+        "striker_training",
+        "combat_training"
+      ],
+      "power": 0.7,
+      "repair_casts": 0,
+      "stage": "1"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 2,
+      "elapsed": 22.5000000000002,
+      "encounter_id": "encounter_patrol",
+      "first_core": 9.2,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "45cc5ded42b36453e2579b191938185b",
+      "offered_rewards": [
+        "combat_cover",
+        "guard_training",
+        "combat_lens"
+      ],
+      "power": 0.78,
+      "repair_casts": 0,
+      "stage": "2"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 3,
+      "elapsed": 32.0000000000003,
+      "encounter_id": "encounter_final",
+      "first_core": 6.84999999999998,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "45cc5ded42b36453e2579b191938185b",
+      "offered_rewards": [
+        "ribbon",
+        "archer_training",
+        "healer_training"
+      ],
+      "power": 1.0,
+      "repair_casts": 1,
+      "stage": "3"
+    }
+  ],
+  "schema": 1,
+  "recorded_date": "2026-10-07",
+  "implementation_baseline": "aa61309 plus starting-strategy worktree",
+  "notes": [
+    "Two isolated fresh profiles; five actual battles per chain, including prologue and four original region locations.",
+    "Starter shoe uses new growth budget; fitness level zero; no item or code injection.",
+    "Reward choices vary with the recorded journey ID and are retained in each sample; these ten battles are not independent random win-rate samples.",
+    "Original region currently uses patrol for steps 0 to 2 and final encounter for step 3; classroom pressure is not covered by this flow evidence."
+  ]
+}

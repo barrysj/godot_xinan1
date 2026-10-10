@@ -1,0 +1,91 @@
+{
+  "object": "keycap_brawler",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "true_alpha": true,
+  "single_isotropic_scale": true,
+  "idle_parts_exact_reconstruction": true,
+  "pose_bboxes": {
+    "idle": [
+      161,
+      160,
+      485,
+      559
+    ],
+    "stride": [
+      137,
+      164,
+      471,
+      561
+    ],
+    "anticipation": [
+      130,
+      210,
+      505,
+      560
+    ],
+    "impact": [
+      144,
+      192,
+      597,
+      561
+    ],
+    "recover": [
+      143,
+      171,
+      493,
+      560
+    ],
+    "cast": [
+      137,
+      195,
+      496,
+      560
+    ],
+    "critical": [
+      131,
+      243,
+      509,
+      560
+    ],
+    "fall": [
+      135,
+      268,
+      478,
+      561
+    ],
+    "death": [
+      108,
+      401,
+      544,
+      560
+    ]
+  },
+  "skeleton_actions": [
+    "idle",
+    "move",
+    "hurt",
+    "critical",
+    "cast"
+  ],
+  "frame_actions": [
+    "idle",
+    "move",
+    "melee",
+    "cast",
+    "hurt",
+    "critical",
+    "death"
+  ],
+  "action_cards": {
+    "skill_input_validator": "original validate(data) executed against JSON input",
+    "input_pass": true,
+    "cards": 7,
+    "key_poses_per_card": 5,
+    "four_locks_in_prompt": true
+  },
+  "runtime_files": 18,
+  "source_sha256": "1dc02d1a49687086f29e03812c56e8aaccbefae64c1d2618f1c3f9a13f47adb3"
+}

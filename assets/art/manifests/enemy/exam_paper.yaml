@@ -1,33 +1,64 @@
 schema_version: 3
 object:
-  id: exam_paper
+  id: "exam_paper"
   display_name: "错题试卷"
-  type: character
-  subtype: enemy
+  type: "character"
+  subtype: "enemy"
 variants:
   concept_002:
-    stage: concept
+    stage: "concept"
     version: "002"
-    selection: selected
-    approval: approved
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-enemy-cast.md
+      source: "docs/art/tasks/m1-enemy-cast.md"
       date: "2026-09-25"
-      decision: approved
+      decision: "approved"
       quote: "03 05 也通过"
-    root: design/concepts/enemy/exam-paper/concept_002
+    root: "design/concepts/enemy/exam-paper/concept_002"
     files:
-      concept: exam_paper_action_concept_002.png
-      generation: generation.md
+      concept: "exam_paper_action_concept_002.png"
+      generation: "generation.md"
     metadata:
-      asset_type: action_concept_board
+      asset_type: "action_concept_board"
       resolution: [1774, 887]
       transparent: false
-      usage: [concept_review, action_design]
-      style_layer: battle
-      poses: [idle, anticipation, release]
-      intended_facing: screen_right
+      usage: ["concept_review", "action_design"]
+      style_layer: "battle"
+      poses: ["idle", "anticipation", "release"]
+      intended_facing: "screen_right"
       review_note: "卷袖蓄力、甩纸出手明确；卷面小字与碎页密度需简化。"
+  integration_001:
+    stage: "integration"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/characters/exam_paper"
+    files:
+      pose_sheet: "pose-sheet.png"
+      battle_animation: "battle_animation.tres"
+      frame_metadata: "battle_animation.frames.json"
+      rig_manifest: "rig_manifest.json"
+    metadata:
+      source_candidate: "design/concepts/enemy/exam-paper/tmp_002"
+      method: "existing_six_pose_sheet_seven_clips"
+      visual_review: "pending"
+    integration_authorization:
+      source: "docs/art/tasks/m1-enemy-cast.md"
+      date: "2026-10-07"
+      scope: "existing_enemy_actions_in_original_gameplay"
+      quote: "敌人动作暂时保留，先接入游戏不要卡住目标"
+      owners: ["resources/content/enemies/pages.tres"]
 integration:
-  status: not_integrated
-  active_variant: null
+  status: "authorized_active"
+  active_variant: "integration_001"
+  root: "assets/art/characters/exam_paper"
+  resource: "assets/art/characters/exam_paper/battle_animation.tres"
+  owner: "resources/content/enemies/pages.tres"
+  files:
+    pose_sheet: "pose-sheet.png"
+    battle_animation: "battle_animation.tres"
+    frame_metadata: "battle_animation.frames.json"
+    rig_manifest: "rig_manifest.json"
+  visual_review: "pending"
+  evidence: "docs/art/tasks/m1-enemy-cast.md"

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "palette_source": "data/visual/colors.json",
+  "native_sheet": [
+    1120,
+    640
+  ],
+  "texture_filter": "linear",
+  "nine_patch": {
+    "card": 16,
+    "button": 12,
+    "secondary": 12,
+    "illustration": 20
+  },
+  "native_text": true,
+  "generator": "tools/art/ui/build_choice_chrome.py"
+}

@@ -6,3 +6,6 @@ id = "shoe"
 display_name = "篮球鞋"
 description = "攻击间隔 -25%。每次探索自带，可在战前转移。"
 interval_multiplier = 0.75
+
+balanced_interval_multiplier = 0.9
+balanced_description = "攻击间隔 -10%。每次探索自带，可在战前转移。"

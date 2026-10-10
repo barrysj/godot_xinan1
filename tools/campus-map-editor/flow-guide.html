@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>校园探索 · 配置指南</title>
+<style>body{margin:40px auto;padding:0 24px;max-width:820px;background:#102231;color:#e8f3f6;font:16px/1.8 "Microsoft YaHei UI",sans-serif}h1{font-size:28px}h2{font-size:21px;color:#a2e4ec}code{color:#ffdf94;overflow-wrap:anywhere}li{margin:12px 0}a{color:#a2e4ec}.note{padding:16px;background:#193246;border-left:3px solid #83dbe7}</style>
+<h1>地图布局与探索流程</h1>
+<p>地图地标表示位置；探索站点表示玩家的一次停留。同一地点可以被不同区域引用。</p>
+<h2>地图上改什么</h2>
+<p>本编辑器调整地标落点、地图选区、路径拐点与亮区边界。路径拐点只负责画线，关联地标的排列不决定游玩顺序。</p>
+<h2>在 Godot 配置流程</h2>
+<ol>
+<li>在文件系统打开 <code>res://resources/campaign/regions/</code>，双击图书馆 <code>library.tres</code>、第二终端 <code>region_b.tres</code> 或第三终端 <code>region_c.tres</code>。</li>
+<li>在检查器展开 <b>Stages</b>。数组顺序就是站次；展开某站的 <b>Choices</b>，每项是该站的一个可选探索站点。</li>
+<li>站点的 <b>Place</b> 引用已有地点资源；<b>Encounter</b> 引用已有敌阵；<b>Power</b> 控制强度。站点标识保持唯一。具体事件正文与抽取规则不在地图工具中编辑。</li>
+<li>需要岔路，在同一站增加 Choices；下一站自动汇合。移动 Stages 项可调整先后；新增项需先创建对应资源，避免留下空项。</li>
+<li>点击检查器顶部“校验”刷新概览与错误，再点“流程预览”查看当前修改。保存资源，停止并重启游戏，新探索才会读取已保存配置。也可以打开 <code>res://scenes/content/campus_flow_preview.tscn</code>，选择区域并刷新已保存配置。</li>
+</ol>
+<p class="note">开发阶段首次更新本功能后，如有旧活动探索，请通过游戏菜单“重开存档”重新开始；不兼容原旧格式探索检查点。新格式探索保存开局流程，预览不读写玩家存档。第一版采用按站次推进、分叉后汇合，不支持任意跨站跳转。</p>
+<p>详细字段、添加站点及使用边界见项目文档 <code>docs/campus-flow-authoring.md</code>。</p>
+<a href="/">返回地图</a>
+</html>

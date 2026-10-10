@@ -1,5 +1,17 @@
 # ART-05 · Manifest 驱动的美术资源台
 
+## 已生成资产勾选筛选（2026-10-07）
+
+基线 `4afdab9`，分支 `art/enemy-hybrid-animation`。按负责人要求，“已生成资产”使用原生 checkbox，独立于分类按钮；勾选、取消及切换分类均复用同一资产存在判定。入口：static/index.html、app.js、app.css。复选框保持原生键盘操作和焦点提示，计数随当前分类更新。
+
+验证：bundled Python `-m unittest discover -s tools/art/asset_manager/tests -v` 40 项通过；Node `--check tools/art/asset_manager/static/app.js` 通过。实际浏览器“敌人”分类取消勾选显示 17 个对象，勾选显示 6 个；已生成筛选不再出现在分类导航中。截图 `.godot/art-enemy-generated-checkbox.png` 已在对话展示。**待统筹**：只调整筛选交互，不改资产存在、批准或接入语义。
+
+## 敌人分类与已生成资产筛选（2026-10-07）
+
+基线 main `2eaa397`，分支 `art/enemy-hybrid-animation`。入口：catalog.py 的对象分类／资产存在判定与 static/app.js 的组合筛选。敌人及 Boss 卡片、详情和关联标签统一显示“敌人”；敌人索引内的弹体仍归“特效”。“已生成资产”为可叠加分类的开关，只要求实际可读取的资产阶段画稿／图集／动画资源，不要求人工批准或正式接入；仅概念、来源、GIF、元数据或文件缺失不算已生成。
+
+验证：bundled Python `-B -m unittest discover -s tools/art/asset_manager/tests -q` 40 项通过；Node `--check tools/art/asset_manager/static/app.js` 通过。新增覆盖 Boss 分类、待评审可用资产、概念和缺文件排除，并回归敌人集合内弹体分类。浏览器实测“敌人 + 已生成资产”显示本批五套及既有粉笔精灵，卡片标签与筛选计数一致；实际截图见 `.godot/art-enemy-generated-filter.png`。不更改 Manifest 人工批准或游戏绑定。**待统筹**：新增独立敌人分类和资产存在筛选，总览未改。
+
 - 功能 ID：ART-05
 - 所属系统：美术工具
 
@@ -108,3 +120,30 @@
 ## 动作列表后端标记（2026-09-16）
 
 基线 09dccf7。版本的动画子页在每项动作名下显示“骨骼动画”或“序列帧”，复用 catalog 的 backend 数据；不只在选中后的详情中说明。node --check 通过，实际浏览器核对 006 六骨骼动作＋退场序列帧，并点击退场验证 GIF 切换。截图：`.godot/art-manager-action-backends.png`。
+
+## 合入敌人分类与生成资产筛选（2026-10-07，待统筹）
+
+基线9a52d06，来源art/enemy-hybrid-animation的36fac21、90bbf7e随de3753b整合。实现为catalog.py与static/app.js、app.css、index.html；“敌人”按索引归属分类，“已生成资产”为独立复选框，可叠加分类并实时更新计数，选用／批准／实际接入状态保持独立。
+
+验证：Python unittest discover -s tools/art/asset_manager/tests为40项通过；当前工作树服务127.0.0.1:8768实际浏览器扫描52对象／1393登记文件、0缺失／不一致，敌人17项，叠加已生成资产后6项（五个本批正式对象＋粉笔）。已展开图书管理员asset_001，切换施法GIF并核对生效一致；截图.godot/merged-art-browser-cast.jpg，筛选截图.godot/merged-art-browser-filter.jpg。未重新生产素材；正式包绑定与批准见ART-02和敌人任务。
+
+
+## 地图工具职责与流程指引（2026-10-09，待统筹）
+
+基线10fb33b加工作树：浏览器地图工具改用选区、路径拐点与地标术语；关联地标只管理选区成员，删除上下排序操作，提供对应区域资源路径和 `/flow-guide` 指引。探索顺序与内容配置归Godot资源，具体接入归[CONTENT-01](content-01.md)和[CORE-02](core-02.md)。没有修改用户的expanded_campus_layout.json、美术资产或Manifest。
+
+Node语法和11项核心／服务检查通过；实际浏览器核对拐点说明、第二终端区域路径和指南。GUI流程预览154／0与必要截图见[共享验证](verification.md#区域流程资源与编辑器分工)。地图数据结构、备份和并发覆盖保护保留；事件池不进入地图编辑器。待统筹：开发工具用语与内容录入入口变化。
+
+
+### 地图编辑器侧栏分区
+
+状态：已实现，2026-10-09，基线 `b764964` 加工作树。`tools/campus-map-editor/index.html`、`editor.mjs`、`editor.css` 按当前编辑模式显示右侧控件：选区顶点／属性、路径拐点、亮区边界／亮度和地标设置各自置顶；关联地标、添加地标、坐标和流程指引按需折叠。取坐标模式自动展开并置顶坐标面板，离开后归回辅助区；模式切换重置侧栏滚动，普通编辑保持位置。原保存、撤销与布局格式不变。
+
+Node语法和11项核心／服务检查通过，真实浏览器1280×720核对四模式、加删点、地标修改与撤销、坐标拾取、键盘展开及滚动复位，无控制台错误；命令和截图见[共享验证](verification.md#地图编辑器侧栏分区)。用户布局文件内容哈希前后一致。边界：仅验证实际1280×720桌面视口，未验触控。待统筹：开发工具侧栏交互变化；不涉及玩家界面、流程规则或美术资产。
+
+
+### 地图保存权限与提示修复
+
+状态：已验证，2026-10-09，基线 `7d8f102` 加工作树。实际保存接口在受限服务进程中两次返回500，错误为 `EPERM ... expanded_campus_layout.json.editor-tmp`；现有地图的可写打开和相邻文件新建也被拒绝，缓存目录可写。同一请求在正常本机执行环境连续两次200，确认当前故障来自服务进程继承的受限写入环境。核验工作树和进程身份后重启原8767服务，未刷新用户的编辑页。没有改目录ACL、原子替换或存档逻辑。
+
+实现入口：`tools/campus-map-editor/server.mjs` 对POST写入的EPERM／EACCES返回中文恢复建议；失败仍保持页面编辑，可导出。`server.test.mjs` 新增Windows只读临时文件回归，断言拒写提示、原地图字节和可恢复备份。Node语法及12项核心／服务检查通过；真实1280×720浏览器修改测试名称、保存、撤销并再次保存，均显示已同步，文件写入已核对，控制台错误0。用户地图SHA256最终与验证前相同，测试值未留下；截图和命令见[共享验证](verification.md#地图保存权限修复)。待统筹：开发工具后台启动环境及失败提示边界；不涉及玩家流程或美术生产。

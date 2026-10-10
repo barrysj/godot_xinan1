@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skill"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_chalk.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/chalk_spirit/locomotion_sheet.png" id="atlas"]
 [ext_resource type="Resource" path="res://assets/art/characters/chalk_spirit/battle_animation.tres" id="animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
@@ -10,14 +10,14 @@ region = Rect2(70, 110, 250, 250)
 script = ExtResource("s")
 id = "chalk"
 display_name = "粉笔精灵"
-description = "粉笔精灵：射程内优先射击后排，造成2.6倍伤害。"
+description = "每4次普攻追加130%攻击。"
 portrait = SubResource("portrait")
 battle_animation = ExtResource("animation")
-health = 190
-attack = 28
+health = 320
+attack = 24
 interval = 1.6
 defense = 5
 skill = ExtResource("skill")
 
-attack_range = 3.2
+attack_range = 3.5
 attack_modes = 2

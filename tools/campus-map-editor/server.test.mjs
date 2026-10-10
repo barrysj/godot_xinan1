@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtemp, mkdir, readFile, writeFile, readdir, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, writeFile, readdir, rm, chmod } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -87,6 +87,49 @@ test("save writes validated layout and keeps a recoverable backup", async () => 
     assert.deepEqual(await readFile(resolve(backupDirectory, backups[0])), original);
   } finally {
     child.kill();
+    if (dirname(fixture) === resolve(tmpdir()) && basename(fixture).startsWith("campus-map-editor-test-")) {
+      await rm(fixture, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    }
+  }
+});
+
+test("save explains a denied temporary-file write and preserves the map", { skip: process.platform !== "win32" }, async () => {
+  const fixture = await mkdtemp(resolve(tmpdir(), "campus-map-editor-test-"));
+  const fixtureLayout = resolve(fixture, "game/run/expanded_campus_layout.json");
+  const temporary = fixtureLayout + ".editor-tmp";
+  const original = await readFile(new URL("../../game/run/expanded_campus_layout.json", import.meta.url));
+  await mkdir(dirname(fixtureLayout), { recursive: true });
+  await writeFile(fixtureLayout, original);
+  await writeFile(temporary, "readonly");
+  await chmod(temporary, 0o444);
+  const child = spawn(process.execPath, [fileURLToPath(new URL("./server.mjs", import.meta.url))], {
+    env: { ...process.env, NODE_ENV: "test", CAMPUS_MAP_EDITOR_ROOT: fixture, CAMPUS_MAP_EDITOR_PORT: "0" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  try {
+    const address = await new Promise((done, fail) => {
+      const timer = setTimeout(() => fail(Error("test server did not start")), 5000);
+      child.stdout.on("data", chunk => {
+        const match = String(chunk).match(/http:\/\/127\.0\.0\.1:\d+\//);
+        if (match) { clearTimeout(timer); done(match[0]); }
+      });
+      child.on("error", fail);
+    });
+    const loaded = await fetch(address + "api/layout");
+    const response = await fetch(address + "api/layout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "If-Match": loaded.headers.get("etag") },
+      body: await loaded.text(),
+    });
+    assert.equal(response.status, 500);
+    assert.match((await response.json()).error, /不可写.*重启.*导出/);
+    assert.deepEqual(await readFile(fixtureLayout), original);
+    const backups = await readdir(resolve(fixture, ".godot/campus-map-editor-backups"));
+    assert.equal(backups.length, 1);
+    assert.deepEqual(await readFile(resolve(fixture, ".godot/campus-map-editor-backups", backups[0])), original);
+  } finally {
+    child.kill();
+    await chmod(temporary, 0o666).catch(error => { if (error.code !== "ENOENT") throw error; });
     if (dirname(fixture) === resolve(tmpdir()) && basename(fixture).startsWith("campus-map-editor-test-")) {
       await rm(fixture, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
     }

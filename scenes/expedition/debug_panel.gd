@@ -4,6 +4,7 @@ var hub
 var panel: PanelContainer
 var entry: Button
 var was_paused = false
+var was_menu_open = false
 var backdrop: ColorRect
 var difficulty_selector: OptionButton
 var difficulty_apply: Button
@@ -72,7 +73,8 @@ func open() -> void:
 	# Do not replace an exit confirmation or another interactive modal.
 	if not hub.pending_exit.is_empty() or hub.reset_pending or is_instance_valid(hub.team_panel) or is_instance_valid(hub.location_panel) or is_instance_valid(hub.codex_panel): return
 	was_paused = hub.paused
-	hub._open_pause()
+	was_menu_open = hub.pause_overlay.visible
+	hub.paused = true
 	hub.pause_overlay.hide()
 	panel.show()
 	entry.hide()
@@ -114,8 +116,9 @@ func _refresh(message: String = "") -> void:
 func close() -> void:
 	panel.hide()
 	entry.show()
-	if was_paused: hub._open_pause()
-	else: hub._resume_battle()
+	hub.paused = was_paused
+	hub.pause_overlay.visible = was_menu_open
+	hub.queue_redraw()
 
 func _action(id: String) -> void:
 	if id == "close":
@@ -129,7 +132,9 @@ func _action(id: String) -> void:
 	var difficulty: String = str(difficulty_selector.get_selected_metadata()) if id == "difficulty" else ""
 	panel.hide()
 	entry.show()
-	hub._resume_battle()
+	hub.pause_overlay.hide()
+	hub.paused = false
+	hub.pause_before_menu = false
 	if not Commands.execute(hub,id,difficulty):
 		open()
 		_refresh("操作未完成：" + hub.progress.error_message)

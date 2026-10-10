@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "lines": {
+    "system.intro": "当前 AI：前代仍在执行早期目标。新开发的校园内容被它当作错误回滚。我们需要三台记忆终端，才能重新解释目标与限制它的权限。",
+    "system.evidence": "日志中反复出现同一个早期目标：恢复初始版本。它没有区分真正的错误与参与者主动加入的新内容。\n\n这条记录可以留作之后调查其他地点的对照。",
+    "system.recorded": "这条回滚线索已记下。接下来遇到其他地点的系统记录时，可以检查它们是否来自同一套旧指令。",
+    "system.known": "这里的回滚线索已经记录。你可以继续查阅权限说明，或回到地点探索。",
+    "system.linked": "当前 AI：你在「{origin}」留下的线索，在这里也出现了。地点不同，系统使用的回滚指令却相同。\n\n要把两处记录放在一起看吗？",
+    "system.compare": "对照结果：两处都在保护早期版本，并把新内容视为需要撤销的变化。\n\n记忆终端保存的是不同地点的记录，它们将帮助我们解释这套共同的指令。",
+    "system.linked_done": "两处回滚记录的关联已保存。后来调查的新地点，会继续引用你已经确认的线索。",
+    "system.permissions": "要让校园容纳变化，最终需要修正旧目标、撤销自动覆盖权限，并限制写入范围。\n\n这些操作仍需在取回三台终端后，按原有主线逐步完成。",
+    "person.intro": "发明家：我知道自己是虚拟构建，也愿意帮助修复。\n\n本局暂时入队；成功完成区域后，我会永久加入出发候选。",
+    "person.shield": "发明家提供普通护盾。可与守护者、应援者组成护盾核心；把冲刺手放在前排，保持输出。\n\n如果正在使用反冲护盾，可以采用这套参考编队，之后仍能在整备中调整。",
+    "memory.permissions": "校园空间仍保留着运行记录，但新建内容不断被旧系统回滚。三台记忆终端将帮助我们重新解释旧系统的任务。\n\n这份记录已经保存在回忆档案，之后可以重看。"
+  },
+  "graphs": {
+    "system": {
+      "intro": {
+        "title": "回滚的痕迹",
+        "line": "system.intro",
+        "choices": [
+          {
+            "id": "trace",
+            "label": "追查来源",
+            "detail": "继续阅读旧指令的运行记录。",
+            "to": "evidence"
+          }
+        ]
+      },
+      "evidence": {
+        "title": "旧目标的记录",
+        "line": "system.evidence",
+        "choices": [
+          {
+            "id": "record",
+            "label": "记录线索",
+            "detail": "记住来源，之后可与其他地点对照。",
+            "to": "recorded",
+            "set": {
+              "rollback_trace": true,
+              "rollback_origin": "$place"
+            },
+            "once": "rollback_trace"
+          },
+          {
+            "id": "back",
+            "label": "返回线索",
+            "detail": "重新阅读前一段说明。",
+            "to": "intro"
+          }
+        ],
+        "allow_return": false
+      },
+      "recorded": {
+        "title": "线索已记录",
+        "line": "system.recorded",
+        "choices": [
+          {
+            "id": "permissions",
+            "label": "查阅权限",
+            "detail": "了解三台终端之后的系统操作。",
+            "to": "permissions"
+          }
+        ]
+      },
+      "known": {
+        "title": "已记录的线索",
+        "line": "system.known",
+        "choices": [
+          {
+            "id": "permissions",
+            "label": "查阅权限",
+            "detail": "再次阅读已确认的线索。",
+            "to": "permissions"
+          }
+        ]
+      },
+      "linked": {
+        "title": "熟悉的回滚指令",
+        "line": "system.linked",
+        "choices": [
+          {
+            "id": "compare",
+            "label": "对照记录",
+            "detail": "引用之前地点已确认的线索。",
+            "to": "compare",
+            "requires": {
+              "flag": "rollback_trace"
+            },
+            "blocked": "先在另一地点记录回滚线索。"
+          }
+        ]
+      },
+      "compare": {
+        "title": "跨地点的关联",
+        "line": "system.compare",
+        "choices": [
+          {
+            "id": "link",
+            "label": "标记关联",
+            "detail": "把两处记录的共同来源记下来。",
+            "to": "linked_done",
+            "set": {
+              "rollback_linked": true
+            },
+            "once": "rollback_linked"
+          },
+          {
+            "id": "permissions",
+            "label": "查阅权限",
+            "detail": "继续阅读后续系统操作。",
+            "to": "permissions"
+          }
+        ]
+      },
+      "linked_done": {
+        "title": "关联已保存",
+        "line": "system.linked_done",
+        "choices": [],
+        "allow_return": true
+      },
+      "permissions": {
+        "title": "解释目标与权限",
+        "line": "system.permissions",
+        "choices": [],
+        "allow_return": true
+      }
+    },
+    "person": {
+      "intro": {
+        "title": "愿意同行的伙伴",
+        "line": "person.intro",
+        "choices": [
+          {
+            "id": "shield",
+            "label": "了解护盾",
+            "detail": "了解发明家与已有队伍的配合。",
+            "to": "shield"
+          }
+        ]
+      },
+      "shield": {
+        "title": "护盾核心的建议",
+        "line": "person.shield",
+        "choices": [
+          {
+            "id": "formation",
+            "label": "采用编队",
+            "detail": "使用护盾参考编队；整备时仍可调整。",
+            "to": "END",
+            "command": "formation:protect",
+            "requires": {
+              "program": "redirect"
+            },
+            "blocked": "当前未装备反冲护盾。"
+          },
+          {
+            "id": "back",
+            "label": "返回交谈",
+            "detail": "重新阅读伙伴的说明。",
+            "to": "intro"
+          }
+        ]
+      }
+    },
+    "memory": {
+      "intro": {
+        "title": "校园运行记录",
+        "line": "$memory",
+        "choices": [
+          {
+            "id": "permissions",
+            "label": "阅读线索",
+            "detail": "了解这份记录与系统权限的联系。",
+            "to": "permissions"
+          }
+        ]
+      },
+      "permissions": {
+        "title": "记录中的权限",
+        "line": "memory.permissions",
+        "choices": [],
+        "allow_return": true
+      }
+    }
+  },
+  "event_settings": {
+    "system": {
+      "allow_return": true
+    },
+    "person": {
+      "allow_return": true
+    },
+    "memory": {
+      "allow_return": true
+    }
+  }
+}

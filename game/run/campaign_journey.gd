@@ -1,13 +1,16 @@
 extends RefCounted
 const Regions = preload("res://game/run/campus_region.gd")
 const Visit = preload("res://game/run/location_visit.gd")
+const FlowRules = preload("res://game/run/campus_flow_rules.gd")
 var data: Dictionary = {}
 var visit = Visit.new()
 
-func begin(region: String, level: int) -> bool:
-	if not Regions.MAPS.has(region): return false
-	data = {"schema":1,"id":Crypto.new().generate_random_bytes(16).hex_encode(),
-		"region":region,"level":level,"map":Regions.map_for(region),"step":0,
+func begin(region: String, level: int, definition: Resource = null) -> bool:
+	if definition != null and (not definition is CampusRegionFlow or definition.id != region or not definition.validate().is_empty()): return false
+	var flow: Dictionary = Regions.flow_for(region) if definition == null else definition.snapshot()
+	if flow.is_empty(): return false
+	data = {"schema":2,"id":Crypto.new().generate_random_bytes(16).hex_encode(),
+		"region":region,"level":level,"flow":flow,"map":flow.layers.duplicate(true),"step":0,
 		"visited":[],"temporary":[],"finished":false,"screen":"route"}
 	visit = Visit.new()
 	return true
@@ -17,12 +20,13 @@ func enter(index: int, recorded: Array) -> bool:
 	var layer: Array = data.map[data.step]
 	if index < 0 or index >= layer.size(): return false
 	var place: String = layer[index]
-	visit.begin(place,data.level,recorded,(data.id+place).hash())
+	visit.begin(place,data.level,recorded,(data.id+place).hash(),str(stop(place).hotspot_template))
 	data.screen = "visit"
 	return true
 
 func leave() -> bool:
 	if not visit.can_leave(): return false
+	data.erase("event_spot")
 	data.visited.append(visit.data.place)
 	data.step += 1
 	data.finished = data.step == data.map.size()
@@ -35,11 +39,22 @@ func snapshot() -> Dictionary:
 	result.visit = visit.data.duplicate(true)
 	return result
 
+func stop(id: String = "") -> Dictionary:
+	if id.is_empty(): id = str(visit.data.get("place",""))
+	return data.get("flow",{}).get("stops",{}).get(id,{})
+
+func title(id: String) -> String:
+	return str(stop(id).get("title",id))
+
+func is_library() -> bool:
+	return bool(stop().get("library_interior",false))
+
 func restore(source: Variant) -> bool:
-	if not source is Dictionary or source.get("schema") != 1: return false
+	if not source is Dictionary or source.get("schema") != 2: return false
 	if not source.get("id") is String or source.id.is_empty(): return false
-	if not Regions.MAPS.has(source.get("region")): return false
-	if source.get("map") != Regions.map_for(source.region): return false
+	if source.get("region") not in Regions.IDS: return false
+	if not FlowRules.validate_snapshot(source.get("flow"),source.region).is_empty(): return false
+	if source.get("map") != source.flow.layers: return false
 	for key in ["level", "step"]:
 		var value = source.get(key)
 		if not (value is int or value is float) or int(value) != value: return false
@@ -51,7 +66,7 @@ func restore(source: Variant) -> bool:
 	if not source.get("temporary") is Array: return false
 	for id in source.temporary:
 		if id != "inventor": return false
-	if not source.get("screen") in ["route","visit","battle","report","reward","reward_owner","operation","complete"]: return false
+	if not source.get("screen") in ["route","visit","event","battle","report","reward","reward_owner","operation","complete"]: return false
 	if source.screen == "report" and not source.get("won") is bool: return false
 	if source.screen == "report":
 		if not source.get("report",[]) is Array: return false
@@ -60,8 +75,10 @@ func restore(source: Variant) -> bool:
 			for key in ["damage","healing"]:
 				if not (row.get(key) is int or row.get(key) is float): return false
 		if not (source.get("elapsed",0) is int or source.get("elapsed",0) is float): return false
+	if not source.get("rewards_exhausted",false) is bool: return false
+	if source.get("rewards_exhausted",false) and (not source.has("offers") or not source.offers is Array or not source.offers.is_empty()): return false
 	if source.has("offers"):
-		if not source.offers is Array or source.offers.is_empty() or source.offers.size() > 3: return false
+		if not source.offers is Array or (source.offers.is_empty() and not source.get("rewards_exhausted",false)) or source.offers.size() > 3: return false
 		for offer in source.offers:
 			if not preload("res://game/run/reward_catalog.gd").valid_snapshot(offer): return false
 	if source.screen == "reward" and not source.has("offers"): return false
@@ -71,14 +88,20 @@ func restore(source: Variant) -> bool:
 	if not source.get("visit") is Dictionary: return false
 	var restored = Visit.new()
 	if not source.visit.is_empty():
-		if source.finished or not restored.restore(source.visit): return false
+		if source.finished or not restored.restore(source.visit,source.map[int(source.step)]): return false
 		if not source.map[int(source.step)].has(source.visit.place): return false
-	if (source.screen in ["visit","battle","report","reward","reward_owner","operation"]) != (not source.visit.is_empty()): return false
+	if (source.screen in ["visit","event","battle","report","reward","reward_owner","operation"]) != (not source.visit.is_empty()): return false
 	if (source.screen == "complete") != source.finished: return false
 	if source.screen in ["reward","reward_owner","operation"] and not restored.data.guard_won: return false
+	if source.get("rewards_exhausted",false) and (restored.data.is_empty() or not restored.data.guard_won or source.screen not in ["reward","visit","event"]): return false
+	if source.screen == "event":
+		if not source.get("event_spot") is String or not restored.data.event_states.has(source.event_spot): return false
+		if restored.data.event_states[source.event_spot].closed: return false
 	data = source.duplicate(true)
 	data.erase("visit")
-	data.schema = 1
+	data.schema = 2
+	data.flow.schema = 1
+	data.flow.revision = int(data.flow.revision)
 	data.step = int(data.step)
 	data.level = int(data.level)
 	visit = restored

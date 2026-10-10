@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "self_contained": true,
+  "canvas": [
+    640,
+    640
+  ],
+  "anchor": [
+    320,
+    560
+  ],
+  "skeleton_actions": [
+    "idle",
+    "move",
+    "hurt",
+    "critical",
+    "melee",
+    "cast"
+  ],
+  "frame_actions": [
+    "idle",
+    "move",
+    "melee",
+    "cast",
+    "hurt",
+    "critical",
+    "death"
+  ],
+  "attack_modes": [
+    "melee"
+  ],
+  "extension": null,
+  "parts": {
+    "RibbonBack": {
+      "file": "parts/RibbonBack.png",
+      "pivot": [
+        220,
+        248
+      ]
+    },
+    "RibbonFront": {
+      "file": "parts/RibbonFront.png",
+      "pivot": [
+        220,
+        248
+      ]
+    },
+    "Body": {
+      "file": "parts/Body.png",
+      "pivot": [
+        320,
+        560
+      ]
+    }
+  },
+  "runtime_files": [
+    "battle_animation.tres",
+    "battle_animation.frames.json",
+    "rig_manifest.json",
+    "presentation.tscn",
+    "animations.tres",
+    "frames/idle.png",
+    "frames/stride.png",
+    "frames/anticipation.png",
+    "frames/impact.png",
+    "frames/recover.png",
+    "frames/cast.png",
+    "frames/critical.png",
+    "frames/fall.png",
+    "frames/death.png",
+    "parts/RibbonBack.png",
+    "parts/RibbonFront.png",
+    "parts/Body.png",
+    "parts/projectile.png"
+  ],
+  "playback_metadata_only": true,
+  "animation_budget": {
+    "max_bytes": 65536,
+    "max_keys": 1200,
+    "max_cycle_seconds": 2
+  }
+}

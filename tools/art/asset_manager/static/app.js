@@ -1,7 +1,7 @@
 "use strict";
 
 const boot = JSON.parse(document.getElementById("boot-data").textContent);
-const state = { objects: [], filter: "全部", selected: null, detailView: null, history: [] };
+const state = { objects: [], filter: "全部", generatedOnly: false, selected: null, detailView: null, history: [] };
 const manifest = document.getElementById("manifest");
 const manifestPicker = document.getElementById("pick-manifest");
 const engine = document.getElementById("engine");
@@ -10,6 +10,8 @@ const notice = document.getElementById("notice");
 const grid = document.getElementById("grid");
 const empty = document.getElementById("empty");
 const filters = document.getElementById("filters");
+const generatedOnly = document.getElementById("generated-only");
+const generatedCount = document.getElementById("generated-count");
 const summary = document.getElementById("summary");
 const detail = document.getElementById("detail");
 const detailContent = document.getElementById("detail-content");
@@ -20,6 +22,11 @@ const lightboxCaption = document.getElementById("lightbox-caption");
 
 manifest.value = boot.defaultManifest;
 engine.value = boot.defaultEngine || "";
+generatedOnly.addEventListener("change", () => {
+  state.generatedOnly = generatedOnly.checked;
+  renderFilters();
+  renderGrid();
+});
 
 function api(path, options = {}) {
   const headers = Object.assign({ "X-Art-Token": boot.token }, options.headers || {});
@@ -58,7 +65,7 @@ function countLabel(object) {
 }
 
 function matchesFilter(object, filter) {
-  return filter === "全部" || (filter === "敌人" ? object.collection.includes("enemy") : object.category === filter);
+  return (filter === "全部" || object.category === filter) && (!state.generatedOnly || object.has_generated_assets);
 }
 
 function renderFilters() {
@@ -73,6 +80,8 @@ function renderFilters() {
     button.addEventListener("click", () => { state.filter = category; renderFilters(); renderGrid(); });
     filters.append(button);
   });
+  generatedOnly.checked = state.generatedOnly;
+  generatedCount.textContent = String(state.objects.filter(item => item.has_generated_assets && (state.filter === "全部" || item.category === state.filter)).length);
 }
 
 function renderGrid() {

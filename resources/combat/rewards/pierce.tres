@@ -6,14 +6,18 @@ script = ExtResource("p")
 id = "pierce"
 trigger = "skill_emit"
 effect = "pierce"
-value = 0.6
+value = 0.5
 target = "skill_target"
 limit = "action"
 [resource]
 script = ExtResource("s")
 id = "pierce"
 display_name = "贯穿射击"
-description = "远射手技能贯穿主目标射线上的另一名敌人，造成60%技能伤害；优先射程内距射手最近者。"
+description = "远射手技能贯穿主目标后方1.5格直线内一名敌人，造成50%技能伤害；目标仍须在射程内。"
 category = "专属"
 character_id = "archer"
 effects = Array[ExtResource("p")]([SubResource("p0")])
+
+reward_chain = "analysis"
+reward_weight = 2
+minimum_offer = 2

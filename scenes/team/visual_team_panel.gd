@@ -188,7 +188,7 @@ func highlight(tile: Button) -> void:
 	tile.add_theme_stylebox_override("normal",style)
 
 func gear_name(kind: String) -> String:
-	var item = game.RunModel.Content.gear(kind)
+	var item = game.run.gear_definition(kind)
 	return item.display_name if item != null else {"empty":"空槽","remove":"卸下装备"}.get(kind,kind)
 
 func icon(parent: Control, kind: String, at: Vector2, extent: Vector2, callback: Callable, role_value: int = -1) -> Button:
@@ -234,7 +234,7 @@ func open_bag() -> void:
 	var equipped = equipped_kind()
 	icon(popup,equipped,Vector2(335,253),Vector2(110,110),func(): pass)
 	caption(popup,gear_name(equipped),Vector2(472,251),23,ACCENT)
-	caption(popup,game.RunModel.Content.gear(equipped).description if equipped != "empty" else "选择背包中的装备填入此槽位",Vector2(472,299),18)
+	caption(popup,game.run.gear_definition(equipped).description if equipped != "empty" else "选择背包中的装备填入此槽位",Vector2(472,299),18)
 	caption(popup,"背包备选 · 点选即装备" if editable else "战斗中只读",Vector2(334,383),19,MUTED)
 	bag_buttons.clear()
 	var bag = scroll_strip(popup,Vector2(335,421),Vector2(740,153),Vector2((game.run.inventory.size()+1)*178,131))
@@ -242,7 +242,7 @@ func open_bag() -> void:
 	for kind in game.run.inventory.keys()+["remove"]:
 		if kind == "badge" and not game.run.badge_owned: continue
 		var tile = icon(bag,kind,Vector2(i*178,0),Vector2(92,92),choose_gear.bind(kind))
-		tile.disabled = not editable or (kind == "remove" and equipped == "empty")
+		tile.disabled = not editable or (kind == "remove" and equipped == "empty") or not game.run.can_equip_gear("none" if kind == "remove" else kind,selected_role)
 		bag_buttons[kind] = tile
 		caption(bag,gear_name(kind),Vector2(2+i*178,106),17)
 		var owner_role = int(game.run.inventory.get(kind,-1))

@@ -1,5 +1,6 @@
 schema_version: 3
 objects:
+  event_choice_ui: "manifests/event_choice_ui.yaml"
   battlefield_redesign: "manifests/battlefield_redesign.yaml"
   enemy: "manifests/enemy.yaml"
   holo_cards:
@@ -32,3 +33,4 @@ objects:
   m1_main_menu_visual: "manifests/m1_main_menu_visual.yaml"
   m1_web_backgrounds: "manifests/m1_web_backgrounds.yaml"
   characters: "manifests/characters.yaml"
+  battle_status_components: "manifests/battle_status_components.yaml"

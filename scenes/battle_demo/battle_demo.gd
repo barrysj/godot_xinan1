@@ -32,7 +32,8 @@ var phase = "prepare"
 var units: Array[Dictionary] = []
 var elapsed = 0.0
 var accumulator = 0.0
-var speed = 1
+const PLAYBACK_SPEEDS = [0.5, 1.0, 1.5, 2.0]
+var speed: float = 1.0
 var paused = false
 var result_won = false
 var logs: Array[String] = []
@@ -117,8 +118,11 @@ func _build_units() -> void:
 
 func _ally_unit(role: int, slot: int) -> Dictionary:
 	var unit = _from_definition(Content.character(role), role, 0, slot)
-	if role == equipment: Content.gear("shoe").apply(unit)
+	if role == equipment: _gear_definition("shoe").apply(unit)
 	return unit
+
+func _gear_definition(id: String):
+	return Content.gear(id)
 
 func _deployment_roster() -> Array:
 	return [0, 1, 2, 3]
@@ -278,7 +282,7 @@ func _draw() -> void:
 	_text(Vector2(56, 442), ROLES[selected] + "  /  " + SKILLS[selected], INK, 20)
 	_text(Vector2(56, 469), "篮球鞋：攻击间隔 -25%  ·  当前携带：" + ROLES[equipment] + "    |    护盾保护上下左右相邻友军", MUTED, 17)
 	_button(Rect2(40, 503, 230, 48), "开始自动战斗" if phase == "prepare" else ("继续 / 暂停" if phase == "battle" else "重新编队"), true)
-	_button(Rect2(282, 503, 150, 48), "速度  %d×" % speed)
+	_button(Rect2(282, 503, 150, 48), "速度  %s×" % str(speed))
 	_button(Rect2(444, 503, 240, 48), "装备给选中角色", phase == "prepare")
 	_button(Rect2(696, 503, 270, 48), "敌阵：" + ("守卫与治疗" if encounter == 0 else "整排攻击"), phase == "prepare")
 	_button(Rect2(978, 503, 260, 48), "结束实验 / 重新编队")
@@ -299,7 +303,7 @@ func _gui_input(event: InputEvent) -> void:
 			phase = "prepare"
 			_build_units()
 	elif _action_rect(1).has_point(point):
-		speed = 2 if speed == 1 else 1
+		speed = PLAYBACK_SPEEDS[(PLAYBACK_SPEEDS.find(speed) + 1) % PLAYBACK_SPEEDS.size()]
 	elif _action_rect(4).has_point(point):
 		phase = "prepare"
 		_build_units()

@@ -4,9 +4,20 @@
 
 - 功能 ID：ART-03；状态：生产入口已验证；姿态等价存在已记录的 120 Hz 跳变边界。
 - 最新验证日期：2026-10-10，本地 main squash 基线 `2eaa397`＋获批来源 `36b5a32`；正式收尾基线 `667e60e`；历史验证2026-10-01（合入 `main` 规则后 Guard 008 留存与概念预览修复）；起点 `ee5b780`；运行修复基线 `76c8406`；工具归档基线 `7be8ffe`；此前合并基线 `4bd7db6`、预览工具提交 `7c6c62d`。Guard 留存提交见本地 Git 历史。
+- 图书馆五敌人历史验证：2026-10-07，基线90bbf7e及art/enemy-hybrid-animation，当前接入见ART-02。
 - 实现入口：[预览器](../../scenes/battle_demo/motion_preview.tscn)、[共享控制器](../../scenes/battle_demo/presentations/hybrid_presentation.gd)、[捕获器](../../tools/art/animation/motion_capture.gd)、[GIF 后处理](../../tools/art/animation/motion_previews.py)、[确定性提升](../../tools/art/promotion/promote_animation.py)。
 
 ## 骨骼＋序列帧通用生产与预览
+
+### 图书馆敌人七动作正式包（2026-10-07）
+
+基线 `90bbf7e` + 已批准资产工作树，分支 `art/enemy-hybrid-animation`。负责人明确只保留最新五套 tmp_002 并提升；现为各对象 asset_001，旧 tmp_001 与其跨角色证据已清理，tmp 上限 002 已记录。资源台分类提交 `36fac21`、释放截图修复 `4afdab9`、勾选筛选 `90bbf7e`。
+
+每敌人施法有原生亮边光环；管理员攻击／施法姿势强化，印章九姿势四轮统一。五次确定性提升与 --check 通过，正式稳定路径 `assets/art/characters/<对象ID>/` 共 92 文件、8.787 MiB；源稿、35 动作卡、35 GIF、5 巡演与生成记录留在 design 下 asset_001。库 23,121～38,536 B、185～277 keys，最长 1.8 秒；无新增位图光效或敌人专用运行脚本。
+
+验证：常规 Godot 导入后 `library_contract_check.tscn -- --production` 13,160 项／0 失败；五正式路径 motion-preview -Check 均 0 失败；五施法及管理员远程三分辨率实拍通过。35 Schema v2 卡、PNG 和 GIF 完整检查通过。指定 image-quality-check：巨典 PASS，其余 PASS_WITH_NOTES，无阻断缺陷。资源台 52 对象／1,381 文件，缺失／不一致 0；浏览器各对象只一套当前选用／已批准资产，正式预览入口可用。
+
+入口：[enemy_cast](../../tools/art/animation/enemy_cast/README.md)、[任务及收尾证据](../art/tasks/m1-enemy-animation.md)。候选／正式共享同一契约检查，正式模式不安装候选 PNG 加载器。预览单位放工具目录，只用于现有开发预览，不代表敌人规则；主线单位尚未绑定，integration=not_integrated。**待统筹**：正式资产可用，主线接入效果仍待后续验证与评审，总览／Roadmap 未改。单视角、刚性换姿、少量细节变化及根证书／像素原图日志边界见任务。
 
 ### 人形首选工作流与五人正式收尾（2026-10-10）
 
@@ -127,3 +138,31 @@
 
 
 清理后最终复验：资源台39项单测／0失败，五对象 warnings=[]、正式内容全部 matched、缺失／不一致 0；五人各七态与守护者旧 asset_001 检查通过，35 动作 GIF＋5 巡演已重录；7 个原配／派生源模型重开，28 动作原始曲线指纹通过。Debug 正式启动捕获39／0、Release6／0，Current兼容38／0；正式实录22.6秒／339帧／678步／344事件与批准候选一致，MP4完整解码通过。65个已核验目标清理约5.56GiB，最终资源、许可证、旧守护者62帧保留；历史有效工具归档。验证日期2026-10-10，基线667e60e＋收尾工作树。
+
+## 原模拟器动作预览的战斗状态重置修复（2026-10-07，待统筹）
+
+基线91fd6fd。新代码战斗机制加入预警后，动作预览仍只reset基础模拟，原完整敌阵的预警ID和羁绊绑定残留到两单位预览，导致访问不存在单位的hp；旧Check只数自身断言，曾在脚本报错时仍打印failures=0。本次在motion_preview.gd每次重置后调用现有configure_combat，重建当前预览阵容的派生状态，不改战斗数值或正式素材。Check新增注入旧预警／程序使用次数后重置，以及绑定归属校验。
+
+验证：Godot4.7.2／PowerShell7；run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Action Melee -Check，七可用动作PASS、远程SKIP、failures=0，日志无SCRIPT ERROR／ERROR；单独-Capture生成1920×1080、2560×1440、1920×1200实际近战截图，已查看1920×1080，输出.godot/motion-preview-2-<尺寸>.png。未把尚未批准的广播透明候选接入主游戏，已有图集直接读图警告仍保留。
+
+## 动作截图取帧与本次完成核验
+
+2026-10-07，基线5e69faa加工作树。motion_preview.gd的截图不再按固定半秒推进：攻击／施法等待实际action_released，受击／死亡等待针对当前主体的实际impact，再核验仍处于相应姿态；缺可见动作片段时保持原回退，支持片段但错过活动状态时明确失败。Check复用同一取帧路径后再执行既有整段动作检查。run-motion-preview.ps1的Check／Capture增加日志更新时间、脚本错误和本次完成标记检查，拒绝无新日志的零退出启动。
+
+PowerShell7／Godot4.7.2：正式守护者与广播tmp_003各七可用动作PASS、各一攻击类型SKIP、failures=0；守护近战与广播施法的单独Capture各覆盖三尺寸并实际查看1080图。日志显示守护melee与广播cast均在模拟0.200秒释放，广播clip age0.337而非已归待机的0.500秒。启动器无操作／零退出的隔离模拟正确拒绝旧日志，STALE_PREVIEW_LOG_CHECK PASS。当前机器的受限子进程启动曾未产生新日志，现会报失败；通过本机完整启动权限后入口完成并读取新结果，不能用旧缓存冒充验证。
+
+本次未改正式美术资产、主线规则或玩家存档；广播候选仍待人工资产评审与留存决定，未提升、未进入主游戏。图片.godot/motion-preview-4-<尺寸>.png为广播释放姿态，可由现有入口重建。待统筹：动作截图现在以实际事件和活动姿态为证据，整体美术效果批准状态不变。
+
+## 动画与操作面板的层级边界（待统筹）
+
+2026-10-07，基线8440dbe加工作树。pixel_battle.gd将原混合动画节点放入BattleActors分组，在世界层按Y排序；不再用纵坐标直接扩大z_index，避免高于装备详情／队伍等界面。原插值、动作控制器、素材、事件与模拟时序保持不变，未产生或批准新资产。
+
+验证：PowerShell7／Godot4.7.2；growth_budget_check.tscn GUI -- --capture为49／0，新增同层Y排序及全部动画部件低于装备面板检查，实际奖励／对象／背包三尺寸截图.godot/growth-budget-<页面>-<尺寸>.png，已查看1920×1080背包遮挡修正。animation_check.tscn PASS；campaign_animation_check.tscn GUI -- --capture为8／0，实际原战役粉笔远程截图.godot/chalk-campaign-ranged.png。旧动画检查固定隔离档可能残留进度，现改为每次独立路径；第一次复测有node.power脚本错误，不计作通过，新的实际运行无脚本错误。环境根证书和旧图集直接读图提示仍存在。
+
+边界：世界排序只影响节点表现，旧程序绘制的未配动画占位单位仍待资产替换；没有声称所有主线动画和最终美术已验收。界面遮挡问题已修正，不再作为当前装备详情的未完成项。高层总览未改。
+
+## 源分支合并与状态层（2026-10-07，待统筹）
+
+基线9a52d06＋来源de3753b。motion_preview.gd的实际释放采样冲突保留当前事件驱动版本，它还覆盖首次受击／退场以及启动器新鲜日志检查；来源版本的固定步截图问题已有该版本更完整的修正。五个正式运行包保持来源内容，13160项契约全部通过。
+
+主线新增unit_status_layer.gd，只绘制既有名字、血条与普攻计数，置于BattleActors之后、HUD与详情之前；不更改骨骼资产或模拟。三尺寸enemy_integration_check GUI108／0，growth_budget_check GUI50／0，最终battle_feedback_check GUI68／0，日志与截图见ART-02。原非混合角色仍用既有回退，未生成其他动作。

@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="identity"><span class="mark">◈</span><div><strong>校园地图编辑器</strong><small>地点 · 路线 · 亮区边界</small></div></div>
+    <div class="identity"><span class="mark">◈</span><div><strong>校园地图编辑器</strong><small>地图布局 · 游玩流程在 Godot 配置</small></div></div>
     <div class="top-actions">
       <span id="dirty" class="save-state">已同步</span>
       <button id="undo" title="Ctrl+Z">撤销</button><button id="redo" title="Ctrl+Y">重做</button>
@@ -21,9 +21,9 @@
     <section class="workbench" aria-label="地图编辑画布">
       <div class="map-toolbar">
         <div class="mode-group" role="group" aria-label="编辑对象">
-          <button data-mode="area" class="active">区域边界</button>
-          <button data-mode="path">路线节点</button>
-          <button data-mode="place">地点</button>
+          <button data-mode="area" class="active">选区边界</button>
+          <button data-mode="path">路径拐点</button>
+          <button data-mode="place">地图地标</button>
           <button data-mode="boundary">亮区边界</button>
           <button id="pick-coordinate" aria-pressed="false">取坐标</button>
         </div>
@@ -33,41 +33,61 @@
       <div class="canvas-footer"><span id="hint">拖动圆点调整边界；Shift＋点击边线添加顶点。</span><span id="coordinates">x —　y —</span></div>
     </section>
     <aside class="inspector" aria-label="属性编辑">
-      <section class="coordinate-card" aria-label="坐标拾取">
-        <div class="section-heading">指定位置</div>
-        <p class="help">点击「取坐标」后点地图，十字标记固定落点。原图左上角为原点，向右 X、向下 Y；缩放不改变坐标。</p>
-        <label>原图坐标<input id="picked-coordinate" readonly placeholder="尚未拾取" aria-live="polite"></label>
-        <div class="point-actions"><button id="copy-coordinate" disabled>复制坐标</button><button id="clear-coordinate" disabled>清除</button></div>
-        <p id="coordinate-status" class="help" role="status">仅用于定位交流，不修改或保存地图。</p>
-      </section>
-      <div class="route-only">
-      <div class="section-heading"><span>当前路线</span><span id="route-count" class="muted"></span></div>
-      <select id="route-select" aria-label="选择路线"></select>
-      <label>路线名称<input id="route-title" type="text" maxlength="32"></label>
-      <div class="two-cols"><label>路线颜色<input id="route-color" type="color"></label><label>对应战役<select id="campaign-region"><option value="library">图书馆</option><option value="region_b">第二终端</option><option value="region_c">第三终端</option></select></label></div>
+      <div id="inspector-main">
+        <section data-inspector-modes="area path place" aria-label="当前选区">
+          <div class="section-heading"><span>当前选区</span><span id="route-count" class="muted"></span></div>
+          <select id="route-select" aria-label="选择地图选区"></select>
+        </section>
+        <section id="geometry-tools" data-inspector-modes="area path boundary" aria-label="顶点编辑">
+          <div class="section-heading"><span id="point-heading">选区顶点</span><span id="point-count" class="muted"></span></div>
+          <div class="point-actions"><button id="add-point">加点</button><button id="remove-point">删点</button></div>
+          <p id="point-help" class="help">拖动圆点调整边界；Shift＋点击边线添加顶点。</p>
+        </section>
+        <section id="boundary-settings" data-inspector-modes="boundary" hidden aria-label="亮区设置">
+          <div class="section-heading">亮区设置</div>
+          <label>过渡宽度（像素）<input id="boundary-feather" type="number" min="0" max="80" step="1"></label>
+          <label>日间校外亮度<input id="boundary-day" type="range" min="0" max="1" step="0.01"><span id="boundary-day-value" class="muted"></span></label>
+          <label>夜间校外亮度<input id="boundary-night" type="range" min="0" max="1" step="0.01"><span id="boundary-night-value" class="muted"></span></label>
+          <label>异常校外亮度<input id="boundary-anomaly" type="range" min="0" max="1" step="0.01"><span id="boundary-anomaly-value" class="muted"></span></label>
+          <p class="help">线内保持底图亮度，线外按三态降亮；画布预览日间效果。</p>
+        </section>
+        <section data-inspector-modes="area" aria-label="选区属性">
+          <div class="section-heading">选区属性</div>
+          <label>选区名称<input id="route-title" type="text" maxlength="32"></label>
+          <div class="two-cols"><label>选区颜色<input id="route-color" type="color"></label><label>探索区域<select id="campaign-region"><option value="library">图书馆</option><option value="region_b">第二终端</option><option value="region_c">第三终端</option></select></label></div>
+        </section>
+        <details class="inspector-disclosure" data-inspector-modes="area">
+          <summary>关联地标</summary>
+          <p class="help">管理选区相关的地标，不决定探索顺序。</p>
+          <div id="route-places" class="place-list"></div>
+        </details>
+        <section data-inspector-modes="place" hidden aria-label="地标设置">
+          <div class="section-heading">地标文字与落点</div>
+          <select id="place-select" aria-label="选择地图地标"></select>
+          <label>显示名称<input id="place-title" type="text" maxlength="32"></label>
+          <div class="two-cols"><label>X<input id="place-x" type="number" step="0.1" min="0"></label><label>Y<input id="place-y" type="number" step="0.1" min="0"></label></div>
+        </section>
+        <details class="inspector-disclosure" data-inspector-modes="place" hidden>
+          <summary>添加地标</summary>
+          <div class="two-cols"><input id="new-id" type="text" placeholder="英文 ID" aria-label="新地标 ID"><input id="new-title" type="text" placeholder="显示名称" aria-label="新地标名称"></div>
+          <button id="add-place" class="wide">添加地标</button>
+          <p class="help">新地标落在视野中心，关联当前选区；探索站点另在 Godot 配置。</p>
+        </details>
       </div>
-      <div id="boundary-settings" hidden>
-        <div class="section-heading"><span>地图亮区</span></div>
-        <p class="help">边界内保持底图原亮度，边界外降低亮度；与路线区域相互独立。拖动边界可实时查看日间效果。</p>
-        <label>过渡宽度（像素）<input id="boundary-feather" type="number" min="0" max="80" step="1"></label>
-        <label>日间校外亮度<input id="boundary-day" type="range" min="0" max="1" step="0.01"><span id="boundary-day-value" class="muted"></span></label>
-        <label>夜间校外亮度<input id="boundary-night" type="range" min="0" max="1" step="0.01"><span id="boundary-night-value" class="muted"></span></label>
-        <label>异常校外亮度<input id="boundary-anomaly" type="range" min="0" max="1" step="0.01"><span id="boundary-anomaly-value" class="muted"></span></label>
-      </div>
-      <div class="section-heading"><span id="point-heading">区域顶点</span><span id="point-count" class="muted"></span></div>
-      <p id="point-help" class="help">拖动圆点调整边界。按住 Shift 点击边线插入顶点；选中顶点后可删除。</p>
-      <div class="point-actions"><button id="add-point">加点</button><button id="remove-point">删点</button></div>
-      <div class="route-only">
-      <div class="section-heading"><span>路线内地点</span></div>
-      <div id="route-places" class="place-list"></div>
-      <div class="section-heading"><span>地点文字与落点</span></div>
-      <select id="place-select" aria-label="选择地点"></select>
-      <label>显示名称<input id="place-title" type="text" maxlength="32"></label>
-      <div class="two-cols"><label>X<input id="place-x" type="number" step="0.1" min="0"></label><label>Y<input id="place-y" type="number" step="0.1" min="0"></label></div>
-      <div class="section-heading"><span>添加地点</span></div>
-      <div class="two-cols"><input id="new-id" type="text" placeholder="英文 ID" aria-label="新地点 ID"><input id="new-title" type="text" placeholder="显示名称" aria-label="新地点名称"></div>
-      <button id="add-place" class="wide">添加地点</button>
-      <p class="help">新地点会落在当前视野中心，并加入当前路线；随后可拖动它。地图坐标来自 1800×1500 原图。</p>
+      <div id="inspector-utilities" class="inspector-utilities">
+        <details id="coordinate-panel" class="inspector-disclosure" aria-label="坐标拾取">
+          <summary>指定位置<span id="coordinate-indicator" class="muted"></span></summary>
+          <p class="help">点击「取坐标」后点地图固定位置；缩放不改变原图坐标。</p>
+          <label>原图坐标<input id="picked-coordinate" readonly placeholder="尚未拾取" aria-live="polite"></label>
+          <div class="point-actions"><button id="copy-coordinate" disabled>复制坐标</button><button id="clear-coordinate" disabled>清除</button></div>
+          <p id="coordinate-status" class="help" role="status">仅用于定位交流，不修改或保存地图。</p>
+        </details>
+        <details class="inspector-disclosure" aria-label="配置分工">
+          <summary>探索流程</summary>
+          <p class="help">探索站次、分支与内容引用在 Godot 区域资源中配置。</p>
+          <div class="flow-reference"><span>当前区域资源</span><code id="flow-resource"></code></div>
+          <a class="guide-link" href="/flow-guide" target="_blank" rel="noopener">配置指南 ↗</a>
+        </details>
       </div>
       <div id="message" class="message" role="status" aria-live="polite"></div>
     </aside>

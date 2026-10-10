@@ -246,6 +246,8 @@ func _reset_preview() -> void:
 	if mode == Mode.RANGED: actor.action_profile.delivery = "projectile"
 	if mode == Mode.CAST: actor.count = actor.skill.attacks_to_trigger - 1
 	simulation.reset(units)
+	# The two-actor preview replaces the original roster; rebuild trait/telegraph state too.
+	simulation.configure_combat(code_programs, code_supplies)
 	phase = "battle"
 	paused = false
 	finish_age = 0
@@ -384,6 +386,28 @@ func _draw() -> void:
 	_pixel_panel(Rect2(24, 617, 894, 34), PAPER)
 	_text(Vector2(40, 641), "前摇 → 出手 → 命中 → 收招；暂停后可单步检查。", DARK, 16)
 
+func _advance_to_capture_pose() -> bool:
+	# Capture the first authoritative release/impact, while the pose is still active.
+	# A fixed half-second may already be idle for short action profiles.
+	var actor: Dictionary = units[0]
+	var expected: StringName = [&"idle", &"move", &"melee", &"ranged", &"cast", &"hurt", &"critical", &"death"][mode]
+	if mode in [Mode.MELEE, Mode.RANGED, Mode.CAST]:
+		if actor.action.is_empty(): return false
+		var max_steps := ceili(float(actor.action.duration) / STEP) + 3
+		for step in max_steps:
+			advance_preview(STEP)
+			if history.any(func(event): return event.kind == "action_released" and event.actor_id == actor.id): break
+		if actor.action.is_empty() or not actor.action.released: return false
+	elif mode in [Mode.HURT, Mode.DEATH]:
+		for step in 100:
+			advance_preview(STEP)
+			if history.any(func(event): return event.kind == "impact" and event.target_id == actor.id and event.actor_id != actor.id): break
+		if not history.any(func(event): return event.kind == "impact" and event.target_id == actor.id and event.actor_id != actor.id): return false
+	else:
+		for step in 5: advance_preview(STEP)
+	if mode == Mode.DEATH and actor.hp > 0: return false
+	return actor.animation.state == expected if actor.animation._has_clip(expected) else true
+
 func _check_preview() -> void:
 	set_process(false)
 	repeat = false
@@ -402,6 +426,10 @@ func _check_preview() -> void:
 			print("MOTION_PREVIEW_MODE ", MODES[index], " SKIP unsupported")
 			continue
 		mode = index
+		_reset_preview()
+		if not _advance_to_capture_pose():
+			failures += 1
+			push_error("Preview capture pose missed the active state: " + MODES[mode])
 		_reset_preview()
 		for i in 25: advance_preview(STEP)
 		var impacts = history.filter(func(e): return e.kind == "impact")
@@ -438,6 +466,17 @@ func _check_preview() -> void:
 	before = preview_elapsed
 	_process(0.2)
 	if not slow or not is_equal_approx(preview_elapsed - before, 0.2 * playback_speed * 0.25): failures += 1
+	# Reset must discard state installed for the full battle roster before preview.
+	simulation.warning_next[9999] = 9.0
+	simulation.warnings[9999] = {"fire_at":12.0,"center":Vector2.ZERO,"label":"stale"}
+	simulation.program_uses["repair"] = 1
+	_reset_preview()
+	if simulation.warning_next.has(9999) or simulation.warnings.has(9999) or not simulation.program_uses.is_empty():
+		failures += 1
+		push_error("Preview reset retained telegraphs or program uses from another roster")
+	if simulation.bindings.any(func(binding): return simulation.unit(binding.owner).is_empty()):
+		failures += 1
+		push_error("Preview reset retained trait bindings for absent actors")
 	print("MOTION_PREVIEW_CHECK failures=", failures)
 	get_tree().quit(failures)
 
@@ -453,7 +492,11 @@ func _capture_preview() -> void:
 			if not _mode_enabled(index): continue
 			mode = index
 			_reset_preview()
-			for i in (10 if mode == Mode.CAST else (7 if mode == Mode.RANGED else 5)): advance_preview(STEP)
+			if not _advance_to_capture_pose():
+				push_error("Preview capture pose unavailable: " + MODES[mode])
+				get_tree().quit(1)
+				return
+			print("MOTION_CAPTURE_POSE mode=%s state=%s simulation=%.3f clip=%.3f" % [MODES[mode], units[0].animation.state, simulation.elapsed, units[0].animation.age])
 			queue_redraw()
 			await RenderingServer.frame_post_draw
 			var screenshot = get_viewport().get_texture().get_image()

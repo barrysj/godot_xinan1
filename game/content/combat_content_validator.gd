@@ -42,7 +42,18 @@ static func validate(content) -> Array[String]:
 			seen[tag] = true
 	for reward in content.rewards:
 		if reward == null: continue
-		if not reward.category in ["羁绊", "装备", "训练", "专属"]: errors.append(reward.id + ": 未知奖励类型")
+		if reward.reward_chain != "general" and not tags.has(reward.reward_chain): errors.append(reward.id + ": 奖励流派标签不存在")
+		if reward.reward_weight < 1 or reward.reward_weight > 100 or reward.minimum_offer < 1 or reward.minimum_offer > 100: errors.append(reward.id + ": 奖励权重或轮次非法")
+		if reward.required_tag_count < 0 or reward.required_tag_count > 4 or (reward.required_tag.is_empty() != (reward.required_tag_count == 0)) or not reward.required_tag.is_empty() and not tags.has(reward.required_tag): errors.append(reward.id + ": 奖励搭档条件非法")
+		if not reward.category in ["羁绊", "装备", "训练", "专属", "程序"]: errors.append(reward.id + ": 未知奖励类型")
+		if reward.category == "程序":
+			var programs = CodeRules.programs.filter(func(program): return program.id == reward.program_id)
+			if programs.is_empty(): errors.append(reward.id + ": 强化程序不存在")
+			elif programs[0].effect != "recoil": errors.append(reward.id + ": 当前程序强化仅支持反冲")
+			if reward.program_duration_bonus == 0 and reward.program_damage_bonus == 0: errors.append(reward.id + ": 程序强化至少一个增益")
+		elif not reward.program_id.is_empty() or reward.program_duration_bonus != 0 or reward.program_damage_bonus != 0:
+			errors.append(reward.id + ": 程序增益仅用于程序奖励")
+		if not _number(reward.program_duration_bonus, 0) or not _number(reward.program_damage_bonus, 0): errors.append(reward.id + ": 程序增益数值非法")
 		if reward.category == "训练" and reward.id != "training" or reward.id == "training" and reward.category != "训练": errors.append(reward.id + ": 当前训练效果仅支持 training")
 		if reward.category == "装备" and not reward.id in ["lens", "backup"]: errors.append(reward.id + ": 装备强化须接入对象选择")
 		if reward.category == "专属" and not characters.has(reward.character_id): errors.append(reward.id + ": 专属人物不存在")

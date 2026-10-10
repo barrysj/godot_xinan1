@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "code_converter"
+display_name = "转码器"
+description = "本局转码器库存 +1；战斗中将同色2块转为另一种2块。每场最多使用一次。"
+operation = "item"
+code_item_id = "converter"
+fallback_only = true
+amount = 1

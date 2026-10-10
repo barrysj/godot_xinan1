@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CampusManifest" load_steps=59 format=3]
+[gd_resource type="Resource" script_class="CampusManifest" load_steps=72 format=3]
 [ext_resource type="Script" path="res://game/content/content_manifest.gd" id="1"]
 [ext_resource type="Script" path="res://game/content/equipment_def.gd" id="2"]
 [ext_resource type="Resource" path="res://resources/content/equipment/shoe.tres" id="shoe"]
@@ -19,6 +19,9 @@
 [ext_resource type="Resource" path="res://resources/content/enemies/board.tres" id="enemies_board"]
 [ext_resource type="Resource" path="res://resources/content/enemies/chalk.tres" id="enemies_chalk"]
 [ext_resource type="Resource" path="res://resources/content/enemies/colossus.tres" id="enemies_colossus"]
+[ext_resource type="Resource" path="res://resources/content/enemies/return_stamp.tres" id="enemies_return_stamp"]
+[ext_resource type="Resource" path="res://resources/content/enemies/great_volume.tres" id="enemies_great_volume"]
+[ext_resource type="Resource" path="res://resources/content/enemies/cyber_librarian.tres" id="enemies_cyber_librarian"]
 [ext_resource type="Script" path="res://game/content/skill_def.gd" id="t_skills"]
 [ext_resource type="Resource" path="res://resources/content/skills/guard.tres" id="skills_guard"]
 [ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skills_archer"]
@@ -57,14 +60,24 @@
 [ext_resource type="Resource" path="res://resources/content/locations/reading.tres" id="locations_reading"]
 [ext_resource type="Resource" path="res://resources/content/characters/analyst.tres" id="characters_analyst"]
 [ext_resource type="Resource" path="res://resources/content/skills/analysis.tres" id="skills_analysis"]
+[ext_resource type="Resource" path="res://resources/content/skills/morning.tres" id="skills_morning"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_paper_guard.tres" id="skills_enemy_paper_guard"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_desk.tres" id="skills_enemy_desk"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_radio.tres" id="skills_enemy_radio"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_pages.tres" id="skills_enemy_pages"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_board.tres" id="skills_enemy_board"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_chalk.tres" id="skills_enemy_chalk"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_colossus.tres" id="skills_enemy_colossus"]
+[ext_resource type="Resource" path="res://resources/content/rewards/code_supply.tres" id="reward_code_supply"]
+[ext_resource type="Resource" path="res://resources/content/rewards/code_converter.tres" id="reward_code_converter"]
 [resource]
 script = ExtResource("1")
 equipment = Array[ExtResource("2")]([ExtResource("shoe"), ExtResource("badge"), ExtResource("ribbon")])
 characters = Array[ExtResource("t_characters")]([ExtResource("characters_guard"), ExtResource("characters_archer"), ExtResource("characters_healer"), ExtResource("characters_striker"), ExtResource("characters_inventor"), ExtResource("characters_morning"), ExtResource("characters_analyst")])
-enemies = Array[ExtResource("t_enemies")]([ExtResource("enemies_paper_guard"), ExtResource("enemies_desk"), ExtResource("enemies_radio"), ExtResource("enemies_pages"), ExtResource("enemies_board"), ExtResource("enemies_chalk"), ExtResource("enemies_colossus")])
-skills = Array[ExtResource("t_skills")]([ExtResource("skills_guard"), ExtResource("skills_archer"), ExtResource("skills_healer"), ExtResource("skills_striker"), ExtResource("skills_inventor"), ExtResource("skills_analysis")])
+enemies = Array[ExtResource("t_enemies")]([ExtResource("enemies_paper_guard"), ExtResource("enemies_desk"), ExtResource("enemies_radio"), ExtResource("enemies_pages"), ExtResource("enemies_board"), ExtResource("enemies_chalk"), ExtResource("enemies_colossus"), ExtResource("enemies_return_stamp"), ExtResource("enemies_great_volume"), ExtResource("enemies_cyber_librarian")])
+skills = Array[ExtResource("t_skills")]([ExtResource("skills_guard"), ExtResource("skills_archer"), ExtResource("skills_healer"), ExtResource("skills_striker"), ExtResource("skills_inventor"), ExtResource("skills_analysis"), ExtResource("skills_morning"), ExtResource("skills_enemy_paper_guard"), ExtResource("skills_enemy_desk"), ExtResource("skills_enemy_radio"), ExtResource("skills_enemy_pages"), ExtResource("skills_enemy_board"), ExtResource("skills_enemy_chalk"), ExtResource("skills_enemy_colossus")])
 encounters = Array[ExtResource("t_encounters")]([ExtResource("encounters_patrol"), ExtResource("encounters_classroom"), ExtResource("encounters_final")])
-rewards = Array[ExtResource("t_rewards")]([ExtResource("rewards_badge"), ExtResource("rewards_ribbon"), ExtResource("rewards_recruit"), ExtResource("rewards_recruit_morning"), ExtResource("rewards_guard_training"), ExtResource("rewards_archer_training"), ExtResource("rewards_healer_training"), ExtResource("rewards_striker_training"), ExtResource("rewards_inventor_training")])
+rewards = Array[ExtResource("t_rewards")]([ExtResource("rewards_badge"), ExtResource("rewards_ribbon"), ExtResource("rewards_recruit"), ExtResource("rewards_recruit_morning"), ExtResource("rewards_guard_training"), ExtResource("rewards_archer_training"), ExtResource("rewards_healer_training"), ExtResource("rewards_striker_training"), ExtResource("rewards_inventor_training"), ExtResource("reward_code_supply"), ExtResource("reward_code_converter")])
 reward_pools = Array[ExtResource("t_reward_pools")]([ExtResource("reward_pools_campus")])
 events = Array[ExtResource("t_events")]([ExtResource("events_library_event"), ExtResource("events_supply_event"), ExtResource("events_morning_event")])
 locations = Array[ExtResource("t_locations")]([ExtResource("locations_gate"), ExtResource("locations_library"), ExtResource("locations_court"), ExtResource("locations_hall"), ExtResource("locations_lab"), ExtResource("locations_supply"), ExtResource("locations_classroom"), ExtResource("locations_boss"), ExtResource("locations_reading")])

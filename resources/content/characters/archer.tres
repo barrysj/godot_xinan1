@@ -13,10 +13,10 @@ display_name = "远射手"
 description = "远射手：优先射击后排，造成 2.6 倍攻击伤害。"
 portrait = SubResource("portrait")
 battle_animation = ExtResource("animation")
-health = 175
-attack = 35
-interval = 1.45
-defense = 5
+health = 205
+attack = 34
+interval = 1.5
+defense = 6
 skill = ExtResource("skill")
 
-attack_range = 3.2
+attack_range = 3.5

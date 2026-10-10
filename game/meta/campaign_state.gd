@@ -1,11 +1,12 @@
 extends RefCounted
 ## Permanent campaign facts. Mutations are committed by CampusProgress.
+const BASE_CHARACTERS = ["guard","archer","healer","striker","analyst"]
 const REGIONS = ["library", "region_b", "region_c"]
 
 static func fresh() -> Dictionary:
 	return {"schema": 1, "prologue_done": false, "routes_acquired": false,
 		"terminals": [], "memories": [], "characters": [], "settled_runs": [],
-		"finale_stage": 0, "restored": false, "formation":["guard","","striker","healer","archer",""]}
+		"story_flags": {}, "finale_stage": 0, "restored": false, "formation":["guard","","striker","healer","archer",""]}
 
 static func valid(data: Variant) -> bool:
 	if not data is Dictionary or data.get("schema") != 1: return false
@@ -18,23 +19,26 @@ static func valid(data: Variant) -> bool:
 			if not id is String or id.is_empty() or seen.has(id): return false
 			if key == "terminals" and not REGIONS.has(id): return false
 			seen.append(id)
+	if not preload("res://game/run/hotspot_event.gd").valid_flags(data.get("story_flags",{})): return false
 	var stage = data.get("finale_stage")
 	if not (stage is int or stage is float): return false
 	if stage != int(stage) or stage < 0 or stage > 3: return false
 	if data.routes_acquired and not data.prologue_done: return false
 	if not data.terminals.is_empty() and not data.routes_acquired: return false
 	if stage > 0 and data.terminals.size() != 3: return false
-	var formation = data.get("formation",fresh().formation)
-	if not formation is Array or formation.size() != 6: return false
-	var active = []
-	for id in formation:
+	if not formation_valid(data.get("formation",fresh().formation),data.characters): return false
+	return data.restored == (stage == 3)
+
+static func formation_valid(value: Variant, characters: Array) -> bool:
+	if not value is Array or value.size() != 6: return false
+	var active: Array = []
+	for id in value:
 		if not id is String: return false
 		if id.is_empty(): continue
-		if not id in ["guard","archer","healer","striker"] and not data.characters.has(id): return false
+		if not BASE_CHARACTERS.has(id) and not characters.has(id): return false
 		if active.has(id): return false
 		active.append(id)
-	if active.size() != 4: return false
-	return data.restored == (stage == 3)
+	return active.size() == 4
 
 static func objective(data: Dictionary) -> String:
 	if data.restored: return "校园已恢复 · 记录者只读运行"

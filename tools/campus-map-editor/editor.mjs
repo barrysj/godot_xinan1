@@ -5,11 +5,28 @@ const canvas = $("overlay"), context = canvas.getContext("2d");
 let layout, revision, routeIndex = 0, mode = "area", selectedVertex = -1, selectedPlace = "";
 let scale = 1, fitScale = 1, drag = null, history = [], future = [], savedSnapshot = "";
 const image = $("map-image");
-let pickingCoordinates = false, pickedCoordinate = null;
+let pickingCoordinates = false, pickedCoordinate = null, inspectorMode = "";
 
 function updateCoordinate() {
   $("picked-coordinate").value = pickedCoordinate ? `x=${pickedCoordinate[0]}, y=${pickedCoordinate[1]}` : "";
   $("copy-coordinate").disabled = $("clear-coordinate").disabled = !pickedCoordinate;
+  $("coordinate-indicator").textContent = pickedCoordinate ? "已标记" : "";
+}
+
+function updateInspector() {
+  const activeMode = pickingCoordinates ? "coordinates" : mode;
+  document.querySelectorAll("[data-inspector-modes]").forEach(section => {
+    section.hidden = !section.dataset.inspectorModes.split(" ").includes(activeMode);
+  });
+  const coordinatePanel = $("coordinate-panel");
+  const destination = $(pickingCoordinates ? "inspector-main" : "inspector-utilities");
+  if (coordinatePanel.parentElement !== destination) destination.prepend(coordinatePanel);
+  coordinatePanel.classList.toggle("active-tool", pickingCoordinates);
+  if (inspectorMode !== activeMode) {
+    if (pickingCoordinates || inspectorMode === "coordinates") coordinatePanel.open = pickingCoordinates;
+    document.querySelector(".inspector").scrollTop = 0;
+    inspectorMode = activeMode;
+  }
 }
 
 function route() { return layout.routes[routeIndex]; }
@@ -117,9 +134,7 @@ function draw() {
 }
 
 function updateUi() {
-  const editingBoundary = mode === "boundary";
-  document.querySelectorAll(".route-only").forEach(section => section.hidden = editingBoundary);
-  $("boundary-settings").hidden = !editingBoundary;
+  updateInspector();
   $("boundary-feather").value = layout.light_boundary.feather;
   for (const state of ["day", "night", "anomaly"]) {
     const value = layout.light_boundary.outside_brightness[state];
@@ -132,12 +147,13 @@ function updateUi() {
   $("route-title").value = route().title;
   $("route-color").value = "#" + route().color;
   $("campaign-region").value = route().campaign_region;
-  $("point-heading").textContent = mode === "boundary" ? "亮区顶点" : mode === "area" ? "区域顶点" : mode === "path" ? "路线节点" : "地点位置";
+  $("flow-resource").textContent = `res://resources/campaign/regions/${route().campaign_region}.tres`;
+  $("point-heading").textContent = mode === "boundary" ? "亮区顶点" : mode === "area" ? "选区顶点" : mode === "path" ? "路径拐点" : "地标位置";
   $("point-count").textContent = mode === "place" ? `${Object.keys(layout.places).length} 个` : `${points().length} 个`;
-  $("point-help").textContent = mode === "boundary" ? "边界内保持亮度，外侧变暗。拖动圆点或按 Shift 点击边线加点；保存后重启游戏查看三态。" : mode === "place" ? "点击地点圆点选中，再拖动改变落点。" : "拖动圆点调整位置；Shift＋点击边线插入顶点。";
+  $("point-help").textContent = mode === "boundary" ? "边界内保持亮度，外侧变暗。拖动圆点或按 Shift 点击边线加点；保存后重启游戏查看三态。" : mode === "place" ? "点击地标圆点选中，再拖动改变落点。" : mode === "path" ? "拐点只改变线的外观，不是探索站点。Shift＋点击边线加点。" : "拖动顶点调整选区；Shift＋点击边线加点。选区用于地图命中与高亮。";
   $("add-point").disabled = $("remove-point").disabled = mode === "place" || pickingCoordinates;
   $("remove-point").disabled ||= selectedVertex < 0 || points().length <= (mode === "path" ? 2 : 3);
-  $("place-select").replaceChildren(new Option("选择地点", ""), ...Object.entries(layout.places).map(([id, place]) => new Option(`${place.title} · ${id}`, id)));
+  $("place-select").replaceChildren(new Option("选择地标", ""), ...Object.entries(layout.places).map(([id, place]) => new Option(`${place.title} · ${id}`, id)));
   $("place-select").value = selectedPlace;
   const place = layout.places[selectedPlace];
   for (const id of ["place-title", "place-x", "place-y"]) $(id).disabled = !place;
@@ -146,26 +162,25 @@ function updateUi() {
   $("place-y").value = place?.point[1] ?? "";
   $("route-places").replaceChildren(...Object.entries(layout.places).map(([id, item]) => {
     const row = document.createElement("div"); row.className = "place-row";
-    const box = document.createElement("input"); box.type = "checkbox"; box.checked = route().places.includes(id); box.ariaLabel = `路线包含${item.title}`;
+    const box = document.createElement("input"); box.type = "checkbox"; box.checked = route().places.includes(id); box.ariaLabel = `选区关联${item.title}`;
     box.addEventListener("change", () => {
       const before = snapshot();
       if (box.checked) route().places.push(id);
       else if (route().places.length > 1) route().places.splice(route().places.indexOf(id), 1);
-      else { box.checked = true; message("路线至少保留一个地点", true); return; }
+      else { box.checked = true; message("选区至少关联一个地标", true); return; }
       commit(before);
     });
     const name = document.createElement("span"); name.textContent = item.title; name.title = id;
-    const up = document.createElement("button"); up.textContent = "↑"; up.title = "前移"; up.disabled = route().places.indexOf(id) <= 0;
-    const down = document.createElement("button"); down.textContent = "↓"; down.title = "后移";
-    const swap = step => { const from = route().places.indexOf(id), to = from + step; if (from < 0 || to < 0 || to >= route().places.length) return; const before = snapshot(); [route().places[from], route().places[to]] = [route().places[to], route().places[from]]; commit(before); };
-    up.addEventListener("click", () => swap(-1)); down.addEventListener("click", () => swap(1));
-    down.disabled = route().places.indexOf(id) < 0 || route().places.indexOf(id) >= route().places.length - 1;
-    row.append(box, name, up, down); return row;
+    row.append(box, name); return row;
   }));
-  document.querySelectorAll("[data-mode]").forEach(button => button.classList.toggle("active", !pickingCoordinates && button.dataset.mode === mode));
+  document.querySelectorAll("[data-mode]").forEach(button => {
+    const active = !pickingCoordinates && button.dataset.mode === mode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
   $("pick-coordinate").classList.toggle("active", pickingCoordinates);
   $("pick-coordinate").setAttribute("aria-pressed", String(pickingCoordinates));
-  $("hint").textContent = pickingCoordinates ? "点击地图固定坐标；取坐标不会拖动或增删地点与边界。" : "拖动圆点调整位置；Shift＋点击边线添加顶点。";
+  $("hint").textContent = pickingCoordinates ? "点击地图固定坐标；取坐标不会拖动或增删地标与边界。" : "拖动圆点调整位置；Shift＋点击边线添加顶点。";
   updateCoordinate();
   $("undo").disabled = !history.length;
   $("redo").disabled = !future.length;
@@ -286,11 +301,11 @@ $("remove-point").addEventListener("click", () => {
 });
 $("add-place").addEventListener("click", () => {
   const id = $("new-id").value.trim(), title = $("new-title").value.trim();
-  if (!/^[a-z][a-z0-9_]*$/.test(id) || layout.places[id] || !title) { message("请填写未使用的英文 ID（小写字母、数字、下划线）和地点名称", true); return; }
+  if (!/^[a-z][a-z0-9_]*$/.test(id) || layout.places[id] || !title) { message("请填写未使用的英文 ID（小写字母、数字、下划线）和地标名称", true); return; }
   const viewport = $("viewport"), rect = canvas.getBoundingClientRect();
   const center = screenToMap([viewport.getBoundingClientRect().left + viewport.clientWidth / 2, viewport.getBoundingClientRect().top + viewport.clientHeight / 2], rect, layout.size);
   const before = snapshot(); layout.places[id] = { title, point: center }; route().places.push(id);
-  selectedPlace = id; mode = "place"; $("new-id").value = ""; $("new-title").value = ""; commit(before); message("地点已添加，拖动地图圆点调整位置");
+  selectedPlace = id; mode = "place"; $("new-id").value = ""; $("new-title").value = ""; commit(before); message("地标已添加；拖动圆点调整位置，探索站点另在 Godot 配置");
 });
 function restore(serialized) { layout = JSON.parse(serialized); selectedVertex = -1; if (!layout.places[selectedPlace]) selectedPlace = ""; routeIndex = Math.min(routeIndex, layout.routes.length - 1); updateUi(); }
 $("undo").addEventListener("click", () => { if (!history.length) return; future.push(snapshot()); restore(history.pop()); });

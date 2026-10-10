@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-08",
+  "baseline": "dbe4aa1 + return-policy working tree",
+  "engine": "Godot 4.7.2 Compatibility",
+  "shell": "PowerShell 7",
+  "checks": [
+    {
+      "scene": "event_return_check.tscn",
+      "args": "--capture",
+      "passed": 111,
+      "failed": 0,
+      "local_log": ".godot/event-return-policy-final.log"
+    },
+    {
+      "scene": "choice_pages_check.tscn",
+      "args": "--capture",
+      "passed": 197,
+      "failed": 0,
+      "local_log": ".godot/event-return-flow.log"
+    },
+    {
+      "scene": "choice_pages_check.tscn",
+      "args": "--headless",
+      "passed": 96,
+      "failed": 0,
+      "local_log": ".godot/event-return-flow-final.log"
+    },
+    {
+      "scene": "choice_semantics_check.tscn",
+      "args": "--capture",
+      "passed": 235,
+      "failed": 0,
+      "local_log": ".godot/event-return-compact-final.log"
+    },
+    {
+      "scene": "screen_cleanup_check.tscn",
+      "args": "--headless",
+      "passed": 64,
+      "failed": 0,
+      "local_log": ".godot/event-return-cleanup.log"
+    },
+    {
+      "scene": "expedition.tscn",
+      "args": "--headless -- --campaign-flow-check --order=012",
+      "passed": 149,
+      "failed": 0,
+      "local_log": ".godot/event-return-campaign.log"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "locked-1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 1691689,
+      "sha256": "6352550ebc2da079cfb5be481b3c0c22ebf4460a0844df2011a84a700aed767e"
+    },
+    {
+      "file": "locked-2560x1440.png",
+      "size": [
+        2560,
+        1440
+      ],
+      "bytes": 2683734,
+      "sha256": "73fb876ed56bada1133e0c011426e900d43b607cfe17228e7dc48200ffa9ace6"
+    },
+    {
+      "file": "locked-1920x1200.png",
+      "size": [
+        1920,
+        1200
+      ],
+      "bytes": 1844517,
+      "sha256": "d407b969c19ae828ebf09f043e422470d1925840adb753fee527d50fb2199729"
+    },
+    {
+      "file": "unlocked-1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 1819349,
+      "sha256": "8bae3a6985df4b121a0e33f788a98e14141dc94972b4d5fc8a328886dc07e73e"
+    }
+  ],
+  "scope": "Original M1 event controller and choice page; isolated save, real mouse and keyboard, per-event and per-node return settings, disk/home resume, failed-save rollback, three desktop sizes. No new random event generation or save schema. Existing root certificate and Kenney warnings remain. No mobile/controller/Web package or human usability signoff."
+}

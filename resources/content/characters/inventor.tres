@@ -13,10 +13,10 @@ display_name = "发明家"
 description = "发明家：对目标所在整排造成 72 点伤害。"
 portrait = SubResource("portrait")
 battle_animation = ExtResource("animation")
-health = 230
+health = 260
 attack = 24
-interval = 1.9
-defense = 8
+interval = 1.8
+defense = 12
 skill = ExtResource("skill")
 
 attack_range = 3.2

@@ -1,29 +1,127 @@
 schema_version: 3
 object:
-  id: cyber_librarian
+  id: "cyber_librarian"
   display_name: "图书管理员"
-  type: character
-  subtype: boss
+  type: "character"
+  subtype: "boss"
 variants:
   concept_003:
-    stage: concept
+    stage: "concept"
     version: "003"
-    selection: selected
-    approval: approved
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-enemy-cast.md
+      source: "docs/art/tasks/m1-enemy-cast.md"
       date: "2026-09-24"
-      decision: approved
+      decision: "approved"
       quote: "这两张概念通过"
-    root: design/concepts/enemy/cyber-librarian/concept_003
+    root: "design/concepts/enemy/cyber-librarian/concept_003"
     files:
-      concept: cyber_librarian_action_concept_003.png
-      generation: generation.md
+      concept: "cyber_librarian_action_concept_003.png"
+      generation: "generation.md"
     metadata:
-      asset_type: action_concept_board
+      asset_type: "action_concept_board"
       transparent: false
-      usage: [concept_review, action_design]
+      usage: ["concept_review", "action_design"]
       review_note: "保留非类人造型；肃静覆盖目标，归架书群和扫描指向同一目标。"
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "approved"
+    root: "design/concepts/enemy/cyber-librarian/asset_001"
+    files:
+      action-cards_json: "action-cards.json"
+      action-design_md: "action-design.md"
+      action-input_json: "action-input.json"
+      animations_tres: "animations.tres"
+      battle_animation_frames_json: "battle_animation.frames.json"
+      battle_animation_tres: "battle_animation.tres"
+      build-config_json: "build-config.json"
+      generation_md: "generation.md"
+      presentation_tscn: "presentation.tscn"
+      preview_unit_tres: "preview_unit.tres"
+      rig_manifest_json: "rig_manifest.json"
+      frames_anticipation_png: "frames/anticipation.png"
+      frames_cast_png: "frames/cast.png"
+      frames_critical_png: "frames/critical.png"
+      frames_death_png: "frames/death.png"
+      frames_fall_png: "frames/fall.png"
+      frames_idle_png: "frames/idle.png"
+      frames_impact_png: "frames/impact.png"
+      frames_recover_png: "frames/recover.png"
+      frames_stride_png: "frames/stride.png"
+      parts_Body_png: "parts/Body.png"
+      parts_projectile_png: "parts/projectile.png"
+      parts_WingLeft_png: "parts/WingLeft.png"
+      parts_WingRight_png: "parts/WingRight.png"
+      source_action-poses-clean_png: "source/action-poses-clean.png"
+      source_action-poses-clean_png_review_jpg: "source/action-poses-clean.png.review.jpg"
+      source_action-poses_png: "source/action-poses.png"
+      source_action-poses_png_review_jpg: "source/action-poses.png.review.jpg"
+      source_poses_png: "source/poses.png"
+      source_projectile_png: "source/projectile.png"
+      source_revision_json: "source/revision.json"
+      frame_metadata: "battle_animation.frames.json"
+      gif_idle: "review/idle-preview.gif"
+      gif_move: "review/move-preview.gif"
+      gif_ranged: "review/ranged-preview.gif"
+      gif_cast: "review/cast-preview.gif"
+      gif_hurt: "review/hurt-preview.gif"
+      gif_critical: "review/critical-preview.gif"
+      gif_death: "review/death-preview.gif"
+      gif_all_actions: "review/all-actions.gif"
+    resource: "design/concepts/enemy/cyber-librarian/asset_001/battle_animation.tres"
+    animation:
+      frames: "frame_metadata"
+      scene: "design/concepts/enemy/cyber-librarian/asset_001/presentation.tscn"
+      library: "design/concepts/enemy/cyber-librarian/asset_001/animations.tres"
+    previews:
+      godot:
+        unit: "res://tools/art/animation/enemy_cast/preview_units/cyber_librarian.tres"
+        animation: "res://assets/art/characters/cyber_librarian/battle_animation.tres"
+      gifs:
+        idle: "gif_idle"
+        move: "gif_move"
+        ranged: "gif_ranged"
+        cast: "gif_cast"
+        hurt: "gif_hurt"
+        critical: "gif_critical"
+        death: "gif_death"
+    metadata:
+      method: "rigid_parts_and_authored_pose_frames"
+      attack_modes: ["ranged"]
+      usage: ["asset_review", "motion_preview", "game_runtime"]
+      review_note: "负责人批准仅留最新整套；正式子集已提升，已按负责人授权绑定原主线；接入观感待评审。"
+      retained_from: "tmp_002"
+    approval_evidence:
+      source: "docs/art/tasks/m1-enemy-animation.md"
+      date: "2026-10-07"
+      decision: "approved"
+      quote: "“已生成资产”用选择框筛选、而不是标签。只保留最新一版，并提升为正式资产"
 integration:
-  status: not_integrated
-  active_variant: null
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owners: ["resources/content/enemies/cyber_librarian.tres"]
+  root: "assets/art/characters/cyber_librarian"
+  resource: "assets/art/characters/cyber_librarian/battle_animation.tres"
+  evidence: "docs/art/tasks/m1-enemy-animation.md"
+  files:
+    animations_tres: "animations.tres"
+    frame_metadata: "battle_animation.frames.json"
+    battle_animation_tres: "battle_animation.tres"
+    frames_anticipation_png: "frames/anticipation.png"
+    frames_cast_png: "frames/cast.png"
+    frames_critical_png: "frames/critical.png"
+    frames_death_png: "frames/death.png"
+    frames_fall_png: "frames/fall.png"
+    frames_idle_png: "frames/idle.png"
+    frames_impact_png: "frames/impact.png"
+    frames_recover_png: "frames/recover.png"
+    frames_stride_png: "frames/stride.png"
+    parts_Body_png: "parts/Body.png"
+    parts_WingLeft_png: "parts/WingLeft.png"
+    parts_WingRight_png: "parts/WingRight.png"
+    parts_projectile_png: "parts/projectile.png"
+    presentation_tscn: "presentation.tscn"
+    rig_manifest_json: "rig_manifest.json"

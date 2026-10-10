@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
+[ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_paper_guard.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/return_stamp/frames/idle.png" id="atlas"]
+[ext_resource type="Resource" path="res://assets/art/characters/return_stamp/battle_animation.tres" id="battle_animation"]
+[sub_resource type="AtlasTexture" id="portrait"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 0, 640, 640)
+[resource]
+script = ExtResource("s")
+id = "return_stamp"
+display_name = "归还印章怪"
+description = "每4次普攻获得50点5秒普通盾。"
+portrait = SubResource("portrait")
+battle_animation = ExtResource("battle_animation")
+health = 500
+attack = 24
+interval = 1.8
+defense = 20
+skill = ExtResource("skill")
+
+attack_range = 1.45

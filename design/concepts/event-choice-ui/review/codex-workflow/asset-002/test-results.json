@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-08",
+  "baseline": "b2a1e83 + choice chrome revision",
+  "engine": "Godot 4.7.2 Compatibility",
+  "results": {
+    "choice-chrome-delivery.log": "CHOICE_PAGES 205 checks / 0 failures",
+    "choice-chrome-states.log": "CHOICE_SKIN 55 checks / 0 failures",
+    "choice-chrome-cleanup.log": "SCREEN_CLEANUP_CHECK checks=64 failures=0"
+  },
+  "dimensions": [
+    [
+      1920,
+      1080
+    ],
+    [
+      2560,
+      1440
+    ],
+    [
+      1920,
+      1200
+    ]
+  ],
+  "boundary": "Desktop GUI with isolated original campaign fixtures. No mobile, physical controller or web export claim. Existing root-certificate and Kenney direct-image-load warnings persist.",
+  "retention": "New active family and minimum real screenshots retained. Previous source and earlier evidence are not deleted."
+}

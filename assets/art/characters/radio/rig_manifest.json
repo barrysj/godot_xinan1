@@ -1,0 +1,22 @@
+{
+  "runtime_files": [
+    "battle_animation.frames.json",
+    "battle_animation.tres",
+    "pose-sheet.png",
+    "rig_manifest.json"
+  ],
+  "skeleton_actions": [],
+  "frame_actions": [
+    "idle",
+    "move",
+    "ranged",
+    "cast",
+    "hurt",
+    "critical",
+    "death"
+  ],
+  "attack_modes": [
+    "ranged"
+  ],
+  "playback_metadata_only": true
+}

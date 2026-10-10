@@ -41,6 +41,7 @@ func to_dict() -> Dictionary:
 
 func _apply(data: Dictionary) -> void:
 	campaign = data.get("campaign", Campaign.fresh()).duplicate(true)
+	if not campaign.has("story_flags"): campaign.story_flags = {}
 	campaign.schema = int(campaign.schema)
 	campaign.finale_stage = int(campaign.finale_stage)
 	if not campaign.has("formation"): campaign.formation = Campaign.fresh().formation
@@ -151,16 +152,18 @@ func record_memory(id: String) -> bool:
 	campaign.memories.append(id)
 	return _commit(before)
 
-func settle_region(run_id: String, region: String, characters: Array, earned: int) -> bool:
+func settle_region(run_id: String, region: String, characters: Array, earned: int, lineup: Array = []) -> bool:
 	if not campaign.routes_acquired or not Campaign.REGIONS.has(region) or run_id.is_empty(): return false
 	if campaign.settled_runs.has(run_id): return not load_blocked
 	for id in characters:
 		if not id is String or id.is_empty(): return false
+	if not lineup.is_empty() and not Campaign.formation_valid(lineup,campaign.characters+characters): return false
 	var before = to_dict()
 	campaign.settled_runs.append(run_id)
 	if not campaign.terminals.has(region): campaign.terminals.append(region)
 	for id in characters:
 		if not campaign.characters.has(id): campaign.characters.append(id)
+	if not lineup.is_empty(): campaign.formation = lineup.duplicate()
 	points += maxi(0, earned)
 	completions += 1
 	return _commit(before)
@@ -204,13 +207,11 @@ func save_checkpoint(snapshot: Dictionary) -> bool:
 	active_run = snapshot.duplicate(true)
 	return _commit(before)
 
-func save_campaign_checkpoint(snapshot: Dictionary, lineup: Array) -> bool:
+func save_campaign_checkpoint(snapshot: Dictionary, lineup: Array, story_flags: Variant = null) -> bool:
+	if story_flags != null and not preload("res://game/run/hotspot_event.gd").valid_flags(story_flags): return false
 	var before = to_dict()
-	if lineup.size() == 6 and lineup.count("") == 2:
-		var allowed = true
-		for id in lineup:
-			if not id in ["","guard","archer","healer","striker"] and not campaign.characters.has(id): allowed = false
-		if allowed: campaign.formation = lineup.duplicate()
+	if story_flags != null: campaign.story_flags = story_flags.duplicate(true)
+	if Campaign.formation_valid(lineup,campaign.characters): campaign.formation = lineup.duplicate()
 	active_run = snapshot.duplicate(true)
 	return _commit(before)
 

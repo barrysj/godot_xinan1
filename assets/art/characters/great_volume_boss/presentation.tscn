@@ -1,0 +1,110 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://scenes/battle_demo/presentations/hybrid_presentation.gd" id="script"]
+[ext_resource type="AnimationLibrary" path="res://assets/art/characters/great_volume_boss/animations.tres" id="library"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/parts/Body.png" id="Body"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/parts/RibbonBack.png" id="RibbonBack"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/parts/RibbonFront.png" id="RibbonFront"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/critical.png" id="critical_pose"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/cast.png" id="cast_pose"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/parts/projectile.png" id="plane"]
+[node name="Presentation" type="Node2D"]
+visible = false
+script = ExtResource("script")
+canvas_size = Vector2(640, 640)
+[node name="Rig" type="Node2D" parent="."]
+[node name="Skeleton2D" type="Skeleton2D" parent="Rig"]
+[node name="RootBone" type="Bone2D" parent="Rig/Skeleton2D"]
+rest = Transform2D(1, 0, 0, 1, 0, 0)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+[node name="Body" type="Sprite2D" parent="Rig/Skeleton2D/RootBone"]
+position = Vector2(0, -240)
+texture = ExtResource("Body")
+[node name="RibbonBackBone" type="Bone2D" parent="Rig/Skeleton2D/RootBone"]
+position = Vector2(-100.0, -312)
+rest = Transform2D(1, 0, 0, 1, -100.0, -312)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+[node name="RibbonBack" type="Sprite2D" parent="Rig/Skeleton2D/RootBone/RibbonBackBone"]
+position = Vector2(100.0, 72)
+texture = ExtResource("RibbonBack")
+[node name="RibbonFrontBone" type="Bone2D" parent="Rig/Skeleton2D/RootBone"]
+position = Vector2(-100.0, -312)
+rest = Transform2D(1, 0, 0, 1, -100.0, -312)
+auto_calculate_length_and_angle = false
+length = 1.0
+bone_angle = 0.0
+[node name="RibbonFront" type="Sprite2D" parent="Rig/Skeleton2D/RootBone/RibbonFrontBone"]
+position = Vector2(100.0, 72)
+texture = ExtResource("RibbonFront")
+[node name="CriticalPose" type="Sprite2D" parent="Rig/Skeleton2D/RootBone"]
+visible = false
+position = Vector2(0, -240)
+texture = ExtResource("critical_pose")
+[node name="OpenBook" type="Sprite2D" parent="Rig/Skeleton2D/RootBone"]
+visible = false
+position = Vector2(0, -240)
+texture = ExtResource("cast_pose")
+[node name="Plane0" type="Sprite2D" parent="Rig"]
+visible = false
+position = Vector2(110, -190)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("plane")
+[node name="Plane1" type="Sprite2D" parent="Rig"]
+visible = false
+position = Vector2(110, -164)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("plane")
+[node name="Plane2" type="Sprite2D" parent="Rig"]
+visible = false
+position = Vector2(110, -138)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("plane")
+[node name="CastLight" type="Node2D" parent="Rig"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(0, -200)
+[node name="Ring" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(150.0, 0.0, 148.717, 13.705, 144.889, 27.176, 138.582, 40.182, 129.904, 52.5, 119.003, 63.92, 106.066, 74.246, 91.314, 83.302, 75.0, 90.933, 57.403, 97.007, 38.823, 101.422, 19.579, 104.102, 0.0, 105.0, -19.579, 104.102, -38.823, 101.422, -57.403, 97.007, -75.0, 90.933, -91.314, 83.302, -106.066, 74.246, -119.003, 63.92, -129.904, 52.5, -138.582, 40.182, -144.889, 27.176, -148.717, 13.705, -150.0, 0.0, -148.717, -13.705, -144.889, -27.176, -138.582, -40.182, -129.904, -52.5, -119.003, -63.92, -106.066, -74.246, -91.314, -83.302, -75.0, -90.933, -57.403, -97.007, -38.823, -101.422, -19.579, -104.102, -0.0, -105.0, 19.579, -104.102, 38.823, -101.422, 57.403, -97.007, 75.0, -90.933, 91.314, -83.302, 106.066, -74.246, 119.003, -63.92, 129.904, -52.5, 138.582, -40.182, 144.889, -27.176, 148.717, -13.705, 150.0, -0.0)
+width = 9.0
+default_color = Color(1, 0.82, 0.4, 1)
+antialiased = true
+[node name="RingCore" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(150.0, 0.0, 148.717, 13.705, 144.889, 27.176, 138.582, 40.182, 129.904, 52.5, 119.003, 63.92, 106.066, 74.246, 91.314, 83.302, 75.0, 90.933, 57.403, 97.007, 38.823, 101.422, 19.579, 104.102, 0.0, 105.0, -19.579, 104.102, -38.823, 101.422, -57.403, 97.007, -75.0, 90.933, -91.314, 83.302, -106.066, 74.246, -119.003, 63.92, -129.904, 52.5, -138.582, 40.182, -144.889, 27.176, -148.717, 13.705, -150.0, 0.0, -148.717, -13.705, -144.889, -27.176, -138.582, -40.182, -129.904, -52.5, -119.003, -63.92, -106.066, -74.246, -91.314, -83.302, -75.0, -90.933, -57.403, -97.007, -38.823, -101.422, -19.579, -104.102, -0.0, -105.0, 19.579, -104.102, 38.823, -101.422, 57.403, -97.007, 75.0, -90.933, 91.314, -83.302, 106.066, -74.246, 119.003, -63.92, 129.904, -52.5, 138.582, -40.182, 144.889, -27.176, 148.717, -13.705, 150.0, -0.0)
+width = 2.5
+default_color = Color(0.9, 1, 1, 0.9)
+antialiased = true
+[node name="Ray0" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(165.0, 0.0, 195.0, 0.0)
+width = 5.0
+default_color = Color(1, 0.82, 0.4, 0.9)
+antialiased = true
+[node name="Ray1" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(82.5, 95.263, 97.5, 116.913)
+width = 5.0
+default_color = Color(1, 0.82, 0.4, 0.9)
+antialiased = true
+[node name="Ray2" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(-82.5, 95.263, -97.5, 116.913)
+width = 5.0
+default_color = Color(1, 0.82, 0.4, 0.9)
+antialiased = true
+[node name="Ray3" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(-165.0, 0.0, -195.0, 0.0)
+width = 5.0
+default_color = Color(1, 0.82, 0.4, 0.9)
+antialiased = true
+[node name="Ray4" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(-82.5, -95.263, -97.5, -116.913)
+width = 5.0
+default_color = Color(1, 0.82, 0.4, 0.9)
+antialiased = true
+[node name="Ray5" type="Line2D" parent="Rig/CastLight"]
+points = PackedVector2Array(82.5, -95.263, 97.5, -116.913)
+width = 5.0
+default_color = Color(1, 0.82, 0.4, 0.9)
+antialiased = true
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+callback_mode_process = 2
+libraries/ = ExtResource("library")

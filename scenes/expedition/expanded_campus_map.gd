@@ -203,6 +203,9 @@ func place_at(at: Vector2) -> String:
 			nearest = id
 	return nearest
 
+func place_title(place: String) -> String:
+	return str(layout.PLACES.get(place, {}).get("title", place))
+
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if dragging:
@@ -214,7 +217,7 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		preview(route_at(event.position))
 		var place = place_at(event.position)
-		tooltip_text = layout.PLACES[place].title + " · 点击查看" if not place.is_empty() else ""
+		tooltip_text = place_title(place) + " · 点击查看" if not place.is_empty() else ""
 		mouse_default_cursor_shape = CURSOR_POINTING_HAND if not place.is_empty() or hovered_route >= 0 else CURSOR_ARROW
 	elif event is InputEventMouseButton:
 		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:

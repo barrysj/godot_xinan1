@@ -1,0 +1,349 @@
+{
+  "canvas": [
+    640,
+    640
+  ],
+  "anchor": [
+    0.5,
+    0.875
+  ],
+  "display_size": [
+    160,
+    160
+  ],
+  "impact_ratio": 0.45,
+  "flip_with_facing": true,
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle"
+      ],
+      "loop": true,
+      "fps": 8
+    },
+    "move": {
+      "poses": [
+        "idle",
+        "stride",
+        "idle",
+        "stride"
+      ],
+      "loop": true,
+      "fps": 8
+    },
+    "melee": {
+      "poses": [
+        "idle",
+        "anticipation",
+        "anticipation",
+        "impact",
+        "recover",
+        "idle"
+      ],
+      "loop": false,
+      "fps": 12
+    },
+    "cast": {
+      "poses": [
+        "idle",
+        "anticipation",
+        "cast",
+        "cast",
+        "recover",
+        "idle"
+      ],
+      "loop": false,
+      "fps": 12
+    },
+    "hurt": {
+      "poses": [
+        "idle",
+        "recover",
+        "idle"
+      ],
+      "loop": false,
+      "fps": 12
+    },
+    "critical": {
+      "poses": [
+        "critical"
+      ],
+      "loop": true,
+      "fps": 8
+    },
+    "death": {
+      "poses": [
+        "critical",
+        "fall",
+        "death"
+      ],
+      "loop": false,
+      "fps": 6
+    }
+  },
+  "source_processing": {
+    "idle": {
+      "crop": [
+        6,
+        0,
+        422,
+        473
+      ],
+      "source_bbox": [
+        55,
+        32,
+        376,
+        442
+      ],
+      "axis_x": 214.4296875,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        111,
+        129
+      ],
+      "visible_bbox": [
+        165,
+        160,
+        478,
+        560
+      ],
+      "adjacent_fragment_pixels_removed": 0
+    },
+    "stride": {
+      "crop": [
+        388,
+        0,
+        821,
+        470
+      ],
+      "source_bbox": [
+        53,
+        53,
+        401,
+        418
+      ],
+      "axis_x": 239.97968750000007,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        86,
+        152
+      ],
+      "visible_bbox": [
+        138,
+        203,
+        477,
+        561
+      ],
+      "adjacent_fragment_pixels_removed": 0
+    },
+    "anticipation": {
+      "crop": [
+        792,
+        72,
+        1241,
+        474
+      ],
+      "source_bbox": [
+        79,
+        63,
+        421,
+        372
+      ],
+      "axis_x": 234.7125000000001,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        91,
+        197
+      ],
+      "visible_bbox": [
+        168,
+        258,
+        501,
+        560
+      ],
+      "adjacent_fragment_pixels_removed": 1447
+    },
+    "impact": {
+      "crop": [
+        3,
+        511,
+        434,
+        879
+      ],
+      "source_bbox": [
+        57,
+        70,
+        393,
+        349
+      ],
+      "axis_x": 224.28750000000002,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        101,
+        220
+      ],
+      "visible_bbox": [
+        157,
+        288,
+        484,
+        561
+      ],
+      "adjacent_fragment_pixels_removed": 0
+    },
+    "recover": {
+      "crop": [
+        401,
+        422,
+        820,
+        871
+      ],
+      "source_bbox": [
+        59,
+        60,
+        386,
+        422
+      ],
+      "axis_x": 226.97968750000007,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        99,
+        148
+      ],
+      "visible_bbox": [
+        156,
+        207,
+        476,
+        560
+      ],
+      "adjacent_fragment_pixels_removed": 0
+    },
+    "cast": {
+      "crop": [
+        795,
+        403,
+        1247,
+        870
+      ],
+      "source_bbox": [
+        78,
+        53,
+        440,
+        443
+      ],
+      "axis_x": 231.7125000000001,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        94,
+        128
+      ],
+      "visible_bbox": [
+        170,
+        180,
+        523,
+        561
+      ],
+      "adjacent_fragment_pixels_removed": 10050
+    },
+    "critical": {
+      "crop": [
+        7,
+        826,
+        427,
+        1243
+      ],
+      "source_bbox": [
+        51,
+        57,
+        376,
+        397
+      ],
+      "axis_x": 201.6734375,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        123,
+        173
+      ],
+      "visible_bbox": [
+        173,
+        229,
+        490,
+        560
+      ],
+      "adjacent_fragment_pixels_removed": 8924
+    },
+    "fall": {
+      "crop": [
+        391,
+        868,
+        835,
+        1243
+      ],
+      "source_bbox": [
+        55,
+        85,
+        426,
+        350
+      ],
+      "axis_x": 222.28437500000007,
+      "scale_xy": [
+        0.975609756097561,
+        0.975609756097561
+      ],
+      "placement": [
+        103,
+        219
+      ],
+      "visible_bbox": [
+        157,
+        302,
+        518,
+        561
+      ],
+      "adjacent_fragment_pixels_removed": 0,
+      "source": "source/poses-death-wheel-attempt.png"
+    },
+    "death": {
+      "source": "source/death-four-wheels.png",
+      "scale_xy": [
+        0.3001644736842105,
+        0.3001644736842105
+      ],
+      "placement": [
+        128,
+        275
+      ],
+      "alignment": "match existing complete silhouette width and ground anchor"
+    }
+  },
+  "method": "rigid-part skeleton continuous loops/reactions; authored key poses for deformation and death",
+  "frame_release_ratio": 0.45,
+  "attack_frame_durations": [
+    0.9,
+    0.9,
+    0.9,
+    1.1,
+    1.1,
+    1.1
+  ]
+}

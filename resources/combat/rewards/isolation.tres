@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CampusCombatReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/combat_reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "isolation"
+display_name = "异常隔离"
+description = "反冲爆炸伤害从30提高至36；盾量、范围与代码回流不变。"
+category = "程序"
+program_id = "redirect"
+program_damage_bonus = 6
+
+reward_chain = "protect"

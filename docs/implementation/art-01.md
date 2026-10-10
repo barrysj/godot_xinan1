@@ -30,3 +30,9 @@
 ## 交接给统筹
 
 当前状态已纳入 2026-09-15 总览。后续 session 在此注明影响其他功能、平台支持、里程碑或整体可玩流程的变化，由统筹汇总；不要追加逐日施工过程。
+
+## 既有计时施法的释放反馈（2026-10-07）
+
+基线8e983ea加工作树。pixel_battle.gd监听原enemy_release事件，短暂同步既有cast片段的释放段，0.4模拟秒后恢复普通动作；死亡优先，重建战斗清空状态。code_fx.gd只绘制蓄力弧及0.22秒缓出释放提示，简化特效减少运动。没有新增动作资源，不改变模拟或使用Engine.time_scale。
+
+battle_feedback_check.tscn -- --capture：68/0，原广播／投影／巨典均实际到达9秒预警、12秒释放，已有cast可见且提示正常收尾；三桌面尺寸实机截图已查看。presentation_check.tscn PASS / 0；原starting_strategy_check.tscn无头132/0。日志 .godot/battle-feedback-verified.log、feedback-presentation.log、feedback-starting-flow.log。旧强化接入检查的现行失败和输入边界见UI-02。待统筹：无新动作生产，只补原事件到现有表现资源的连接。

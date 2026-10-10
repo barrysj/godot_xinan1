@@ -1,0 +1,28 @@
+{
+  "character": {
+    "name": "归还印章怪",
+    "identity": "木柄品红眼、黄铜四日期轮、两张纸条臂与矩形红印底的印章怪",
+    "personality": [
+      "执拗",
+      "刻板"
+    ],
+    "body_type": "非人校园器物，比例沿用批准概念",
+    "weapon_main": "刚性梨形木柄、四日期轮、双纸条、红色印底；无手持武器",
+    "combat_style": "木柄沿伸缩套直上直下，印底平行落地，回弹利落",
+    "faction_vibe": "校园异常敌人",
+    "asymmetry": "保持概念板所示部件归属及镜头／书脊朝向，不交换部件；原生文字不作为左右识别点"
+  },
+  "game": {
+    "genre": "SLG战棋",
+    "camera": "2.5D侧视",
+    "exaggeration": 3
+  },
+  "tech": {
+    "directions": [
+      "E"
+    ],
+    "frames_per_dir": 16,
+    "frame_rate": 12
+  },
+  "approved_reference_exception": "2026-10-07负责人允许已批准概念板替代三视图，单视角连续制作"
+}

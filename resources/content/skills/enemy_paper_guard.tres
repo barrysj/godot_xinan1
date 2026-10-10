@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusSkill" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/skill_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("e")
+kind = "shield"
+target = "self"
+value = 50
+attack_scale = 0
+[resource]
+script = ExtResource("s")
+id = "skill_enemy_paper_guard"
+display_name = "纸甲"
+description = "每4次普攻获得50点5秒普通盾。"
+attacks_to_trigger = 4
+effects = Array[ExtResource("e")]([SubResource("effect")])

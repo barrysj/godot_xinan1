@@ -6,3 +6,6 @@ id = "badge"
 display_name = "厚笔记本"
 description = "生命上限 +80。通过奖励或出发补给获得。"
 health_bonus = 80
+
+balanced_health_bonus = 40
+balanced_description = "生命上限 +40。通过奖励或出发补给获得。"

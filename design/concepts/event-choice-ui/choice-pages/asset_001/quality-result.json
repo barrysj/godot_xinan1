@@ -1,0 +1,86 @@
+{
+  "skill": "image-quality-check",
+  "results": [
+    {
+      "schema_version": 1,
+      "task_id": "event-choice-frame",
+      "status": "PASS",
+      "eligible_for_style_validation": true,
+      "checks": {
+        "technical_integrity": "PASS",
+        "subject_and_identity": "PASS",
+        "anatomy_and_physics": "NOT_APPLICABLE",
+        "prompt_and_content": "PASS",
+        "composition_and_readability": "PASS",
+        "generation_artifacts": "PASS"
+      },
+      "failures": [],
+      "notes": [
+        "平整留白可供原生文字覆盖；固定参考比例缩放，不把边框当正文。"
+      ],
+      "repair_directives": [],
+      "next_step": "accept",
+      "file": "frame.png",
+      "width": 1586,
+      "height": 992,
+      "mode": "RGB",
+      "bytes": 1806378,
+      "sha256": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef",
+      "references": []
+    },
+    {
+      "schema_version": 1,
+      "task_id": "event-choice-reward",
+      "status": "PASS_WITH_NOTES",
+      "eligible_for_style_validation": true,
+      "checks": {
+        "technical_integrity": "PASS",
+        "subject_and_identity": "PASS",
+        "anatomy_and_physics": "PASS",
+        "prompt_and_content": "PASS",
+        "composition_and_readability": "PASS",
+        "generation_artifacts": "PASS"
+      },
+      "failures": [],
+      "notes": [
+        "电路板的小型物理标记不作为游戏说明；未生成可读文字或人物。"
+      ],
+      "repair_directives": [],
+      "next_step": "accept",
+      "file": "reward.png",
+      "width": 1086,
+      "height": 1448,
+      "mode": "RGB",
+      "bytes": 2287520,
+      "sha256": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677",
+      "references": []
+    },
+    {
+      "schema_version": 1,
+      "task_id": "event-choice-terminal",
+      "status": "PASS_WITH_NOTES",
+      "eligible_for_style_validation": true,
+      "checks": {
+        "technical_integrity": "PASS",
+        "subject_and_identity": "PASS",
+        "anatomy_and_physics": "PASS",
+        "prompt_and_content": "PASS",
+        "composition_and_readability": "PASS",
+        "generation_artifacts": "PASS"
+      },
+      "failures": [],
+      "notes": [
+        "悬浮线条作为数据图形，不作为可读日志；场景是事件插画，不用于证明校园实际地理。"
+      ],
+      "repair_directives": [],
+      "next_step": "accept",
+      "file": "terminal.png",
+      "width": 1086,
+      "height": 1448,
+      "mode": "RGB",
+      "bytes": 2158209,
+      "sha256": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4",
+      "references": []
+    }
+  ]
+}

@@ -142,6 +142,8 @@ func run_checks(hub) -> void:
 		map_selector._focus_selected()
 		verify(map_selector.focused_route == 2 and map_selector.explore_button.visible and map_selector.back_button.visible, "selection focuses route before exploration")
 		map_selector._explore()
+		verify(hub.campaign_panel.action_button("strategy:region_c:region:keep") != null,"original map leads to starting build selection")
+		hub._campaign_action("strategy:region_c:region:keep")
 		verify(hub.campaign_mode == "region" and hub.journey.data.region == "region_c", "map selection enters existing campaign flow")
 		verify(hub.campaign_panel.visible, "campaign panel returns after selecting map route")
 		await hub.get_tree().process_frame

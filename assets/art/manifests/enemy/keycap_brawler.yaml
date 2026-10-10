@@ -1,29 +1,122 @@
 schema_version: 3
 object:
-  id: keycap_brawler
+  id: "keycap_brawler"
   display_name: "键帽拳灵"
-  type: character
-  subtype: enemy
+  type: "character"
+  subtype: "enemy"
 variants:
   concept_002:
-    stage: concept
+    stage: "concept"
     version: "002"
-    selection: selected
-    approval: approved
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-enemy-cast.md
+      source: "docs/art/tasks/m1-enemy-cast.md"
       date: "2026-09-25"
-      decision: approved
+      decision: "approved"
       quote: "这几个都概念通过"
-    root: design/concepts/enemy/keycap-brawler/concept_002
+    root: "design/concepts/enemy/keycap-brawler/concept_002"
     files:
-      concept: keycap_brawler_action_concept_002.png
-      generation: generation.md
+      concept: "keycap_brawler_action_concept_002.png"
+      generation: "generation.md"
     metadata:
-      asset_type: action_concept_board
+      asset_type: "action_concept_board"
       transparent: false
-      usage: [concept_review, action_design]
+      usage: ["concept_review", "action_design"]
       review_note: "双键拳面统一，蓄力与出拳对应关系更明确；击打面透视和按键下压深度仍需正式动作稿细化。"
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "approved"
+    root: "design/concepts/enemy/keycap-brawler/asset_001"
+    files:
+      action-cards_json: "action-cards.json"
+      action-design_md: "action-design.md"
+      action-input_json: "action-input.json"
+      animations_tres: "animations.tres"
+      battle_animation_frames_json: "battle_animation.frames.json"
+      battle_animation_tres: "battle_animation.tres"
+      build-config_json: "build-config.json"
+      generation_md: "generation.md"
+      presentation_tscn: "presentation.tscn"
+      preview_unit_tres: "preview_unit.tres"
+      rig_manifest_json: "rig_manifest.json"
+      frames_anticipation_png: "frames/anticipation.png"
+      frames_cast_png: "frames/cast.png"
+      frames_critical_png: "frames/critical.png"
+      frames_death_png: "frames/death.png"
+      frames_fall_png: "frames/fall.png"
+      frames_idle_png: "frames/idle.png"
+      frames_impact_png: "frames/impact.png"
+      frames_recover_png: "frames/recover.png"
+      frames_stride_png: "frames/stride.png"
+      parts_Body_png: "parts/Body.png"
+      parts_FarLeg_png: "parts/FarLeg.png"
+      parts_Head_png: "parts/Head.png"
+      parts_NearLeg_png: "parts/NearLeg.png"
+      source_poses_png: "source/poses.png"
+      source_revision_json: "source/revision.json"
+      frame_metadata: "battle_animation.frames.json"
+      gif_idle: "review/idle-preview.gif"
+      gif_move: "review/move-preview.gif"
+      gif_melee: "review/melee-preview.gif"
+      gif_cast: "review/cast-preview.gif"
+      gif_hurt: "review/hurt-preview.gif"
+      gif_critical: "review/critical-preview.gif"
+      gif_death: "review/death-preview.gif"
+      gif_all_actions: "review/all-actions.gif"
+    resource: "design/concepts/enemy/keycap-brawler/asset_001/battle_animation.tres"
+    animation:
+      frames: "frame_metadata"
+      scene: "design/concepts/enemy/keycap-brawler/asset_001/presentation.tscn"
+      library: "design/concepts/enemy/keycap-brawler/asset_001/animations.tres"
+    previews:
+      godot:
+        unit: "res://tools/art/animation/enemy_cast/preview_units/keycap_brawler.tres"
+        animation: "res://assets/art/characters/keycap_brawler/battle_animation.tres"
+      gifs:
+        idle: "gif_idle"
+        move: "gif_move"
+        melee: "gif_melee"
+        cast: "gif_cast"
+        hurt: "gif_hurt"
+        critical: "gif_critical"
+        death: "gif_death"
+    metadata:
+      method: "rigid_parts_and_authored_pose_frames"
+      attack_modes: ["melee"]
+      usage: ["asset_review", "motion_preview", "game_runtime"]
+      review_note: "负责人批准仅留最新整套；正式子集已提升，已按负责人授权绑定原主线；接入观感待评审。"
+      retained_from: "tmp_002"
+    approval_evidence:
+      source: "docs/art/tasks/m1-enemy-animation.md"
+      date: "2026-10-07"
+      decision: "approved"
+      quote: "“已生成资产”用选择框筛选、而不是标签。只保留最新一版，并提升为正式资产"
 integration:
-  status: not_integrated
-  active_variant: null
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owners: ["resources/content/enemies/desk.tres"]
+  root: "assets/art/characters/keycap_brawler"
+  resource: "assets/art/characters/keycap_brawler/battle_animation.tres"
+  evidence: "docs/art/tasks/m1-enemy-animation.md"
+  files:
+    animations_tres: "animations.tres"
+    frame_metadata: "battle_animation.frames.json"
+    battle_animation_tres: "battle_animation.tres"
+    frames_anticipation_png: "frames/anticipation.png"
+    frames_cast_png: "frames/cast.png"
+    frames_critical_png: "frames/critical.png"
+    frames_death_png: "frames/death.png"
+    frames_fall_png: "frames/fall.png"
+    frames_idle_png: "frames/idle.png"
+    frames_impact_png: "frames/impact.png"
+    frames_recover_png: "frames/recover.png"
+    frames_stride_png: "frames/stride.png"
+    parts_Body_png: "parts/Body.png"
+    parts_FarLeg_png: "parts/FarLeg.png"
+    parts_Head_png: "parts/Head.png"
+    parts_NearLeg_png: "parts/NearLeg.png"
+    presentation_tscn: "presentation.tscn"
+    rig_manifest_json: "rig_manifest.json"

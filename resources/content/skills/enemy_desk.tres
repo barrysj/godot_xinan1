@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusSkill" load_steps=4 format=3]
+[ext_resource type="Script" path="res://game/content/skill_def.gd" id="s"]
+[ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("e")
+kind = "damage"
+target = "low_enemy"
+value = 0
+attack_scale = 1.4
+[resource]
+script = ExtResource("s")
+id = "skill_enemy_desk"
+display_name = "追击"
+description = "每4次普攻追加140%攻击，优先射程内低生命目标。"
+attacks_to_trigger = 4
+effects = Array[ExtResource("e")]([SubResource("effect")])

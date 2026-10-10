@@ -4,6 +4,8 @@ const AutoBattle = preload("res://game/combat/auto_battle.gd")
 const Profile = preload("res://game/content/battle_action_profile.gd")
 const SHIELD_CAP := 144.0
 const EPSILON := 0.00001
+const CAST_WINDUP := 0.8
+const CAST_RECOVERY := 0.2
 var units: Array[Dictionary] = []
 var projectiles: Array[Dictionary] = []
 var events: Array[Dictionary] = []
@@ -26,6 +28,7 @@ func reset(roster: Array[Dictionary]) -> void:
 	active_action_id = -1
 	for u in units:
 		u.action = {}
+		u.pending_cast = {}
 		u.previous_position = u.position
 		u.facing = Vector2.UP if u.side == 0 else Vector2.DOWN
 		if u.get("action_profile") == null: u.action_profile = Profile.new()
@@ -51,13 +54,13 @@ func request_action(actor_id: int, target_id: int, kind: StringName = &"attack")
 	var target = unit(target_id)
 	if kind != &"attack" or closing or finished or actor.is_empty() or target.is_empty(): return false
 	if actor.hp <= 0 or target.hp <= 0 or actor.side == target.side: return false
-	if actor.moving or not actor.action.is_empty() or actor.timer > 0.00001: return false
+	if actor.moving or not actor.action.is_empty() or not actor.get("pending_cast", {}).is_empty() or actor.timer > 0.00001: return false
 	if not AutoBattle.in_range(actor, target): return false
 	var timing: Vector2 = actor.action_profile.timing(actor.interval)
 	next_action_id += 1
 	actor.action = {"id": next_action_id, "target_id": target.id, "age": 0.0,
 		"windup": timing.x, "duration": timing.x + timing.y, "released": false,
-		"phase": "windup", "casts": actor.count + 1 >= actor.skill.attacks_to_trigger,
+		"phase": "windup", "kind": "attack", "casts": false,
 		"mode": "ranged" if actor.action_profile.is_projectile(actor.attack_range) else "melee"}
 	actor.timer = actor.interval
 	actor.facing = actor.position.direction_to(target.position)
@@ -78,7 +81,7 @@ func advance(delta: float) -> Array[Dictionary]:
 		actor.previous_position = actor.position
 		_expire_shields(actor)
 		if actor.hp <= 0 or closing: continue
-		actor.timer = maxf(0, actor.timer - delta)
+		if actor.action.get("kind", "attack") != "cast": actor.timer = maxf(0, actor.timer - delta)
 		if actor.action.is_empty():
 			AutoBattle.advance_movement(actor, delta)
 			if actor.position != actor.previous_position:
@@ -122,6 +125,7 @@ func advance(delta: float) -> Array[Dictionary]:
 		# New requests use the resolved state: no swings at targets killed this tick.
 		# A completed recovery or movement may immediately acquire its next action.
 		if actor.action.is_empty():
+			if _start_pending_action(actor): continue
 			var next_target = AutoBattle.advance(actor, units, 0)
 			if not next_target.is_empty(): request_action(actor.id, next_target.id)
 	if closing and projectiles.is_empty():
@@ -132,6 +136,7 @@ func advance(delta: float) -> Array[Dictionary]:
 	return output
 
 func _end_action(actor: Dictionary) -> void:
+	actor.pending_cast = {}
 	if actor.action.is_empty(): return
 	_emit("action_finished" if actor.action.released else "action_cancelled", actor, actor, actor.action.id)
 	actor.action = {}
@@ -141,6 +146,13 @@ func _release(actor: Dictionary, due: Array[Dictionary]) -> void:
 	action.released = true
 	action.phase = "recovery"
 	var target = unit(action.target_id)
+	if action.kind == "cast":
+		active_action_id = action.id
+		var cast_effects: Array[Dictionary] = []
+		_cast_effects(actor, target, cast_effects)
+		_emit("action_released", actor, actor if target.is_empty() else target, action.id, {"casts":true, "action_kind":"cast"})
+		_deliver_effects(actor, cast_effects, due)
+		return
 	if target.is_empty() or not AutoBattle.in_range(actor, target):
 		_emit("action_missed", actor, actor, action.id)
 		return
@@ -150,8 +162,12 @@ func _release(actor: Dictionary, due: Array[Dictionary]) -> void:
 	actor.count += 1
 	if actor.count >= actor.skill.attacks_to_trigger:
 		actor.count = 0
-		_skill_events(actor, target, effects)
+		if _uses_attack_skill(actor): actor.pending_cast = {"target_id":target.id}
 	_emit("action_released", actor, target, action.id, {"casts": action.casts})
+	_deliver_effects(actor, effects, due)
+
+func _deliver_effects(actor: Dictionary, effects: Array[Dictionary], due: Array[Dictionary]) -> void:
+	var action: Dictionary = actor.action
 	for effect in effects:
 		if effect.kind == "damage" and actor.action_profile.is_projectile(actor.attack_range):
 			projectiles.append({"action_id": action.id, "actor_id": actor.id,
@@ -161,6 +177,93 @@ func _release(actor: Dictionary, due: Array[Dictionary]) -> void:
 				"spawn_time": elapsed, "effect": effect, "special": effect.special, "done": false})
 		else:
 			due.append(effect)
+func _uses_attack_skill(actor: Dictionary) -> bool:
+	return not actor.skill.effects.is_empty()
+
+func _start_pending_action(actor: Dictionary) -> bool:
+	if actor.get("pending_cast", {}).is_empty(): return false
+	var target := unit(actor.pending_cast.target_id)
+	# Reacquire only when the retained target has died. Individual effects still
+	# check their own range; support does not disappear with the old enemy.
+	if target.is_empty() or target.hp <= 0: target = _target(actor, _living(1 - actor.side))
+	actor.pending_cast = {}
+	if target.is_empty(): return false
+	_start_cast(actor, target, CAST_WINDUP)
+	return true
+
+func _start_cast(actor: Dictionary, target: Dictionary, windup: float) -> void:
+	next_action_id += 1
+	actor.action = {"id":next_action_id, "target_id":target.id, "age":0.0,
+		"windup":windup, "duration":windup + CAST_RECOVERY, "released":false,
+		"phase":"windup", "kind":"cast", "casts":true,
+		"mode":"ranged" if actor.action_profile.is_projectile(actor.attack_range) else "melee"}
+	actor.facing = actor.position.direction_to(target.position)
+	_emit("action_started", actor, target, next_action_id, {"casts":true,
+		"windup":windup, "duration":windup + CAST_RECOVERY, "mode":actor.action.mode, "action_kind":"cast"})
+
+func _cast_effects(actor: Dictionary, target: Dictionary, due: Array[Dictionary]) -> void:
+	_skill_events(actor, target, due)
+
+## A single authoritative clock; paused callers do not advance the simulation.
+func action_timing(actor_id: int) -> Dictionary:
+	var actor := unit(actor_id)
+	if actor.is_empty() or actor.hp <= 0: return {}
+	var action: Dictionary = actor.get("action", {})
+	var is_cast: bool = action.get("kind", "attack") == "cast"
+	var windup: float = actor.action_profile.timing(actor.interval).x
+	var remaining: float = maxf(0, actor.timer) + windup
+	var duration: float = maxf(EPSILON, actor.interval)
+	if not action.is_empty():
+		remaining = maxf(0, action.windup - action.age)
+		if is_cast: duration = action.windup
+	var has_target := _living(1 - actor.side).any(func(foe): return AutoBattle.in_range(actor, foe))
+	var waiting: bool = action.is_empty() and actor.timer <= EPSILON and (actor.moving or not has_target)
+	if waiting: remaining = 0
+	return {"kind":"cast" if is_cast else "attack", "phase":action.get("phase", "waiting" if waiting else "cooldown"),
+		"progress":clampf(1 - remaining / duration, 0, 1), "remaining":remaining, "duration":duration,
+		"waiting_target":waiting, "skill_id":actor.skill.id, "target_id":action.get("target_id", actor.target_id)}
+
+func intent_for(actor_id: int) -> Dictionary:
+	var actor := unit(actor_id)
+	if actor.is_empty() or actor.hp <= 0: return {}
+	var timing := action_timing(actor_id)
+	var casting: bool = timing.kind == "cast"
+	var result := {"icon":actor.skill.glyph if casting else "attack", "label":actor.skill.display_name if casting else "普攻",
+		"description":actor.skill.description if casting else "对射程内目标自动攻击。", "target_id":timing.target_id,
+		"locked":false, "remaining":timing.remaining, "kind":timing.kind}
+	if casting: result.merge(_skill_target_intent(actor, int(timing.target_id)), true)
+	return result
+
+## Skill recipients are distinct from the basic target that initiated the cast.
+func _skill_target_intent(actor: Dictionary, primary_id: int) -> Dictionary:
+	var ally: String = "友方" if actor.side == 0 else "敌方"
+	var foe: String = "敌方" if actor.side == 0 else "友方"
+	var descriptions: Array[String] = []
+	var rules: Array[String] = []
+	for effect in actor.skill.effects:
+		var rule: String = effect.target
+		if rules.has(rule): continue
+		rules.append(rule)
+		match rule:
+			"self": descriptions.append("自身")
+			"all_allies": descriptions.append("全部存活" + ally)
+			"all_enemies": descriptions.append("全部存活" + foe)
+			"adjacent": descriptions.append("自身及周围" + ally)
+			"low_ally": descriptions.append("最低生命比例" + ally + "（释放时选定）")
+			"low", "low_enemy": descriptions.append("射程内最低生命比例" + foe + "（释放时选定）")
+			"back": descriptions.append("射程内后排" + foe + "（释放时选定）")
+			"row": descriptions.append("主目标所在横排的射程内" + foe + "（释放时判定）")
+			"normal":
+				var primary := unit(primary_id)
+				descriptions.append(primary.get("name", "锁定目标") if not primary.is_empty() and primary.hp > 0 else "原目标已失效")
+			_: descriptions.append("按技能规则选定")
+	var target_id := -1
+	if rules == ["self"]: target_id = actor.id
+	elif rules == ["normal"]:
+		var primary := unit(primary_id)
+		if not primary.is_empty() and primary.hp > 0: target_id = primary_id
+	return {"target_description":"；".join(descriptions), "target_id":target_id, "locked":rules == ["normal"] and target_id >= 0}
+
 func _living(side: int) -> Array[Dictionary]:
 	return units.filter(func(u): return u.side == side and u.hp > 0)
 
@@ -267,12 +370,14 @@ func _consume_shield_layers(target: Dictionary, amount: float) -> float:
 	target.shield_layers.sort_custom(func(a, b):
 		var a_time: float = a.expires_at if a.expires_at > 0 else INF
 		var b_time: float = b.expires_at if b.expires_at > 0 else INF
+		if a.get("priority", 0) != b.get("priority", 0): return a.get("priority", 0) > b.get("priority", 0)
 		return str(a.source) < str(b.source) if a_time == b_time else a_time < b_time)
 	var remaining := maxf(0, amount)
 	for layer in target.shield_layers:
 		var consumed := minf(layer.amount, remaining)
 		layer.amount -= consumed
 		remaining -= consumed
+		if layer.amount <= EPSILON and consumed > 0: _shield_ended(target, layer, "broken")
 		if remaining <= EPSILON: break
 	target.shield_layers = target.shield_layers.filter(func(layer): return layer.amount > EPSILON)
 	return amount - remaining
@@ -283,6 +388,7 @@ func _expire_shields(target: Dictionary) -> void:
 		if layer.expires_at <= 0 or layer.expires_at > elapsed + EPSILON: continue
 		var expired: float = layer.amount
 		layer.amount = 0.0
+		_shield_ended(target, layer, "expired")
 		target.shield = maxf(0, target.shield - expired)
 		_emit("shield_expired", target, target, -1, {"source": layer.source, "actual": expired, "shield": target.shield})
 	target.shield_layers = target.shield_layers.filter(func(layer): return layer.amount > EPSILON)
@@ -367,3 +473,6 @@ func _after_impact_batch(_due: Array[Dictionary]) -> void:
 ## Temporary modifier layers can preserve absolute skill changes as their base.
 func _set_attack_interval(target: Dictionary, value: float) -> void:
 	target.interval = clampf(value, 0.1, 10)
+
+func _shield_ended(_target: Dictionary, _layer: Dictionary, _reason: String) -> void:
+	pass

@@ -86,7 +86,13 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none; }
 .notice.success { color: var(--lime); }
 .notice.error { color: var(--rose); }
 
-.filters { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 20px; }
+.library-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; padding-bottom: 20px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.generated-filter { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; }
+.generated-filter input { width: 18px; height: 18px; margin: 0; padding: 0; accent-color: var(--cyan-deep); cursor: pointer; }
+.generated-filter input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.generated-filter:has(input:checked) { color: var(--cyan); }
+.generated-count { opacity: .66; }
 .filter { padding: 8px 13px; color: var(--muted); background: transparent; border: 1px solid var(--line); font-size: 13px; }
 .filter.active { color: #082129; background: var(--cyan); border-color: var(--cyan); }
 .filter em { margin-left: 7px; font-style: normal; opacity: .66; }

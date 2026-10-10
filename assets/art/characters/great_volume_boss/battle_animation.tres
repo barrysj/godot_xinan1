@@ -1,0 +1,42 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="PackedScene" path="res://assets/art/characters/great_volume_boss/presentation.tscn" id="scene"]
+[ext_resource type="AnimationLibrary" path="res://assets/art/characters/great_volume_boss/animations.tres" id="library"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/idle.png" id="idle"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/stride.png" id="stride"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/anticipation.png" id="anticipation"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/impact.png" id="impact"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/recover.png" id="recover"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/cast.png" id="cast"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/critical.png" id="critical"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/fall.png" id="fall"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/death.png" id="death"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/parts/projectile.png" id="projectile_texture"]
+[ext_resource type="Script" path="res://game/content/battle_projectile_style.gd" id="projectile_script"]
+[sub_resource type="Resource" id="projectile"]
+script = ExtResource("projectile_script")
+texture = ExtResource("projectile_texture")
+display_size = Vector2(28, 18)
+trail_gap = 3.0
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}], "loop": true, "name": &"idle", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}, {"duration": 1.0, "texture": ExtResource("stride")}, {"duration": 1.0, "texture": ExtResource("idle")}, {"duration": 1.0, "texture": ExtResource("stride")}], "loop": true, "name": &"move", "speed": 8},
+{"frames": [{"duration": 0.9, "texture": ExtResource("idle")}, {"duration": 0.9, "texture": ExtResource("anticipation")}, {"duration": 0.9, "texture": ExtResource("anticipation")}, {"duration": 1.1, "texture": ExtResource("impact")}, {"duration": 1.1, "texture": ExtResource("recover")}, {"duration": 1.1, "texture": ExtResource("idle")}], "loop": false, "name": &"melee", "speed": 12},
+{"frames": [{"duration": 0.9, "texture": ExtResource("idle")}, {"duration": 0.9, "texture": ExtResource("anticipation")}, {"duration": 0.9, "texture": ExtResource("cast")}, {"duration": 1.1, "texture": ExtResource("cast")}, {"duration": 1.1, "texture": ExtResource("recover")}, {"duration": 1.1, "texture": ExtResource("idle")}], "loop": false, "name": &"cast", "speed": 12},
+{"frames": [{"duration": 1.0, "texture": ExtResource("idle")}, {"duration": 1.0, "texture": ExtResource("recover")}, {"duration": 1.0, "texture": ExtResource("idle")}], "loop": false, "name": &"hurt", "speed": 12},
+{"frames": [{"duration": 1.0, "texture": ExtResource("critical")}], "loop": true, "name": &"critical", "speed": 8},
+{"frames": [{"duration": 1.0, "texture": ExtResource("critical")}, {"duration": 1.0, "texture": ExtResource("fall")}, {"duration": 1.0, "texture": ExtResource("death")}], "loop": false, "name": &"death", "speed": 6}
+]
+[resource]
+script = ExtResource("script")
+frames = SubResource("frames")
+presentation_scene = ExtResource("scene")
+animation_library = ExtResource("library")
+display_size = Vector2(160, 160)
+anchor = Vector2(0.5, 0.875)
+impact_ratio = 0.45
+flip_with_facing = true
+launch_offset = Vector2(25, -42)
+hit_offset = Vector2(0, -38)
+projectile_style = SubResource("projectile")

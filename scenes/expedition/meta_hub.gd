@@ -388,6 +388,9 @@ func _draw_dispatch() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if is_instance_valid(location_panel): return
 	if is_instance_valid(team_panel): return
+	if paused and screen == "battle":
+		super._gui_input(event)
+		return
 	if paused or leaving: return
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed): return
 	var p: Vector2 = (event.position-origin)/scale_factor

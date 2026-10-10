@@ -2,7 +2,7 @@
 [ext_resource type="Script" path="res://game/content/encounter_def.gd" id="s"]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="t"]
 [ext_resource type="Resource" path="res://resources/content/enemies/board.tres" id="u0"]
-[ext_resource type="Resource" path="res://resources/content/enemies/chalk.tres" id="u1"]
+[ext_resource type="Resource" path="res://resources/content/enemies/great_volume.tres" id="u1"]
 [ext_resource type="Resource" path="res://resources/content/enemies/chalk.tres" id="u2"]
 [resource]
 script = ExtResource("s")

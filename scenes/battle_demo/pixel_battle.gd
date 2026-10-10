@@ -32,6 +32,7 @@ var pause_caption: Label
 var pause_actions: VBoxContainer
 var confirm_actions: HBoxContainer
 var pending_exit = ""
+var pause_before_menu := false
 var leaving = false
 var previous_auto_quit = true
 var debug_shortcuts: Node
@@ -39,6 +40,9 @@ var inspected_enemy_slot = -1
 var codex_panel: Control
 var deployment: Control
 var battle_presentations: Dictionary = {}
+var battle_actor_views: Dictionary = {}
+var battle_actor_layer: Node2D
+var battle_status_layer: Node2D
 
 func _gear_inventory() -> Dictionary:
 	return {"shoe": equipment}
@@ -58,6 +62,9 @@ func _worn_item(role: int) -> String:
 	for id in _gear_inventory():
 		if _gear_inventory()[id] == role: return id
 	return "none"
+
+func _can_equip_item(id: String, role: int) -> bool:
+	return _deployment_roster().has(role) and id in ["shoe","none"]
 
 func _equip_item(id: String, role: int) -> bool:
 	if phase != "prepare" or not _deployment_roster().has(role) or id not in ["shoe", "none"]: return false
@@ -211,13 +218,31 @@ func _tick() -> void:
 	_update_battle_presentations()
 
 func _clear_battle_presentations() -> void:
-	for instance in battle_presentations.values():
-		if is_instance_valid(instance):
-			instance.queue_free()
+	for view in battle_actor_views.values():
+		if is_instance_valid(view):
+			view.hide()
+			view.queue_free()
+	battle_actor_views.clear()
 	battle_presentations.clear()
 
 func _create_battle_presentations() -> void:
+	if not is_instance_valid(battle_actor_layer):
+		battle_actor_layer = Node2D.new()
+		battle_actor_layer.name = "BattleActors"
+		battle_actor_layer.y_sort_enabled = true
+		add_child(battle_actor_layer)
+		battle_status_layer = preload("res://scenes/battle_demo/unit_status_layer.gd").new()
+		battle_status_layer.game = self
+		add_child(battle_status_layer)
+		# A sibling above actor sprites, still below later HUD and modal children.
+		move_child(battle_status_layer, battle_actor_layer.get_index() + 1)
 	for u in units:
+		var view = preload("res://scenes/battle_demo/battle_actor_view.gd").new()
+		view.game = self
+		view.actor = u
+		view.name = "ActorDepth%d" % u.id
+		battle_actor_layer.add_child(view)
+		battle_actor_views[u.id] = view
 		if u.battle_animation == null or u.battle_animation.presentation_scene == null:
 			continue
 		var instance = u.battle_animation.presentation_scene.instantiate()
@@ -226,7 +251,7 @@ func _create_battle_presentations() -> void:
 			instance.queue_free()
 			continue
 		instance.name = "UnitPresentation%d" % u.id
-		add_child(instance)
+		view.add_child(instance)
 		battle_presentations[u.id] = instance
 
 func _presentation_context(actor: Dictionary, at: Vector2, factor: float) -> Dictionary:
@@ -244,24 +269,42 @@ func _presentation_context(actor: Dictionary, at: Vector2, factor: float) -> Dic
 		"tint": pose.tint,
 	}
 
+func _sync_battle_page_visibility() -> void:
+	var active: bool = (get("screen") == null or get("screen") == "battle") and not leaving
+	if is_instance_valid(battle_actor_layer): battle_actor_layer.visible = active
+	if is_instance_valid(battle_status_layer): battle_status_layer.visible = active
+	if active: return
+	effects.clear()
+	skill_effects.clear()
+	banner_time = 0
+	if is_instance_valid(inspector):
+		inspector.close_info()
+		inspector.close_bag()
+		inspector.hide()
+	if is_instance_valid(deployment): deployment.cancel()
+	if is_instance_valid(code_panel):
+		code_panel._hide_program_preview()
+		code_panel.hide()
+		if is_instance_valid(code_panel.code_fx): code_panel.code_fx.particles.clear()
+
 func _update_battle_presentations() -> void:
+	_sync_battle_page_visibility()
 	for u in units:
-		var instance: Node2D = battle_presentations.get(u.id)
-		if not is_instance_valid(instance):
-			continue
-		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role):
-			instance.visible = false
-			continue
+		var view: Node2D = battle_actor_views.get(u.id)
+		if not is_instance_valid(view): continue
+		view.visible = not (phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role))
 		var at := _unit_center(u) + Vector2(0, 13)
-		instance.z_index = int(round(at.y))
-		instance.call("apply_presentation", _presentation_context(u, at, 4.0))
+		# Sorting follows ground contact; recoil and animation move only the content.
+		view.position = origin + at * scale_factor
+		view.queue_redraw()
+		var instance: Node2D = battle_presentations.get(u.id)
+		if not is_instance_valid(instance): continue
+		var context := _presentation_context(u, at, 4.0)
+		context.center -= view.position
+		instance.call("apply_presentation", context)
 
 func _presentation_handles(u: Dictionary) -> bool:
-	var instance: Node2D = battle_presentations.get(u.id)
-	if not is_instance_valid(instance):
-		return false
-	return not instance.has_method("handles_presentation_state") or instance.call(
-		"handles_presentation_state", u.animation.state)
+	return is_instance_valid(battle_actor_views.get(u.id))
 
 func _finish_delay() -> float:
 	var remaining := maxf(0.65, cast_vfx.remaining())
@@ -413,36 +456,38 @@ func _legacy_campus(show_battle_marks: bool = true) -> void:
 		draw_rect(Rect2(p, Vector2(4, 4)), Color("b28bbb"))
 
 func _pawn(u: Dictionary, at: Vector2, factor: float = 4) -> void:
-	if _presentation_handles(u):
-		return
+	if _presentation_handles(u): return
+	_draw_fallback_pawn(self, u, at, factor)
+
+func _draw_fallback_pawn(canvas: CanvasItem, u: Dictionary, at: Vector2, factor: float = 4) -> void:
 	var alive: bool = u.hp > 0
 	var animated_texture: Texture2D = u.animation.texture()
 	var pose: Dictionary = u.presentation.pose(u, animated_texture != null)
 	var p: Vector2 = at + pose.offset * factor / 4.0
-	var world = Transform2D(0, Vector2.ONE * scale_factor, 0, origin)
+	var canvas_origin: Vector2 = origin if canvas == self else origin - (canvas as Node2D).position
+	var world = Transform2D(0, Vector2.ONE * scale_factor, 0, canvas_origin)
 	var stretch: Vector2 = pose.stretch
 	if animated_texture != null and u.battle_animation.flip_with_facing and pose.flip:
 		stretch.x *= -1
 	var local = Transform2D(pose.rotation, stretch, 0, p)
-	draw_set_transform_matrix(world * local)
+	canvas.draw_set_transform_matrix(world * local)
 	if animated_texture != null:
 		var dimensions: Vector2 = u.battle_animation.display_size * factor / 4.0
 		var rect = Rect2(-dimensions * u.battle_animation.anchor, dimensions)
-		draw_texture_rect(animated_texture, rect, false, pose.tint)
+		canvas.draw_texture_rect(animated_texture, rect, false, pose.tint)
 	else:
-		draw_texture_rect(u.portrait, Rect2(-Vector2(8, 14) * factor, Vector2(16, 16) * factor), false, pose.tint)
-	draw_set_transform_matrix(world)
+		canvas.draw_texture_rect(u.portrait, Rect2(-Vector2(8, 14) * factor, Vector2(16, 16) * factor), false, pose.tint)
+	canvas.draw_set_transform_matrix(world)
 	if u.side == 0 and alive:
-		draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), u.badge_color)
-		if u.role == equipment: _tile(dungeon, 8, 10, p + Vector2(24, -3), 1.3)
+		canvas.draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), u.badge_color)
+		if u.role == equipment: canvas.draw_texture_rect_region(dungeon, Rect2((p + Vector2(24, -3)).round(), Vector2(16,16)*1.3), Rect2(128,160,16,16))
 	if u.shield > 0 and alive:
 		var poly = PackedVector2Array([p + Vector2(-32,-52), p + Vector2(32,-52), p + Vector2(38,-34), p + Vector2(24,8), p + Vector2(0,18), p + Vector2(-24,8), p + Vector2(-38,-34), p + Vector2(-32,-52)])
-		draw_polyline(poly, Color("8dd7e7"), 3)
+		canvas.draw_polyline(poly, Color("8dd7e7"), 3)
 
 func _draw_unit(u: Dictionary) -> void:
 	if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): return
 	var p = _unit_center(u) + Vector2(0, 13)
-	var alive: bool = u.hp > 0
 	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected and (not is_instance_valid(deployment) or deployment.selected_role == u.role)
 	var swap_source: bool = phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.is_swap_source(u.role)
 	# Small base, not a character card: the actor stands on the map.
@@ -456,15 +501,6 @@ func _draw_unit(u: Dictionary) -> void:
 		draw_rect(Rect2(p + Vector2(-37,-7), Vector2(74, 20)), GOLD, false, 3)
 		_center(p + Vector2(0,-72), "▼", GOLD, 16)
 	_pawn(u, p)
-	var hp = Rect2(p + Vector2(-36, 19), Vector2(72, 6))
-	draw_rect(hp.grow(2), DARK)
-	draw_rect(hp, Color("566354"))
-	hp.size.x *= clampf(u.hp / u.max_hp, 0, 1)
-	draw_rect(hp, Color("a7d684") if u.side == 0 else Color("df9386"))
-	draw_rect(Rect2(p + Vector2(-40, 27), Vector2(80, 21)), Color(PAPER, 0.92))
-	_center(p + Vector2(0, 41), u.name if alive else "已退场", DARK, 14)
-	for i in range(u.skill.attacks_to_trigger):
-		draw_rect(Rect2(p + Vector2(-10 + i * 8, 46), Vector2(5, 3)), GOLD if i < u.count else Color("747a62"))
 
 func _hit_offset(unit: Dictionary) -> Vector2:
 	return unit.battle_animation.hit_offset if unit.battle_animation != null else Vector2(0, -6)
@@ -556,12 +592,6 @@ func _draw_effects() -> void:
 				var q: Vector2 = fx.to + Vector2((i - 1.5) * 10, -age * 35 + (i % 2) * 9)
 				draw_line(q, q + Vector2(0, 8), color, 2)
 				if fx.kind == "heal": draw_line(q + Vector2(-4, 4), q + Vector2(4, 4), color, 2)
-		if fx.value > 0 or fx.blocked > 0:
-			var label = ("-" if fx.kind == "damage" else "+") + str(fx.value)
-			if fx.kind == "damage" and fx.value == 0: label = "格挡"
-			var at: Vector2 = fx.to + Vector2(18 + fx.lane * 8, -35 - age * 28 - fx.lane * 20)
-			_center(at + Vector2(1, 1), label, Color(DARK, opacity), 22 if fx.special else 18)
-			_center(at, label, color, 22 if fx.special else 18)
 
 func _pixel_button(index: int, text: String, active: bool = false, enabled: bool = true) -> void:
 	var rect = _action_rect(index)
@@ -585,7 +615,7 @@ func _draw() -> void:
 	_text(Vector2(238, 66), "悬停角色简览，点击详情与装备。", Color("b2baa0"), 12)
 	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else ("战斗收尾" if simulation.closing else "自走棋战斗"))))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
-	_text(Vector2(972, 53), ("部署 %d / 4" % (6 - formation.count(-1))) if phase == "prepare" else ("%02d:%02d / %d×" % [int(elapsed) / 60, int(elapsed) % 60, speed]), PAPER, 17)
+	_text(Vector2(972, 53), ("部署 %d / 4" % (6 - formation.count(-1))) if phase == "prepare" else ("%02d:%02d / %s×" % [int(elapsed) / 60, int(elapsed) % 60, str(speed)]), PAPER, 17)
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
@@ -627,17 +657,32 @@ func _draw() -> void:
 	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or formation.count(-1) == 2)
 	_pixel_button(4, "返回整备")
 	if phase != "prepare":
-		_pixel_panel(Rect2(24, 620, 712, 83), Color("202027"))
-		_text(Vector2(42, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
+		_pixel_panel(Rect2(36, 620, 344, 83), Color("202027"))
+		_text(Vector2(52, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
 		var message: String = logs[0] if not logs.is_empty() else "准备出发。"
-		if message.length() > 37:
-			message = message.left(36) + "…"
-		_text(Vector2(42, 677), message, PAPER, 15)
-		_pixel_button(1, "速度 %d×" % speed)
-		_center(Vector2(822, 697), "PIXEL DEMO / 02", Color("a9b393"), 11)
+		while font.get_string_size(message, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x > 300:
+			message = message.left(message.length()-2) + "…"
+		_text(Vector2(52, 677), message, PAPER, 15)
+		_pixel_button(1, "速度 %s×" % str(speed))
 
 func _gui_input(event: InputEvent) -> void:
-	if paused or leaving or (is_instance_valid(code_panel) and code_panel.hover_paused()):
+	if leaving or (is_instance_valid(pause_overlay) and pause_overlay.visible): return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var action_point: Vector2 = (event.position - origin) / scale_factor
+		if Rect2(1148, 28, 78, 36).has_point(action_point):
+			_open_pause()
+			accept_event()
+			return
+		if phase == "battle" and _action_rect(0).has_point(action_point):
+			_toggle_manual_pause()
+			accept_event()
+			return
+		if phase == "battle" and _action_rect(1).has_point(action_point):
+			speed = PLAYBACK_SPEEDS[(PLAYBACK_SPEEDS.find(speed) + 1) % PLAYBACK_SPEEDS.size()]
+			queue_redraw()
+			accept_event()
+			return
+	if paused or (is_instance_valid(code_panel) and code_panel.hover_paused()):
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var point: Vector2 = (event.position - origin) / scale_factor
@@ -667,10 +712,6 @@ func _gui_input(event: InputEvent) -> void:
 					selected = formation[slot]
 					accept_event()
 					return
-		if Rect2(1148, 28, 78, 36).has_point(point) or (phase == "battle" and _action_rect(0).has_point(point)):
-			_open_pause()
-			accept_event()
-			return
 	if phase == "prepare" and event is InputEventMouseButton:
 		var point: Vector2 = (event.position - origin) / scale_factor
 		for slot in range(6):
@@ -686,12 +727,17 @@ func _input(event: InputEvent) -> void:
 	if is_instance_valid(codex_panel): return
 	if leaving or pause_overlay == null:
 		return
-	if event.is_action_pressed("pause") or event.is_action_pressed("ggt_debug_pause_game"):
+	if event.is_action_pressed("ggt_debug_pause_game"):
+		if event is InputEventKey and event.echo: return
+		_toggle_manual_pause()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("pause"):
 		if event is InputEventKey and event.echo:
 			return
 		if not pending_exit.is_empty():
 			_open_pause()
-		elif paused:
+		elif pause_overlay.visible:
 			_resume_battle()
 		else:
 			_open_pause()
@@ -729,6 +775,7 @@ func _menu_button(title: String, callback: Callable) -> Button:
 
 func _create_pause_menu() -> void:
 	pause_overlay = Control.new()
+	pause_overlay.z_index = 100
 	add_child(pause_overlay)
 	pause_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	pause_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -796,12 +843,19 @@ func _layout_pause_menu() -> void:
 	pause_content.scale = Vector2.ONE * ratio
 	pause_content.position = (size - Vector2(1280, 720) * ratio) / 2
 
+func _toggle_manual_pause() -> void:
+	if leaving or phase != "battle" or (get("screen") != null and get("screen") != "battle") or pause_overlay.visible: return
+	paused = not paused
+	queue_redraw()
+
 func _open_pause() -> void:
 	if is_instance_valid(deployment): deployment.cancel()
+	if not pause_overlay.visible: pause_before_menu = paused
 	paused = true
 	pending_exit = ""
 	pause_heading.text = "稍作休息"
-	pause_caption.text = "战斗与特效已暂停\n按 Esc / P 或点击按钮继续"
+	pause_caption.text = "战斗与特效已暂停\n按 Esc 关闭菜单；P 切换战斗暂停"
+	pause_actions.get_child(0).text = "关闭菜单" if pause_before_menu else "继续游戏"
 	pause_actions.show()
 	confirm_actions.hide()
 	pause_overlay.show()
@@ -809,11 +863,15 @@ func _open_pause() -> void:
 
 func _resume_battle() -> void:
 	pending_exit = ""
+	var was_open := pause_overlay.visible
 	pause_overlay.hide()
-	paused = false
+	paused = pause_before_menu if was_open else false
+	pause_before_menu = false
+	queue_redraw()
 
 func _return_to_formation() -> void:
 	_resume_battle()
+	paused = false
 	phase = "prepare"
 	pending_slot = -1
 	_build_units()
@@ -833,6 +891,7 @@ func _confirm_exit() -> void:
 	if leaving:
 		return
 	leaving = true
+	_sync_battle_page_visibility()
 	if pending_exit == "quit":
 		get_tree().quit()
 	else:

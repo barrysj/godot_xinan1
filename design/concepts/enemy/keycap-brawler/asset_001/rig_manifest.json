@@ -1,0 +1,88 @@
+{
+  "schema_version": 2,
+  "self_contained": true,
+  "canvas": [
+    640,
+    640
+  ],
+  "anchor": [
+    320,
+    560
+  ],
+  "skeleton_actions": [
+    "idle",
+    "move",
+    "hurt",
+    "critical",
+    "cast"
+  ],
+  "frame_actions": [
+    "idle",
+    "move",
+    "melee",
+    "cast",
+    "hurt",
+    "critical",
+    "death"
+  ],
+  "attack_modes": [
+    "melee"
+  ],
+  "extension": null,
+  "parts": {
+    "Head": {
+      "file": "parts/Head.png",
+      "pivot": [
+        329,
+        278
+      ]
+    },
+    "NearLeg": {
+      "file": "parts/NearLeg.png",
+      "pivot": [
+        358,
+        414
+      ]
+    },
+    "FarLeg": {
+      "file": "parts/FarLeg.png",
+      "pivot": [
+        294,
+        414
+      ]
+    },
+    "Body": {
+      "file": "parts/Body.png",
+      "pivot": [
+        320,
+        560
+      ]
+    }
+  },
+  "runtime_files": [
+    "battle_animation.tres",
+    "battle_animation.frames.json",
+    "rig_manifest.json",
+    "presentation.tscn",
+    "animations.tres",
+    "frames/idle.png",
+    "frames/stride.png",
+    "frames/anticipation.png",
+    "frames/impact.png",
+    "frames/recover.png",
+    "frames/cast.png",
+    "frames/critical.png",
+    "frames/fall.png",
+    "frames/death.png",
+    "parts/Head.png",
+    "parts/NearLeg.png",
+    "parts/FarLeg.png",
+    "parts/Body.png"
+  ],
+  "playback_metadata_only": true,
+  "animation_budget": {
+    "max_bytes": 65536,
+    "max_keys": 1200,
+    "max_cycle_seconds": 2
+  }
+}

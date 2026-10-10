@@ -3,12 +3,15 @@
 [ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
 [sub_resource type="Resource" id="hit"]
 script = ExtResource("e")
+value = 0
 kind = "damage"
 target = "normal"
-attack_scale = 1.0
+attack_scale = 0.8
 [resource]
 script = ExtResource("s")
 id = "trial_analysis"
 display_name = "分析"
-description = "对目标造成伤害并暴露漏洞。"
+description = "额外80%攻击伤害并放置6秒待验证漏洞。"
 effects = Array[ExtResource("e")]([SubResource("hit")])
+
+attacks_to_trigger = 3

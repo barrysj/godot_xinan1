@@ -6,13 +6,15 @@
 script = ExtResource("e")
 kind = "shield"
 target = "adjacent"
-value = 48.0
-attack_scale = 0.0
+value = 48
+attack_scale = 0
 [resource]
 script = ExtResource("s")
 battle_effect = ExtResource("vfx")
 id = "skill_guard"
 display_name = "并肩"
-description = "自身与两格内友军获得48点护盾。"
+description = "自身与两格内一名低生命友军各48盾，持续6秒。"
 glyph = "shield"
 effects = Array[ExtResource("e")]([SubResource("effect")])
+
+attacks_to_trigger = 3

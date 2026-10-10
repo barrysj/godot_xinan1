@@ -76,6 +76,7 @@ func _open_codex() -> void:
 
 
 func _ready():
+	get_window().title = $MarginContainer/Control/CenterContainer/Title.text
 	if "--web-background-check" in OS.get_cmdline_user_args():
 		var check = load("res://tools/web_background_check.gd").new()
 		check.menu = self

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampusCombatReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/combat_reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "buffer"
+display_name = "协议缓冲"
+description = "反冲护盾持续时间从5秒延长至6.5秒；盾量与爆炸伤害不变。"
+category = "程序"
+program_id = "redirect"
+program_duration_bonus = 1.5
+
+reward_chain = "protect"
+reward_weight = 2
+minimum_offer = 2

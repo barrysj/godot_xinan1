@@ -9,3 +9,6 @@ description = "攻击 +8，生命上限 +20。可复制的装备示例。"
 icon = ExtResource("2")
 health_bonus = 20
 attack_bonus = 8
+
+balanced_attack_bonus = 4
+balanced_description = "攻击 +4，生命上限 +20。"

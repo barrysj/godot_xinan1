@@ -5,8 +5,11 @@ const MEMORY_TERMINAL_VIEW = preload("res://scenes/expedition/memory_terminal_vi
 const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const CampusLocationSkin = preload("res://scenes/expedition/campus_location_skin.gd")
+const CampusPresentation = preload("res://game/run/campus_presentation.gd")
+const RouteMap = preload("res://scenes/expedition/campaign_route_map.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
 const CampusUi = preload("res://scenes/ui/campus_ui.gd")
+const ChoiceOutcomes = preload("res://scenes/expedition/choice_outcomes.gd")
 const HUB_ICON_PATHS := {
 	"codex": "res://assets/art/ui/m1_campus_hub/runtime/icon_codex.png",
 	"dispatch": "res://assets/art/ui/m1_campus_hub/runtime/icon_dispatch.png",
@@ -16,6 +19,7 @@ const HUB_ICON_PATHS := {
 }
 const LIBRARY_ENVIRONMENT_STATE := "anomaly"
 const LIBRARY_ENVIRONMENT_VIEWPOINT := "atrium-down"
+var choice_page: Control
 var column: VBoxContainer
 var page_margin: MarginContainer
 var page_scroll: ScrollContainer
@@ -69,6 +73,9 @@ func _ready() -> void:
 	home_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	home_root.hide()
 	add_child(home_root)
+	choice_page = preload("res://scenes/expedition/choice_page.gd").new()
+	add_child(choice_page)
+	choice_page.action.connect(func(id: String): action.emit(id))
 
 func clear(title: String, detail: String) -> void:
 	_show_standard_page()
@@ -77,12 +84,14 @@ func clear(title: String, detail: String) -> void:
 	text(detail,21)
 
 func _show_standard_page() -> void:
+	choice_page.dismiss()
 	close_home_overlay(false)
 	home_root.hide()
 	page_margin.show()
 	default_parent = column
 
 func _show_home_page() -> void:
+	choice_page.dismiss()
 	close_home_overlay(false)
 	page_margin.hide()
 	home_root.show()
@@ -92,7 +101,10 @@ func _show_home_page() -> void:
 		child.queue_free()
 
 func _clear_column() -> void:
+	choice_page.dismiss()
 	for child in column.get_children():
+		# Remove hover ownership before detaching: mouse movement is not required.
+		if child is Control: child.hide()
 		column.remove_child(child)
 		child.queue_free()
 	exploration_stage = null
@@ -125,7 +137,8 @@ func button(label: String, id: String, enabled: bool = true, parent: Control = n
 	CampusUi.apply_button(item,"daily")
 	if is_instance_valid(home_root) and home_root.visible:
 		_apply_home_button(item)
-	item.pressed.connect(func(): action.emit(id))
+	item.pressed.connect(func():
+		if not id.is_empty(): action.emit(id))
 	(default_parent if parent == null else parent).add_child(item)
 	return item
 
@@ -548,14 +561,6 @@ func terminal_finale(terminals: Array, stage: int) -> void:
 		view.setup(region, terminals.has(region), "finale", stage)
 		strip.add_child(view)
 
-func _board(journey, mode: String) -> Control:
-	var board = preload("res://scenes/expedition/campaign_board.gd").new()
-	board.name = "RouteMap" if mode == "route" else "LocationMap"
-	board.journey = journey
-	board.mode = mode
-	column.add_child(board)
-	return board
-
 func _detail_box(parent: Control = null) -> VBoxContainer:
 	var panel = PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -569,32 +574,72 @@ func _detail_box(parent: Control = null) -> VBoxContainer:
 	panel.add_child(box)
 	return box
 
-func rewards(offers: Array) -> void:
-	clear("选择一份战利品","训练立即强化对应同学；装备放入背包，下一场整备时分配。本区域有效，领奖后回到原地点。")
+func starting_strategy(region: String, mode: String, allow_keep: bool) -> void:
+	clear("选择构筑","先选一个基础方向。已提供参考编队与两个程序；战前仍可调整人物、阵位和程序。")
 	var cards = row()
+	var pursuit = _detail_box(cards)
+	text("漏洞追击",26,pursuit)
+	text("分析员扫描 → 同伴验证 → 数据代码 → 追踪破解。",21,pursuit)
+	text("守护者、冲刺手、分析员、远射手。配备追踪破解与热修复，适合集中击破。",20,pursuit)
+	button("追踪队伍","strategy:"+region+":"+mode+":analysis",true,pursuit)
+	var shield = _detail_box(cards)
+	text("护盾反冲",26,shield)
+	text("普通护盾吸收 → 权限代码 → 反冲护盾 → 破盾爆炸。",21,shield)
+	text("守护者、冲刺手、应援者搭配发明家；未加入时由远射手替补。配备反冲护盾与热修复，正式区域第一站可交谈补齐供盾。",20,shield)
+	button("护盾队伍","strategy:"+region+":"+mode+":protect",true,shield)
+	if allow_keep:
+		text("也可沿用上次阵位。程序按已有扫描者选择追踪，其他编队使用反冲，热修复保留。",18)
+		button("沿用队伍","strategy:"+region+":"+mode+":keep")
+	button("返回基地","base")
+
+func rewards(offers: Array) -> void:
+	var options: Array = []
 	var db = preload("res://game/content/content_db.gd")
 	for i in range(offers.size()):
-		var offer = offers[i]
-		var card = _detail_box(cards)
-		var picture = TextureRect.new()
-		picture.custom_minimum_size = Vector2(90,100)
-		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		if offer.operation == "gear": picture.texture = db.gear(offer.target).icon
-		elif offer.operation == "train": picture.texture = db.character(db.role_index(offer.target)).portrait
-		card.add_child(picture)
-		text(offer.title,26,card)
-		text(offer.description,21,card)
-		text("选择强化对象" if offer.operation == "combat" and preload("res://game/run/reward_catalog.gd").combat_needs_owner(offer.target) else ("羁绊或专属效果 · 后续战斗生效" if offer.operation == "combat" else ("存入背包 · 整备时装备" if offer.operation == "gear" else "对应同学 · 立即生效")),18,card)
-		button("选取","reward:"+str(i),true,card)
+		var offer: Dictionary = offers[i]
+		var texture: Texture2D
+		if offer.operation == "gear": texture = db.gear(offer.target).icon
+		elif offer.operation == "train": texture = db.character(db.role_index(offer.target)).portrait
+		var hint := "选择强化对象" if offer.operation == "combat" and preload("res://game/run/reward_catalog.gd").combat_needs_owner(offer.target) else "后续战斗生效" if offer.operation == "combat" else "存入背包 · 整备时装备" if offer.operation == "gear" else "补充库存 · 战斗时使用" if offer.operation == "item" else "对应同学 · 立即生效"
+		if offer.has("offer_slot"): hint = {"chain":"链路强化","general":"通用强化","alternative":"构筑变化"}[offer.offer_slot]+" · "+hint
+		options.append({"id":"reward:"+str(i),"label":"选取","title":offer.title,"description":offer.description,"hint":hint,"icon":texture,"outcomes":ChoiceOutcomes.reward(offer)})
+	if options.is_empty(): options.append({"id":"reward_continue","label":"继续","title":"整备完成","description":"当前没有适用的新奖励，现有构筑与库存保留。"})
+	choice_page.present({"tag":"战斗胜利 · 战利品","title":"选择一份战利品" if not offers.is_empty() else "整备完成",
+		"description":"选择一份奖励；领取后返回当前地点。" if not offers.is_empty() else "可以继续探索。",
+		"picture":choice_page.PICTURES.reward,"caption":"校园补给 · 本局收益","options":options,
+		"body_label":"领取说明","options_label":"候选奖励","compact":true,"status":"奖励候选已保存 · 续玩不会重抽","close_id":"choice_menu","close_label":"菜单"})
 
 func reward_owner(offer: Dictionary, roster: Array, run) -> void:
-	clear("选择强化对象",offer.title+"\n"+offer.description)
+	var options: Array = []
 	var db = preload("res://game/content/content_db.gd")
 	for role in roster:
-		var available: bool = offer.target not in ["lens", "backup"] or run.combat_gear_available(role)
-		button(db.character(role).display_name,"reward_owner:"+db.role_id(role),available)
-	button("返回奖励","reward_back")
+		var available: bool = run.reward_owner_available(offer.target,role)
+		options.append({"id":"reward_owner:"+db.role_id(role),"label":"强化","title":db.character(role).display_name,
+			"description":"强化此同学，本局后续战斗生效。","outcomes":ChoiceOutcomes.reward(offer),"icon":db.character(role).portrait,"enabled":available,
+			"hint":"可选对象" if available else "训练份数已满。" if offer.target == "training" else "装备槽已有物品。"})
+	choice_page.present({"tag":"战利品 · 选择对象","title":offer.title,"description":offer.description,
+		"picture":choice_page.PICTURES.reward,"caption":"成长记录 · 当前队伍","options":options,
+		"body_label":"强化效果","options_label":"强化对象","compact":true,"status":"选择对象后才会领取 · 返回不会重抽","close_id":"reward_back","close_label":"返回奖励"})
+
+func hotspot_event(page: Dictionary, state: Dictionary, context: Dictionary) -> void:
+	var options: Array = []
+	for choice in page.options:
+		options.append({"id":"event:"+state.spot_id+":"+state.node+":"+choice.id,"label":"选择",
+			"title":choice.label,"description":choice.get("detail",""),"enabled":choice.enabled,"hint":choice.hint,"outcomes":ChoiceOutcomes.event(choice)})
+	var foreground: Texture2D
+	if state.kind == "person": foreground = preload("res://game/content/content_db.gd").character(4).portrait
+	choice_page.present({"tag":"热点事件 · 第 %d 段" % page.round,"title":page.title,"description":page.description,
+		"picture":choice_page.PICTURES.terminal,"foreground":foreground,"caption":context.location_title+" · 调查记录",
+		"body_label":"事件记录","options_label":"可选行动","compact":true,"options":options,"status":"进度自动保存 · 线索会延续到其他地点","close_id":"visit","close_label":"返回地点","close_enabled":page.allow_return,"close_hint":"必须完成选择后才能返回地点。"})
+
+func core_recovery(region: String, first_clear: bool, terminals: Array, detail: String) -> void:
+	clear("探索完成","所有收益已保存。")
+	terminal_progress(terminals)
+	choice_page.present({"tag":"区域通关 · 收益已保存","title":"记忆终端已回收" if first_clear else "探索完成",
+		"description":detail,"picture":choice_page.PICTURES.terminal,
+		"foreground":load(MEMORY_TERMINAL_VIEW.TEXTURE_PATHS[region]),"caption":MEMORY_TERMINAL_VIEW.REGION_NAMES[region],
+		"options":[{"id":"base","label":"返回基地","title":"记忆终端 %d / 3" % terminals.size(),"description":"记忆终端与本次收益已写入存档。"}],
+		"body_label":"回收结果","options_label":"下一步","outcomes":[{"kind":"item","text":"记忆终端已回收"}] if first_clear else [],"compact":true,"status":"已保存 · 重复打开不会重复结算","close_id":"base","close_label":"返回基地"})
 
 func _empty(box: Control) -> void:
 	for child in box.get_children():
@@ -602,39 +647,49 @@ func _empty(box: Control) -> void:
 		child.queue_free()
 
 func route(journey, restored: bool = false) -> void:
-	var current = "基地" if journey.data.visited.is_empty() else journey.Regions.PLACES[journey.data.visited.back()]
-	clear(journey.Regions.NAMES[journey.data.region],"当前位置："+current+"。目标：前往终点，取回记忆终端。每站先突破守卫封锁，再继续前进。")
-	var board = _board(journey,"route")
+	var current: String = "基地" if journey.data.visited.is_empty() else journey.title(journey.data.visited.back())
+	clear(journey.data.flow.title,"当前位置："+current+" · 第 %d / %d 站 · 选择目的地，突破封锁后继续前进。" % [journey.data.step+1,journey.data.map.size()])
+	var content := HBoxContainer.new()
+	content.add_theme_constant_override("separation",24)
+	column.add_child(content)
+	var board := RouteMap.new()
+	board.name = "RouteMap"
+	board.journey = journey
 	board.map_state = "day" if restored else "anomaly"
-	var detail = _detail_box()
+	board.custom_minimum_size = Vector2(820,maxf(680,size.y-230))
+	board.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(board)
+	var side := VBoxContainer.new()
+	side.custom_minimum_size.x = 350
+	side.add_theme_constant_override("separation",14)
+	content.add_child(side)
+	text("可选目的地",23,side)
+	for index in range(journey.data.map[journey.data.step].size()):
+		var place: String = journey.data.map[journey.data.step][index]
+		var choice := button(journey.title(place),"",true,side)
+		# Selection previews a destination; only the explicit travel action enters it.
+		choice.pressed.connect(board.choose.bind(index))
+	var detail := _detail_box(side)
 	board.picked.connect(func(index): _route_detail(journey,index,detail))
 	_route_detail(journey,0,detail)
-	button("返回基地","base")
+	text("滚轮缩放 · 拖动查看校园",17,side)
+	button("返回基地","base",true,side)
 
 func _route_detail(journey, index: int, detail: Control) -> void:
 	_empty(detail)
-	var place = journey.data.map[journey.data.step][index]
-	text("下一站 · "+journey.Regions.PLACES[place],24,detail)
-	text("这是终点：突破守卫后离开，即可带回终端。" if journey.data.step == 3 else "在这里击败守卫、领取奖励后，可以继续调查或离开前往下一站。",19,detail)
+	var place: String = journey.data.map[journey.data.step][index]
+	var picture := TextureRect.new()
+	picture.texture = ExplorationSkin.texture(CampusPresentation.background(journey.data.region,place,"anomaly",journey.data.flow))
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	picture.custom_minimum_size = Vector2(320,200)
+	detail.add_child(picture)
+	text("下一站 · "+journey.title(place),23,detail)
+	text("突破守卫后离开，即可带回终端。" if journey.data.step == journey.data.map.size()-1 else "击败守卫、领取奖励后，可以继续调查或前往下一站。",19,detail)
 	button("前往","enter:"+str(index),true,detail)
 
 func location(journey, prologue: bool = false) -> void:
-	var visit: Dictionary = journey.visit.data
-	if visit.place == "library":
-		_library_location(journey,prologue)
-		return
-	var goal = "出口已开放：继续调查，或离开前往下一站。" if journey.visit.can_leave() else "当前目标：挑战守卫，领取奖励，解除出口封锁。"
-	if journey.visit.can_leave() and journey.data.step == 3: goal = "终端已可回收：离开地点，将终端与同行伙伴带回基地。"
-	clear(journey.Regions.PLACES[visit.place],goal)
-	if journey.data.has("last_reward"): text("已获得 · "+str(journey.data.last_reward),19)
-	if prologue: text("当前 AI：管理员，前代系统正在回滚我们新建的校园。先带四名同学突破校门封锁，再取回通往记忆终端的路线。",20)
-	var board = _board(journey,"location")
-	var detail = _detail_box()
-	board.picked.connect(func(index): _spot_detail(journey,index,detail))
-	_spot_detail(journey,0,detail)
-	var actions = row()
-	button("离开地点","leave",journey.visit.can_leave(),actions)
-	button("返回基地","base",true,actions)
+	_library_location(journey,prologue)
 
 func library_environment_preview() -> void:
 	_clear_column()
@@ -678,7 +733,7 @@ func campus_environment_preview() -> void:
 	campus_preview_location = 0
 	campus_preview_state = "daily"
 	text("校园地点环境预览",32)
-	text("只读预览 · 十二处已批准实景，日常与异常各一张。除南门外，战役地点映射仍待确定。",19)
+	text("只读预览 · 十二处校园实景，日常与异常各一张。探索使用异常背景，图书馆另有室内场景。",19)
 	var controls := row()
 	_preview_group_label("地点",controls)
 	var selector := OptionButton.new()
@@ -768,6 +823,7 @@ func _update_environment_preview() -> void:
 	environment_preview_status.text = "当前：" + state_label + " · " + viewpoint_label
 
 func _library_location(journey, prologue: bool) -> void:
+	_show_standard_page()
 	_clear_column()
 	exploration_stage = Control.new()
 	exploration_stage.custom_minimum_size = Vector2(820, maxf(size.y - 72.0, 680.0))
@@ -775,21 +831,22 @@ func _library_location(journey, prologue: bool) -> void:
 	column.add_child(exploration_stage)
 	exploration_board = ExplorationBoard.new()
 	exploration_board.journey = journey
-	assert(exploration_board.set_environment_variant(LIBRARY_ENVIRONMENT_STATE,LIBRARY_ENVIRONMENT_VIEWPOINT))
+	var place := str(journey.visit.data.place)
+	if journey.is_library():
+		if not exploration_board.set_environment_variant(LIBRARY_ENVIRONMENT_STATE,LIBRARY_ENVIRONMENT_VIEWPOINT):
+			push_error("Missing approved library environment")
+	else:
+		if not exploration_board.set_campus_environment(CampusPresentation.background(journey.data.region,place,"anomaly",journey.data.flow),journey.title(place)):
+			push_error("Missing approved campus environment: " + place)
 	exploration_board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	exploration_stage.add_child(exploration_board)
 	exploration_board.picked.connect(func(index): _open_library_detail(journey,index))
 	exploration_board.layout_changed.connect(_place_exploration_popup)
-	if prologue:
+	if prologue and not journey.visit.data.reward_taken:
 		var prologue_hint := _exploration_label("当前 AI：先突破封锁，胜利并领奖后出口才会开放。",17)
 		prologue_hint.position = Vector2(24,96)
 		prologue_hint.size = Vector2(560,32)
 		exploration_stage.add_child(prologue_hint)
-	if journey.data.has("last_reward"):
-		var reward_hint := _exploration_label("已获得 · " + str(journey.data.last_reward),17)
-		reward_hint.position = Vector2(24,96)
-		reward_hint.size = Vector2(720,32)
-		exploration_stage.add_child(reward_hint)
 	_build_exploration_popup()
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation",12)
@@ -830,7 +887,7 @@ func _open_library_detail(journey, index: int) -> void:
 	_empty(exploration_popup_box)
 	var visit: Dictionary = journey.visit.data
 	var spot: Dictionary = visit.hotspots[index]
-	var titles = {"battle":"封锁守卫","memory":"校园记忆","person":"人物事件","system":"借阅终端"}
+	var titles = {"battle":"封锁守卫","memory":"校园记忆","person":"人物事件","system":"记忆终端线索"}
 	var lines = {
 		"battle":"守卫阻止我们继续前进。进入整备后开战；胜利并领取奖励，出口才会开放。",
 		"memory":"读取这处地点的系统记录，保存到回忆档案。属于虚拟校园故事，可以跳过。",
@@ -858,7 +915,7 @@ func _open_library_detail(journey, index: int) -> void:
 	hint_label.add_theme_color_override("font_color",Color("b7c9d7"))
 	exploration_popup_box.add_child(hint_label)
 	var labels = {"battle":"挑战","memory":"读取","person":"交谈","system":"调查"}
-	var is_photo: bool = spot.kind == "memory" and preload("res://resources/content/library_memory.tres").photograph != null
+	var is_photo: bool = journey.is_library() and spot.kind == "memory" and preload("res://resources/content/library_memory.tres").photograph != null
 	var action_id: String = "photo" if is_photo else "spot:" + spot.id
 	var primary := _exploration_button("查看" if is_photo else labels[spot.kind],action_id,not (spot.kind == "battle" and visit.guard_won),exploration_popup_box,128)
 	primary.size_flags_horizontal = Control.SIZE_SHRINK_END
@@ -917,6 +974,7 @@ func _exploration_label(value: String, font_size: int, wrap: bool = false) -> La
 
 func _exploration_button(label: String, id: String, enabled: bool, parent: Control, width: float) -> Button:
 	var item := Button.new()
+	item.set_meta("action_id",id)
 	item.text = label
 	item.disabled = not enabled
 	item.custom_minimum_size = Vector2(width,50)
@@ -937,25 +995,10 @@ func _exploration_button(label: String, id: String, enabled: bool, parent: Contr
 	for color_name in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
 		item.add_theme_color_override(color_name,Color("f7fbff"))
 	item.add_theme_color_override("font_disabled_color",Color("8999a3"))
-	item.pressed.connect(func(): action.emit(id))
+	item.pressed.connect(func():
+		if not id.is_empty(): action.emit(id))
 	parent.add_child(item)
 	return item
-
-func _spot_detail(journey, index: int, detail: Control) -> void:
-	_empty(detail)
-	var visit: Dictionary = journey.visit.data
-	var spot = visit.hotspots[index]
-	var titles = {"battle":"封锁守卫","memory":"校园系统记录","person":"发明家 · 同行伙伴","system":"记忆终端线索"}
-	var lines = {
-		"battle":"守卫阻止我们继续前进。进入整备，部署四名同学后开战；胜利后选择一份奖励。",
-		"memory":"读取这处地点的系统记录，保存到回忆档案。属于虚拟校园故事；不影响通关，可以跳过。",
-		"person":"发明家愿意协助修复。交谈后本区域临时加入，成功完成区域后永久解锁。",
-		"system":"调查前代系统为何阻止修复，了解三台记忆终端的作用。可以跳过。"}
-	text(titles[spot.kind],24,detail)
-	text("封锁已经解除，奖励已领取。现在可以离开，其他调查不会阻挡出口。" if spot.kind == "battle" and visit.reward_taken else lines[spot.kind],19,detail)
-	var labels = {"battle":"挑战守卫","memory":"读取记录","person":"交谈","system":"调查终端"}
-	var is_photo: bool = visit.place == "library" and spot.kind == "memory" and preload("res://resources/content/library_memory.tres").photograph != null
-	button("查看原照" if is_photo else labels[spot.kind],"photo" if is_photo else "spot:"+spot.id,not (spot.kind == "battle" and visit.guard_won),detail)
 
 func photograph(memory, enlarged: bool = false, back: String = "visit") -> void:
 	clear(memory.title,memory.description+"\n来源："+memory.source_note)

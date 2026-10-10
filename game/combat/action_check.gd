@@ -85,7 +85,9 @@ func _ready() -> void:
 	sim.request_action(0, 1)
 	sim.request_action(1, 0)
 	events = steps(sim, 4)
-	check(sim.units[1].hp == 100 and sim.units[1].shield == 5, "Support precedes damage on same step")
+	check(sim.units[1].hp == 75 and sim.units[1].shield == 0, "Triggering basic attack does not release its queued shield early")
+	events.append_array(steps(sim, 21))
+	check(sim.units[1].shield == 30, "Shield releases after independent cast windup")
 	check(events.filter(func(e): return e.kind == "action_released" and e.casts).size() == 1, "Skill emits one release for all effects")
 	sim = setup()
 	sim.units[0].interval = 0.1
@@ -117,7 +119,7 @@ func _ready() -> void:
 	sim.units[0].skill.effects.append(group_shield)
 	sim.units[0].skill.attacks_to_trigger = 1
 	sim.request_action(0, 1)
-	events = steps(sim, 4)
+	events = steps(sim, 25)
 	check(sim.units[0].shield == 40 and ally.shield == 40, "Group skill applies to every selected ally")
 	check(events.filter(func(e): return e.kind == "action_started" and e.casts).size() == 1, "Group skill starts exactly one cast")
 	print("ACTION_CHECK ", "PASS" if failures == 0 else "FAIL", " failures=", failures)

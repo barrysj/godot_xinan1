@@ -191,7 +191,7 @@ func refresh() -> void:
 		gear_button.glyph = id
 		gear_button.queue_redraw()
 		gear_button.tooltip_text = "装备栏：点击查看描述和背包"
-		var item = game.Content.gear(id)
+		var item = game._gear_definition(id)
 		gear_name.text = "装备栏\n" + (item.display_name if item != null else "空槽")
 	panel.reset_size()
 	var feet: Vector2 = game._unit_center(observed)
@@ -257,20 +257,22 @@ func _refresh_bag() -> void:
 		icon.pressed.connect(func(): picked_item = id; _refresh_bag())
 		icon.toggle_mode = true
 		icon.button_pressed = picked_item == id
-		var item = game.Content.gear(id)
+		var item = game._gear_definition(id)
 		icon.tooltip_text = "卸下装备" if item == null else item.display_name
 		column.add_child(icon)
 		column.add_child(_label("空槽" if item == null else item.display_name,14))
 		var owner: int = inventory.get(id,-1)
 		column.add_child(_label("背包" if owner < 0 else game.ROLES[owner],13))
-	var item = game.Content.gear(picked_item)
+	var item = game._gear_definition(picked_item)
 	var owner: int = inventory.get(picked_item,-1)
 	bag_description.text = ("空槽\n将当前装备放回背包。" if item == null else item.display_name + "\n" + item.description)
 	if owner >= 0 and owner != bag_role:
 		bag_description.text += "\n交换给「%s」，原穿戴者「%s」的槽位会腾空。" % [game.ROLES[bag_role],game.ROLES[owner]]
 	if game.phase != "prepare": bag_description.text += "\n战斗中可查看，返回整备后交换。"
 	equip_button.text = "卸下" if picked_item == "none" else ("转移" if owner >= 0 and owner != bag_role else "装备")
-	equip_button.disabled = game.phase != "prepare" or picked_item == game._worn_item(bag_role)
+	var legal: bool = game._can_equip_item(picked_item,bag_role)
+	if not legal and game.phase == "prepare": bag_description.text += "\n该同学的战斗装备占用了装备槽。"
+	equip_button.disabled = game.phase != "prepare" or picked_item == game._worn_item(bag_role) or not legal
 
 func exchange() -> void:
 	if game._equip_item(picked_item, bag_role):

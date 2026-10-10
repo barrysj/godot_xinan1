@@ -5,12 +5,14 @@
 script = ExtResource("e")
 kind = "heal"
 target = "low_ally"
-value = 85.0
-attack_scale = 0.0
+value = 55
+attack_scale = 0
 [resource]
 script = ExtResource("s")
 id = "skill_healer"
 display_name = "应援"
-description = "治疗生命比例最低的队友 85 点生命。"
+description = "治疗最低生命比例友军55；满血时改为25点5秒盾。"
 glyph = "heart"
 effects = Array[ExtResource("e")]([SubResource("effect")])
+
+attacks_to_trigger = 4

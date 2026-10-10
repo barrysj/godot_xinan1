@@ -16,15 +16,6 @@ func capture(hub, filename: String) -> void:
 	await RenderingServer.frame_post_draw
 	hub.get_viewport().get_texture().get_image().save_png("res://.godot/" + filename + ".png")
 
-func take_campaign_reward(hub) -> void:
-	hub._campaign_action("reward:0")
-	if hub.journey.data.screen == "reward_owner":
-		var owner: int = hub.run.roster[0]
-		if hub.journey.data.pending_offer.target in ["lens","backup"]:
-			owner = hub.run.roster.filter(func(role): return hub.run.combat_gear_available(role))[0]
-		hub._campaign_action("reward_owner:"+hub.RunModel.Content.role_id(owner))
-	verify(hub.journey.visit.data.reward_taken,"debug traversal finishes reward owner selection")
-
 func check_difficulty(hub) -> void:
 	var build: Dictionary = hub.run.to_dict()
 	var formation: Array = hub.formation.duplicate()
@@ -184,6 +175,17 @@ func run_checks(hub) -> void:
 	hub.debug_panel.open()
 	hub._input(escape)
 	verify(not hub.paused and not hub.debug_panel.panel.visible,"Escape closes debug and resumes")
+	hub.paused = true
+	hub.debug_panel.open()
+	hub._input(escape)
+	verify(hub.paused and not hub.pause_overlay.visible and not hub.debug_panel.panel.visible,"debug close preserves manual pause without opening menu")
+	hub.paused = false
+	hub._open_pause()
+	hub.debug_panel.open()
+	hub._input(escape)
+	verify(hub.paused and hub.pause_overlay.visible and not hub.pause_before_menu,"debug close restores menu and its previous running state")
+	hub._resume_battle()
+	verify(not hub.paused,"closing restored menu resumes original running battle")
 	var toggle = InputEventKey.new()
 	toggle.keycode = KEY_F8
 	toggle.pressed = true
@@ -220,18 +222,20 @@ func run_checks(hub) -> void:
 	hub.debug_panel.open()
 	await capture(hub,"debug-reward-panel")
 	hub.debug_panel.close()
-	take_campaign_reward(hub)
+	take_reward(hub)
 	build = hub.run.to_dict()
 	hub._campaign_action("reward:0")
 	verify(hub.run.to_dict() == build,"reward still single claim")
 	hub._hotspot(hub.journey.visit.data.hotspots[1].id)
 	hub._show_journey()
 	verify(not Commands.execute(hub,"reroll"),"viewed memory cannot be reset")
+	if not finish_hotspot_event(hub): finish(hub); return
 	hub._campaign_action("leave")
 	# All three regions and the finale still require their normal traversal/operations.
 	for region in ["library","region_b","region_c"]:
 		if hub.campaign_mode.is_empty() or hub.journey.data.region != region: hub._begin_region(region)
-		while not hub.campaign_mode.is_empty():
+		for visit_index in range(8):
+			if hub.campaign_mode.is_empty(): break
 			if hub.journey.visit.data.is_empty(): hub._campaign_action("enter:0")
 			var skipped: bool = Commands.execute(hub,"skip")
 			verify(skipped,"skip region guard")
@@ -239,9 +243,10 @@ func run_checks(hub) -> void:
 				print("DEBUG_SKIP_BLOCKED reason=",Commands.reason(hub,"skip")," paused=",hub.paused," screen=",hub.screen," journey=",hub.journey.data.screen," region=",hub.journey.data.region," error=",hub.progress.error_message)
 				finish(hub)
 				return
-			take_campaign_reward(hub)
+			take_reward(hub)
 			hub._campaign_action("leave")
-		verify(hub.progress.campaign.terminals.has(region),"normal terminal settlement")
+		verify(hub.campaign_mode.is_empty() and hub.progress.campaign.terminals.has(region),"normal terminal settlement")
+		if not hub.campaign_mode.is_empty(): finish(hub); return
 	hub._begin_region("library","finale")
 	for stage in range(3):
 		hub._guard()
@@ -299,6 +304,28 @@ func run_checks(hub) -> void:
 	verify(after == original,"normal profile bytes untouched")
 	await capture(hub,"debug-home")
 	finish(hub)
+
+func finish_hotspot_event(hub) -> bool:
+	for step in range(32):
+		if hub.journey.data.screen != "event": break
+		var spot: String = hub.journey.data.event_spot
+		var state: Dictionary = hub.journey.visit.data.event_states[spot]
+		var page: Dictionary = preload("res://game/run/hotspot_event.gd").page(state,hub.progress.campaign.story_flags,hub._event_context())
+		var choices: Array = page.options.filter(func(choice): return choice.enabled)
+		if choices.is_empty(): hub._campaign_action("visit")
+		else: hub._campaign_action("event:"+spot+":"+state.node+":"+choices[0].id)
+	var completed: bool = hub.journey.data.screen == "visit"
+	verify(completed,"multi-round hotspot completed before leaving")
+	return completed
+
+func take_reward(hub) -> void:
+	hub._campaign_action("reward:0")
+	if hub.journey.data.screen == "reward_owner":
+		var pending: Dictionary = hub.journey.data.pending_offer
+		var owners: Array = hub.run.roster.filter(func(role): return hub.run.reward_owner_available(pending.target, role))
+		verify(not owners.is_empty(), "targeted reward has a legal owner")
+		if not owners.is_empty(): hub._campaign_action("reward_owner:" + hub.RunModel.Content.role_id(owners[0]))
+	verify(hub.journey.visit.data.reward_taken, "reward fully claimed before traversal")
 
 func finish(hub) -> void:
 	print("DEBUG_CHECK %d checks / %d failures" % [checks,failures])

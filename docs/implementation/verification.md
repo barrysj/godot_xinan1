@@ -40,6 +40,8 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 | E17 | [menu.tscn](../../scenes/menu/menu.tscn)，`--codex-check`，图形 | PASS：35 条图鉴逐项浏览；真实部署四人并开战后，从暂停进入图鉴时状态冻结，Esc 返回暂停，继续后战斗时间恢复推进 | codex |
 | E18 | `build-web.ps1` release 包，Codex 应用内浏览器 | PASS（桌面范围）：完整五层路线、暂停恢复、结算与离开；Boss 前刷新恢复；修复后奖励／开战后立刻刷新分别恢复最新地图／同场战前 4/4 阵容。844×390 可进入和点选但文字与确认控件过小 | web |
 
+现行双流派强化专项入口为[combat_growth_check.tscn](../../scenes/battle_demo/combat_growth_check.tscn)，无头核验原构筑／存档与模拟结果，图形-- --capture增加实际奖励／对象按钮输入及三尺寸截图。资源定义另运行[combat_content_check.tscn](../../game/content/combat_content_check.tscn)，基础规则回归运行[chain_check.tscn](../../game/combat/chain_check.tscn)。空间强化专项运行[pierce_check.tscn](../../game/combat/pierce_check.tscn)，图形-- --capture覆盖原场景蓄力、弹道与落点。最新日期、基线、结果和边界统一见[CORE-05](core-05.md#八项强化与训练执行一致性待统筹)；旧提权／维护规则检查不代表现行基线。
+
 E13 原失败均位于 stage=4：seed/path 为 `1/1`、`4/0`、`4/1`、`4/2`。定向枚举证明四条路径无需改变奖励或敌人数值，只需把默认站位中的应援者与冲刺手前后互换即可获胜；根因是旧检查把单一固定站位必胜误当作路线可完成。现检查保留默认站位首战，失败时必须走真实战报、重新部署和重试，再以替代站位获胜；胜利与路线完成断言未删除，且补跑了此前被提前退出遮断的磁盘恢复。该结果不替代真人难度与公平性数据。
 
 E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开战门槛拒绝。现通过实际部署组件依次部署四人，并在打开暂停前断言已进入战斗且时间推进；随后对图鉴冻结、关闭回到暂停及继续恢复逐项断言。原失败属于夹具前置过期，产品暂停／图鉴恢复行为在当前检查范围内正常。
@@ -611,3 +613,190 @@ E17 原夹具在 `_enter_node()` 清空部署后直接 `_start()`，被四人开
 - Godot无头导入退出0；`res://tools/platform_asset_check.tscn`为33／0，覆盖三张新增映射、文件存在、非Web回退。图形`res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check`为202／0，桌面实际日／夜／异常截图保存在`.godot/expanded-map-unselected-{day,night,anomaly}-1920x1080.png`，日间图已在对话展示。
 - `pwsh.exe -File ./build-web.ps1 -Godot <Godot 4.7.2标准版>`正式构建成功，整站199.3 MiB，PCK 169,134,436字节；PCK路径检查有3张Web全图、0张高清全图。三张正式Web源图与`asset_001/web`对应文件SHA256相同。
 - 资源台单测33项通过；AssetCatalog扫描33对象、错误0，`asset_001`及`web_expanded_preview_001`均matched；`git diff --check`通过。Web实际浏览器三态切换、手机画质／显存及线上Pages尚未验收；衍生图视觉批准仍为review，不能由构建成功推定获批。随后在本地`main`按squash合入，复测导入退出0、映射33／0、桌面地图202／0、资源台33项通过，Web整站199.3 MiB且PCK含3张Web全图／0张高清全图；未推送。
+
+## 奖励候选适配验证
+
+2026-10-07，基线4913858加工作树；PowerShell7／Godot4.7.2。使用Godot console加 --path . --quit-after 600 res://scenes/battle_demo/reward_eligibility_check.tscn，无头加 --headless 得23／0，图形加 --rendering-method gl_compatibility 并在末尾附 -- --capture 得26／0。覆盖原RewardCatalog／ShortRun、原战役胜利生成、checkpoint冻结及实际鼠标领取，三种桌面截图.godot/reward-eligibility-<尺寸>.png。夹具只有奖励页面，不冒充本次完整战斗胜利或全战役通过。combat_growth_check.tscn38／0。规则与剩余边界见REWARD-01。
+
+## 新／旧成长预算验证
+
+2026-10-07，基线6126c11加工作树，PowerShell7／Godot4.7.2；growth_budget_check.tscn使用 --path . --quit-after 600，加 --headless 得38／0，GUI --rendering-method gl_compatibility -- --capture 得47／0。原奖励与对象真实鼠标操作，奖励／对象／装备详情各三尺寸.godot/growth-budget-<页面>-<尺寸>.png。验证原构筑schema8及旧schema7高成长往返、当前属性和拒绝非法快照；详细边界见CORE-05，截图发现既有动画层级遮挡需另行修正。combat_growth_check旧预算38／0、reward_eligibility_check23／0、chain_check36／0。不是所有强化组合或真人趣味性证据。
+
+## 世界动画与面板遮挡验证
+
+2026-10-07，基线8440dbe加工作树；growth_budget_check.tscn GUI -- --capture为49／0，新增动画分组／部件最大层级与原装备弹窗的边界检查，三种桌面截图.godot/growth-budget-bag-<尺寸>.png实际人物不再盖住说明。animation_check.tscn PASS；campaign_animation_check.tscn GUI -- --capture为8／0，实际原校园粉笔动作截图.godot/chalk-campaign-ranged.png。动画夹具改用每次唯一隔离存档，避免历史进度导致_guard未建立节点；先前包含脚本错误的7／0结果不作为此基线证据。未更改模拟规则或素材批准。
+
+## 三方向奖励与JSON轮次验证
+
+2026-10-07，基线42d479c加工作树，PowerShell7／Godot4.7.2：res://scenes/battle_demo/reward_slots_check.tscn加 --headless 为22／0，GUI --rendering-method gl_compatibility -- --capture 为29／0，均 --quit-after 600。128种子门槛／候补与1024种子链先抽对照、原校园冻结页／检查点／实际领取、真实JSON及坏字段边界通过。通用抽样是否进入对象页会改变检查数，不能将次数当额外覆盖。两页三尺寸.godot/reward-slots-<页面>-<尺寸>.png。combat_content_check51／0，growth_budget_check无头41／0；尚未重跑本轮全战役，补给填充与零候选继续未完成。详见REWARD-01与SAVE-02。
+
+## 道具奖励与空池继续验证
+
+2026-10-07，基线83437f6加工作树，PowerShell7／Godot4.7.2：res://scenes/battle_demo/item_reward_check.tscn，--path . --quit-after 650；--headless为69／0，GUI --rendering-method gl_compatibility -- --capture为78／0。原补给卡、校园空池、短局空池各三尺寸.godot/item-reward-<页面>-<尺寸>.png。内容引用／容量、真实JSON、原领取与库存、防重复和坏空页拒绝通过。reward_slots_check22／0、growth_budget_check41／0。原expedition.tscn -- --campaign-flow-check --order=012 GUI149／0，完整原战役通过，旧隔离档已保留；不写玩家档。不是双流派真实新档／真人平衡证据，边界见REWARD-01。
+
+## 原出发双流派与伙伴验证
+
+2026-10-07，基线aa61309加工作树，PowerShell7／Godot4.7.2 console；--path . --quit-after 1500 res://scenes/battle_demo/starting_strategy_check.tscn，无头加--headless得到109／0，GUI加--rendering-method gl_compatibility，末尾-- --capture得到125／0。检查独立新档经原序章、派遣、人物交谈、图书馆四战及实际奖励／结算，两档共10场，无代码或道具注入。原程序预览与释放按钮事件、真实页面鼠标输入、JSON／活动局和永久编队恢复、坏阵位原子拒绝通过。原expedition.tscn -- --campaign-flow-check --order=012 GUI150／0，原完整战役通过；旧隔离档保留，不写玩家档。
+
+实际出发、伙伴与两队战斗各三尺寸截图.godot/starting-<页面>-<尺寸>.png，已目视1920×1080和1920×1200并展示出发；完整原始GUI战斗结果在docs/research/combat-starting-flow-evidence.json。此时前三个正式节点仍巡逻、末节点巨像；不宣称三类型敌阵、所有强化组合或真人趣味性已验证。具体实现与边界见CORE-05。
+
+2026-10-07最终护盾成员说明复测：starting_strategy_check.tscn GUI -- --capture为124／0，三尺寸实际截图已更新；与先前125项的差异来自随机奖励是否进入对象选择页。原10场GUI证据保留原抽取结果，不用本次不同种子覆盖。
+
+## 原路线巡逻／教室／巨像验证
+
+2026-10-07，基线30389ff加工作树，PowerShell7／Godot4.7.2。使用starting_strategy_check.tscn，--path . --quit-after 1500；--headless得到132／0，GUI --rendering-method gl_compatibility -- --capture为154／0。两个原新档共10场，实际第三站教室预警与整排释放、自然产码与核心、原JSON检查点、旧缺字段再保存／重试仍巡逻、坏版本拒绝通过。程序驱动原模拟，页面选择使用实际鼠标，未注入人物／代码或使用道具。完整expedition.tscn -- --campaign-flow-check --order=012 GUI150／0，旧隔离档已保留，不写玩家档。
+
+新增两队各三尺寸教室预警截图.godot/starting-classroom-warning-<队>-<尺寸>.png，护盾1920×1080已目视并在对话展示；本次原始10场保留在docs/research/combat-route-pressure-evidence.json。不是随机胜率、任意强化组合、其他区域的双流派新档或真人趣味性验收；详细边界见CORE-05。
+
+## 原主菜单窗口标题与背景复核
+
+2026-10-07，基线a59d42d加工作树。Godot4.7.2／PowerShell7；tools/menu_runtime_check.tscn图形模式，--path . --rendering-method gl_compatibility --quit-after 600 -- --test-size=1920x1080（另复验2560x1440、1920x1200）。每尺寸正常／异常6背景与6轮播通过，日志实际窗口标题“校园异闻”；18张PNG尺寸逐项正确，无脚本错误。1080与1200图已实际查看并在对话展示。具体实现、末尾空窗口纹理差异与证据路径见UI-05，不把本项通过扩大为全流程美术验收。
+
+### 六敌人原战役接入专项
+
+PowerShell7，Godot4.7.2：`--path . --rendering-method gl_compatibility res://scenes/battle_demo/enemy_integration_check.tscn -- --capture`。2026-10-07 / eca60f9加工作树，94 checks / 0 failures，三种敌阵×三分辨率，六名敌人攻击与头像实际绑定；原起始流程无头133/0。详细资源版本、授权和限制归 ART-02 与敌人任务。截图 .godot/enemies-<patrol/classroom/final>-<尺寸>.png；检查使用独立存档，不改玩家存档。
+
+### 既有动作反馈与破解输入专项
+
+2026-10-07 / 8e983ea加工作树。Godot4.7.2 / PowerShell7：`--path . --rendering-method gl_compatibility res://scenes/battle_demo/battle_feedback_check.tscn -- --capture`，68/0；三尺寸键盘、鼠标、暂停、紧凑面板、三原敌阵计时释放，12张实际截图。`presentation_check.tscn`无头PASS / 0；`starting_strategy_check.tscn`无头132/0。详细边界归UI-02与ART-01。
+
+旧 `code_integration_check.tscn` 本轮失败，未纳入通过集合：旧强化数值／绑定断言以及analysis.effects[0]已不适配现行定义，脚本中止后停止进程，日志 .godot/feedback-code-main.log。不能将历史35/0当成本次通过证据。原链路验证使用现行starting_strategy入口。
+
+## 五敌人动画合并后的主线验证
+
+2026-10-07，基线9a52d06＋来源de3753b及接入修改。Godot4.7.2／PowerShell7：正式运行包promote_animation.py --check五包通过，library_contract_check.tscn -- --production为13160／0；enemy_integration_check.tscn GUI -- --capture为108／0；starting_strategy_check.tscn无头133／0；battle_feedback_check.tscn GUI -- --capture为68／0；growth_budget_check.tscn GUI -- --capture为50／0。每次指定新鲜.godot/enemy-merge-*.log，GUI使用gl_compatibility，三种尺寸1920×1080／2560×1440／1920×1200截图已查看。
+
+资源台Python40项单测通过，实际浏览器52对象／1393文件全部引用有效；分类、复选框和施法GIF切换已操作。run-debug.ps1 -Check的旧循环问题修复后72／0，原始失败记录与原因见DEV-01。当前验证不含全量旧检查、Web导出、移动端、任意成长或真人试玩；先前code_integration_check旧断言问题仍按原档案记录，不声称全测试套件通过。
+
+
+## 单位状态与产码可读性专项
+
+2026-10-07，基线45656a3加HUD修改，Godot4.7.2 / PowerShell7：`--path . --rendering-method gl_compatibility res://scenes/battle_demo/status_hud_check.tscn --log-file .godot/status-hud-gui.log -- --capture`，61/0，headless同为61/0。原Campaign隔离档，三尺寸库存／意图、自然敌人施法、真实点击固定／Esc、模拟暂停与页面退出；实际截图status-hud-*.png，边界见UI-02。生成概念与正式美术审批独立维护，不将检查通过等同批准。
+
+
+### 战斗组件纹理试接入
+
+2026-10-07，f602b36＋试接入工作树，PowerShell7 / Godot4.7.2。`--path . --rendering-method gl_compatibility res://scenes/battle_demo/status_hud_check.tscn --log-file .godot/hud-skin-gui.log -- --capture`：85／0，三尺寸＋密集盾队＋产码来源；相同运行参数的 battle_feedback_check 68／0、screen_cleanup_check 64／0；`./run-debug.ps1 -Check -EnginePath <Godot console>` 73／0。实际截图在 design/concepts/battle-status-components/review/codex-workflow/trial-*.png。详细边界归UI-02，人工授权归美术任务；试接入不等于最终美术批准。
+
+
+2026-10-07 紧凑布局修订：同一status_hud_check.tscn -- --capture，日志.godot/hud-compact-gui.log，101／0；新增友方简要详情、紫色共享吸收与缩小图形保留鼠标热区验证。三尺寸与密集截图为review/codex-workflow/compact-*（完整目录见UI-02）。前文其他通过数仅为各自当时基线，本次未重复全部运行。
+
+2026-10-07 生命护盾／思考泡泡修订：status_hud_check.tscn -- --capture，.godot/hud-vitals.log，105／0；新增双向填充与盾伤不改变生命宽度检查，三尺寸实际截图vitals-*，范围见UI-02。
+
+2026-10-08 反馈链收尾：feedback_progress_check -- --capture 15／0、status_hud_check无头105／0、code_layout_check三尺寸67／0、screen_cleanup_check无头64／0；播放51／0与产码队列33／0见UI-01/COMBAT-02。入口和边界归UI-02，截图feedback-*等已留存于战斗组件review/codex-workflow。
+
+2026-10-08 Debug暂停兼容补验：run-debug -Check 74／0，-Capture 86／0，修复旧打开菜单方式留下暂停；新增手动暂停和已开菜单往返检查，详见DEV-01。battle_feedback_check无头56／0；截图帧附加检查与GUI68项区别归UI-02。
+
+
+留存后复验（2026-10-08，e15be65＋本阶段工作树）：status_hud_check.tscn -- --capture 105／0，三尺寸、真实意图／详情输入和密集盾队截图为final-status-*；AssetCatalog全库53对象／1526文件，0缺失、0不一致、0错误，HUD133登记文件全部匹配。60份SVG／PNG／StyleBox源与运行逐字节相同，批准概念SHA匹配，无tmp目录。运行副本仅保留实际组件与元数据，完整生成／校验记录归asset_001。登记核验记录为review/codex-workflow/retention-validation.json。未扩大到移动端或全量旧玩法套件；视觉评审状态不变。
+
+### 选择子页与热点关联
+
+2026-10-08，基线51c4118＋art/event-choice-ui工作树。PowerShell7，Godot4.7.2 Compatibility。下列参数传给本机Godot console，cwd为项目根；使用隔离检查档，不覆盖玩家档。
+
+| 入口与参数 | 结果 | 覆盖 |
+| --- | --- | --- |
+| `--headless --path . res://scenes/expedition/choice_pages_check.tscn --log-file .godot/choice-exhausted-final.log` | 107／0 | 图谱、主线交互、保存与旧字段兼容 |
+| `--path . --rendering-method gl_compatibility res://scenes/expedition/choice_pages_check.tscn --log-file .godot/choice-delivery-gui.log -- --capture` | 197／0 | 三尺寸、真实点击、多轮、跨地图、对象条件、滚动／焦点、结算去重 |
+| 同场景 `--log-file .godot/choice-core-delivery.log -- --capture --core-only` | 54／0 | 三尺寸与已有记忆终端身份 |
+| `--headless --path . res://scenes/expedition/expedition.tscn --log-file .godot/choice-delivery-campaign.log -- --campaign-flow-check --order=012` | 149／0 | 原序章、三区域、终局与结算 |
+| 同战役入口去掉headless，加`--rendering-method gl_compatibility`，日志choice-campaign-gui.log | 150／0 | 实机完整原战役；含额外截图断言 |
+| `scenes/battle_demo/item_reward_check.tscn`／`reward_slots_check.tscn`／`reward_eligibility_check.tscn`，`--headless --path .` | 69／0、22／0、23／0 | 旧奖励与适配回归 |
+| `scenes/expedition/screen_cleanup_check.tscn`／`campus_playthrough_check.tscn`，`--headless --path .` | 64／0、61／0 | 页面清理、原地点／记忆交互 |
+
+重跑choice检查会按随机原奖励分支进入对象页，断言总数可变化；固定对象夹具始终覆盖已满训练、返回候选和一次领取。choice夹具中的guard_won与结算遍历由测试设置，不当作自然战斗胜率；完整战役检查另行推进实际模拟。必要截图在design/concepts/event-choice-ui/review；原始临时输出在.godot/choice-*，不作为运行资产。Manifest全库检查与源副本一致见asset-validation.json。环境原有根证书／Kenney直接读图警告仍存在，无本次脚本错误。手机、手柄、Web导出包和真人阅读未验；导出配置加入事件JSON，未借配置修改声称包已验证。
+
+最终边界补验：choice_pages_check无头107／0包含合法空奖励继续后进入事件的真实JSON恢复；run-debug.ps1 -Check -EnginePath <Godot console> 为75／0。旧短局／测试入口未创建campaign_panel时的输入仍安全转交原控制器。GUI197项与终端54项为本任务布局验证，空池后事件补验不涉及新的画面变化。
+
+
+### 选择子页视觉修订 asset_002
+
+2026-10-08，b2a1e83＋本轮工作树；使用相同Godot console，PowerShell7／Compatibility与隔离存档。
+
+| 入口与参数 | 结果 | 覆盖 |
+| --- | --- | --- |
+| `--path . --rendering-method gl_compatibility --log-file .godot/choice-chrome-delivery.log scenes/expedition/choice_pages_check.tscn -- --capture` | 205／0 | 三尺寸原流程、长文／焦点、多轮、跨地图、条件对象、结算去重 |
+| 同入口 `--log-file .godot/choice-chrome-states.log`，用户参数`--capture --skin-only` | 55／0 | 共用图谱、真实悬停／按下、焦点卡片与禁用；不是55个纯视觉断言 |
+| `--headless --path . --log-file .godot/choice-chrome-cleanup.log scenes/expedition/screen_cleanup_check.tscn` | 64／0 | 页面退出、悬停和原层级清理 |
+
+确定性矢量重建：`python tools/art/ui/build_choice_chrome.py <输出目录>`，只生成矢量／chrome.json，不覆盖源PNG或替代生图。20张活动源图及chrome.json与运行一致；AssetCatalog54对象／1575登记文件，缺失和不一致均0。原证书／Kenney读图警告仍存在，无此次脚本错误。图片来源及QC归asset_002，三尺寸与状态实机证据归review/codex-workflow/asset-002。原001证据是历史基线，不用于冒充002验收；仍未验手机、实体手柄、Web包。
+
+### 选择页字体与结果标记
+
+2026-10-08，1365e70＋本轮工作树，PowerShell7／Godot4.7.2。以下参数传给本机Godot console，cwd为项目根；GUI采用Compatibility，检查使用隔离原战役档。
+
+| 入口与参数 | 结果 | 覆盖 |
+| --- | --- | --- |
+| `--path . --rendering-method gl_compatibility --log-file .godot/choice-semantic-categories-final.log scenes/expedition/choice_semantics_check.tscn -- --capture` | 214／0 | 三尺寸、十类标签文字／符号与≥4.5:1对比、字体角色、混合／长标签、静止热区、真实补给一次领取／重复防护、绘制无副作用 |
+| 同渲染参数，`--log-file .godot/choice-semantic-final.log scenes/expedition/choice_pages_check.tscn -- --capture` | 200／0 | 原三尺寸流程、多轮／跨地图、对象、长文焦点、原结算；随后仅收口重复字号参数，最终实机候选由上一行重验 |
+| `--headless --path . --log-file .godot/choice-semantic-flow-final.log scenes/expedition/choice_pages_check.tscn` | 103／0 | 最终代码的原流程、保存与对象回归；数量随随机奖励分支变化 |
+| 同GUI参数，`--log-file .godot/choice-semantic-states.log scenes/expedition/choice_pages_check.tscn -- --capture --skin-only` | 55／0 | 实际按钮悬停／按下、聚焦卡与禁用；含共用图谱检查 |
+| `--headless --path . --log-file .godot/choice-semantic-cleanup.log scenes/expedition/screen_cleanup_check.tscn` | 64／0 | 原页面、悬停及表现退出清理 |
+
+负属性、消耗和混合数值属于明确标注的界面夹具，不代表新事件或数值执行；真实奖励仅使用现有供给／训练／装备快照。Native FontVariation按TextServer整数wght轴读取现有Typography字重，字号集中于choice_skin。图标Tween会回落，内容Tween可取消，验证不以移动按钮热区制造反馈。运行源及活动asset_002未改；21份文件一致、全库54对象／1575登记文件无缺失／不一致／错误。九张必要截图和两份精简JSON留存于review/codex-workflow/semantics；生成缓存和隔离存档不入Git。原环境证书／Kenney警告仍有，无最终脚本错误。未扩大为全游戏无障碍、移动端、实体手柄、Web包或真人趣味性验收。
+
+### 紧凑三选项
+
+2026-10-08，97d4fa6＋工作树；PowerShell7／Godot4.7.2 Compatibility、隔离原战役档。`--path . --rendering-method gl_compatibility --quit-after 3000 --log-file .godot/choice-compact-delivery.log scenes/expedition/choice_semantics_check.tscn -- --capture`为235／0，包含三桌面尺寸真实三候选整卡／按钮同屏和零滚动断言。`--headless --path . --quit-after 3000 --log-file .godot/choice-compact-flow.log scenes/expedition/choice_pages_check.tscn`为107／0；相同GUI参数的choice_pages_check加`--capture --skin-only`、日志choice-compact-states.log为55／0。长文／焦点、真实领取及悬停／按下仍正常，无最终脚本错误，原证书与Kenney警告保留。三张候选截图与精简JSON归event-choice-ui/review/codex-workflow/compact；未验证手机、实体手柄或Web包。
+
+### 热点返回权限
+
+2026-10-08，dbe4aa1＋工作树；PowerShell7／Godot4.7.2 console，cwd项目根，隔离原战役存档。下表参数均在`--path . --quit-after 3000`之后，GUI加`--rendering-method gl_compatibility`，无头加`--headless`。
+
+| 入口与参数 | 结果 | 覆盖 |
+| --- | --- | --- |
+| GUI `--log-file .godot/event-return-policy-final.log scenes/expedition/event_return_check.tscn -- --capture` | 111／0 | 三桌面尺寸，事件／节点优先级，原鼠标禁用、Esc、旧操作、第一可用焦点／长文Tab、磁盘／基地续玩、失败确认／返回保存、终页返回完成 |
+| GUI `--log-file .godot/event-return-flow.log scenes/expedition/choice_pages_check.tscn -- --capture` | 197／0 | 原多轮／跨地图、条件对象、实际领取、长文焦点和结算；随后仅收口控制器守卫位置，最终由专项与下行重验 |
+| 无头 `--log-file .godot/event-return-flow-final.log scenes/expedition/choice_pages_check.tscn` | 96／0 | 最终原流程、图谱、旧字段、条件、保存与领取 |
+| GUI `--log-file .godot/event-return-compact-final.log scenes/expedition/choice_semantics_check.tscn -- --capture` | 235／0 | 最终三真实奖励整卡同屏／无滚动、字体／结果与真实领取 |
+| 无头 `--log-file .godot/event-return-cleanup.log scenes/expedition/screen_cleanup_check.tscn` | 64／0 | 原页面、悬停及表现清理 |
+| 无头 `--log-file .godot/event-return-campaign.log scenes/expedition/expedition.tscn -- --campaign-flow-check --order=012` | 149／0 | 原序章→三区域→终局全战役 |
+
+三尺寸1920×1080、2560×1440、1920×1200。必要禁止三尺寸／允许1080截图与精简JSON在design/concepts/event-choice-ui/review/codex-workflow/return-policy，当前asset_002未改。配置反例、长文和失败保存属于明确夹具；实际访问信息通过原Campaign／Profile读写。固定对话不新增随机结果，未来随机分支须先保存再展示；规则与未覆盖边界归RUN-02。原环境证书与Kenney读图警告保留，无最终脚本错误；未验手机、实体手柄、Web导出或真人阅读。
+
+### 选择页纸面背景重绘
+
+2026-10-08，abdfcad＋背景重绘工作树；PowerShell7／Godot4.7.2 console，cwd项目根。运行`--path . --rendering-method gl_compatibility --quit-after 3000 --log-file .godot/paper-redraw-final.log scenes/expedition/choice_pages_check.tscn -- --capture`，原隔离Campaign三尺寸GUI197／0。实际查看事件与三奖励页面，动态文案、条件、多轮／跨地图、长文焦点、领取／结算通过。改动只有paper.png，未重跑无关战斗数值套件。
+
+AssetCatalog读取原主Manifest：54对象／1578登记文件，0缺失／不一致／错误，asset_003活动21份运行文件逐字节匹配，其他20份原asset_002依赖未改。源1659×948 RGB、不透明，无游戏文案；生成／清理提示词与来源归asset_003。必要事件三尺寸和奖励16:10截图、精简JSON归event-choice-ui/review/codex-workflow/paper-redraw。审批／留存归原美术任务，不借本检查升级review。
+
+最终GUI没有SCRIPT ERROR／Parse Error，原证书与Kenney读图警告保留。无头编辑器已成功重新导入paper.png；退出时报告EditorSettings未实例化（shutdown_adb_on_exit），原导入日志在.godot/paper-redraw-final-import.log，不把进程退出0说成无报错。实际GUI使用最后导入的无键盘标记版本。未验手机、实体手柄、Web导出或真人阅读。
+
+
+## 区域流程资源与编辑器分工
+
+2026-10-09，基线 `10fb33b` 加 `codex/campus-flow-config` 工作树；PowerShell7／Godot4.7.2 console／Node。下面Godot参数在 `--path . --quit-after 3000 --log-file .godot/<检查名>.log` 之后使用。所有探索测试使用 `.godot` 隔离档，不写玩家档。
+
+| 入口与参数 | 结果 | 覆盖 |
+| --- | --- | --- |
+| `--headless scenes/content/campus_flow_preview.tscn -- --flow-preview-check` | 120／0 | 三区域资源、真实JSON、五站原控制器、配置错误及原主线状态保护、检查器校验与禁用、12站清单和重访 |
+| 同入口改 `--rendering-method gl_compatibility`，用户参数加 `--capture` | 154／0 | 1280×720、1920×1080、1920×1200三桌面尺寸，三区域投影／命中／引用，五站原主线画面与长列表 |
+| `--headless scenes/expedition/expedition.tscn -- --campaign-flow-check --order=012` | 149／0 | 原序章、派遣、三区域、领奖、终局、结算与恢复 |
+| `--rendering-method gl_compatibility scenes/battle_demo/starting_strategy_check.tscn -- --capture` | 151／0 | 两套真实出发队伍、当前多轮人物交谈、10场实际战斗、冻结阶段JSON、临时／永久编队与奖励 |
+| `--headless game/run/location_check.tscn` | 134／0 | 地点、热点及原检查点 |
+| `--headless scenes/expedition/campus_playthrough_check.tscn` | 61／0 | 原校园地点／回忆交互 |
+| `node --check tools/campus-map-editor/editor.mjs`，`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs` | 语法通过，11／0 | 布局、几何、服务身份、读取、坏数据／并发覆盖拒绝、隔离保存与备份 |
+
+Godot `--headless --editor --path . --quit --log-file .godot/campus-flow-final-import.log` 完成资源／插件导入，无脚本错误；退出仍有既有EditorSettings shutdown_adb_on_exit错误，不能把退出0称为无报错。运行检查仍有本机根证书和Kenney直接读图告警，没有最终Script／Parse错误。当前多轮人物事件已替代旧独立formation按钮，起始检查按真实事件按钮完成，不削弱战斗胜利与编队恢复断言。
+
+实际浏览器127.0.0.1:8767核对地图选区切换、资源路径、路径拐点说明与配置指南；不保存或改动用户布局。GUI截图 `.godot/campus-flow-{library,region_b,region_c}-{1280x720,1920x1080,1920x1200}.png`，原主线五站截图 `.godot/campus-flow-main-five-stops-2560x1440.png`，已查看并在对话展示；本地验收缓存不入库。
+
+边界：五／12站是明确的原内容夹具，五站遍历由测试设置胜利／领奖标记，不代表自然胜率；真实10战另由起始检查模拟。预览不执行战斗／发奖励／读写玩家存档。仅按站次前进、分叉后相邻层互通，未提供任意有向图。检查器组件按钮与插件导入已验，未逐字段鼠标录入原生Inspector；Web导出、触控和真人编辑可用性未验。负责人要求不做旧Journey兼容，当前schema2，旧活动探索需通过已有重开入口开始。
+
+
+## 地图编辑器侧栏分区
+
+2026-10-09，基线 `b764964` 加工作树；PowerShell7／Node，本轮只调整浏览器地图编辑器的面板布局。`node --check tools/campus-map-editor/editor.mjs` 语法通过；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs` 为11／0，覆盖原几何、读取、隔离保存／备份与并发保护。
+
+真实浏览器 `http://127.0.0.1:8767/` 实际视口1280×720：选区显示顶点和属性；拐点只显示当前选区与点操作；亮区三态亮度控件同屏；地标显示名称／坐标与折叠的新建区。实际加点6→7、删点7→6恢复干净状态，输入地标名称后显示未保存、撤销恢复原名称和保存禁用；未保存到项目布局文件。取坐标自动展开置顶，画布中心拾取 `x=900, y=750`，复制／清除可用且保存仍禁用；退出回到折叠辅助区。Enter可展开关联地标和流程指引，展开后侧栏滚动276，切换拐点复位0。编辑页控制台错误0。用户 `expanded_campus_layout.json` SHA256前后一致。
+
+必要实际截图为 `.godot/map-editor-sidebar-{area,path,boundary,place,coordinates}-1280x720.jpg`，拐点与亮区画面已查看，拐点截图在对话展示；验收缓存不入Git。尺寸覆盖限于实际1280×720：浏览器视口覆盖参数未生效，不能把尝试的900×720当作验收尺寸。未验触控；本轮未改Godot运行规则，不重复无关战斗／流程检查。
+
+
+## 地图保存权限修复
+
+2026-10-09，基线 `7d8f102` 加工作树；PowerShell7／Node22.17.1。真实根目录的POST保存检查修复前两次500，精确复现 `.editor-tmp` 写入EPERM；同一请求在正常执行环境两次200并恢复原文件。核验 `/api/health` 的应用ID／项目根及进程命令行后，重启8767后台服务；仅重启服务，不刷新用户编辑页、不改ACL。
+
+`node --check tools/campus-map-editor/server.mjs` 通过；`node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs` 为12／0。新增Windows只读临时文件夹具：修复前返回原始EPERM导致恢复提示断言失败，修复后提示包含不可写／重启／导出；原地图及保存前备份与原字节一致。其余几何、读取、坏数据／过期版本拒绝、隔离保存及备份原检查保留。Windows夹具在其他系统跳过，不宣称跨平台权限检查。
+
+真实浏览器1280×720在独立验证页修改选区名称，点击保存后显示已同步／保存成功，并核对真实JSON写入与备份；撤销到原名称并再次保存也成功，控制台错误0。最终用户 `expanded_campus_layout.json` SHA256为 `C3C5665C66C8FC0C567AA1A9EB91DAD9479C4A3481EA8B019886F5CCDDA55292`，与验证前一致，用户已有未提交布局修改保留。实际截图 `.godot/map-editor-save-fixed.jpg` 已查看并在对话展示，本地缓存不入Git；临时复现脚本在收尾删除。只改工具后端失败提示并恢复当前服务运行权限，未改Godot规则，未重复无关战斗测试。

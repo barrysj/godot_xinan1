@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="CampusRegionFlow" load_steps=13 format=3]
+[ext_resource type="Script" path="res://game/content/campus_region_flow.gd" id="flow"]
+[ext_resource type="Script" path="res://game/content/campus_route_stage.gd" id="stage"]
+[ext_resource type="Script" path="res://game/content/campus_route_stop.gd" id="stop"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/region_c/gate.tres" id="gate"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/region_c/court.tres" id="court"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/region_c/hall.tres" id="hall"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/region_c/walk.tres" id="walk"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/region_c/end_c.tres" id="end_c"]
+[sub_resource type="Resource" id="stage_0"]
+resource_name = "南门"
+script = ExtResource("stage")
+choices = Array[ExtResource("stop")]([ExtResource("gate")])
+[sub_resource type="Resource" id="stage_1"]
+resource_name = "体育场 / 图书馆"
+script = ExtResource("stage")
+choices = Array[ExtResource("stop")]([ExtResource("court"), ExtResource("hall")])
+[sub_resource type="Resource" id="stage_2"]
+resource_name = "西湖湖心"
+script = ExtResource("stage")
+choices = Array[ExtResource("stop")]([ExtResource("walk")])
+[sub_resource type="Resource" id="stage_3"]
+resource_name = "成电会堂商业街"
+script = ExtResource("stage")
+choices = Array[ExtResource("stop")]([ExtResource("end_c")])
+[resource]
+resource_name = "第三终端区域"
+script = ExtResource("flow")
+id = "region_c"
+display_name = "第三终端区域"
+revision = 1
+stages = Array[ExtResource("stage")]([SubResource("stage_0"), SubResource("stage_1"), SubResource("stage_2"), SubResource("stage_3")])

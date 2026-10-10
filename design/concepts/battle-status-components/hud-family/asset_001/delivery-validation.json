@@ -1,0 +1,374 @@
+{
+  "asset_version": "asset_001",
+  "vector_count": 26,
+  "png_count": 26,
+  "style_count": 8,
+  "checks": "XML has no text, script, image, or foreignObject; PNG exact 2x RGBA with alpha 0..255; native Godot import evidence in import-validation.json.",
+  "files": [
+    {
+      "svg": "frames/absorb_frame.svg",
+      "size": [
+        174,
+        52
+      ],
+      "png": "png/absorb_frame@2x.png",
+      "size_2x": [
+        348,
+        104
+      ],
+      "svg_sha256": "f2a11d57a3f37f2a7ce2b8545590a9c3a3598af521c2dccbc96352705ec5f491",
+      "png_sha256": "abffd64fb77ed4f50c239071650001204047a12c86a669e1f86bcf46332b7b63"
+    },
+    {
+      "svg": "frames/action_tip.svg",
+      "size": [
+        12,
+        8
+      ],
+      "png": "png/action_tip@2x.png",
+      "size_2x": [
+        24,
+        16
+      ],
+      "svg_sha256": "96916b9b23acb01d327d9e484f4b627a6d70e2ea57b0f5522078c2aa28e4253c",
+      "png_sha256": "69ef3abc410e6b6c0216b2f05fd9413538ef20d2e2f6553716969fef490d5eae"
+    },
+    {
+      "svg": "frames/bar_fill.svg",
+      "size": [
+        98,
+        8
+      ],
+      "png": "png/bar_fill@2x.png",
+      "size_2x": [
+        196,
+        16
+      ],
+      "svg_sha256": "453f354520781dd4c88ecfc055fdbd36ed1254d70eb0c06e306b2249079d71d7",
+      "png_sha256": "c2740f416d03ce9eafc596ace0b9e081492ce3a2766ee39f385dad79ead57a48"
+    },
+    {
+      "svg": "frames/bar_frame.svg",
+      "size": [
+        104,
+        14
+      ],
+      "png": "png/bar_frame@2x.png",
+      "size_2x": [
+        208,
+        28
+      ],
+      "svg_sha256": "00d72772d435ddca56add87366110eb5b39e9b9589daab30547d5e6a43af1567",
+      "png_sha256": "e0710ba7b35fc3c199e0fe11e1ef8303fc4313ed02978c30cef47a9a1066b913"
+    },
+    {
+      "svg": "frames/code_tile.svg",
+      "size": [
+        30,
+        30
+      ],
+      "png": "png/code_tile@2x.png",
+      "size_2x": [
+        60,
+        60
+      ],
+      "svg_sha256": "61a316f133ac10c7e259fb88bac77bc7d23cc9d452199a2d621b617f45ed1e15",
+      "png_sha256": "487a88a882a9051320ba6d3645e8ff4c121102aca0f00b79ed7bd95f3f3250b6"
+    },
+    {
+      "svg": "frames/counter_frame.svg",
+      "size": [
+        96,
+        26
+      ],
+      "png": "png/counter_frame@2x.png",
+      "size_2x": [
+        192,
+        52
+      ],
+      "svg_sha256": "75e3a32c5221cfc2d2fcc7362260bc47dde275844e414bdf5cfcc4a0b2a88c3b",
+      "png_sha256": "2a462e4909f670d437952bdff9fe347dc47e31477dc9fea2b8b0fb2588f2a68d"
+    },
+    {
+      "svg": "frames/intent_focus.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_focus@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "9d7492ec5741ac5f3e1b6e9d80cb30446b62f12c5e358406417a4436106183f7",
+      "png_sha256": "80cfd68e7ccd1ecde659445dd84eaee0974c7541a99fe87128d4a55568ebc4d1"
+    },
+    {
+      "svg": "frames/intent_plate.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_plate@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "71016e74b24d890669d5d4f35101320098bee86d8c59bfce9027eb87e3d82e17",
+      "png_sha256": "bf61d4f500d324b29d87728ee572e95f1fe0e560ce149d8f00cba42bf0cda326"
+    },
+    {
+      "svg": "frames/shield_plate.svg",
+      "size": [
+        44,
+        18
+      ],
+      "png": "png/shield_plate@2x.png",
+      "size_2x": [
+        88,
+        36
+      ],
+      "svg_sha256": "8710681458df720b613c5694eaf673f6a2cd85dffe465be17fa19bb83d13ecb2",
+      "png_sha256": "1c048d7ac0e4da1657539db9acdddf6b685218ef12d3dac5e6ed6552f8d064ea"
+    },
+    {
+      "svg": "frames/slot_empty.svg",
+      "size": [
+        12,
+        12
+      ],
+      "png": "png/slot_empty@2x.png",
+      "size_2x": [
+        24,
+        24
+      ],
+      "svg_sha256": "444fa1b582ed8821e8d057faad5ee43624afa17a7dc74f3d28fcfb026f6662f8",
+      "png_sha256": "22e194f2e82a13cfbf1a76af0a07b9073cd4d9177a59951285a9aed5d5ec0699"
+    },
+    {
+      "svg": "frames/slot_filled.svg",
+      "size": [
+        12,
+        12
+      ],
+      "png": "png/slot_filled@2x.png",
+      "size_2x": [
+        24,
+        24
+      ],
+      "svg_sha256": "7d4d1fe7927b701f4ad815bf7a5e5e833848663ca8fced13d35f83f09aec27d6",
+      "png_sha256": "43c3d7ce7b36a60530d2d3651070d86333078a55de26db47761d286a0834dc3f"
+    },
+    {
+      "svg": "frames/stock_focus.svg",
+      "size": [
+        174,
+        52
+      ],
+      "png": "png/stock_focus@2x.png",
+      "size_2x": [
+        348,
+        104
+      ],
+      "svg_sha256": "411bdcd79534ff40dc44831a58ff3aa6d1f4a544dd8e4edc099f2e7a36c25648",
+      "png_sha256": "b7bd83c8f3a83e9bdbb7704684cb94f0f4c67aaa3ab88d3b2410b1b4bc17c21c"
+    },
+    {
+      "svg": "frames/stock_frame.svg",
+      "size": [
+        174,
+        52
+      ],
+      "png": "png/stock_frame@2x.png",
+      "size_2x": [
+        348,
+        104
+      ],
+      "svg_sha256": "f2a11d57a3f37f2a7ce2b8545590a9c3a3598af521c2dccbc96352705ec5f491",
+      "png_sha256": "abffd64fb77ed4f50c239071650001204047a12c86a669e1f86bcf46332b7b63"
+    },
+    {
+      "svg": "frames/tooltip_frame.svg",
+      "size": [
+        64,
+        64
+      ],
+      "png": "png/tooltip_frame@2x.png",
+      "size_2x": [
+        128,
+        128
+      ],
+      "svg_sha256": "b995b7057295cb3c6030bceaddf1bc80abcc3c7145ac7b560b686bd0710a1699",
+      "png_sha256": "6c006318d5ad3867346e7cd8c4aa9fd0438ff1e77523e9b5db5d8c735d4db86a"
+    },
+    {
+      "svg": "frames/tooltip_tail.svg",
+      "size": [
+        10,
+        18
+      ],
+      "png": "png/tooltip_tail@2x.png",
+      "size_2x": [
+        20,
+        36
+      ],
+      "svg_sha256": "b69052b2f4e9db890c305523e282b5a9be2adbd741e772dfdb16685903b52af5",
+      "png_sha256": "6666962b8cf9c7ff99807df1b7b56ad73bab508034ef1100508c692c95401052"
+    },
+    {
+      "svg": "icons/code_blue.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/code_blue@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "acebfb14206907e931719c47d105d7e1989ab9fd9843f1d89b32e1473d3e57bc",
+      "png_sha256": "e436b55b738a4a920317c024c7d82a7de024d7ec725ef1043d843e26e53ef0c4"
+    },
+    {
+      "svg": "icons/code_green.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/code_green@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "517420133146ff70a9c29f901da666f96d36435af9de25bca7327ddaf4871215",
+      "png_sha256": "28847b060a1d64393772562d0036d905c566b0804398c083c57da3a4a5a352e5"
+    },
+    {
+      "svg": "icons/code_purple.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/code_purple@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "2950f3a2a3bfd4be389cf19286e41101d0fb743155d0742133695d49f94e7ae2",
+      "png_sha256": "b7b6abf1e5cdebb755e24a186324943329a92fd175a3f885d642bd9d7b08c2e9"
+    },
+    {
+      "svg": "icons/code_red.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/code_red@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "1668ecc64f34166d7852cb995c1d34ff1db800273e8ca2d8a3f1553a68e818eb",
+      "png_sha256": "345c226ff667d8631b3b950213c6e2344d521ac331f8b44bd1023fffa7483693"
+    },
+    {
+      "svg": "icons/health.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/health@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "149dda85fe3186a2b7b5a730a8aa0c684447925f8d348a19a27e6500f30f654e",
+      "png_sha256": "925e6f95a51d0bc52bf3a272baa6611756ca76ccf55eaaa0a53a86e3b04d1026"
+    },
+    {
+      "svg": "icons/intent_area.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_area@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "242bf7da5d1945630927b876a67193e876f811928dc8f60c8c57ffeb29a8994d",
+      "png_sha256": "0edbfecc8dbb00ecd5e5fa6d29bb969b8690ada0f9ab29b91971789217f2cf2d"
+    },
+    {
+      "svg": "icons/intent_attack.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_attack@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "81f0fe52c3cf6c325f927c44498c0585bc9ccc5f4e176c823f5c2ffc969deff6",
+      "png_sha256": "c239e3d4c5d4ebae5d13d3defe75bcdf5ff804a04de0e1333e2440ea40039603"
+    },
+    {
+      "svg": "icons/intent_charge.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_charge@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "b137e19bb3cae38159a13eb40049836f24ac1c9c4569b97d46cf8317ff19605b",
+      "png_sha256": "ada036fdf33c25ecfca779eb05414e41b515179fc53b00b2b60c19bafb7dc567"
+    },
+    {
+      "svg": "icons/intent_heal.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_heal@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "6bbd4f101c4f6c10aff752785b6aacbb862ffe2eb79f21177c00e5870d7cc206",
+      "png_sha256": "72c52717148f9b01a4fcb0550859aad78602808f04189dfe1aac8bb4e24b24e2"
+    },
+    {
+      "svg": "icons/intent_ranged.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_ranged@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "76153840e1546909ea9ea7a5a8fea7ce46baf9b6d6ae55264757f79b2a5ef882",
+      "png_sha256": "8914d978ac6856ea22e8c53719480a8106870b95f2cba7237ad8e3f94afabef3"
+    },
+    {
+      "svg": "icons/intent_shield.svg",
+      "size": [
+        32,
+        32
+      ],
+      "png": "png/intent_shield@2x.png",
+      "size_2x": [
+        64,
+        64
+      ],
+      "svg_sha256": "d540f72913235f168d3197242956928e69ef3682d6cfa5b05e6221724388ae1c",
+      "png_sha256": "48860b596234955969911a809d263cd1cdc0728fab4a4b01aefea58499b3b594"
+    }
+  ],
+  "failures": []
+}

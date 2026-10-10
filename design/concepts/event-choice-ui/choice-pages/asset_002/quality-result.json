@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "task_id": "event-choice-ui",
+  "quality_result": {
+    "schema_version": 1,
+    "task_id": "event-choice-ui/paper-002",
+    "status": "PASS_WITH_NOTES",
+    "eligible_for_style_validation": true,
+    "checks": {
+      "technical_integrity": "PASS",
+      "subject_and_identity": "PASS",
+      "anatomy_and_physics": "NOT_APPLICABLE",
+      "prompt_and_content": "PASS",
+      "composition_and_readability": "PASS",
+      "generation_artifacts": "PASS"
+    },
+    "failures": [],
+    "notes": [
+      "No baked text, frames, buttons, signatures or watermarks. The faint lower-right blueprint occupies more area than the suggested 15 percent, without obscuring functional content.",
+      "Paper grain is softened by a 48 percent white native overlay. Texture remains unedited; native UI composes it at runtime.",
+      "reward.png and terminal.png unchanged from asset_001; previous content caveats still apply."
+    ],
+    "repair_directives": [],
+    "next_step": "accept"
+  },
+  "technical_files": [
+    {
+      "file": "paper.png",
+      "format": "PNG",
+      "size": [
+        1659,
+        948
+      ],
+      "mode": "RGB",
+      "bytes": 1948393,
+      "sha256": "6182eae67d5048e2e34805f5c06112da4a8ab107aa114e010c4c8adbf76a8268"
+    },
+    {
+      "file": "reward.png",
+      "format": "PNG",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "bytes": 2287520,
+      "sha256": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677"
+    },
+    {
+      "file": "terminal.png",
+      "format": "PNG",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "bytes": 2158209,
+      "sha256": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4"
+    },
+    {
+      "file": "arrow.svg",
+      "size": [
+        12,
+        12
+      ],
+      "native_alpha": true,
+      "sha256": "15ef20ffbf20c238abaf7357bd1164c4bac17e3583970db099de2c875b8572a5"
+    },
+    {
+      "file": "button_disabled.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "06cacbb71d602259ee5fdaaa662a827ac44762c31d71a23c408f9a78889a49a7"
+    },
+    {
+      "file": "button_focus.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "bc50eb3914d390e27bc5da2079d52cc948d612c3cb01292aa103c55a87ca4117"
+    },
+    {
+      "file": "button_hover.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "7efccecc7d5e9775d1382d22f4a47187dcad197cc7ce23b3bcd6ccdd384f6413"
+    },
+    {
+      "file": "button_normal.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "21ec272b19f8740ea7145261a1f6d4488db21c01e079e0a8c1bba41c2c31a5f9"
+    },
+    {
+      "file": "button_pressed.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "ea439299a345d43a6892c7ac5ecc4de196559d2388a963cf969206ec16122a95"
+    },
+    {
+      "file": "card.svg",
+      "size": [
+        320,
+        112
+      ],
+      "native_alpha": true,
+      "sha256": "d8dad872a67196a21b6dc48d6e1ba5c0219c6b1ee768d32aef08b8835164d930"
+    },
+    {
+      "file": "card_active.svg",
+      "size": [
+        320,
+        112
+      ],
+      "native_alpha": true,
+      "sha256": "f8a063f993ae65ba4e269b56fc2b5b9a30b487c0075f2838ad75c65c559cdc4e"
+    },
+    {
+      "file": "card_disabled.svg",
+      "size": [
+        320,
+        112
+      ],
+      "native_alpha": true,
+      "sha256": "9d9612607538c2724b2730547f2294e4e34798753b453f378c98b4afb5723091"
+    },
+    {
+      "file": "illustration.svg",
+      "size": [
+        160,
+        160
+      ],
+      "native_alpha": true,
+      "sha256": "78f9ecf13baa4785a6f8e3503f37b4718e9d20272d32559754dde1f7d16ea0c6"
+    },
+    {
+      "file": "secondary_disabled.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "06cacbb71d602259ee5fdaaa662a827ac44762c31d71a23c408f9a78889a49a7"
+    },
+    {
+      "file": "secondary_focus.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "bc50eb3914d390e27bc5da2079d52cc948d612c3cb01292aa103c55a87ca4117"
+    },
+    {
+      "file": "secondary_hover.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "ea439299a345d43a6892c7ac5ecc4de196559d2388a963cf969206ec16122a95"
+    },
+    {
+      "file": "secondary_normal.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "7dc961a0e848170c2c60eb5d4ac1222a4e1ba87d8485ba967b72e917ee3fb0b2"
+    },
+    {
+      "file": "secondary_pressed.svg",
+      "size": [
+        160,
+        48
+      ],
+      "native_alpha": true,
+      "sha256": "ea439299a345d43a6892c7ac5ecc4de196559d2388a963cf969206ec16122a95"
+    },
+    {
+      "file": "shell.svg",
+      "size": [
+        1120,
+        640
+      ],
+      "native_alpha": true,
+      "sha256": "d213d4f3da61e3e04d9092bfa4fcd597b66e0dee0c806ec74d0cc22a4f4e13b1"
+    },
+    {
+      "file": "status.svg",
+      "size": [
+        16,
+        16
+      ],
+      "native_alpha": true,
+      "sha256": "22e819c3772bfa220a68a565c649e3ffbfde76d7978f064a2e577566ba631543"
+    }
+  ],
+  "engine_validation": {
+    "sampling": "linear scoped to choice page",
+    "native_text": true,
+    "nine_patch": "chrome.json",
+    "visual_evidence": "../../review/codex-workflow/asset-002/"
+  }
+}

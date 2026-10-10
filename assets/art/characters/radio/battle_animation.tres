@@ -1,0 +1,46 @@
+[gd_resource type="Resource" load_steps=10 format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="s"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/radio/pose-sheet.png" id="sheet"]
+
+[sub_resource type="AtlasTexture" id="idle"]
+atlas = ExtResource("sheet")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="anticipation"]
+atlas = ExtResource("sheet")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="release"]
+atlas = ExtResource("sheet")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="hurt"]
+atlas = ExtResource("sheet")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="critical"]
+atlas = ExtResource("sheet")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="death"]
+atlas = ExtResource("sheet")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [
+{"frames": [{"duration": 1.0, "texture": SubResource("idle")}], "loop": true, "name": &"idle", "speed": 8.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("idle")}], "loop": true, "name": &"move", "speed": 8.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("idle")}, {"duration": 1.0, "texture": SubResource("anticipation")}, {"duration": 1.0, "texture": SubResource("release")}, {"duration": 1.0, "texture": SubResource("anticipation")}, {"duration": 1.0, "texture": SubResource("idle")}], "loop": false, "name": &"ranged", "speed": 8.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("idle")}, {"duration": 1.0, "texture": SubResource("anticipation")}, {"duration": 1.0, "texture": SubResource("release")}, {"duration": 1.0, "texture": SubResource("release")}, {"duration": 1.0, "texture": SubResource("anticipation")}, {"duration": 1.0, "texture": SubResource("idle")}], "loop": false, "name": &"cast", "speed": 8.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("hurt")}], "loop": false, "name": &"hurt", "speed": 8.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("critical")}], "loop": true, "name": &"critical", "speed": 8.0},
+{"frames": [{"duration": 1.0, "texture": SubResource("death")}], "loop": false, "name": &"death", "speed": 8.0}]
+[resource]
+script = ExtResource("s")
+frames = SubResource("frames")
+display_size = Vector2(120,120)
+anchor = Vector2(0.5,0.9375)
+impact_ratio = 0.45
+flip_with_facing = true
+launch_offset = Vector2(0,-40)
+hit_offset = Vector2(0,-38)

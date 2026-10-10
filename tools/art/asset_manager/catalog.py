@@ -16,9 +16,9 @@ from pathlib import Path
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".svg"}
 RESOURCE_EXTENSIONS = {".tres", ".res", ".tscn"}
-CATEGORY_ORDER = {"场景": 0, "人物": 1, "UI": 2, "闪卡": 3, "特效": 4, "未归类": 5}
+CATEGORY_ORDER = {"场景": 0, "人物": 1, "敌人": 2, "UI": 3, "闪卡": 4, "特效": 5, "未归类": 6}
 TYPE_CATEGORIES = {
-    "character": "人物", "enemy": "人物", "background": "场景",
+    "character": "人物", "enemy": "敌人", "background": "场景",
     "scene": "场景", "ui": "UI", "effect": "特效", "holo_card": "闪卡",
 }
 CLIP_LABELS = {
@@ -35,6 +35,20 @@ ROLE_KINDS = {
     "projectile_resource": ("resource", "弹体资源"),
     "preview_gif": ("preview", "GIF 预览"), "dependency": ("resource", "依赖资源"),
 }
+
+
+def object_category(identity, collection):
+    if identity.get('type') == 'enemy' or identity.get('subtype') in ('enemy', 'boss') or (identity.get('type') == 'character' and 'enemy' in collection):
+        return '敌人'
+    return TYPE_CATEGORIES.get(str(identity.get('type') or ''), '未归类')
+
+
+def has_generated_assets(variants):
+    # Generated means real asset-stage output, independent of approval or use.
+    return any(v['stage'] in ('asset', 'animation') and any(
+        f['integrity']['status'] == 'matched' and f['role'] in
+        ('image', 'atlas', 'animation_resource', 'animation_library', 'effect_resource', 'projectile_resource')
+        for f in v['files']) for v in variants)
 
 
 def _path_key(path):
@@ -614,7 +628,8 @@ class AssetCatalog(object):
             result_objects.append({
                 "id": object_id, "name": identity.get("display_name") or object_id,
                 "type": identity.get("type") or "unknown", "subtype": identity.get("subtype"),
-                "category": TYPE_CATEGORIES.get(str(identity.get("type") or ""), "未归类"),
+                "category": object_category(identity, collection),
+                "has_generated_assets": has_generated_assets(variants),
                 "manifest_path": str(manifest_path), "collection": list(collection), "variants": variants, "assets": all_assets,
                 "holo_card": data.get("holo_card"),
                 "thumbnail_id": None, "relationships": relationships,

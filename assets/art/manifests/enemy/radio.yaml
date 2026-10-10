@@ -1,29 +1,60 @@
 schema_version: 3
 object:
-  id: radio
+  id: "radio"
   display_name: "广播中继"
-  type: character
-  subtype: enemy
+  type: "character"
+  subtype: "enemy"
 variants:
   concept_003:
-    stage: concept
+    stage: "concept"
     version: "003"
-    selection: selected
-    approval: approved
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-enemy-cast.md
+      source: "docs/art/tasks/m1-enemy-cast.md"
       date: "2026-09-25"
-      decision: approved
+      decision: "approved"
       quote: "这几个都概念通过"
-    root: design/concepts/enemy/radio/concept_003
+    root: "design/concepts/enemy/radio/concept_003"
     files:
-      concept: radio_action_concept_003.png
-      generation: generation.md
+      concept: "radio_action_concept_003.png"
+      generation: "generation.md"
     metadata:
-      asset_type: action_concept_board
+      asset_type: "action_concept_board"
       transparent: false
-      usage: [concept_review, action_design]
+      usage: ["concept_review", "action_design"]
       review_note: "非类人悬浮广播设备，展开挡板、调频、增幅明确；受益机械体仅技能对象占位，不登记为新敌人。"
+  integration_001:
+    stage: "integration"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/characters/radio"
+    files:
+      pose_sheet: "pose-sheet.png"
+      battle_animation: "battle_animation.tres"
+      frame_metadata: "battle_animation.frames.json"
+      rig_manifest: "rig_manifest.json"
+    metadata:
+      source_candidate: "design/concepts/enemy/radio/tmp_003"
+      method: "existing_six_pose_sheet_seven_clips"
+      visual_review: "pending"
+    integration_authorization:
+      source: "docs/art/tasks/m1-enemy-cast.md"
+      date: "2026-10-07"
+      scope: "existing_enemy_actions_in_original_gameplay"
+      quote: "敌人动作暂时保留，先接入游戏不要卡住目标"
+      owners: ["resources/content/enemies/radio.tres"]
 integration:
-  status: not_integrated
-  active_variant: null
+  status: "authorized_active"
+  active_variant: "integration_001"
+  root: "assets/art/characters/radio"
+  resource: "assets/art/characters/radio/battle_animation.tres"
+  owner: "resources/content/enemies/radio.tres"
+  files:
+    pose_sheet: "pose-sheet.png"
+    battle_animation: "battle_animation.tres"
+    frame_metadata: "battle_animation.frames.json"
+    rig_manifest: "rig_manifest.json"
+  visual_review: "pending"
+  evidence: "docs/art/tasks/m1-enemy-cast.md"

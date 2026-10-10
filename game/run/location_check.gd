@@ -10,7 +10,7 @@ func verify(ok: bool, label: String) -> void:
 		push_error(label)
 
 func _ready() -> void:
-	for region in Journey.Regions.MAPS:
+	for region in Journey.Regions.IDS:
 		for branch in [0,1]:
 			var journey = Journey.new()
 			verify(journey.begin(region,2),"begin")
@@ -20,7 +20,7 @@ func _ready() -> void:
 				var snapshot = journey.snapshot()
 				var restored = Journey.new()
 				verify(restored.restore(JSON.parse_string(JSON.stringify(snapshot))),"disk shape restore")
-				verify(restored.snapshot() == snapshot,"no reroll")
+				verify(JSON.stringify(restored.snapshot()) == JSON.stringify(snapshot),"no reroll")
 				journey = restored
 				journey.visit.data.guard_won = true
 				journey.visit.data.reward_taken = true

@@ -15,6 +15,7 @@ const port = Number(portFlag >= 0 ? process.argv[portFlag + 1] : process.env.CAM
 const appId = "cyber-pop-campus-map-editor-v1";
 const resources = {
   "/": [resolve(editorDirectory, "index.html"), "text/html; charset=utf-8"],
+  "/flow-guide": [resolve(editorDirectory, "flow-guide.html"), "text/html; charset=utf-8"],
   "/editor.css": [resolve(editorDirectory, "editor.css"), "text/css; charset=utf-8"],
   "/editor.mjs": [resolve(editorDirectory, "editor.mjs"), "text/javascript; charset=utf-8"],
   "/editor-core.mjs": [resolve(editorDirectory, "editor-core.mjs"), "text/javascript; charset=utf-8"],
@@ -72,7 +73,10 @@ const server = http.createServer(async (request, response) => {
     }
     sendJson(response, 404, { error: "未找到资源" });
   } catch (error) {
-    sendJson(response, 500, { error: error.message });
+    const writeDenied = request.method === "POST" && ["EPERM", "EACCES"].includes(error.code);
+    sendJson(response, 500, { error: writeDenied
+      ? "地图文件或目录不可写。请检查只读或占用状态，并从本机开发工具集重启地图服务；当前编辑仍保留，可先导出备份。"
+      : error.message });
   }
 });
 server.listen(port, "127.0.0.1", () => console.log(`校园地图编辑器：http://127.0.0.1:${server.address().port}/`));

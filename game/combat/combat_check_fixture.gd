@@ -7,7 +7,7 @@ const Codes = preload("res://game/combat/code_catalog.gd")
 const AutoBattle = preload("res://game/combat/auto_battle.gd")
 const DEFAULT = [0, -1, 3, 2, 1, -1]
 
-static func build(formation: Array = DEFAULT, rewards: Array = [], owners: Dictionary = {}, programs: Array = ["disconnect", "takeover"], supplies: Dictionary = {}) -> RefCounted:
+static func build(formation: Array = DEFAULT, rewards: Array = [], owners: Dictionary = {}, programs: Array = ["disconnect", "redirect"], supplies: Dictionary = {}) -> RefCounted:
 	var units: Array[Dictionary] = []
 	for slot in range(formation.size()):
 		var index: int = formation[slot]

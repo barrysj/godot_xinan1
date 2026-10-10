@@ -1,0 +1,553 @@
+{
+  "engine": "4.7.2-stable (official)",
+  "growth_rules": 2,
+  "policy": "core immediately when legal; repair at hp<=40% and missing>=60; no items; first legal reward; first route branch; original prologue and four library-region locations",
+  "samples": [
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 13.0500000000001,
+      "encounter_id": "encounter_patrol",
+      "encounter_rules": 2,
+      "first_core": 10.2,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "40c1aa26a1601a0bc85328b1763f8de2",
+      "offered_rewards": [
+        "combat_lens",
+        "combat_backup",
+        "combat_verify"
+      ],
+      "power": 0.62,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "center": "(4.040001, 1.0)",
+          "fire_at": 12.0,
+          "from": "(2.0, 0.0)",
+          "kind": "enemy_warning",
+          "label": "护盾广播",
+          "mode": "radio",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(4.040001, 1.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "from": "(2.0, 0.0)",
+          "kind": "enemy_release",
+          "label": "护盾广播",
+          "target_id": 6,
+          "time": 12.0,
+          "to": "(2.0, 0.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "prologue"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 13.0500000000001,
+      "encounter_id": "encounter_patrol",
+      "encounter_rules": 2,
+      "first_core": 10.2,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "c0fe8ce6b98916a43f6934cc5966e08d",
+      "offered_rewards": [
+        "combat_lens",
+        "badge",
+        "archer_training"
+      ],
+      "power": 0.62,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "center": "(4.040001, 1.0)",
+          "fire_at": 12.0,
+          "from": "(2.0, 0.0)",
+          "kind": "enemy_warning",
+          "label": "护盾广播",
+          "mode": "radio",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(4.040001, 1.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "from": "(2.0, 0.0)",
+          "kind": "enemy_release",
+          "label": "护盾广播",
+          "target_id": 6,
+          "time": 12.0,
+          "to": "(2.0, 0.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "0"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 15.1000000000001,
+      "encounter_id": "encounter_patrol",
+      "encounter_rules": 2,
+      "first_core": 6.79999999999998,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "c0fe8ce6b98916a43f6934cc5966e08d",
+      "offered_rewards": [
+        "combat_verify",
+        "healer_training",
+        "striker_training"
+      ],
+      "power": 0.7,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "center": "(1.0, 3.0)",
+          "fire_at": 12.0,
+          "from": "(2.0, 0.0)",
+          "kind": "enemy_warning",
+          "label": "护盾广播",
+          "mode": "radio",
+          "target_id": 0,
+          "time": 8.94999999999999,
+          "to": "(1.0, 3.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "from": "(2.0, 0.0)",
+          "kind": "enemy_release",
+          "label": "护盾广播",
+          "target_id": 6,
+          "time": 12.0,
+          "to": "(2.0, 0.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "1"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 1,
+      "elapsed": 15.0500000000001,
+      "encounter_id": "encounter_classroom",
+      "encounter_rules": 2,
+      "first_core": 6.59999999999998,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "c0fe8ce6b98916a43f6934cc5966e08d",
+      "offered_rewards": [
+        "combat_pierce",
+        "combat_training",
+        "badge"
+      ],
+      "power": 0.78,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "center": "(1.0, 2.0)",
+          "fire_at": 12.0,
+          "from": "(3.0, 2.0)",
+          "kind": "enemy_warning",
+          "label": "整排写入",
+          "mode": "board",
+          "target_id": 0,
+          "time": 8.94999999999999,
+          "to": "(1.0, 2.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "from": "(3.0, 2.0)",
+          "kind": "enemy_release",
+          "label": "整排写入",
+          "target_id": 4,
+          "time": 12.0,
+          "to": "(3.0, 2.0)"
+        }
+      ],
+      "repair_casts": 1,
+      "stage": "2"
+    },
+    {
+      "chain": "analysis",
+      "core_casts": 2,
+      "elapsed": 22.8000000000002,
+      "encounter_id": "encounter_final",
+      "encounter_rules": 2,
+      "first_core": 6.79999999999998,
+      "formation": [
+        "guard",
+        "",
+        "striker",
+        "analyst",
+        "",
+        "archer"
+      ],
+      "journey_id": "c0fe8ce6b98916a43f6934cc5966e08d",
+      "offered_rewards": [
+        "striker_training",
+        "combat_backup",
+        "archer_training"
+      ],
+      "power": 1.0,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "center": "(3.0, 2.0)",
+          "fire_at": 12.0,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_warning",
+          "label": "巨像重击",
+          "mode": "colossus",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(3.0, 2.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_release",
+          "label": "巨像重击",
+          "target_id": 4,
+          "time": 12.0,
+          "to": "(2.0, 2.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "center": "(3.0, 2.0)",
+          "fire_at": 22.0,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_warning",
+          "label": "巨像重击",
+          "mode": "colossus",
+          "target_id": 1,
+          "time": 18.9500000000001,
+          "to": "(3.0, 2.0)"
+        }
+      ],
+      "repair_casts": 1,
+      "stage": "3"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 1,
+      "elapsed": 16.2500000000001,
+      "encounter_id": "encounter_patrol",
+      "encounter_rules": 2,
+      "first_core": 12.4,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "healer",
+        "archer",
+        ""
+      ],
+      "journey_id": "acf055befa0321ac861a2356e7d607c2",
+      "offered_rewards": [
+        "combat_cover",
+        "combat_training",
+        "striker_training"
+      ],
+      "power": 0.62,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "center": "(3.0, 2.0)",
+          "fire_at": 12.0,
+          "from": "(3.0, 1.0)",
+          "kind": "enemy_warning",
+          "label": "护盾广播",
+          "mode": "radio",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(3.0, 2.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "from": "(3.0, 1.0)",
+          "kind": "enemy_release",
+          "label": "护盾广播",
+          "target_id": 6,
+          "time": 12.0,
+          "to": "(3.0, 1.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "prologue"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 1,
+      "elapsed": 19.1000000000001,
+      "encounter_id": "encounter_patrol",
+      "encounter_rules": 2,
+      "first_core": 10.8,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "d76f06ffd6ca78c356ecb0c9cea6a2c7",
+      "offered_rewards": [
+        "combat_isolation",
+        "inventor_training",
+        "combat_training"
+      ],
+      "power": 0.62,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "center": "(3.0, 3.0)",
+          "fire_at": 12.0,
+          "from": "(3.0, 1.0)",
+          "kind": "enemy_warning",
+          "label": "护盾广播",
+          "mode": "radio",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(3.0, 3.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "from": "(3.0, 1.0)",
+          "kind": "enemy_release",
+          "label": "护盾广播",
+          "target_id": 6,
+          "time": 12.0,
+          "to": "(3.0, 1.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "0"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 1,
+      "elapsed": 19.1000000000001,
+      "encounter_id": "encounter_patrol",
+      "encounter_rules": 2,
+      "first_core": 9.2,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "d76f06ffd6ca78c356ecb0c9cea6a2c7",
+      "offered_rewards": [
+        "combat_cover",
+        "healer_training",
+        "inventor_training"
+      ],
+      "power": 0.7,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "center": "(3.0, 3.0)",
+          "fire_at": 12.0,
+          "from": "(3.0, 1.0)",
+          "kind": "enemy_warning",
+          "label": "护盾广播",
+          "mode": "radio",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(3.0, 3.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 6,
+          "from": "(3.0, 1.0)",
+          "kind": "enemy_release",
+          "label": "护盾广播",
+          "target_id": 6,
+          "time": 12.0,
+          "to": "(3.0, 1.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "1"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 2,
+      "elapsed": 21.6500000000002,
+      "encounter_id": "encounter_classroom",
+      "encounter_rules": 2,
+      "first_core": 6.99999999999998,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "d76f06ffd6ca78c356ecb0c9cea6a2c7",
+      "offered_rewards": [
+        "combat_buffer",
+        "badge",
+        "combat_pierce"
+      ],
+      "power": 0.78,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "center": "(3.0, 2.0)",
+          "fire_at": 12.0,
+          "from": "(3.0, 2.0)",
+          "kind": "enemy_warning",
+          "label": "整排写入",
+          "mode": "board",
+          "target_id": 1,
+          "time": 8.94999999999999,
+          "to": "(3.0, 3.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "from": "(3.0, 2.0)",
+          "kind": "enemy_release",
+          "label": "整排写入",
+          "target_id": 4,
+          "time": 12.0,
+          "to": "(3.0, 2.0)"
+        }
+      ],
+      "repair_casts": 0,
+      "stage": "2"
+    },
+    {
+      "chain": "protect",
+      "core_casts": 3,
+      "elapsed": 32.0000000000003,
+      "encounter_id": "encounter_final",
+      "encounter_rules": 2,
+      "first_core": 6.84999999999998,
+      "formation": [
+        "striker",
+        "guard",
+        "",
+        "inventor",
+        "healer",
+        ""
+      ],
+      "journey_id": "d76f06ffd6ca78c356ecb0c9cea6a2c7",
+      "offered_rewards": [
+        "badge",
+        "striker_training",
+        "combat_lens"
+      ],
+      "power": 1.0,
+      "pressure_events": [
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "center": "(1.0, 3.0)",
+          "fire_at": 12.0,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_warning",
+          "label": "巨像重击",
+          "mode": "colossus",
+          "target_id": 0,
+          "time": 8.94999999999999,
+          "to": "(1.0, 3.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_release",
+          "label": "巨像重击",
+          "target_id": 4,
+          "time": 12.0,
+          "to": "(2.0, 2.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "center": "(1.0, 3.0)",
+          "fire_at": 22.0,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_warning",
+          "label": "巨像重击",
+          "mode": "colossus",
+          "target_id": 0,
+          "time": 18.9500000000001,
+          "to": "(1.0, 3.0)"
+        },
+        {
+          "action_id": -1,
+          "actor_id": 4,
+          "from": "(2.0, 2.0)",
+          "kind": "enemy_release",
+          "label": "巨像重击",
+          "target_id": 4,
+          "time": 22.0000000000002,
+          "to": "(2.0, 2.0)"
+        }
+      ],
+      "repair_casts": 1,
+      "stage": "3"
+    }
+  ],
+  "schema": 1,
+  "recorded_date": "2026-10-07",
+  "implementation_baseline": "30389ff + encounter progression working tree",
+  "notes": [
+    "Original Journey rule version 2: two patrols, classroom, final boss; existing powers unchanged.",
+    "Two fresh isolated profiles, actual original program buttons and page mouse input; no items or code injection.",
+    "Legacy reload/retry boundary fixtures completed before the stage-2 battle; recorded samples use restored rule version 2.",
+    "Random rewards derive from original Journey IDs; this is reachability evidence, not random win rate.",
+    "Raw Godot Vector2 values in pressure events are serialized as strings."
+  ]
+}

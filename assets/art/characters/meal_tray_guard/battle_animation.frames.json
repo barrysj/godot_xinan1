@@ -1,0 +1,75 @@
+{
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "move": {
+      "poses": [
+        "idle"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "melee": {
+      "poses": [
+        "idle",
+        "anticipation",
+        "release",
+        "anticipation",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "cast": {
+      "poses": [
+        "idle",
+        "anticipation",
+        "anticipation",
+        "anticipation",
+        "idle"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "hurt": {
+      "poses": [
+        "hurt"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "critical": {
+      "poses": [
+        "critical"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "death": {
+      "poses": [
+        "death"
+      ],
+      "fps": 8,
+      "loop": false
+    }
+  },
+  "canvas": [
+    704,
+    704
+  ],
+  "display_size": [
+    160,
+    160
+  ],
+  "anchor": [
+    0.5,
+    0.8451704545454546
+  ],
+  "impact_ratio": 0.45,
+  "flip_with_facing": true
+}

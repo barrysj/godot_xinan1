@@ -5,6 +5,14 @@
 - 功能 ID：ART-02；所属系统：美术；状态：部分实装（既有六项仍为 review；M1 图书馆九张背景已批准并完成技术接入，视觉效果待人工评审；记忆终端已完成技术接入，效果待人工评审；校园地点12张日常与12张异常4K背景已获资产批准并按两组统一版本提升，南门异常态已接入战役，24张可只读预览，其他11处未绑定可游玩节点；首轮异常态强度过高、第二轮日光方向不符均已拒绝）。
 - 验证日期：2026-09-25；校园地点24张正式提升基线 `02f494c`、接入基线 `d643c34`，本地 `main` 合并基于 `6f3afdb`；图书馆接入基线为 main `4389c1f` 加 `art/m1-asset-integration` 工作树；混合动画实现基线 `56dc3aa`；记忆终端正式提升基线 `58f0291`；校园地点概念批准基线 `c858661`。
 
+## 图书馆五敌人正式资产（2026-10-07）
+
+基线 `90bbf7e` + 已批准资产工作树，分支 `art/enemy-hybrid-animation`。负责人批准只留最新五套，各留存 asset_001；92 运行文件确定性提升到 `assets/art/characters/{keycap_brawler,projector,return_stamp,great_volume_boss,cyber_librarian}/`，共 8.787 MiB。Manifest 登记 selected + approved、批准原话、正式文件与稳定路径；批准概念保留，旧 tmp_001 删除，临时编号上限 002 归任务。
+
+每套七种混合动画、施法光效；管理员攻击／施法修订和四轮印章已保留。验证：五提升 --check、常规导入正式资源的 13,160 项契约、五动作播放检查均通过；五施法与管理员远程三分辨率实拍通过；35 动作卡／GIF、5 巡演完整检查通过。资源台全库 52 对象／1,381 文件，0 缺失／不一致、无索引错误；实际截图已在对话展示。image-quality-check 无阻断缺陷，详细质量备注与批准范围见 [任务](../art/tasks/m1-enemy-animation.md)。
+
+正式预览单位位于 tools/art/animation/enemy_cast/preview_units/，使用正式 BattleAnimationSet，保持现有开发预览入口；本批无主线单位定义，integration=not_integrated，未新增敌人规则或关卡编组，也未批准接入效果。仅资产交付，无 Web 导出验收。**待统筹**：新增正式角色运行包可供主线后续使用，不能计为当前玩家已遭遇的五个敌人。
+
 ## 玩家能力与接入范围
 
 ### 独立施法特效（2026-10-09，程序能力已验证）
@@ -131,6 +139,60 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 
 本地main合并核验：接收基线902342c，合并来源art/characters-main-integration的a673acf，使用squash。保留main敌人分类及后续战斗设计文档。main实际资源台52对象／1105文件、0缺失／不一致；首次导入后Guard七动作预览0失败，正式角色检查5角色／0失败。新增提交无.import／.uid／缓存，未推送远程。游戏接入效果仍沿用待人工评审状态。
 
+## 原战役地图与全部地点素材接入（2026-10-07，待统筹）
+
+基线8ead0c5。原战役选站使用完整校园图；全部12处异常外景用于地点探索或目的地预览，图书馆仍用室内图。原热点图标／浮窗覆盖全部地点，沿用已批准素材和已有地图试接入授权，没有生成候选、改变美术批准或修改地图布局。Manifest记录实际引用；地点动态路径通过主线UI验证，`runtime_entry_points`记录间接调用方，未将它们误登记成直接引用PNG的静态owner；详细展示绑定、实现入口与存档边界统一见[CORE-02本次接入](core-02.md#原战役全图选路与地点共用探索2026-10-07待统筹)。
+
+验证：Godot4.7.2，新原流程UI检查无窗口61／0、三尺寸GUI105／0，原战役149／0；资源台52对象／1105文件、0缺失／不一致／错误；三尺寸实际截图已展示。入口`scenes/expedition/campus_playthrough_check.tscn -- --capture`，缓存`.godot/campus-play-*.png`。新图与落点的接入效果待人工评审，Web与触控未复验；敌人与部分角色占位尚待替换。总览和Roadmap未改。
+
+## 主线六敌人既有动作试接入（2026-10-07，待统筹）
+
+基线 eca60f9 加工作树。按用户明确授权，将已存在的广播、试卷、键帽、投影、巨典、餐盘六套动作绑定 resources/content/enemies 的原单位，保留 ID、数值和存档。运行包位于 assets/art/characters 对应对象；头像与战斗同源。六项 Manifest 为 selected + review / authorized_active，具体版本和授权见[敌人任务](../art/tasks/m1-enemy-cast.md)。本 session 不再生产人物／敌人动作；误增两位玩家人物概念已撤回。
+
+验证：PowerShell7 / Godot4.7.2，res://scenes/battle_demo/enemy_integration_check.tscn -- --capture，原战役三敌阵、六名实际攻击、三种桌面尺寸九图，94/0；原 starting_strategy_check.tscn 无头133/0。资源台52对象／1129文件，缺失和不一致均0。日志 .godot/enemy-integration-final.log、enemy-starting-flow.log，截图 .godot/enemies-<敌阵>-<尺寸>.png。运行资源不引用候选目录；PNG与既有源逐字节一致。餐盘显示尺寸修正到160，避免顶部HUD遮挡；无新动作。
+
+边界：玩家分析员／晨读生未有可复用专属动作，继续原有表现；六敌人为关键姿态切换，效果待人工评审。动画接入不代表所有占位已经消除。待统筹：原主线三种敌阵已全部使用现有非Kenney敌人动作资源。
+
+## 五套正式敌人动画合入并接入（2026-10-07，待统筹）
+
+状态：已验证（本地桌面运行与资源技术检查）；接入观感待人工评审。基线9a52d06，合并来源de3753b（art/enemy-hybrid-animation）。三套冲突动画按来源整包替换，另两套新接入；五套批准状态、绑定和版本记录见[正式敌人任务](../art/tasks/m1-enemy-animation.md#合入原主线2026-10-07)。原广播／试卷／餐盘素材未覆盖或重新生产。
+
+实现入口：resources/content/enemies/、resources/content/encounters/、code_battle_simulation.gd与unit_status_layer.gd；主线调用仍为expedition→battle_demo。名字与血条位于混合动画上方、详情面板下方。原独立试炼没有恢复。
+
+PowerShell7／Godot4.7.2，五次 promote_animation.py <object> --variant asset_001 --check全部通过；library_contract_check.tscn -- --production为13160／0；enemy_integration_check.tscn GUI -- --capture为108／0（7名当前敌人实际攻击、3种新单位继承技能、三敌阵×三尺寸九图）；starting_strategy_check.tscn无头133／0；battle_feedback_check.tscn GUI -- --capture为68／0；growth_budget_check.tscn GUI -- --capture为50／0。日志.godot/enemy-merge-*.log，截图.godot/enemies-<敌阵>-<尺寸>.png及feedback-*、growth-budget-*。资源台40项测试通过，当前浏览器扫描52对象／1393文件，0缺失／不一致。
+
+边界：旧原图直接读取提示仍存在；未复验Web导出和触控，未完成全流派平衡或真人趣味性验收。默认编组与两个射程调整见battle-demo.md；旧检查点按ID读取最新编组。原分析员／晨读生表现不变，没有新人物概念或动作。
+
+
+## 战斗状态组件留存与原主线接入（2026-10-08，待统筹）
+
+基线e15be65＋当前HUD工作树。负责人选“保留当前版本与必要证据（推荐）”，原tmp_001修正版留存concept_001、原tmp_002套件留存asset_001；旧错误概念、重复ZIP与旧布局截图按授权清理。运行子集仍为assets/art/ui/battle_status，26SVG／26PNG／8样式源与运行一致；Manifest登记concept approved、asset selected/review、integration authorized_active，不把留存当作批准视觉。原主线已接入，运行布局和玩法验证统一归UI-02与COMBAT-02，具体留存证据及人工决定归battle-status-components美术任务。未增加人物／敌人动作，未改变高层总览或Roadmap。
+
+
+留存后复验（2026-10-08，e15be65＋本阶段工作树）：status_hud_check.tscn -- --capture 105／0，三尺寸、真实意图／详情输入和密集盾队截图为final-status-*；AssetCatalog全库53对象／1526文件，0缺失、0不一致、0错误，HUD133登记文件全部匹配。60份SVG／PNG／StyleBox源与运行逐字节相同，批准概念SHA匹配，无tmp目录。运行副本仅保留实际组件与元数据，完整生成／校验记录归asset_001。登记核验记录为review/codex-workflow/retention-validation.json。未扩大到移动端或全量旧玩法套件；视觉评审状态不变。
+
+留存后的组件预览再次运行26 vectors／0 failures（.godot/hud-retained-assets.log）。SVG统一LF并重算交付哈希，以与Git文本规范化一致；源／运行60份文件仍逐字节一致。
+
+## 选择子页资产（待统筹）
+
+2026-10-08，51c4118＋工作树：event_choice_ui的asset_001已选择并授权接入原战役；frame／reward／terminal由内置imagegen制作，完整提示词、原件来源与image-quality-check结果保存在源版本。运行PNG与源逐字节一致，资源台登记review／authorized_active；不伪造人工批准。人物肖像、物品和终端复用既有资产。任务授权、QC、留存范围与实际截图归docs/art/tasks/event-choice-ui.md；全库Manifest零错误／缺失／不一致，精确计数在review/asset-validation.json。选择页GUI197／0及终端54／0，未验手机／Web包；高层总览未改。
+
+
+## 选择页背景、按钮与边框修订（2026-10-08，待统筹）
+
+基线b2a1e83＋本轮工作树，event_choice_ui活动版本改为asset_002，保留asset_001。17份确定性SVG与3份PNG组成一套校园档案卡：新纸面由内置imagegen生成；reward、terminal复用001源；按钮五态、卡片三态、插画框和外壳通过项目色板生成。源与运行20张图、chrome.json逐字节一致，AssetCatalog全库54对象／1575登记文件、0缺失／0不一致；生成来源、提示词、质量检查与NinePatch参数归版本文件。Manifest selected／review＋authorized_active；直接试接入授权与具体留存见docs/art/tasks/event-choice-ui.md，不伪造人工批准。
+
+实现入口choice_skin.gd／choice_page.gd，共用选择页三尺寸实机205／0、状态输入55／0、页面清理64／0。证据为review/codex-workflow/asset-002。既有插画、人像、终端主体与角色动作未重做；无移动端／Web包验收，高层总览未改。
+
+## 选择页原生排版与后果组件（2026-10-08，待统筹）
+
+基线1365e70＋工作树；asset_002的20张图和chrome.json均未变，源／运行逐字节一致，全库54对象／1575登记文件无缺失、无不一致、无错误。没有新图片版本或重新批准原图。原生后果符号由choice_outcome_chip绘制，字体／颜色及短Tween归choice_skin；新增十类后果展示和混合换行，玩法接入及边界归UI-02。美术具体观感仍review／authorized_active。
+
+choice_semantics_check实机三尺寸214／0、choice_pages200／0、状态55／0、清理64／0；新实际截图与精简验证在review/codex-workflow/semantics，原版本和证据不删除。具体排版、色彩和授权归event-choice-ui任务。没有人物／敌人动作变化；高层总览未改。
+
+## 校园地图边缘候选撤回（2026-10-10）
+
+按负责人最终回退要求撤销147c825的地图概念、登记及后续正式候选，当前继续使用原asset_001；未修改运行画面、地图接口或手动布局。人工决定与编号保留规则见校园地图任务。基线147c825，PowerShell 7执行回退后哈希核验和AssetCatalog.scan：六张桌面／Web地图与原包逐字节一致，手动布局SHA256仍为37aa8a257c550e76d25c6b2160efbe0a1a84f6dfca9a3846cd4cb04732878b6b，concept_054／tmp_004及概念登记不存在；资源台54对象／1578文件、0缺失／0不一致／0索引错误，git diff --check通过。核验脚本为.godot/check_campus_rollback.py（缓存，可按上述断言重建）。仅资源与记录回退，未重复启动游戏或更改总览／Roadmap。
 
 ## 五人人形最新正式包（2026-10-10）
 
@@ -140,3 +202,11 @@ Manifest 状态为 `selected + approved`、`authorized_active`，三项正式文
 
 
 清理后最终复验：资源台39项单测／0失败，五对象 warnings=[]、正式内容全部 matched、缺失／不一致 0；五人各七态与守护者旧 asset_001 检查通过，35 动作 GIF＋5 巡演已重录；7 个原配／派生源模型重开，28 动作原始曲线指纹通过。Debug 正式启动捕获39／0、Release6／0，Current兼容38／0；正式实录22.6秒／339帧／678步／344事件与批准候选一致，MP4完整解码通过。65个已核验目标清理约5.56GiB，最终资源、许可证、旧守护者62帧保留；历史有效工具归档。验证日期2026-10-10，基线667e60e＋收尾工作树。
+
+## 人物正式包与当前主线整合验证（2026-10-10，待统筹）
+
+验证基线为地图回退ed4d275与main人物／工作流c3dc5c2的合并树，交付按squash合入本地main。五人asset_002运行包、完整源资料／许可和WORKFLOW与main逐文件一致；原地图asset_001六张桌面／Web图与回退基线一致，手动布局保持原哈希。保留当前羁绊／破解、HUD、独立暂停／慢速、多轮热点事件和区域流程编辑器；未生成新的角色、敌人动作或地图。
+
+PowerShell 7／Godot4.7.2：五包promote_animation.py --variant asset_002 --check通过；authored_assets_check.tscn GUI -- --capture五人／0失败，两组合法阵容三规定尺寸；status_hud_check105／0、playback_controls_check51／0、feedback_progress_check15／0；cast_vfx_check26／0，ACTION／PRESENTATION／ANIMATION通过。真实启动run-battle-demo.ps1 -Mode Debug -Capture39／0；run-debug.ps1 -Check174／0；完整战役149／0，流程资源预览--flow-preview-check120／0；choice_pages197／0、screen_cleanup52／0。地图编辑器Node两套测试12／0，资源台40／0，扫描54对象／2383文件且0缺失／不一致／错误。
+
+实际截图与日志为.godot/campus-main-merge-*、characters-battle-party*、status-hud-*及debug-battle-launch-*；1080画面已在对话展示。合并验证清理了仅对应已删除图片的未跟踪.import缓存，未删除活动图或改变素材批准。HUD概念批准哈希仍保留于概念metadata.json与任务记录，Manifest撤掉重复字段以遵循现有无存储哈希契约。首次导入新帧前的缺资源提示已由导入解决；既有根证书、像素原图读取与编辑器设置权限提示保留，未重验Web／手机；全局总览与Roadmap未改。

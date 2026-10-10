@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-08",
+  "method": "built-in image_gen edit",
+  "generated": {
+    "paper.png": {
+      "original": "C:/Users/SongJun/.codex/generated_images/01a0de88-4b28-7c71-949e-6e61ed768d84/exec-f13cecc4-240f-4a7f-bd17-34a50826f9a9.png",
+      "prompt": "Use case: precise-object-edit.\nAsset type: single opaque production bitmap background texture for a Godot campus mystery event / reward window, not a UI mockup.\nInput image 1: EDIT TARGET. This is the current warm white archival-paper backdrop with tiny very pale blue architectural plans only at bottom right.\nPrimary request: REDRAW this background with substantially richer and more visible thin-line illustrations distributed across the surface, retaining the understated archival-paper and engineering-campus line-art direction. Keep the light ivory-white matte paper base, wide landscape approximately 7:4 aspect ratio, flat orthographic front view, fine paper grain, muted cool blue-gray and restrained cyan accents.\nComposition: about 5–7 distinct loosely connected groups of carefully drawn line-art details with varied scale. Along the upper-left edge, a cropped university-building facade with windows and an open-book contour; across the top edge, delicate circuit paths and a few connection nodes; upper right, part of a small keyboard and microchip diagram; lower left, abstract book/page outlines and a few branch connections; along the lower middle/right, an airy campus floor-plan with paths, room rectangles and one circular courtyard, with a small schematic network branching into the right margin. These are generic decorative campus and computing motifs, not a real identified campus map. Avoid a row of isolated icon stickers: form a quiet continuous printed architectural/technical drawing language with purposeful broken line segments.\nDistribution and readability: decorations should extend around ALL four sides and occupy approximately 35–45% of the surface, no longer confined to one corner. Use distinctly readable soft blue-gray lines, roughly #AAC2CE to #C1D0D8, with just a handful of desaturated cyan small connection dots. Preserve substantial calm reading space through the central middle (approximately x=30–85%, y=18–70%); a few much fainter partial lines may pass through this area but no dense object there. In the actual UI the left third is covered by an illustration panel, so ALSO ensure the RIGHT two-thirds include visible decoration along the top, right margin, and lower area. Place the richest unobstructed illustration in the bottom 25%. Keep everything lighter than eventual dark game text. Consistent thin crisp technical line weight; some larger motifs can meet or crop naturally at the image edges.\nLocks: preserve the original light surface, tactile grain, quiet low-saturation line-drawing medium; no dramatic shadows or perspective, no recoloring into a dark sci-fi HUD. Only the bitmap material, edge-to-edge, no framing.\nExclude: ALL text, letters, numbers, code glyph strings, watermarks, signatures, UI labels, buttons, card frames, page borders, drop shadows, real logos, characters, photographs, colorful stickers, dense repeated circuitry, gradients or spotlight effects.\nOutput: one high-resolution opaque landscape PNG, full background texture, no mockup or contact sheet.",
+      "edit_target": "C:/Users/SongJun/.codex/generated_images/01a0de88-4b28-7c71-949e-6e61ed768d84/exec-b7d23afa-9eaa-4b6d-a0b8-e9f17d1c8bd0.png",
+      "cleanup_prompt": "Use case: precise-object-edit. Input image 1 is the EDIT TARGET, the newly redrawn wide ivory paper game UI background. Make exactly one small cleanup: remove every tiny symbol/letter/legend from the drawn keyboard in the upper-right corner, so ALL keyboard key faces are completely blank. Preserve the keyboard key outlines and its perspective. Keep EVERY OTHER PART unchanged: campus building, open book, ginkgo leaves, trees, blueprint floor plan, network paths, microchip, all composition and cropping, fine paper texture, soft blue-gray line intensity, small cyan nodes, wide aspect ratio, light center reserved for reading. Do not add, remove, recompose or recolor any other motif. The output is the single opaque bitmap background asset, edge to edge, no text of any kind, no UI mockup, no watermark.",
+      "cleanup_reference": "C:/Users/SongJun/.codex/generated_images/01a0de88-4b28-7c71-949e-6e61ed768d84/exec-8c020d45-1f4a-43ac-a361-df84ff00192e.png",
+      "edit_target_project": "design/concepts/event-choice-ui/choice-pages/asset_002/paper.png",
+      "edit_target_sha256": "6182eae67d5048e2e34805f5c06112da4a8ab107aa114e010c4c8adbf76a8268"
+    }
+  },
+  "reused_family": "../asset_002 (all remaining chrome, illustrations and controls unchanged)",
+  "rights": "Original image_gen paper material using original project-generated reference. Generic decorative campus blueprint, no real-campus or commercial UI artwork copied.",
+  "reused": {
+    "arrow": "design/concepts/event-choice-ui/choice-pages/asset_002/arrow.svg",
+    "button_disabled": "design/concepts/event-choice-ui/choice-pages/asset_002/button_disabled.svg",
+    "button_focus": "design/concepts/event-choice-ui/choice-pages/asset_002/button_focus.svg",
+    "button_hover": "design/concepts/event-choice-ui/choice-pages/asset_002/button_hover.svg",
+    "button_normal": "design/concepts/event-choice-ui/choice-pages/asset_002/button_normal.svg",
+    "button_pressed": "design/concepts/event-choice-ui/choice-pages/asset_002/button_pressed.svg",
+    "card": "design/concepts/event-choice-ui/choice-pages/asset_002/card.svg",
+    "card_active": "design/concepts/event-choice-ui/choice-pages/asset_002/card_active.svg",
+    "card_disabled": "design/concepts/event-choice-ui/choice-pages/asset_002/card_disabled.svg",
+    "chrome": "design/concepts/event-choice-ui/choice-pages/asset_002/chrome.json",
+    "illustration": "design/concepts/event-choice-ui/choice-pages/asset_002/illustration.svg",
+    "reward": "design/concepts/event-choice-ui/choice-pages/asset_002/reward.png",
+    "secondary_disabled": "design/concepts/event-choice-ui/choice-pages/asset_002/secondary_disabled.svg",
+    "secondary_focus": "design/concepts/event-choice-ui/choice-pages/asset_002/secondary_focus.svg",
+    "secondary_hover": "design/concepts/event-choice-ui/choice-pages/asset_002/secondary_hover.svg",
+    "secondary_normal": "design/concepts/event-choice-ui/choice-pages/asset_002/secondary_normal.svg",
+    "secondary_pressed": "design/concepts/event-choice-ui/choice-pages/asset_002/secondary_pressed.svg",
+    "shell": "design/concepts/event-choice-ui/choice-pages/asset_002/shell.svg",
+    "status": "design/concepts/event-choice-ui/choice-pages/asset_002/status.svg",
+    "terminal": "design/concepts/event-choice-ui/choice-pages/asset_002/terminal.png"
+  },
+  "retention": {
+    "human_decision": "只保留最终版与必要证据（推荐）",
+    "project_intermediate_removed": "tmp_003",
+    "last_allocated_tmp": 4,
+    "registered_prior_assets_retained": [
+      "asset_001",
+      "asset_002"
+    ]
+  }
+}

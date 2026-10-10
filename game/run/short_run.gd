@@ -44,8 +44,12 @@ func grant_gear(id: String) -> bool:
 	inventory[id] = -1
 	return true
 
-func equip_gear(id: String, role: int) -> bool:
+func can_equip_gear(id: String, role: int) -> bool:
 	if not roster.has(role) or (id != "none" and not inventory.has(id)): return false
+	return not (growth_rules >= 2 and id != "none" and combat_rewards.any(func(saved): return saved.get("target", "") in ["lens", "backup"] and saved.get("owner", "") == Content.role_id(role)))
+
+func equip_gear(id: String, role: int) -> bool:
+	if not can_equip_gear(id,role): return false
 	for key in inventory:
 		if inventory[key] == role: inventory[key] = -1
 	if id != "none": inventory[id] = role
@@ -57,9 +61,30 @@ func worn_gear(role: int) -> String:
 	return "empty"
 
 func combat_gear_available(role: int) -> bool:
-	if worn_gear(role) != "empty": return false
-	var owner_id: String = Content.role_id(role)
-	return not combat_rewards.any(func(saved): return saved.get("target", "") in ["lens", "backup"] and saved.get("owner", "") == owner_id)
+	return Rewards.equipment_owner_available(role,inventory,combat_rewards)
+
+## Persisted within the original build codec, independently of the profile schema.
+var growth_rules: int = 2
+var reward_offer_count: int = 0
+var candidate_recruit_shown := false
+var rewards_exhausted := false
+const TRAINING_LIMIT := 2
+
+func training_count(role: int) -> int:
+	var owner: String = Content.role_id(role)
+	return int(training.get(role,0)) + combat_rewards.filter(func(saved): return saved.get("target", "") == "training" and saved.get("owner", "") == owner).size()
+
+func can_train(role: int, amount: int = 1) -> bool:
+	return roster.has(role) and amount > 0 and (training_count(role)+amount <= TRAINING_LIMIT if growth_rules >= 2 else int(training.get(role,0))+amount <= 100)
+
+func reward_owner_available(id: String, role: int) -> bool:
+	if not roster.has(role): return false
+	if id == "training": return can_train(role) if growth_rules >= 2 else true
+	return combat_gear_available(role) if id in ["lens", "backup"] else true
+
+func gear_definition(id: String):
+	var definition = Content.gear(id)
+	return definition.for_rules(growth_rules) if definition != null else null
 
 var training: Dictionary = {}
 var points = 0
@@ -126,11 +151,37 @@ static func content_stages(seed_value: int) -> Array:
 	result.append([pools.final[0]])
 	return result
 
+func recommended_formation(chain: String) -> Array:
+	var ids: Array = []
+	if chain == "analysis": ids = ["guard","","striker","analyst","","archer"]
+	elif chain == "protect": ids = ["striker","guard","","inventor","healer",""] if roster.has(Content.role_index("inventor")) else ["striker","guard","","healer","archer",""]
+	else: return []
+	if not ids.all(func(id): return id.is_empty() or roster.has(Content.role_index(id))): return []
+	return ids.map(func(id): return -1 if id.is_empty() else Content.role_index(id))
+
+func configure_starting_strategy(chain: String) -> bool:
+	if stage != 0 or not node.is_empty() or not training.is_empty() or not combat_rewards.is_empty(): return false
+	var suggested: Array = recommended_formation(chain)
+	if suggested.is_empty(): return false
+	formation = suggested
+	code_programs = ["disconnect","repair"] if chain == "analysis" else ["redirect","repair"]
+	return true
+
+func draw_rewards(rng: RandomNumberGenerator, allow_recruits: bool = true, pool_id: String = "campus_rewards") -> Array:
+	if growth_rules < 2:
+		var pool: Array = Rewards.for_build(self,pool_id).filter(func(entry): return allow_recruits or entry.operation != "recruit")
+		shuffle_with(pool,rng)
+		return pool.slice(0,3)
+	var offers: Array = Rewards.draw_for_build(self,rng,reward_offer_count+1,allow_recruits,pool_id)
+	if not offers.is_empty(): reward_offer_count += 1
+	if offers.any(func(entry): return entry.operation == "recruit" and Rewards.adaptive_recruits(self).has(entry.target)): candidate_recruit_shown = true
+	return offers
+
 func roll_rewards() -> void:
 	var rng = RandomNumberGenerator.new()
 	rng.seed = (str(route_seed)+":"+str(stage)+":"+str(node.get("id",""))).hash()
-	var pool = Rewards.eligible(badge_owned,roster,inventory,node.get("reward_pool","campus_rewards"),training,combat_rewards).duplicate(true)
-	shuffle_with(pool,rng)
+	var pool: Array = draw_rewards(rng,true,node.get("reward_pool","campus_rewards"))
+	rewards_exhausted = pool.is_empty()
 	reward_ids.clear()
 	reward_snapshots.clear()
 	for i in range(mini(3,pool.size())):
@@ -152,7 +203,11 @@ var code_supplies: Dictionary = CodeCatalog.stock()
 
 func to_dict() -> Dictionary:
 	var data = _legacy_dict()
-	data.schema = 7
+	data.schema = 8
+	data.growth_rules = growth_rules
+	data.reward_offer_count = reward_offer_count
+	data.candidate_recruit_shown = candidate_recruit_shown
+	data.rewards_exhausted = rewards_exhausted
 	data.code_programs = code_programs.duplicate()
 	data.code_supplies = code_supplies.duplicate()
 	data.combat_rewards = combat_rewards.duplicate(true)
@@ -188,11 +243,24 @@ func to_dict() -> Dictionary:
 
 func restore(data: Dictionary) -> bool:
 	var candidate = get_script().new()
-	if data.get("schema") == 6 or data.get("schema") == 7:
-		if not CodeCatalog.valid_loadout(data.get("code_programs")) or not CodeCatalog.valid_stock(data.get("code_supplies")): return false
-		candidate.code_programs = data.code_programs.duplicate()
-		candidate.code_supplies = data.code_supplies.duplicate()
-		if data.get("schema") == 7:
+	candidate.growth_rules = 1
+	if data.get("schema") == 8:
+		var version = data.get("growth_rules")
+		if not (version is int or version is float) or not is_finite(version) or int(version) != version or int(version) not in [1,2]: return false
+		candidate.growth_rules = int(version)
+		var count = data.get("reward_offer_count",0)
+		if not (count is int or count is float) or not is_finite(count) or int(count) != count or count < 0 or count > 10000 or not data.get("candidate_recruit_shown",false) is bool: return false
+		candidate.reward_offer_count = int(count)
+		candidate.candidate_recruit_shown = data.get("candidate_recruit_shown",false)
+		if not data.get("rewards_exhausted",false) is bool: return false
+		candidate.rewards_exhausted = data.get("rewards_exhausted",false)
+	if data.get("schema") == 6 or data.get("schema") == 7 or data.get("schema") == 8:
+		var migrated := CodeCatalog.migrate_loadout(data.get("code_programs"))
+		if migrated.is_empty() or not CodeCatalog.valid_stock(data.get("code_supplies")): return false
+		candidate.code_programs = migrated
+		candidate.code_supplies.clear()
+		for item_id in data.code_supplies: candidate.code_supplies[item_id] = int(data.code_supplies[item_id])
+		if data.get("schema") == 7 or data.get("schema") == 8:
 			if not data.get("combat_rewards") is Array or not data.get("pending_reward_offer", {}) is Dictionary: return false
 			for reward in data.combat_rewards:
 				if not Rewards.valid_snapshot(reward) or reward.operation != "combat" or candidate.combat_rewards.any(func(saved): return saved.get("target", "") == reward.target): return false
@@ -260,11 +328,21 @@ func restore(data: Dictionary) -> bool:
 	if not candidate._restore_legacy(source, frozen): return false
 	if data.get("schema") == 5 and candidate.route_seed < 0:
 		candidate.reward_ids = data.reward_ids.duplicate()
+	if candidate.rewards_exhausted and (candidate.growth_rules < 2 or candidate.node.is_empty() or not candidate.reward_ids.is_empty() or not candidate.reward_snapshots.is_empty() or not candidate.pending_reward_offer.is_empty()): return false
 	if candidate.points + candidate.event_points < 0: return false
 	candidate.points += candidate.event_points
 	if data.get("schema") != 5 and candidate.route_seed >= 0:
 		for id in candidate.reward_ids: candidate.reward_snapshots.append(Rewards.find(id))
 	if not items.is_empty(): candidate.inventory = items
+	if candidate.growth_rules >= 2:
+		var equipped_owners: Array = candidate.inventory.values().filter(func(role): return role >= 0)
+		for saved in candidate.combat_rewards:
+			if saved.target in ["lens", "backup"]:
+				var role: int = Content.role_index(saved.owner)
+				if equipped_owners.has(role): return false
+				equipped_owners.append(role)
+		for role in candidate.roster:
+			if candidate.training_count(role) > TRAINING_LIMIT: return false
 	for property in candidate.get_property_list():
 		if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE and not property.name in ["shoe_wearer","badge_wearer","badge_owned"]:
 			set(property.name, candidate.get(property.name))
@@ -367,7 +445,7 @@ func _restore_legacy(data: Dictionary, frozen: Array = []) -> bool:
 			var known: bool = not Rewards.find(id).is_empty() or (id.begins_with("combat_") and Rewards.find_combat(id.trim_prefix("combat_")) != null)
 			if not known or reward_ids.has(id): return false
 			reward_ids.append(id)
-		if not node.is_empty() and (reward_ids.is_empty() or reward_ids.size() > 3): return false
+		if not node.is_empty() and ((reward_ids.is_empty() and not rewards_exhausted) or reward_ids.size() > 3): return false
 		if node.is_empty() and not reward_ids.is_empty(): return false
 		if not reward_taken:
 			for id in reward_ids:
@@ -383,10 +461,12 @@ func choose(index: int) -> bool:
 	reward_taken = false
 	reward_snapshots.clear()
 	event_done = false
-	if route_seed >= 0: roll_rewards()
+	rewards_exhausted = false
+	if route_seed >= 0 or growth_rules >= 2: roll_rewards()
 	return true
 
 func offers() -> Array[Dictionary]:
+	if rewards_exhausted: return []
 	if not reward_snapshots.is_empty():
 		var frozen_offers: Array[Dictionary] = []
 		for offer in reward_snapshots: frozen_offers.append(offer.duplicate(true))
@@ -395,6 +475,16 @@ func offers() -> Array[Dictionary]:
 		var choices: Array[Dictionary] = []
 		for id in reward_ids: choices.append(Rewards.find(id))
 		return choices
+	if growth_rules >= 2:
+		var pool: Array = Rewards.for_build(self)
+		var selected: Array[Dictionary] = []
+		for id in ["badge","archer_training","recruit"]:
+			for entry in pool:
+				if entry.id == id: selected.append(entry)
+		for entry in pool:
+			if selected.size() >= 3: break
+			if not selected.any(func(saved): return saved.id == entry.id): selected.append(entry)
+		return selected
 	var equipment_offer = {"id": "badge", "title": "厚笔记本", "description": "生命上限 +80 的装备。\n战前自由分配。\n每位同学只能携带一件装备。"}
 	if badge_owned:
 		equipment_offer = {"id": "guard_training", "title": "体能训练", "description": "守护者本局生命 +50、攻击 +5。\n可以重复获得。"}
@@ -402,6 +492,11 @@ func offers() -> Array[Dictionary]:
 	if roster.has(4):
 		recruit_offer = {"id": "inventor_training", "title": "改良实验", "description": "发明家本局生命 +50、攻击 +5。\n即使在候补中也会保留强化。"}
 	return [equipment_offer, {"id": "archer_training", "title": "专注训练", "description": "远射手本局生命 +50。\n攻击 +5，不占装备槽。\n可以重复获得。"}, recruit_offer]
+
+func skip_exhausted_reward() -> bool:
+	if node.is_empty() or reward_taken or not rewards_exhausted or not offers().is_empty(): return false
+	reward_taken = true
+	return true
 
 func take_reward(id: String) -> bool:
 	if node.is_empty() or reward_taken:
@@ -429,6 +524,7 @@ func complete_node() -> bool:
 	points += 3 if node.kind == "boss" else (2 if node.kind == "elite" else 1)
 	stage += 1
 	node = {}
+	rewards_exhausted = false
 	reward_ids.clear()
 	reward_snapshots.clear()
 	event_done = false
@@ -436,26 +532,28 @@ func complete_node() -> bool:
 
 func apply_reward(entry: Dictionary, owner_id: String = "") -> bool:
 	if entry.get("operation") == "combat": return apply_combat_reward(entry,owner_id)
-	if not Rewards.valid_snapshot(entry) or not Rewards.allowed(entry,roster,inventory,training): return false
+	if not Rewards.valid_snapshot(entry) or not Rewards.allowed(entry,roster,inventory,training,code_supplies): return false
+	if entry.operation == "train" and not can_train(Content.role_index(entry.target),int(entry.amount)): return false
 	match entry.operation:
 		"gear": grant_gear(entry.target)
 		"recruit": roster.append(Content.role_index(entry.target))
 		"train":
 			var role = Content.role_index(entry.target)
 			training[role] = int(training.get(role,0))+int(entry.amount)
+		"item": code_supplies[entry.target] = int(code_supplies[entry.target])+int(entry.amount)
 		"points":
 			points += int(entry.amount)
 			event_points += int(entry.amount)
 	return true
 
 func apply_combat_reward(entry: Dictionary, owner_id: String = "") -> bool:
-	if not Rewards.valid_snapshot(entry) or entry.operation != "combat" or not Rewards.allowed(entry,roster,inventory,training): return false
+	if not Rewards.valid_snapshot(entry) or entry.operation != "combat" or not Rewards.allowed(entry,roster,inventory,training,code_supplies): return false
 	var definition = Rewards.find_combat(entry.target)
 	if definition == null or combat_rewards.any(func(saved): return saved.target == entry.target): return false
 	if not definition.character_id.is_empty() and not roster.has(Content.role_index(definition.character_id)): return false
 	if Rewards.combat_needs_owner(entry.target):
 		if Content.role_index(owner_id) < 0 or not roster.has(Content.role_index(owner_id)): return false
-		if entry.target in ["lens", "backup"] and not combat_gear_available(Content.role_index(owner_id)): return false
+		if not reward_owner_available(entry.target,Content.role_index(owner_id)): return false
 		var saved := entry.duplicate(true)
 		saved.owner = owner_id
 		combat_rewards.append(saved)
@@ -481,6 +579,8 @@ func event_option_available(index: int) -> bool:
 	candidate.roster = roster.duplicate()
 	candidate.inventory = inventory.duplicate()
 	candidate.training = training.duplicate()
+	candidate.growth_rules = growth_rules
+	candidate.combat_rewards = combat_rewards.duplicate(true)
 	for reward in option.results:
 		if not candidate.apply_reward(reward): return false
 	return true

@@ -3,14 +3,16 @@
 [ext_resource type="Script" path="res://game/content/effect_def.gd" id="e"]
 [sub_resource type="Resource" id="effect"]
 script = ExtResource("e")
-kind = "damage"
-target = "row"
-value = 72.0
-attack_scale = 0.0
+kind = "shield"
+target = "low_ally"
+value = 32
+attack_scale = 0
 [resource]
 script = ExtResource("s")
 id = "skill_inventor"
-display_name = "实验"
-description = "对射程内目标同排敌人造成72点伤害。"
+display_name = "备份"
+description = "两名低生命比例友军各32盾，持续6秒。"
 glyph = "flask"
 effects = Array[ExtResource("e")]([SubResource("effect")])
+
+attacks_to_trigger = 3

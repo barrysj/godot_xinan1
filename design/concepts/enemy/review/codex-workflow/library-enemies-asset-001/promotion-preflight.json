@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-07",
+  "actual_production_write": false,
+  "scope": "Historical read-only preflight before human approval; retained paths renamed after approval. Current promotion result is promotion-audit.json.",
+  "required_next_action": "Completed by human approval and deterministic promotion; see promotion-audit.json.",
+  "objects": [
+    {
+      "object": "keycap_brawler",
+      "candidate": "design/concepts/enemy/keycap-brawler/asset_001",
+      "proposed_destination": "assets/art/characters/keycap_brawler",
+      "allowlisted_files": 18,
+      "proposed_payload_bytes": 1760873,
+      "external_dependencies": [
+        "res://game/content/battle_animation_set.gd",
+        "res://scenes/battle_demo/presentations/hybrid_presentation.gd"
+      ],
+      "approval": "pending",
+      "result": "READ_ONLY_PREFLIGHT_PASS"
+    },
+    {
+      "object": "projector",
+      "candidate": "design/concepts/enemy/projector/asset_001",
+      "proposed_destination": "assets/art/characters/projector",
+      "allowlisted_files": 20,
+      "proposed_payload_bytes": 1975927,
+      "external_dependencies": [
+        "res://game/content/battle_animation_set.gd",
+        "res://game/content/battle_projectile_style.gd",
+        "res://scenes/battle_demo/presentations/hybrid_presentation.gd"
+      ],
+      "approval": "pending",
+      "result": "READ_ONLY_PREFLIGHT_PASS"
+    },
+    {
+      "object": "return_stamp",
+      "candidate": "design/concepts/enemy/return-stamp/asset_001",
+      "proposed_destination": "assets/art/characters/return_stamp",
+      "allowlisted_files": 18,
+      "proposed_payload_bytes": 1521107,
+      "external_dependencies": [
+        "res://game/content/battle_animation_set.gd",
+        "res://scenes/battle_demo/presentations/hybrid_presentation.gd"
+      ],
+      "approval": "pending",
+      "result": "READ_ONLY_PREFLIGHT_PASS"
+    },
+    {
+      "object": "great_volume_boss",
+      "candidate": "design/concepts/enemy/great-volume-boss/asset_001",
+      "proposed_destination": "assets/art/characters/great_volume_boss",
+      "allowlisted_files": 18,
+      "proposed_payload_bytes": 1944441,
+      "external_dependencies": [
+        "res://game/content/battle_animation_set.gd",
+        "res://game/content/battle_projectile_style.gd",
+        "res://scenes/battle_demo/presentations/hybrid_presentation.gd"
+      ],
+      "approval": "pending",
+      "result": "READ_ONLY_PREFLIGHT_PASS"
+    },
+    {
+      "object": "cyber_librarian",
+      "candidate": "design/concepts/enemy/cyber-librarian/asset_001",
+      "proposed_destination": "assets/art/characters/cyber_librarian",
+      "allowlisted_files": 18,
+      "proposed_payload_bytes": 2011303,
+      "external_dependencies": [
+        "res://game/content/battle_animation_set.gd",
+        "res://game/content/battle_projectile_style.gd",
+        "res://scenes/battle_demo/presentations/hybrid_presentation.gd"
+      ],
+      "approval": "pending",
+      "result": "READ_ONLY_PREFLIGHT_PASS"
+    }
+  ],
+  "proposed_payload_bytes": 9213651,
+  "historical_record": true
+}

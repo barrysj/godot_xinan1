@@ -20,6 +20,8 @@ static func validate() -> Array[String]:
 		if item.display_name.is_empty(): errors.append(location+": 名称为空")
 		if item.health_bonus < 0 or item.health_bonus > 10000 or item.attack_bonus < 0 or item.attack_bonus > 1000 or not is_finite(item.interval_multiplier) or item.interval_multiplier < 0.1 or item.interval_multiplier > 3:
 			errors.append(location+": 装备数值越界")
+		if item.balanced_health_bonus < -1 or item.balanced_health_bonus > 10000 or item.balanced_attack_bonus < -1 or item.balanced_attack_bonus > 1000 or not is_finite(item.balanced_interval_multiplier) or (item.balanced_interval_multiplier != -1.0 and (item.balanced_interval_multiplier < 0.1 or item.balanced_interval_multiplier > 3)):
+			errors.append(location+": 新局装备数值越界")
 	for group in [MANIFEST.characters, MANIFEST.enemies, MANIFEST.skills, MANIFEST.encounters]:
 		for item in group:
 			if item == null:
@@ -66,10 +68,12 @@ static func validate() -> Array[String]:
 	for reward in MANIFEST.rewards:
 		if reward == null: continue
 		if reward.display_name.is_empty() or reward.amount < 1 or reward.amount > 100: errors.append(reward.resource_path+": 奖励名称或数量无效")
-		if not reward.operation in ["gear","recruit","train","points"]: errors.append(reward.resource_path+": 无效奖励操作")
+		if not reward.operation in ["gear","recruit","train","points","item"]: errors.append(reward.resource_path+": 无效奖励操作")
 		if reward.operation in ["gear","recruit"] and reward.amount != 1: errors.append(reward.resource_path+": 装备和招募数量须为 1")
 		if reward.operation == "gear" and not MANIFEST.equipment.has(reward.equipment): errors.append(reward.resource_path+": 装备未注册")
 		if reward.operation in ["train","recruit"] and not MANIFEST.characters.has(reward.character): errors.append(reward.resource_path+": 人物未注册")
+		if reward.operation == "item" and (preload("res://game/combat/code_catalog.gd").item(reward.code_item_id) == null or reward.amount != 1): errors.append(reward.resource_path+": 道具奖励须引用已注册道具且数量为1")
+		if reward.operation != "item" and (not reward.code_item_id.is_empty() or reward.fallback_only): errors.append(reward.resource_path+": 非道具奖励不能携带补给字段")
 	for pool in MANIFEST.reward_pools:
 		if pool == null: continue
 		var unique = []

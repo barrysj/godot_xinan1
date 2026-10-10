@@ -12,10 +12,9 @@ func verify(ok: bool, message: String) -> void:
 
 func _ready() -> void:
 	var game = Campaign.instantiate()
-	game.progress.path = "res://.godot/campaign-animation-check.json"
+	game.progress.path = "res://.godot/campaign-animation-%d.json" % Time.get_ticks_usec()
 	add_child(game)
 	await get_tree().process_frame
-	game.progress.path = "res://.godot/campaign-animation-check.json"
 	game.storage_ready = false
 	game.set_process(false)
 	game._begin_region("library", "prologue")

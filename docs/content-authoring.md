@@ -2,6 +2,8 @@
 
 本项目使用 Godot 自定义 Resource 录入内容。一个 `.tres` 是一份静态定义；生命、穿戴、阵位、训练、奖励领取状态属于探索实例。添加已有机制下的人物、敌人、技能、装备、事件、地点，不需要修改游戏逻辑脚本。
 
+当前主线的区域站次、岔路、共享地点与敌阵引用使用 `resources/campaign/`，操作见[校园区域流程配置](campus-flow-authoring.md)。校园地图编辑器只编辑空间布局。下方的 CampusLocation Route Pool 属于原短局与内容预览，不安排主线区域站次；热点多轮对话仍用 `resources/content/events/hotspot_dialogues.json`。
+
 ## 从这里开始
 
 - 总清单：`res://resources/content/manifest.tres`。
@@ -73,7 +75,7 @@
 
 - **gear**：给予 Equipment 引用的一件装备。已拥有时不再抽到。
 - **recruit**：让 Character 引用的人物加入候补。已招募时不再抽到。
-- **train**：为 Character 增加 Amount 级训练。每级生命 +50、攻击 +5，上限 100 级。人物须已在队伍中。
+- **train**：为Character增加Amount份训练。新局按角色基础属性加法成长，普通／集中训练共享每人上限；旧活动探索保留旧固定数值及上限。人物须已在本局名单，详细数值只维护于battle-demo.md。
 - **points**：增加 Amount 点本局修复资源；通关后带回基地。
 
 Gear/Recruit 的 Amount 保持 1。奖励池等权、不重复抽取，默认抽三项；校验要求至少保留三项初始同学的训练，防止常规探索无法抽奖。高训练等级等极端状态导致可用奖励不足时，只展示实际可用项。没有可领取项的存档会拒绝恢复，请保留原档排查内容配置。
@@ -93,7 +95,7 @@ Gear/Recruit 的 Amount 保持 1。奖励池等权、不重复抽取，默认抽
 
 晨光书签示例：有至少 1 点本局资源时可换晨光发带；另一项给远射手训练后进入补给选择。若已经拥有发带，交换项会禁用。
 
-## 地点与路线
+## 短局与内容预览的地点、路线
 
 本次保持五层、每层至多两条路、四人上阵，不扩展关卡规模。
 
@@ -148,7 +150,7 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 | --- | --- |
 | `CampusCombatCharacter` | 稳定ID、名称、标签ID数组、个人效果和代码颜色；按 `content_id` 对应主线人物 |
 | `CampusSynergy` | 稳定ID、说明、激活人数2～4、效果数组；只统计上阵人物，每个ID当前只有一档门槛 |
-| `CampusCombatReward` | 羁绊／装备／训练／专属类别、人物ID、效果；装备仅持有者生效，专属仅指定人物生效 |
+| `CampusCombatReward` | 羁绊／装备／训练／专属／程序类别、人物ID、效果；装备仅持有者生效，专属仅指定人物生效 |
 | `CampusBattleProc` | 一个触发点、效果、目标、次数作用域及参数；不是任意脚本或自然语言技能 |
 
 追加一个羁绊：复制 `synergies/protect.tres`，改稳定ID、名称、说明与效果配置，将新资源加入 manifest.synergies，再把其ID加到至少两个人物的 tags。若使用已有触发与效果，不需修改战斗模拟器。新人物先加入主线人物清单，再以相同稳定 ID 追加战斗标签定义；跨清单按 ID 对应，不按数组位置对应。
@@ -181,7 +183,7 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 
 - 人物 `code_type` 指向类型ID。类型包含名称、符号、Color；校验允许3～5种，当前编辑器枚举为四色，增加第五种须同步扩展人物枚举和测试。
 - 程序包含稳定ID、名称、说明、cost字典、effect及治疗比例。消耗须为已注册颜色的正整数且不超过容量；新增配方可复用四种现有效果，新效果需实现处理器。
-- 两种道具定义amount和starting_count，运行库存不能超过初始数量。当前保存契约固定两槽，扩展槽位或补充库存需同步修改迁移与验证。
+- 两种道具定义amount和starting_count；starting_count须在0至CodeCatalog.STOCK_CAP内，运行库存也使用该上限。当前保存契约固定两槽；战后补充进入原库存，扩展槽位仍需同步修改迁移与验证。
 - `CampusBattleProc.effect=hack` 以 `code_amount` 产出代码，`code_type` 为空时使用本人颜色。
 - 默认装配和运行库存必须复制，禁止通过运行选择修改共享Resource数组。主线 ShortRun schema 7 保存装配与库存；旧 schema 由主线迁移处理。
 
@@ -194,3 +196,52 @@ Event 模式想测试兑换发带时，先清空 Preview Equipment（否则预�
 主线 Encounter 提供维护间隔（1～60秒，默认6）和护盾值（1～144，默认35）。ShortRun schema 7 保存程序装配、道具库存和已领取强化；schema 1～6 旧构筑迁移获得默认破解配置及空强化清单，profile 外层版本不变。人物特定强化只对已进入本局 roster 的人物开放。
 
 程序、类型、人物颜色仍由 `resources/combat/code_rules.tres` 与人物资源定义；模拟、界面、验证入口归 `game/combat/` 和 `scenes/battle_demo/`。不要再创建第二个战斗场景或独立试炼存档。分析员为原 manifest 追加角色，旧活动存档保留原名单。
+
+### 程序强化录入
+
+程序类强化使用CampusCombatReward.category=程序、program_id指向既有反冲程序；program_duration_bonus和program_damage_bonus分别为持续时间与爆炸原始伤害的加法增益。当前解释器仅支持反冲，至少填写一项正增益，不接受无效程序、负值／非有限值或其他类别夹带程序字段。程序名称、配方、盾量、范围和冷却仍归code_rules.tres，具体数值只维护于battle-demo.md。两项强化使用原RewardCatalog领取、ShortRun schema7保存及CodeBattleSimulation解释，不增加平行存档。
+
+当前资源校验入口仍为combat_content_check.tscn；现行强化领取／对象选择／恢复及实际盾到期对照另用scenes/battle_demo/combat_growth_check.tscn，图形参数-- --capture输出三尺寸实际页面。旧code_integration_check和部分代码／羁绊检查仍含旧提权与维护规则，不作为新版全部通过的证明；最新结果见CORE-05。
+
+### 构筑适配候选入口
+
+新候选统一从RewardCatalog.for_build读取原ShortRun。程序强化只在携带对应程序时出现；装备类战斗强化需要合法空槽；专属及羁绊强化检查本局人物名单，包括候补。旧已冻结候选继续由原存档读取，禁止显示页面时重新调用过滤而改变选择。详细玩法和数值只维护于battle-demo.md，验证入口见REWARD-01。新局训练／装备预算已按原构筑growth_rules启用，旧档保留原预算；新成长版本三槽权重已启用；旧成长版本保留原抽取。
+
+### 装备预算兼容
+
+CampusEquipment原字段保留旧规则数值；balanced_*字段定义新局覆盖，负一继承原值。for_rules解析成独立运行Resource，不改共享原资源。装备详情与队伍页通过原ShortRun.gear_definition读取本局版本；图鉴同时说明新局与旧版探索。未来内容增加装备时须同时检查描述、数值及合法槽位，不靠显示文字执行效果。
+
+### 奖励链路与出现门槛
+
+CampusCombatReward.reward_chain引用已注册羁绊ID或general，reward_weight为1～100的相对权重，minimum_offer为1～100的最早奖励轮次；required_tag和required_tag_count须成对填写，数量0～4。专属人物／携带程序／装备空槽与本局名单过滤仍先执行。链路A的激活检查实际出战名单，漏洞链同时需要分析员或已上阵镜片携带者；双链先抽链再按权重抽条目。普通装备／训练沿用原Resource，权重由目录统一赋予。
+
+RewardCatalog.for_build供合法内容检查，draw_for_build负责新局分槽；不要把for_build直接当新局随机抽取。原ShortRun.draw_rewards推进原schema8轮次，校园只在首次冻结offers时调用。已保存offer_slot为chain／general／alternative可选字段，不要求旧快照补字段；禁止打开页面时重新抽取。资源校验combat_content_check，玩家流程检查reward_slots_check，结果见REWARD-01。
+
+### 代码道具战后奖励
+
+CampusReward.operation=item使用code_item_id引用CodeCatalog注册的道具，amount固定1；fallback_only仅允许道具奖励填写。代码补给与转码器均登记到原content manifest和campus奖励池，新成长版本才提供候选；转码器设置fallback_only，仅在正常合法池不足时补位。库存与领取均读取原ShortRun.code_supplies及CodeCatalog.STOCK_CAP，满库存不抽、不部分领取。
+
+ShortRun.roll_rewards保存rewards_exhausted，原校园Journey分别保存同名空页标记；标记不允许搭配非空offers／待选对象，校园还要求已赢守卫及原奖励／访问阶段。空池继续是原页面动作，不是奖励Resource；未标记的空快照仍视为坏档。item_reward_check覆盖内容引用、真实JSON、原领取与两种原页面继续，详细证据见REWARD-01。
+
+## M1多轮热点返回权限
+
+原战役的多轮热点维护于`resources/content/events/hotspot_dialogues.json`，执行器为`game/run/hotspot_event.gd`。不使用旧短局的单轮CampusEvent替代此图谱。
+
+- `event_settings.<事件ID>.allow_return`：该事件所有节点的默认开关。当前事件ID为system、person、memory，对应同名graph。
+- `graphs.<事件ID>.<节点ID>.allow_return`：本轮覆盖值。节点值优先于事件默认值；均省略时按true兼容旧内容。值只能是JSON布尔值，不能写字符串。
+- 当前system.evidence设置false；其他轮次按原阅读行为允许返回。选项ID、节点ID和line ID稳定保留，显示“第N段”按实际访问历史计算，配置绑定节点而非屏幕上的数字。
+
+配置形状示例（节选，不是可直接覆盖整个文件的内容）：
+
+```json
+{
+  "event_settings": { "system": { "allow_return": true } },
+  "graphs": { "system": { "evidence": { "allow_return": false } } }
+}
+```
+
+false会禁用右上“返回地点”，常显“必须完成选择”，悬停解释必须完成选择后才能返回；Esc消耗本次按键并强调提示，不打开底层菜单。控制器同样检查权限，旧热点、旧轮次和离场动作不能绕过。保存回基地、菜单退出或读档继续仍回到同一节点，保留原访问快照；允许的中途返回也不会结束事件。没有选择的结束阅读页必须显式允许返回，返回才标记完成；校验会拒绝“无选项且禁止返回”。有条件选项的锁定节点须保证玩家至少有一项可行选择，不把所有选项同时锁住。
+
+不要添加仅用于“以后再选／稍后调查／返回地点”的选项，导航由页头负责；拒绝交易、放弃收益等有真实结果的选择仍可保留。回看前文属于图谱转移，不会刷新访问抽取。当前对话结果固定；未来随机分支或奖励必须先随原Campaign检查点保存，再展示，不能在page、返回或重新打开时抽取。
+
+验证入口：Godot启动`res://scenes/expedition/event_return_check.tscn`；图形模式加`-- --capture`覆盖三桌面尺寸、真实鼠标／键盘、配置优先级、实际磁盘恢复、基地续玩及失败保存回滚。原图谱和多轮／跨地图回归继续使用choice_pages_check，最新命令和结果见[共享验证目录](implementation/verification.md#热点返回权限)。

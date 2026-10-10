@@ -1,0 +1,144 @@
+{
+  "version": "asset_001",
+  "status": "review",
+  "integration": "authorized_trial_active",
+  "concept": {
+    "path": "design/concepts/battle-status-components/hud-family/concept_001/styleboard.png",
+    "sha256": "22eb41470ed5959d958e47c0ab5fb89106931e38c04a6f3c9ee0fd11cea3abcf",
+    "approval": "2026-10-07 用户：看起来不错，生成正式资产吧"
+  },
+  "source": "Native SVG geometry authored from the approved visual family; no bitmap cropping or external icon pack.",
+  "delivery": {
+    "svg": "frames/ and icons/",
+    "png": "png/*@2x.png",
+    "styles": "styles/*.tres",
+    "source_manifest": [
+      "frames.json",
+      "icons/icons.json"
+    ]
+  },
+  "runtime_palette_sources": [
+    "data/visual/colors.json",
+    "resources/combat/code_rules.tres"
+  ],
+  "action_cast_color": "#ffbf66 (existing unit_status_layer.gd cast color)",
+  "layout": {
+    "stock_size": [
+      174,
+      52
+    ],
+    "personal_counter": [
+      96,
+      26
+    ],
+    "bar_size": [
+      104,
+      14
+    ],
+    "bar_fill_rect": [
+      3,
+      3,
+      98,
+      8
+    ],
+    "intent_icon": [
+      20,
+      20
+    ],
+    "intent_plate": [
+      32,
+      32
+    ],
+    "shield_amount": [
+      44,
+      18
+    ],
+    "tooltip_min_width": 260
+  },
+  "rules": [
+    "Text, counts and fill ratio remain native; no baked numbers.",
+    "Clip bar_fill from the left using the actual ratio; do not scale the whole silhouette.",
+    "Only one timing bar per unit; health is separate; shield is the right-hand health extension with an exact numeric amount.",
+    "Purple absorption is team-wide, not personal.",
+    "SVG import_scale 1 (Godot default); linear filtering; no mipmaps; preserve alpha.",
+    "Delivered StyleBoxTexture resources reference native-scale SVG, so texture and content margins use the listed logical pixels. Supplied 2x PNG is for explicit destination-rectangle drawing, not a drop-in replacement inside these styles.",
+    "intent_focus and stock_focus are independently tinted overlays."
+  ],
+  "feedback": {
+    "source": "data/visual/animation.json",
+    "node_ms": 120,
+    "gain_ms": 220,
+    "cast_start_ms": 220,
+    "reduced_motion": "Static state changes only; no position/scale animation."
+  },
+  "bounds": "Retained asset_001, authorized main campaign trial. Visual review pending; gameplay and runtime details belong to docs/battle-demo.md.",
+  "integration_authorization": {
+    "date": "2026-10-07",
+    "quote": "尝试接入吧",
+    "source": "docs/art/tasks/battle-status-components.md",
+    "owner": "scenes/battle_demo/status_skin.gd"
+  },
+  "runtime_layout": {
+    "revision": "feedback_chain_trial",
+    "unit_bounds": [
+      136,
+      48
+    ],
+    "health_shield": [
+      100,
+      14
+    ],
+    "action": [
+      96,
+      5
+    ],
+    "badge": [
+      16,
+      16
+    ],
+    "intent_visual": [
+      32,
+      28
+    ],
+    "intent_hit": [
+      32,
+      36
+    ],
+    "intent_frame": "native rounded StyleBoxFlat + two thought dots, anchored to body independently of bars",
+    "vitals": "Independent maxHP scale; optional shield extension; exact text instant, fill smoothed; new battle clears all display state.",
+    "source_dimensions": "source asset layout is unchanged; these are display dimensions",
+    "health_lane": [
+      76,
+      14
+    ],
+    "shield_extension": [
+      24,
+      14
+    ],
+    "stock_row": [
+      624,
+      32
+    ],
+    "program_row": {
+      "position": [
+        400,
+        624
+      ],
+      "size": [
+        460,
+        80
+      ],
+      "card": [
+        224,
+        80
+      ]
+    }
+  },
+  "retained_from": "tmp_002",
+  "retention": {
+    "date": "2026-10-08",
+    "quote": "保留当前版本与必要证据（推荐）",
+    "temporary_max": 2,
+    "visual_approval": "pending"
+  }
+}

@@ -4,7 +4,27 @@ var action_id := ""
 var tint := Color("76e5cb")
 var available := false
 var remaining := -1
+var ready_age := 1.0
+var ready_notified := false
+var program_card := false
+func reset_readiness() -> void:
+	available = false
+	ready_notified = false
+	ready_age = 1.0
+func set_readiness(value: bool, reduced_motion: bool) -> void:
+	if value and not ready_notified and not reduced_motion:
+		ready_age = 0.0
+		set_process(true)
+	if value: ready_notified = true
+	available = value
+	if reduced_motion: ready_age = 1.0
+	queue_redraw()
+func _process(delta: float) -> void:
+	ready_age += maxf(0,delta)
+	queue_redraw()
+	if ready_age >= 0.22: set_process(false)
 func _ready() -> void:
+	set_process(false)
 	custom_minimum_size = Vector2(64,48)
 	for state in ["normal","hover","pressed","disabled","focus"]:
 		var style := StyleBoxFlat.new()
@@ -27,9 +47,13 @@ func _draw() -> void:
 			draw_line(center+Vector2(8,0),center+Vector2(3,-5),color,2)
 			draw_line(center-Vector2(8,0),center-Vector2(3,-5),color,2)
 	else:
-		draw_set_transform(center+Vector2(22,0),0,Vector2.ONE*0.5)
+		draw_set_transform(Vector2(size.x-30,center.y) if program_card else center+Vector2(22,0),0,Vector2.ONE*0.5)
 		Burst.glyph(self,Vector2.ZERO,color,action_id,0.0)
 		draw_set_transform(Vector2.ZERO)
+	if available and ready_age < 0.22:
+		var t := ready_age/0.22
+		var inset := 2.0+4.0*pow(1-t,3)
+		draw_rect(Rect2(Vector2.ONE*inset,size-Vector2.ONE*inset*2),Color(tint,1-t),false,3)
 	if remaining >= 0:
 		draw_circle(Vector2(size.x-10,11),10,Color("314759"))
 		draw_string(get_theme_font("font"),Vector2(size.x-20,17),str(remaining),HORIZONTAL_ALIGNMENT_CENTER,20,15,Color.WHITE)

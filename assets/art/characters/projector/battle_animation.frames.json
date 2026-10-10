@@ -1,0 +1,84 @@
+{
+  "clips": {
+    "idle": {
+      "poses": [
+        "idle"
+      ],
+      "loop": true,
+      "fps": 8
+    },
+    "move": {
+      "poses": [
+        "idle",
+        "stride",
+        "idle",
+        "stride"
+      ],
+      "loop": true,
+      "fps": 8
+    },
+    "ranged": {
+      "poses": [
+        "idle",
+        "anticipation",
+        "anticipation",
+        "impact",
+        "recover",
+        "idle"
+      ],
+      "loop": false,
+      "fps": 12
+    },
+    "cast": {
+      "poses": [
+        "idle",
+        "anticipation",
+        "cast",
+        "cast",
+        "recover",
+        "idle"
+      ],
+      "loop": false,
+      "fps": 12
+    },
+    "hurt": {
+      "poses": [
+        "idle",
+        "recover",
+        "idle"
+      ],
+      "loop": false,
+      "fps": 12
+    },
+    "critical": {
+      "poses": [
+        "critical"
+      ],
+      "loop": true,
+      "fps": 8
+    },
+    "death": {
+      "poses": [
+        "critical",
+        "fall",
+        "death"
+      ],
+      "loop": false,
+      "fps": 6
+    }
+  },
+  "canvas": [
+    640,
+    640
+  ],
+  "display_size": [
+    160,
+    160
+  ],
+  "anchor": [
+    0.5,
+    0.875
+  ],
+  "impact_ratio": 0.45,
+  "flip_with_facing": true
+}

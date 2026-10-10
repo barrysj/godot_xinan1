@@ -5,12 +5,14 @@
 script = ExtResource("e")
 kind = "damage"
 target = "back"
-value = 0.0
-attack_scale = 2.6
+value = 0
+attack_scale = 2
 [resource]
 script = ExtResource("s")
 id = "skill_archer"
 display_name = "穿云"
-description = "射程内优先射击后排，造成2.6倍伤害。"
+description = "额外200%攻击伤害，优先射程内已确认敌人。"
 glyph = "arrow"
 effects = Array[ExtResource("e")]([SubResource("effect")])
+
+attacks_to_trigger = 4

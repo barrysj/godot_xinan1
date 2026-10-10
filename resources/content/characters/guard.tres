@@ -13,8 +13,10 @@ display_name = "守护者"
 description = "守护者：自身与相邻友军获得 48 点护盾。"
 portrait = SubResource("portrait")
 battle_animation = ExtResource("battle_animation")
-health = 350
+health = 360
 attack = 22
 interval = 1.8
 defense = 25
 skill = ExtResource("skill")
+
+attack_range = 1.45

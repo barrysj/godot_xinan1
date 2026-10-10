@@ -1,18 +1,22 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/content/skills/guard.tres" id="skill"]
-[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_paper_guard.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/meal_tray_guard/pose-sheet.png" id="atlas"]
+[ext_resource type="Resource" path="res://assets/art/characters/meal_tray_guard/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
-region = Rect2(64, 112, 16, 16)
+region = Rect2(0, 0, 512, 512)
 [resource]
 script = ExtResource("s")
 id = "paper_guard"
-display_name = "纸甲守卫"
-description = "纸甲守卫：自身与两格内友军获得48点护盾。"
+display_name = "餐具协同怪"
+description = "每4次普攻获得50点5秒普通盾。"
 portrait = SubResource("portrait")
-health = 330
-attack = 27
-interval = 1.7
-defense = 25
+battle_animation = ExtResource("battle_animation")
+health = 500
+attack = 24
+interval = 1.8
+defense = 20
 skill = ExtResource("skill")
+
+attack_range = 1.45

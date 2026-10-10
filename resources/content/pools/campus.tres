@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CampusRewardPool" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="CampusRewardPool" load_steps=14 format=3]
 [ext_resource type="Script" path="res://game/content/reward_pool.gd" id="s"]
 [ext_resource type="Script" path="res://game/content/reward_def.gd" id="t"]
 [ext_resource type="Resource" path="res://resources/content/rewards/badge.tres" id="r0"]
@@ -10,7 +10,9 @@
 [ext_resource type="Resource" path="res://resources/content/rewards/healer_training.tres" id="r6"]
 [ext_resource type="Resource" path="res://resources/content/rewards/striker_training.tres" id="r7"]
 [ext_resource type="Resource" path="res://resources/content/rewards/inventor_training.tres" id="r8"]
+[ext_resource type="Resource" path="res://resources/content/rewards/code_supply.tres" id="code_supply"]
+[ext_resource type="Resource" path="res://resources/content/rewards/code_converter.tres" id="code_converter"]
 [resource]
 script = ExtResource("s")
 id = "campus_rewards"
-rewards = Array[ExtResource("t")]([ExtResource("r0"), ExtResource("r1"), ExtResource("r2"), ExtResource("r3"), ExtResource("r4"), ExtResource("r5"), ExtResource("r6"), ExtResource("r7"), ExtResource("r8")])
+rewards = Array[ExtResource("t")]([ExtResource("r0"), ExtResource("r1"), ExtResource("r2"), ExtResource("r3"), ExtResource("r4"), ExtResource("r5"), ExtResource("r6"), ExtResource("r7"), ExtResource("r8"), ExtResource("code_supply"), ExtResource("code_converter")])

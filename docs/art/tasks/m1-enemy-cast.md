@@ -305,3 +305,46 @@ M1 `campaign_hub.gd::_guard()` 的非终点区域战斗统一载入 `encounter_p
 - 实际截图／动作预览证据：概念原图已在对话中展示；没有伪造 Godot 接入截图。
 - 未解决问题：负责人尚未确认机房终端修正版及本轮八个新角色；还需决定外设群是否过于复杂、清扫车是否适合战斗、复印机与阅卷机是否功能重叠，以及三个 Boss 的优先级。概念阶段暗部晕染与高频机械细节不直接进入正式小尺寸资产。
 - 本地提交：本轮九张概念记录在资源台扫描与 33 项美术工具测试通过后随本提交落库；不推送远程。
+
+## 原主线敌人动作候选准备（2026-10-07）
+
+状态：六个实际出现的非粉笔敌人已有待评审的六姿态透明图集与播放包；没有取得具体资产批准或阶段留存答复。全部仍位于忽略的tmp目录，没有提升到assets/art、更新正式Manifest、替换游戏单位、修改敌阵数值或提交候选。粉笔精灵继续沿用已有正式包；其余未进入现行敌阵的概念不在本批生产范围。
+
+| 已批准的概念身份 | 推荐动作候选 | 文件集实测 | 拟适配原单位ID，仅接入建议 |
+| --- | --- | ---: | --- |
+| 广播中继／radio concept_003 | design/concepts/enemy/radio/tmp_003/ | 1,983,926 B／1.89 MiB | radio，远程与支援姿态 |
+| 试卷怨灵／exam-paper concept_002 | design/concepts/enemy/exam-paper/tmp_002/ | 1,966,935 B／1.88 MiB | pages，远程 |
+| 键帽拳灵／keycap-brawler concept_002 | design/concepts/enemy/keycap-brawler/tmp_002/ | 1,845,052 B／1.76 MiB | desk，近战 |
+| 投影独眼灵／projector concept_003 | design/concepts/enemy/projector/tmp_001/ | 1,890,962 B／1.80 MiB | board，远程及固定行压力 |
+| 馆藏巨典／great-volume-boss concept_004 | design/concepts/enemy/great-volume-boss/tmp_002/ | 1,755,785 B／1.67 MiB | colossus，重击 |
+| 餐具协同怪／meal-tray-guard concept_003 | design/concepts/enemy/meal-tray-guard/tmp_002/ | 1,911,385 B／1.82 MiB | paper_guard，叉刺与格挡 |
+
+每候选五文件：pose-sheet.png、battle_animation.tres、battle_animation.frames.json、rig_manifest.json、generation.md；运行允许列表只含前四项。内置image_gen生成／编辑PNG，原图逐字节复制，未用脚本绘改像素。所有图实测1536×1024 RGBA，背景具有真实零Alpha；PNG预览中的隐藏RGB底色不用于游戏显示。AtlasTexture区域和原生margin统一画布／脚底，保留源PNG。
+
+六姿态为待机、蓄力、释放、受击、濒危、退场；七片段含移动复用待机。此批是关键姿态切换，不宣称连续逐帧、完整步态或骨骼动画。截帧边界依实测Alpha核对，模型未普遍达到提示词要求的每格15%留白，不将目标写成实测通过。
+
+### 实际播放验证
+
+Godot4.7.2／PowerShell7，原run-motion-preview.ps1使用-Animation覆盖候选；每套七可用动作PASS、不支持的另一攻击类型SKIP、failures=0。共享预览入口核验本次日志更新、完成标记与脚本错误；截图以实际出手或受击事件取帧。六套各有1920×1080、2560×1440、1920×1200实际截图并已在对话查看。广播／试卷先前使用通用缓存名，后续其他预览可能覆盖这些缓存，不能将当前同名图当作它们的长期证据；通过候选和现有工具重建。阶段收尾后按留存决定保存必要专属评审证据。
+
+本批后四套独立证据：.godot/keycap-tmp002-melee-<尺寸>.png；.godot/projector-tmp001-ranged-<尺寸>.png及death；.godot/tome-tmp002-melee-<尺寸>.png及death；.godot/tray-tmp002-melee-<尺寸>.png、cast及death。对应独立check／capture日志使用相同对象前缀。投影与巨典／餐盘的退场也实际截图，餐盘修正版退场时全部餐具灯熄灭；cast片段保持格挡，不重放叉刺。
+
+### 已知边界与待决事项
+
+- 原单位ID的适配是Codex建议，候选尚未绑定，预览界面旧单位名不代表新外观已经正式替换；接入时还须核对名字、提示和原存档身份一致性。
+- 独立预览不证明主线的9秒预警／12秒释放特殊行为已同步这些姿态。计时技能、真实敌方护盾行为与原流程接入仍需专项检查，不用side0预览结果冒充side1机制验证。
+- 馆藏巨典本批只制作重击，不添加纸飞机技能；餐具本批只有叉刺与格挡，没有制作获批概念中的筷子抛食与汤勺泼汤玩法。这些是当前原单位规则对应的部分动作，不宣称全概念动作已交付。
+- 当前推荐仅留各表中修正版，所有早期tmp保持不动；相关候选、体积和具体选择已在对话分别送评。资产阶段收尾仍须负责人决定，技术通过不能替代批准。
+- 临时编号已分配上限：radio003、exam-paper002、keycap-brawler002、projector001、great-volume-boss002、meal-tray-guard002。此次尚未分配新的asset编号，不复用早期概念编号。
+
+### 当前接入决定（2026-10-07，覆盖上方准备阶段的未授权状态）
+
+负责人明确指示：“敌人动作暂时保留，先接入游戏不要卡住目标，本session不要再额外创建敌人和人物的动作，只使用已有的、其他专门对话创建的。”据此保留全部既有 tmp，不再生成动作；表中六套修正版逐字节复制图集到 assets/art/characters/<对象>/，仅改写运行引用并移除生产元数据。Manifest 登记 integration_001 / selected / review 和明确试接入授权，接入状态 authorized_active；没有伪记资产批准。
+
+六个原单位 ID 保留，展示名称分别使用广播中继、试卷怨灵、键帽拳灵、投影独眼灵、馆藏巨典、餐具协同怪；头像复用各自待机格，数值、敌阵、存档结构未改。餐盘显示尺寸经实机遮挡检查由220缩至160，原图和七片段不变；对应播放元数据同步。其余使用候选原显示参数。
+
+本次误增的分析员、晨读生概念目录及草案已撤回，没有改动这两名现有角色的玩法定义，也没有替换其原有美术。当前已登记资源中尚无这两人的专属动作，不在本session补制。
+
+验证基线 eca60f9 加工作树：enemy_integration_check.tscn -- --capture 在原 expedition 战役实例覆盖 patrol / classroom / final 敌阵、六名敌人实际攻击、头像和七片段；1920×1080、2560×1440、1920×1200 共九张实机图，94 checks / 0 failures。原 starting_strategy_check.tscn 无头检查133 / 0，两条起始队伍仍完成原战役流程。资源台扫描52对象／1129文件，缺失0、不一致0、错误0。Godot导入完成，编辑器退出产生既有 EditorSettings not instantiated 警告；实际图形和流程检查没有脚本错误，仍有旧Kenney直接读图警告。
+
+运行证据：.godot/enemy-integration-final.log、enemy-starting-flow.log、enemies-<敌阵>-<尺寸>.png，可用上述入口重建。当前为关键姿态切换，不宣称连续动画、已人工验收或整个游戏已无占位。

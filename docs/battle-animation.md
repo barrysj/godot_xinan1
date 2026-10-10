@@ -28,7 +28,7 @@
 
 `game/combat/battle_simulation.gd` 负责前摇、出手、后摇和追踪弹道。具体规则与配置见 `docs/battle-demo.md` 的行动时序框架章节。已接入共享骨骼与序列帧双后端；没有根运动或物理击退。
 
-`unit_presentation.gd` 负责每个角色的表现状态；在模拟位置之间插值，程序前摇、攻击位移、受击偏移不修改占位。已有素材提供对应片段时让素材负责动作姿势；闪白、退场淡化仍统一生效。单位按插值后的脚底纵坐标排序。
+`unit_presentation.gd` 负责每个角色的表现状态；在模拟位置之间插值，程序前摇、攻击位移、受击偏移不修改占位。已有素材提供对应片段时让素材负责动作姿势；闪白、退场淡化仍统一生效。单位按插值后的脚底纵坐标排序。混合动画节点放在原战场的BattleActors分组进行Y排序，世界节点不再把纵坐标直接当作全局z_index；装备详情等操作面板保持在世界层上方。
 
 原校园战役也复用同一表现场景和素材播放器。粉笔精灵等已配置 `presentation_scene` 的单位在战役中创建混合动画节点；未配置动画资源的角色继续使用占位图和程序位移。验证入口为 `scenes/battle_demo/campaign_animation_check.tscn`，图形模式追加 `-- --capture` 可重建原战役中的远程动作截图。
 
@@ -65,7 +65,7 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - `-Unit 'res://路径/角色资源.tres'` 加载角色元数据；近战、远程入口根据 `attack_modes` 置灰。旧资源未显式配置时，从 `action_profile` 与 `attack_range` 推断；未来双能力角色配置为近战与远程均可用。
 - Guard 即梦近战留存候选 008：`pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Animation res://design/concepts/characters/guard/asset_001/battle_animation.tres -Action Melee -Speed 0.5`。008 的近战来自即梦视频并对齐待机色板，其他动作保存于同一版本目录。普通预览保持可见窗口，关闭窗口后命令返回。
 - `design/.gdignore` 排除概念图的编辑器导入；独立预览器在开发运行时直接解码 `design/concepts/` 下 PNG，并不改变正式游戏资源。显式动画若未成功加载，`-Check` 会失败，避免回退占位图后仍误报通过。`-EnsureImport` 不会因概念 PNG 缺 `.import` 而反复启动编辑器；正式资产的描述或缓存缺失、过期时仍会导入一次。
-- `-Check` 自动验证八种模式及入口可用性；`-Capture` 输出三种分辨率下当前角色支持的攻击、施法、受击、濒危、退场截图；`-Tour` 连续展示可用模式后退出。
+- `-Check` 自动验证八种模式、入口可用性与截图姿态；`-Capture` 输出三尺寸下当前角色支持的动作截图，攻击／施法取实际释放时刻，受击／退场取首次实际命中，避免短动作已归待机后才截图。启动器核验本次日志与完成标记，未真正完成会失败；`-Tour` 连续展示可用模式后退出。
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - `-Projectile 'res://路径/弹体资源.tres'` 仅给本次预览的动画资源深复制件挂载 `BattleProjectileStyle`，便于先审弹体再决定是否正式接入，不会修改角色定义或候选动画文件。
 - Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
@@ -164,3 +164,7 @@ pwsh.exe -File ./run-battle-demo.ps1 -Mode Debug
 `authored_assets_check.tscn` 验证五人正式引用、头像、七态、固定画布／脚底、不同濒危与退场姿势、死亡停末帧及整身帧后端。图形运行追加 `-- --capture`，两组合法四人阵容覆盖五人，输出三规定分辨率截图至 `.godot/characters-battle-party*.png`。
 
 `tools/art/animation/capture_humanoid_gameplay.tscn` 是可复用的正式资源实录入口：实例化原征途、使用既有困难遭遇与四人队伍，存档仅在 `.godot/humanoid-gameplay/`。开战前敌方 HP 倍率 2.5 的观看样本会明确记录；不强制运行中 HP／状态，不改战斗结算。Windows 以 `Start-Process -WindowStyle Hidden -Wait -PassThru` 等待 Godot，参数可用 `-- --size=1920x1080 --capture-fps=15`；其他两尺寸加 `--stills`。输出帧／事件清单留缓存，最新交付证据另归人物任务。
+
+## 破解与人物动作的画面共存（2026-10-07）
+
+破解反馈只围绕模拟器报告的实际受益单位展示，不另建全屏演出或暂停战斗。程序名从同一Resource读取，短提示放入下方动态栏；追踪标记、反冲盾与修复分别表达对象与状态，爆炸范围沿用战場投影。暂停与悬停仍冻结表现。相关实现、截图入口与已知边界见CORE-05最新记录。

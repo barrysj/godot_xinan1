@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/campus_route_place.gd" id="s"]
+[resource]
+resource_name = "南门"
+script = ExtResource("s")
+id = "south_gate"
+display_name = "南门"
+landmark = "stadium"
+offset = Vector2(150, 155)
+background_id = "south_gate"
+library_interior = false

@@ -1,0 +1,474 @@
+{
+  "date": "2026-10-08",
+  "baseline": "51c4118 + worktree",
+  "summary": {
+    "objects": 54,
+    "files": 1534,
+    "mismatches": 0,
+    "missing": 0,
+    "categories": {
+      "场景": 20,
+      "人物": 6,
+      "敌人": 17,
+      "UI": 6,
+      "闪卡": 1,
+      "特效": 2,
+      "未归类": 2
+    }
+  },
+  "errors": [],
+  "object": {
+    "id": "event_choice_ui",
+    "name": "奖励、热点事件与核心回收子页",
+    "type": "ui",
+    "subtype": "event_choice",
+    "category": "UI",
+    "has_generated_assets": true,
+    "manifest_path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\manifests\\event_choice_ui.yaml",
+    "collection": [],
+    "variants": [
+      {
+        "id": "asset_001",
+        "version": "001",
+        "stage": "asset",
+        "selection": "selected",
+        "approval": "review",
+        "approval_evidence": null,
+        "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+        "files": [
+          {
+            "id": "866f0a58318ad3975344",
+            "file_id": "frame",
+            "name": "frame.png",
+            "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\frame.png",
+            "manifest_path": "frame.png",
+            "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+            "kind": "image",
+            "kind_label": "图片",
+            "role": "image",
+            "variant_id": "asset_001",
+            "stage": "asset",
+            "effective": false,
+            "exists": true,
+            "is_image": true,
+            "integrity": {
+              "status": "matched",
+              "label": "可读取",
+              "actual": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef"
+            },
+            "metadata": {}
+          },
+          {
+            "id": "e9e32d4a67e4b6f2f369",
+            "file_id": "reward",
+            "name": "reward.png",
+            "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\reward.png",
+            "manifest_path": "reward.png",
+            "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+            "kind": "image",
+            "kind_label": "图片",
+            "role": "image",
+            "variant_id": "asset_001",
+            "stage": "asset",
+            "effective": false,
+            "exists": true,
+            "is_image": true,
+            "integrity": {
+              "status": "matched",
+              "label": "可读取",
+              "actual": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677"
+            },
+            "metadata": {}
+          },
+          {
+            "id": "79b89db0f4d6440bcf8f",
+            "file_id": "terminal",
+            "name": "terminal.png",
+            "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\terminal.png",
+            "manifest_path": "terminal.png",
+            "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+            "kind": "image",
+            "kind_label": "图片",
+            "role": "image",
+            "variant_id": "asset_001",
+            "stage": "asset",
+            "effective": false,
+            "exists": true,
+            "is_image": true,
+            "integrity": {
+              "status": "matched",
+              "label": "可读取",
+              "actual": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4"
+            },
+            "metadata": {}
+          },
+          {
+            "id": "b9fe58abc03a38c1d03e",
+            "file_id": "generation",
+            "name": "generation.json",
+            "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\generation.json",
+            "manifest_path": "generation.json",
+            "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+            "kind": "resource",
+            "kind_label": "依赖资源",
+            "role": "dependency",
+            "variant_id": "asset_001",
+            "stage": "asset",
+            "effective": false,
+            "exists": true,
+            "is_image": false,
+            "integrity": {
+              "status": "matched",
+              "label": "可读取",
+              "actual": "613191b4804f69421e5b23560af2be5b7dbef7ffe18b36250ef8d5bf2d796873"
+            },
+            "metadata": {}
+          },
+          {
+            "id": "6f103559a0a8d1c7bdf7",
+            "file_id": "quality",
+            "name": "quality-result.json",
+            "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\quality-result.json",
+            "manifest_path": "quality-result.json",
+            "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+            "kind": "resource",
+            "kind_label": "依赖资源",
+            "role": "dependency",
+            "variant_id": "asset_001",
+            "stage": "asset",
+            "effective": false,
+            "exists": true,
+            "is_image": false,
+            "integrity": {
+              "status": "matched",
+              "label": "可读取",
+              "actual": "e3b22e04904aa146dbc7053b522dabc3e0215f2a8da8a854b62cd620521b97f8"
+            },
+            "metadata": {}
+          }
+        ],
+        "animation": null,
+        "previews": [],
+        "metadata": {},
+        "summary": {
+          "date": "日期未记录",
+          "thumbnail_id": "866f0a58318ad3975344",
+          "images": 3,
+          "animations": 0,
+          "validation_status": "matched",
+          "validation_label": "校验通过"
+        }
+      }
+    ],
+    "assets": [
+      {
+        "id": "866f0a58318ad3975344",
+        "file_id": "frame",
+        "name": "frame.png",
+        "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\frame.png",
+        "manifest_path": "frame.png",
+        "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+        "kind": "image",
+        "kind_label": "图片",
+        "role": "image",
+        "variant_id": "asset_001",
+        "stage": "asset",
+        "effective": false,
+        "exists": true,
+        "is_image": true,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e9e32d4a67e4b6f2f369",
+        "file_id": "reward",
+        "name": "reward.png",
+        "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\reward.png",
+        "manifest_path": "reward.png",
+        "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+        "kind": "image",
+        "kind_label": "图片",
+        "role": "image",
+        "variant_id": "asset_001",
+        "stage": "asset",
+        "effective": false,
+        "exists": true,
+        "is_image": true,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "79b89db0f4d6440bcf8f",
+        "file_id": "terminal",
+        "name": "terminal.png",
+        "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\terminal.png",
+        "manifest_path": "terminal.png",
+        "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+        "kind": "image",
+        "kind_label": "图片",
+        "role": "image",
+        "variant_id": "asset_001",
+        "stage": "asset",
+        "effective": false,
+        "exists": true,
+        "is_image": true,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "b9fe58abc03a38c1d03e",
+        "file_id": "generation",
+        "name": "generation.json",
+        "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\generation.json",
+        "manifest_path": "generation.json",
+        "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+        "kind": "resource",
+        "kind_label": "依赖资源",
+        "role": "dependency",
+        "variant_id": "asset_001",
+        "stage": "asset",
+        "effective": false,
+        "exists": true,
+        "is_image": false,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "613191b4804f69421e5b23560af2be5b7dbef7ffe18b36250ef8d5bf2d796873"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "6f103559a0a8d1c7bdf7",
+        "file_id": "quality",
+        "name": "quality-result.json",
+        "path": "E:\\Documents\\works\\godot_xinan1\\design\\concepts\\event-choice-ui\\choice-pages\\asset_001\\quality-result.json",
+        "manifest_path": "quality-result.json",
+        "root": "design/concepts/event-choice-ui/choice-pages/asset_001",
+        "kind": "resource",
+        "kind_label": "依赖资源",
+        "role": "dependency",
+        "variant_id": "asset_001",
+        "stage": "asset",
+        "effective": false,
+        "exists": true,
+        "is_image": false,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "e3b22e04904aa146dbc7053b522dabc3e0215f2a8da8a854b62cd620521b97f8"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "1729d56bbe1c467f5253",
+        "file_id": "frame",
+        "name": "frame.png",
+        "path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\ui\\event_choice\\frame.png",
+        "manifest_path": "frame.png",
+        "root": "assets/art/ui/event_choice",
+        "kind": "image",
+        "kind_label": "图片",
+        "role": "image",
+        "variant_id": "asset_001",
+        "stage": "integration",
+        "effective": true,
+        "exists": true,
+        "is_image": true,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "d44848c9f9a83bcca534",
+        "file_id": "reward",
+        "name": "reward.png",
+        "path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\ui\\event_choice\\reward.png",
+        "manifest_path": "reward.png",
+        "root": "assets/art/ui/event_choice",
+        "kind": "image",
+        "kind_label": "图片",
+        "role": "image",
+        "variant_id": "asset_001",
+        "stage": "integration",
+        "effective": true,
+        "exists": true,
+        "is_image": true,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "b18d34afcfadbc576b08",
+        "file_id": "terminal",
+        "name": "terminal.png",
+        "path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\ui\\event_choice\\terminal.png",
+        "manifest_path": "terminal.png",
+        "root": "assets/art/ui/event_choice",
+        "kind": "image",
+        "kind_label": "图片",
+        "role": "image",
+        "variant_id": "asset_001",
+        "stage": "integration",
+        "effective": true,
+        "exists": true,
+        "is_image": true,
+        "integrity": {
+          "status": "matched",
+          "label": "可读取",
+          "actual": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4"
+        },
+        "metadata": {}
+      }
+    ],
+    "holo_card": null,
+    "thumbnail_id": "866f0a58318ad3975344",
+    "relationships": [],
+    "integration": {
+      "declared_status": "authorized_active",
+      "verified_status": "matched",
+      "active_variant": "asset_001",
+      "owner_resource": "scenes/expedition/choice_page.gd",
+      "owners": [
+        "scenes/expedition/choice_page.gd"
+      ],
+      "resource": null,
+      "evidence": "docs/art/tasks/event-choice-ui.md",
+      "effective_files": [
+        {
+          "id": "1729d56bbe1c467f5253",
+          "file_id": "frame",
+          "name": "frame.png",
+          "path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\ui\\event_choice\\frame.png",
+          "manifest_path": "frame.png",
+          "root": "assets/art/ui/event_choice",
+          "kind": "image",
+          "kind_label": "图片",
+          "role": "image",
+          "variant_id": "asset_001",
+          "stage": "integration",
+          "effective": true,
+          "exists": true,
+          "is_image": true,
+          "integrity": {
+            "status": "matched",
+            "label": "可读取",
+            "actual": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef"
+          },
+          "metadata": {}
+        },
+        {
+          "id": "d44848c9f9a83bcca534",
+          "file_id": "reward",
+          "name": "reward.png",
+          "path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\ui\\event_choice\\reward.png",
+          "manifest_path": "reward.png",
+          "root": "assets/art/ui/event_choice",
+          "kind": "image",
+          "kind_label": "图片",
+          "role": "image",
+          "variant_id": "asset_001",
+          "stage": "integration",
+          "effective": true,
+          "exists": true,
+          "is_image": true,
+          "integrity": {
+            "status": "matched",
+            "label": "可读取",
+            "actual": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677"
+          },
+          "metadata": {}
+        },
+        {
+          "id": "b18d34afcfadbc576b08",
+          "file_id": "terminal",
+          "name": "terminal.png",
+          "path": "E:\\Documents\\works\\godot_xinan1\\assets\\art\\ui\\event_choice\\terminal.png",
+          "manifest_path": "terminal.png",
+          "root": "assets/art/ui/event_choice",
+          "kind": "image",
+          "kind_label": "图片",
+          "role": "image",
+          "variant_id": "asset_001",
+          "stage": "integration",
+          "effective": true,
+          "exists": true,
+          "is_image": true,
+          "integrity": {
+            "status": "matched",
+            "label": "可读取",
+            "actual": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4"
+          },
+          "metadata": {}
+        }
+      ],
+      "bindings": [
+        {
+          "id": "frame",
+          "kind": "文件内容",
+          "status": "matched",
+          "label": "选用与生效内容相同",
+          "source_hash": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef",
+          "target_hash": "c99dae3b0dd8505dd6ce632f5a74f81f9e9cab7cc4728f8f2ca870325842ccef"
+        },
+        {
+          "id": "reward",
+          "kind": "文件内容",
+          "status": "matched",
+          "label": "选用与生效内容相同",
+          "source_hash": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677",
+          "target_hash": "a605c14db086bc5f89ea171989a2e5ff14657fab2e23411d2170503ce5113677"
+        },
+        {
+          "id": "terminal",
+          "kind": "文件内容",
+          "status": "matched",
+          "label": "选用与生效内容相同",
+          "source_hash": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4",
+          "target_hash": "d540bd634e51026495af71680043b75e6585bdc3c91b1489a51addf6886558d4"
+        },
+        {
+          "id": "choice_page",
+          "kind": "Godot 引用",
+          "status": "matched",
+          "label": "引用已连接",
+          "source": "scenes/expedition/choice_page.gd",
+          "target": "res://assets/art/ui/event_choice/frame.png"
+        }
+      ]
+    },
+    "warnings": [],
+    "counts": {
+      "concepts": 0,
+      "animations": 0,
+      "atlases": 0,
+      "files": 8,
+      "integrity": {
+        "matched": 8,
+        "mismatch": 0,
+        "missing": 0,
+        "unset": 0
+      }
+    },
+    "statuses": [
+      "review"
+    ]
+  }
+}

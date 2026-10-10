@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "code_supply"
+display_name = "代码补给"
+description = "本局代码补给库存 +1；战斗中任选一种代码生成3块。每场最多使用一次。"
+operation = "item"
+code_item_id = "supply"
+fallback_only = false
+amount = 1

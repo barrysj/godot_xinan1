@@ -11,6 +11,5 @@ max_health_ratio = 0.25
 script = ExtResource("s")
 id = "backup"
 display_name = "应急备份"
-description = "佩戴者首次降至半血，获得最大生命25%的护盾。战前可转移。"
+description = "佩戴者首次低于40%生命且存活时获得45点5秒普通盾。"
 category = "装备"
-effects = Array[ExtResource("p")]([SubResource("p0")])

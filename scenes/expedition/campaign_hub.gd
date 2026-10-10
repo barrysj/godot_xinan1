@@ -130,6 +130,9 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 		if debug_panel.panel.visible: return
+	if not paused and is_instance_valid(campaign_panel) and campaign_panel.choice_page.handle_input(event):
+		get_viewport().set_input_as_handled()
+		return
 	super._input(event)
 
 func _request_exit(destination: String) -> void:
@@ -169,12 +172,15 @@ func _new_run() -> void:
 		return
 	_home()
 
-func _begin_region(region: String, mode: String = "region") -> void:
+func _begin_region(region: String, mode: String = "region", starting_strategy: String = "") -> void:
 	if progress.load_blocked or (mode == "region" and not progress.campaign.routes_acquired): return
 	if mode == "finale" and (progress.campaign.terminals.size() != 3 or progress.campaign.restored): return
+	var next_journey = Journey.new()
+	if not next_journey.begin(region,progress.campaign.terminals.size()):
+		campaign_panel.text("区域配置无效，请先在 Godot 校验并保存。")
+		return
 	campaign_mode = mode
-	journey = Journey.new()
-	journey.begin(region,progress.campaign.terminals.size())
+	journey = next_journey
 	run = RunModel.new()
 	run.permanent_hp = progress.level("fitness") * 20
 	if mode != "prologue" and progress.supply_unlocked and chosen_supply:
@@ -187,6 +193,12 @@ func _begin_region(region: String, mode: String = "region") -> void:
 	formation = [-1,-1,-1,-1,-1,-1]
 	if mode != "prologue":
 		formation = progress.campaign.formation.map(func(id): return -1 if id.is_empty() else Content.role_index(id))
+	if starting_strategy in ["analysis","protect"]:
+		if not run.configure_starting_strategy(starting_strategy): return
+		formation = run.formation.duplicate()
+	elif starting_strategy == "keep":
+		var has_scanner: bool = formation.has(Content.role_index("analyst"))
+		run.code_programs = ["disconnect","repair"] if has_scanner else ["redirect","repair"]
 	equipment = run.shoe_wearer
 	phase = "prepare"
 	if mode == "prologue": journey.enter(0,progress.campaign.memories)
@@ -195,11 +207,11 @@ func _begin_region(region: String, mode: String = "region") -> void:
 		journey.enter(0,progress.campaign.memories)
 	if _save_campaign(): _show_journey()
 
-func _save_campaign() -> bool:
+func _save_campaign(story_flags: Variant = null) -> bool:
 	if campaign_mode.is_empty(): return true
 	run.formation = formation.duplicate()
 	var lineup = formation.map(func(role): return "" if role == -1 else Content.role_id(role)) if campaign_mode != "prologue" else []
-	last_save_ok = progress.save_campaign_checkpoint(CampaignSave.pack(journey,run,campaign_mode),lineup)
+	last_save_ok = progress.save_campaign_checkpoint(CampaignSave.pack(journey,run,campaign_mode),lineup,story_flags)
 	if not last_save_ok:
 		var restored = CampaignSave.decode(progress.active_run)
 		if not restored.is_empty():
@@ -241,7 +253,7 @@ func _continue_run() -> void:
 		report.clear()
 		for row in journey.data.get("report",[]): report.append(row.duplicate(true))
 		elapsed = float(journey.data.get("elapsed",0))
-		run.node = {"name":Journey.Regions.PLACES[journey.visit.data.place],"kind":"battle"}
+		run.node = {"name":journey.title(journey.visit.data.place),"kind":"battle"}
 		campaign_panel.hide()
 	else: _show_journey()
 
@@ -264,9 +276,16 @@ func _show_journey() -> void:
 		return
 	if journey.data.finished:
 		_settle_campaign()
+	elif journey.data.screen == "event":
+		campaign_panel.location(journey,campaign_mode == "prologue")
+		var state: Dictionary = journey.visit.data.event_states[journey.data.event_spot]
+		var context := _event_context()
+		campaign_panel.hotspot_event(preload("res://game/run/hotspot_event.gd").page(state,progress.campaign.story_flags,context),state,context)
 	elif journey.data.screen == "reward":
+		campaign_panel.location(journey,campaign_mode == "prologue")
 		campaign_panel.rewards(journey.data.offers)
 	elif journey.data.screen == "reward_owner":
+		campaign_panel.location(journey,campaign_mode == "prologue")
 		campaign_panel.reward_owner(journey.data.pending_offer,run.roster,run)
 	elif journey.visit.data.is_empty(): campaign_panel.route(journey,progress.campaign.restored)
 	else:
@@ -276,9 +295,11 @@ func _guard() -> void:
 	if journey.visit.data.is_empty() or journey.visit.data.guard_won: return
 	var place: String = journey.visit.data.place
 	var boss: bool = (journey.data.step == journey.data.map.size()-1 and campaign_mode == "region") or campaign_mode == "finale"
-	run.node = {"id":place,"name":Journey.Regions.PLACES[place],"kind":"boss" if boss else "battle",
-		"encounter":1 if boss else 0,"encounter_id":"encounter_final" if boss else "encounter_patrol",
-		"power":1.0 if boss else 0.62+journey.data.step*0.08}
+	var configured: Dictionary = journey.stop()
+	var encounter: String = configured.encounter_id if campaign_mode == "region" else "encounter_final" if boss else "encounter_patrol"
+	run.node = {"id":place,"name":journey.title(place),"kind":"boss" if boss else "battle",
+		"encounter":0 if encounter == "encounter_patrol" else 1,"encounter_id":encounter,
+		"power":float(configured.power) if campaign_mode == "region" else 1.0 if boss else 0.62}
 	if campaign_mode == "finale":
 		run.node.name = "核心节点 %d · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
 		run.node.power = 0.82 + 0.08 * journey.data.finale_phase
@@ -307,12 +328,10 @@ func _victory() -> void:
 		return
 	journey.data.screen = "reward"
 	if not journey.data.has("offers"):
-		var pool = RunModel.Rewards.eligible(run.badge_owned,run.roster,run.inventory,"campus_rewards",run.training,run.combat_rewards)
-		pool = pool.filter(func(offer): return offer.operation != "recruit")
 		var rng = RandomNumberGenerator.new()
 		rng.seed = (journey.data.id+journey.visit.data.place+"reward").hash()
-		RunModel.shuffle_with(pool,rng)
-		journey.data.offers = pool.slice(0,3).duplicate(true)
+		journey.data.offers = run.draw_rewards(rng,false).duplicate(true)
+		journey.data.rewards_exhausted = journey.data.offers.is_empty()
 	if _save_campaign(): _show_journey()
 
 func _finish_journey_reward(offer: Dictionary, owner_id: String = "") -> void:
@@ -326,18 +345,16 @@ func _finish_journey_reward(offer: Dictionary, owner_id: String = "") -> void:
 func _settle_campaign() -> void:
 	var first_clear = not progress.campaign.terminals.has(journey.data.region)
 	var recruits = journey.data.temporary.filter(func(id): return not progress.campaign.characters.has(id))
-	if progress.settle_region(journey.data.id,journey.data.region,journey.data.temporary,7):
+	if progress.settle_region(journey.data.id,journey.data.region,journey.data.temporary,7,formation.map(func(role): return "" if role == -1 else Content.role_id(role))):
 		if progress.save_checkpoint({}):
 			campaign_mode = ""
 			screen = "campaign"
 			campaign_panel.show()
-			campaign_panel.clear("终端已回收" if first_clear else "探索完成","已回到安全区域，所有收益已保存。")
-			if first_clear: campaign_panel.terminal_reveal(journey.data.region)
-			else: campaign_panel.terminal_progress(progress.campaign.terminals)
-			campaign_panel.text("修复资源 +7。"+("发明家已永久加入，下一次出发可在队伍中选择。" if not recruits.is_empty() else ""))
-			var count = progress.campaign.terminals.size()
-			if first_clear: campaign_panel.text({1:"图书馆派遣现已开放。下一步：寻找第二台记忆终端。",2:"体育馆派遣现已开放。下一步：取回最后一台记忆终端。",3:"三台终端已齐备。下一步：返回基地，接入终端，修复核心。"}[count])
-			campaign_panel.button("返回基地","base")
+			var detail := "修复资源 +7。"+("发明家已永久加入，下一次出发可在队伍中选择。" if not recruits.is_empty() else "")
+			var count: int = progress.campaign.terminals.size()
+			if first_clear: detail += "\n\n"+{1:"图书馆派遣现已开放。下一步：寻找第二台记忆终端。",2:"体育馆派遣现已开放。下一步：取回最后一台记忆终端。",3:"三台终端已齐备。下一步：返回基地，接入终端，修复核心。"}[count]
+			else: detail += "\n\n该区域的记忆终端已经回收，本次不会重复获得终端。"
+			campaign_panel.core_recovery(journey.data.region,first_clear,progress.campaign.terminals,detail)
 	else:
 		campaign_panel.clear("结算待重试",progress.error_message)
 		campaign_panel.button("重试结算","settle")
@@ -351,12 +368,20 @@ func _memory_text(id: String) -> String:
 
 func _campaign_action(id: String) -> void:
 	if paused: return
+	# A modal event owns location actions; quitting/saving still preserves its checkpoint.
+	if screen == "campaign" and journey.data.get("screen") == "event" and id not in ["visit","choice_menu","base","continue"] and not id.begins_with("event:"): return
 	if id == "hub_menu":
 		campaign_panel.show_home_menu()
 		return
 	if id == "hub_close": return
 	if _profile_action(id): return
 	if progress.load_blocked: return
+	if id == "choice_menu":
+		_open_pause()
+		return
+	if id.begins_with("event:"):
+		_event_choice(id)
+		return
 	if id == "campus_preview_base":
 		_home()
 	elif id == "base":
@@ -370,7 +395,19 @@ func _campaign_action(id: String) -> void:
 	elif id.begins_with("region:"): _request_campaign_start(id.trim_prefix("region:"),"region")
 	elif id.begins_with("confirm:"):
 		var parts = id.split(":")
-		_begin_region(parts[1],parts[2])
+		campaign_panel.starting_strategy(parts[1],parts[2],parts[2] != "prologue")
+	elif id.begins_with("strategy:"):
+		var parts = id.split(":")
+		if parts.size() != 4 or parts[3] not in ["analysis","protect","keep"]: return
+		if parts[1] not in Journey.Regions.IDS or parts[2] not in ["region","prologue","finale"] or (parts[2] == "prologue" and parts[3] == "keep"): return
+		_begin_region(parts[1],parts[2],parts[3])
+	elif id == "formation:protect":
+		if screen != "campaign" or journey.data.get("screen") != "visit" or not run.code_programs.has("redirect"): return
+		var suggested: Array = run.recommended_formation("protect")
+		if suggested.is_empty(): return
+		formation = suggested
+		run.formation = suggested.duplicate()
+		if _save_campaign(): _show_journey()
 	elif id == "tutorial":
 		if progress.complete_tutorial_dispatch(): _home()
 		else: campaign_panel.text(progress.error_message)
@@ -379,7 +416,9 @@ func _campaign_action(id: String) -> void:
 		_home()
 	elif id == "codex": _open_codex()
 	elif id.begins_with("enter:"):
-		if journey.enter(int(id.trim_prefix("enter:")),progress.campaign.memories) and _save_campaign(): _show_journey()
+		if journey.enter(int(id.trim_prefix("enter:")),progress.campaign.memories):
+			_ensure_starting_partner()
+			if _save_campaign(): _show_journey()
 	elif id == "leave":
 		if campaign_mode == "prologue" and journey.visit.can_leave():
 			if progress.complete_prologue() and progress.save_checkpoint({}):
@@ -387,9 +426,16 @@ func _campaign_action(id: String) -> void:
 				_home()
 		elif journey.leave():
 			journey.data.erase("offers")
+			journey.data.erase("rewards_exhausted")
 			journey.data.erase("last_reward")
 			if _save_campaign(): _show_journey()
 	elif id.begins_with("spot:"): _hotspot(id.trim_prefix("spot:"))
+	elif id == "reward_continue":
+		if journey.data.screen != "reward" or not journey.visit.data.guard_won or journey.visit.data.reward_taken or not journey.data.get("rewards_exhausted",false) or not journey.data.get("offers",[]).is_empty(): return
+		journey.visit.data.reward_taken = true
+		journey.data.last_reward = "当前没有适用的新奖励；本次整备完成。"
+		journey.data.screen = "visit"
+		if _save_campaign(): _show_journey()
 	elif id.begins_with("reward:"):
 		var index = int(id.trim_prefix("reward:"))
 		if journey.data.screen != "reward" or journey.visit.data.reward_taken: return
@@ -407,10 +453,22 @@ func _campaign_action(id: String) -> void:
 			journey.data.erase("pending_offer")
 			_finish_journey_reward(offer,id.trim_prefix("reward_owner:"))
 	elif id == "reward_back":
+		if journey.data.get("screen") != "reward_owner": return
 		journey.data.erase("pending_offer")
 		journey.data.screen = "reward"
 		if _save_campaign(): _show_journey()
-	elif id == "visit": _show_journey()
+	elif id == "visit":
+		if journey.data.get("screen") == "event":
+			var spot_id: String = journey.data.event_spot
+			var returned := preload("res://game/run/hotspot_event.gd").return_to_location(journey.visit.data.event_states[spot_id])
+			if returned.is_empty():
+				campaign_panel.choice_page.notify_return_blocked()
+				return
+			journey.visit.data.event_states[spot_id] = returned
+			journey.data.screen = "visit"
+			journey.data.erase("event_spot")
+			if not _save_campaign(): return
+		_show_journey()
 	elif id == "photo":
 		var memory = preload("res://resources/content/library_memory.tres")
 		if memory.photograph != null and progress.record_memory(memory.id):
@@ -476,9 +534,15 @@ func _request_campaign_start(region: String, mode: String) -> void:
 		campaign_panel.clear("替换探索","当前探索将被替换；未兑现的临时人物与局内收益会丢失。永久记录保留。")
 		campaign_panel.button("开始新局","confirm:"+region+":"+mode)
 		campaign_panel.button("返回基地","base")
-	else: _begin_region(region,mode)
+	else: campaign_panel.starting_strategy(region,mode,mode != "prologue")
+
+func _ensure_starting_partner() -> void:
+	if campaign_mode != "region" or journey.data.step != 0 or journey.visit.data.is_empty() or not run.code_programs.has("redirect") or run.roster.has(Content.role_index("inventor")): return
+	if not journey.visit.data.hotspots.any(func(spot): return spot.kind == "person"):
+		journey.visit.data.hotspots.append({"id":"person","kind":"person","character":"inventor"})
 
 func _hotspot(id: String) -> void:
+	if screen != "campaign" or journey.data.get("screen") != "visit": return
 	for spot in journey.visit.data.hotspots:
 		if spot.id != id: continue
 		if spot.kind == "battle":
@@ -492,11 +556,40 @@ func _hotspot(id: String) -> void:
 			if not progress.campaign.characters.has("inventor") and not journey.data.temporary.has("inventor"):
 				journey.data.temporary.append("inventor")
 		journey.visit.view(id)
-		if not _save_campaign(): return
-		campaign_panel.clear("调查记录",{"memory":_memory_text(id)+"\n\n已保存到回忆档案。",
-			"person":"发明家（虚拟伙伴）：我知道自己是虚拟构建，也愿意帮助修复。本局暂时入队；成功完成区域后永久加入出发候选。",
-			"system":"当前 AI：前代仍在执行早期目标。我们需要三台记忆终端，才能重新解释目标与限制它的权限。"}[spot.kind])
-		campaign_panel.button("返回地点","visit")
+		var states: Dictionary = journey.visit.data.get("event_states",{})
+		if not states.has(id) or states[id].closed:
+			states[id] = preload("res://game/run/hotspot_event.gd").begin(spot.kind,id,progress.campaign.story_flags,_event_context().place)
+		journey.visit.data.event_states = states
+		journey.data.event_spot = id
+		journey.data.screen = "event"
+		if _save_campaign(): _show_journey()
+
+func _event_context() -> Dictionary:
+	var presentation = preload("res://game/run/campus_presentation.gd")
+	var origin: String = progress.campaign.story_flags.get("rollback_origin","")
+	var origin_title := "之前的地点"
+	if origin.contains(":"):
+		origin_title = presentation.title(origin.get_slice(":",0),origin.get_slice(":",1))
+	return {"place":journey.data.region+":"+journey.visit.data.place,
+		"location_title":journey.title(journey.visit.data.place),"origin":origin_title,
+		"programs":run.code_programs,"memory":_memory_text(journey.data.get("event_spot",""))+"\n\n已保存到回忆档案。"}
+
+func _event_choice(id: String) -> void:
+	if screen != "campaign" or journey.data.get("screen") != "event": return
+	var parts := id.split(":")
+	if parts.size() != 4 or parts[1] != journey.data.event_spot: return
+	var state: Dictionary = journey.visit.data.event_states[parts[1]]
+	if parts[2] != state.node: return # Reject stale node buttons and rapid duplicate transitions.
+	var outcome := preload("res://game/run/hotspot_event.gd").choose(state,parts[3],progress.campaign.story_flags,_event_context())
+	if outcome.is_empty(): return
+	journey.visit.data.event_states[parts[1]] = outcome.state
+	if outcome.state.closed:
+		journey.data.screen = "visit"
+		journey.data.erase("event_spot")
+	if outcome.command == "formation:protect":
+		var suggested: Array = run.recommended_formation("protect")
+		if not suggested.is_empty(): formation = suggested
+	if _save_campaign(outcome.flags): _show_journey()
 
 func _to_base() -> void:
 	if not campaign_enabled:
@@ -523,21 +616,13 @@ func _draw_report() -> void:
 func _draw_effects() -> void:
 	if campaign_mode.is_empty(): super._draw_effects()
 
-func _draw_unit(u: Dictionary) -> void:
-	super._draw_unit(u)
-	if campaign_mode.is_empty(): return
-	var at = _unit_center(u)
-	if at.y > 520:
-		_pixel_panel(Rect2(at+Vector2(-46,-68),Vector2(92,22)),PAPER)
-		_center(at+Vector2(0,-52),u.name if u.hp > 0 else "已退场",DARK,14)
-
 func _draw() -> void:
 	super._draw()
 	if not campaign_mode.is_empty() and screen == "battle":
 		draw_set_transform(origin,0,Vector2.ONE*scale_factor)
 		_pixel_panel(Rect2(230,25,530,48),Color("202027"))
 		var heading = "序章 · 部署教学"
-		if campaign_mode == "region": heading = "%d / 4 · %s" % [journey.data.step+1,run.node.name]
+		if campaign_mode == "region": heading = "%d / %d · %s" % [journey.data.step+1,journey.data.map.size(),run.node.name]
 		elif campaign_mode == "finale": heading = "终局 %d / 3 · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
 		_text(Vector2(244,54),heading,PAPER,22)
 		if not is_instance_valid(code_panel) or not code_panel.visible: _pixel_panel(Rect2(28,96,1208,32),Color("202027"))

@@ -1,28 +1,59 @@
 schema_version: 3
 object:
-  id: meal_tray_guard
+  id: "meal_tray_guard"
   display_name: "餐盘格挡怪"
-  type: character
-  subtype: enemy
+  type: "character"
+  subtype: "enemy"
 variants:
   concept_003:
-    stage: concept
+    stage: "concept"
     version: "003"
-    selection: selected
-    approval: approved
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-enemy-cast.md
+      source: "docs/art/tasks/m1-enemy-cast.md"
       date: "2026-09-30"
-      decision: approved
+      decision: "approved"
       quote: "概念通过"
-    root: design/concepts/enemy/meal-tray-guard/concept_003
+    root: "design/concepts/enemy/meal-tray-guard/concept_003"
     files:
-      concept: meal_tray_guard_action_concept_003.png
-      generation: generation.md
+      concept: "meal_tray_guard_action_concept_003.png"
+      generation: "generation.md"
     metadata:
-      asset_type: action_concept_board
+      asset_type: "action_concept_board"
       transparent: false
-      usage: [concept_review, action_design]
+      usage: ["concept_review", "action_design"]
+  integration_001:
+    stage: "integration"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/characters/meal_tray_guard"
+    files:
+      pose_sheet: "pose-sheet.png"
+      battle_animation: "battle_animation.tres"
+      frame_metadata: "battle_animation.frames.json"
+      rig_manifest: "rig_manifest.json"
+    metadata:
+      source_candidate: "design/concepts/enemy/meal-tray-guard/tmp_002"
+      method: "existing_six_pose_sheet_seven_clips"
+      visual_review: "pending"
+    integration_authorization:
+      source: "docs/art/tasks/m1-enemy-cast.md"
+      date: "2026-10-07"
+      scope: "existing_enemy_actions_in_original_gameplay"
+      quote: "敌人动作暂时保留，先接入游戏不要卡住目标"
+      owners: ["resources/content/enemies/paper_guard.tres"]
 integration:
-  status: not_integrated
-  active_variant: null
+  status: "authorized_active"
+  active_variant: "integration_001"
+  root: "assets/art/characters/meal_tray_guard"
+  resource: "assets/art/characters/meal_tray_guard/battle_animation.tres"
+  owner: "resources/content/enemies/paper_guard.tres"
+  files:
+    pose_sheet: "pose-sheet.png"
+    battle_animation: "battle_animation.tres"
+    frame_metadata: "battle_animation.frames.json"
+    rig_manifest: "rig_manifest.json"
+  visual_review: "pending"
+  evidence: "docs/art/tasks/m1-enemy-cast.md"

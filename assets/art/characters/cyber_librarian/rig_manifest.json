@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "self_contained": true,
+  "canvas": [
+    640,
+    640
+  ],
+  "anchor": [
+    320,
+    560
+  ],
+  "skeleton_actions": [
+    "idle",
+    "move",
+    "hurt",
+    "critical",
+    "ranged",
+    "cast"
+  ],
+  "frame_actions": [
+    "idle",
+    "move",
+    "ranged",
+    "cast",
+    "hurt",
+    "critical",
+    "death"
+  ],
+  "attack_modes": [
+    "ranged"
+  ],
+  "extension": null,
+  "parts": {
+    "WingLeft": {
+      "file": "parts/WingLeft.png",
+      "pivot": [
+        193,
+        363
+      ]
+    },
+    "WingRight": {
+      "file": "parts/WingRight.png",
+      "pivot": [
+        390,
+        363
+      ]
+    },
+    "Body": {
+      "file": "parts/Body.png",
+      "pivot": [
+        320,
+        560
+      ]
+    }
+  },
+  "runtime_files": [
+    "battle_animation.tres",
+    "battle_animation.frames.json",
+    "rig_manifest.json",
+    "presentation.tscn",
+    "animations.tres",
+    "frames/idle.png",
+    "frames/stride.png",
+    "frames/anticipation.png",
+    "frames/impact.png",
+    "frames/recover.png",
+    "frames/cast.png",
+    "frames/critical.png",
+    "frames/fall.png",
+    "frames/death.png",
+    "parts/WingLeft.png",
+    "parts/WingRight.png",
+    "parts/Body.png",
+    "parts/projectile.png"
+  ],
+  "playback_metadata_only": true,
+  "animation_budget": {
+    "max_bytes": 65536,
+    "max_keys": 1200,
+    "max_cycle_seconds": 2
+  }
+}

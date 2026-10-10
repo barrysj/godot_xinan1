@@ -12,6 +12,7 @@ duration = 4
 script = ExtResource("s")
 id = "lens"
 display_name = "调试镜片"
-description = "佩戴者每场首次技能生效后暴露漏洞。战前可转移，每人一件。"
+description = "佩戴者每场首次有效普攻挂6秒漏洞。"
 category = "装备"
-effects = Array[ExtResource("p")]([SubResource("p0")])
+
+reward_chain = "analysis"

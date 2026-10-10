@@ -5,7 +5,12 @@ const RunModel = preload("res://game/run/short_run.gd")
 const ProgressModel = preload("res://game/meta/campus_progress.gd")
 var run = RunModel.new()
 var progress = ProgressModel.new()
-var screen = "base"
+var screen = "base":
+	set(value):
+		if screen == value: return
+		screen = value
+		if value != "battle" and is_instance_valid(pause_overlay) and not pause_overlay.visible: paused = false
+		_sync_battle_page_visibility()
 var chosen_node = 0
 var report: Array[Dictionary] = []
 var notice = ""
@@ -15,6 +20,9 @@ var is_test = false
 
 func _gear_inventory() -> Dictionary:
 	return run.inventory
+
+func _can_equip_item(id: String, role: int) -> bool:
+	return run.can_equip_gear(id,role)
 
 func _equip_item(id: String, role: int) -> bool:
 	if phase != "prepare" or screen != "battle" or not run.equip_gear(id, role): return false
@@ -95,19 +103,31 @@ func _build_units() -> void:
 			u.hp = u.max_hp
 			u.atk = roundf(u.atk * run.node.power)
 
+func _gear_definition(id: String):
+	return run.gear_definition(id) if run != null else super._gear_definition(id)
+
 func _ally_unit(role: int, slot: int) -> Dictionary:
-	var unit = super._ally_unit(role, slot)
+	var unit = _from_definition(Content.character(role),role,0,slot) if run != null and run.growth_rules >= 2 else super._ally_unit(role,slot)
 	if run == null: return unit
-	var levels = int(run.training.get(role, 0))
-	unit.max_hp += levels * 50
-	unit.atk += levels * 5
+	if run.growth_rules >= 2:
+		var definition = RunModel.Rewards.find_combat("training")
+		var count: int = run.training_count(role)
+		unit.max_hp = roundf(unit.max_hp * (1.0+(definition.health_multiplier-1.0)*count))
+		unit.atk = roundf(unit.atk * (1.0+(definition.attack_multiplier-1.0)*count))
+	else:
+		var levels = int(run.training.get(role,0))
+		unit.max_hp += levels * 50
+		unit.atk += levels * 5
 	for id in run.inventory:
-		if id != "shoe" and run.inventory[id] == role:
-			RunModel.Content.gear(id).apply(unit)
-	for reward in run.combat_rewards:
-		if reward.target == "training" and reward.get("owner", "") == RunModel.Content.role_id(role):
-			unit.max_hp = roundf(unit.max_hp * 1.15)
-			unit.atk = roundf(unit.atk * 1.15)
+		if run.inventory[id] == role and (run.growth_rules >= 2 or id != "shoe"):
+			_gear_definition(id).apply(unit)
+	if run.growth_rules < 2:
+		for reward in run.combat_rewards:
+			if reward.target == "training" and reward.get("owner", "") == RunModel.Content.role_id(role):
+				var definition = RunModel.Rewards.find_combat(reward.target)
+				if definition != null:
+					unit.max_hp = roundf(unit.max_hp * definition.health_multiplier)
+					unit.atk = roundf(unit.atk * definition.attack_multiplier)
 	unit.hp = unit.max_hp
 	return unit
 
@@ -163,6 +183,13 @@ func _choose_reward(index: int) -> void:
 		return
 	if not run.take_reward(offers[index].id): return
 	notice = "已获得「" + offers[index].title + "」。可以继续选择路线。"
+	run.complete_node()
+	chosen_node = 0
+	screen = "map"
+
+func _skip_exhausted_reward() -> void:
+	if screen != "reward" or not run.skip_exhausted_reward(): return
+	notice = "合法奖励已领满；本次整备完成。"
 	run.complete_node()
 	chosen_node = 0
 	screen = "map"
@@ -346,8 +373,12 @@ func _choose_event(index: int) -> void:
 		chosen_node = 0
 
 func _draw_rewards() -> void:
-	_header("带上新的可能", "从三份奖励中选择一份。本次选择会保留到探索结束。")
+	_header("带上新的可能", "选择一份合法奖励。本次选择会保留到探索结束。")
 	var offers = run.offers()
+	if offers.is_empty():
+		_paragraph(Vector2(206,300), "当前没有适用的新奖励。\n现有构筑与库存保留，可以继续探索。", PAPER,24)
+		_flow_button(Rect2(405,493,470,52),"继续")
+		return
 	for i in range(offers.size()):
 		var x = 58 + i * 409
 		_pixel_panel(Rect2(x, 174, 346, 391), PAPER)
@@ -386,11 +417,11 @@ func _draw_reward_owner() -> void:
 		var role: int = run.roster[i]
 		var x := 90.0 + float(i % 3) * 380.0
 		var y := 190.0 + float(i / 3) * 170.0
-		var available: bool = run.pending_reward_offer.target not in ["lens", "backup"] or run.combat_gear_available(role)
+		var available: bool = run.reward_owner_available(run.pending_reward_offer.target,role)
 		_pixel_panel(Rect2(x,y,320,130),PAPER)
 		draw_texture_rect(Content.character(role).portrait,Rect2(x+20,y+18,80,90),false)
 		_center(Vector2(x+205,y+58),Content.character(role).display_name,DARK,23)
-		_flow_button(Rect2(x+110,y+76,180,42),"选择" if available else "装备已满",available)
+		_flow_button(Rect2(x+110,y+76,180,42),"选择",available)
 	_flow_button(Rect2(956,582,266,64),"返回奖励")
 
 func _book_icon(p: Vector2, width: float) -> void:
@@ -431,6 +462,9 @@ func _draw_summary() -> void:
 	_flow_button(Rect2(936, 582, 306, 69), "返回基地" if progress.error_message.is_empty() else "重试保存")
 
 func _gui_input(event: InputEvent) -> void:
+	if paused and screen == "battle":
+		super._gui_input(event)
+		return
 	if paused or leaving:
 		return
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
@@ -459,6 +493,7 @@ func _gui_input(event: InputEvent) -> void:
 			for i in range(run.current_event().get("options",[]).size()):
 				if Rect2(204,332+i*76,535,54).has_point(p): _choose_event(i)
 		"reward":
+			if run.rewards_exhausted and run.offers().is_empty() and Rect2(405,493,470,52).has_point(p): _skip_exhausted_reward()
 			for i in range(run.offers().size()):
 				if Rect2(84 + i * 409, 493, 294, 52).has_point(p):
 					_choose_reward(i)
@@ -574,8 +609,8 @@ func _run_smoke() -> void:
 	_test_click(_action_rect(0).get_center())
 	assert(phase == "battle")
 	_test_click(Vector2(1187, 46))
-	assert(paused and pause_overlay.visible)
-	pause_actions.get_child(0).pressed.emit()
+	assert(paused and not pause_overlay.visible)
+	_test_click(_action_rect(0).get_center())
 	assert(not paused)
 	while screen == "battle": _process(1.0 / 30.0)
 	assert(result_won)

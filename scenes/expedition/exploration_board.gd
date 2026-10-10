@@ -1,5 +1,5 @@
 extends Control
-## Library exploration board with a configurable approved environment background.
+## Shared location exploration with approved backgrounds and hotspot controls.
 
 signal picked(index: int)
 signal layout_changed
@@ -29,6 +29,8 @@ var selected := -1
 var environment_state: String = DEFAULT_ENVIRONMENT_STATE
 var environment_viewpoint: String = DEFAULT_ENVIRONMENT_VIEWPOINT
 var environment_texture: Texture2D
+var environment_path := ""
+var location_title := "图书馆"
 var buttons: Array[Button] = []
 
 func _ready() -> void:
@@ -47,7 +49,20 @@ func set_environment_variant(state: String, viewpoint: String) -> bool:
 		return false
 	environment_state = state
 	environment_viewpoint = viewpoint
+	environment_path = path
+	location_title = "图书馆"
 	environment_texture = ExplorationSkin.texture(path)
+	queue_redraw()
+	return true
+
+func set_campus_environment(path: String, title: String, state: String = "anomaly") -> bool:
+	if path.is_empty() or not ResourceLoader.exists(path): return false
+	environment_texture = ExplorationSkin.texture(path)
+	if environment_texture == null: return false
+	environment_path = path
+	environment_state = state
+	environment_viewpoint = "campus"
+	location_title = title
 	queue_redraw()
 	return true
 
@@ -55,7 +70,7 @@ func environment_variant() -> Dictionary:
 	return {
 		"state": environment_state,
 		"viewpoint": environment_viewpoint,
-		"path": ExplorationSkin.library_environment_path(environment_state, environment_viewpoint),
+		"path": environment_path if not environment_path.is_empty() else ExplorationSkin.library_environment_path(environment_state, environment_viewpoint),
 	}
 
 func _load_environment_texture() -> void:
@@ -71,6 +86,7 @@ func _build() -> void:
 		var spot: Dictionary = journey.visit.data.hotspots[i]
 		var item := Hotspot.new()
 		item.kind = spot.kind
+		item.tooltip_text = {"battle":"封锁守卫", "memory":"校园记忆", "person":"同行伙伴", "system":"记忆终端线索"}[spot.kind]
 		item.artwork = ExplorationSkin.texture(ART[spot.kind])
 		item.completed = _completed(spot)
 		item.set_motion_index(i)
@@ -158,16 +174,16 @@ func _draw() -> void:
 	for segment in [Rect2(size.x * 0.02, size.y * 0.22, 86, 4), Rect2(size.x * 0.88, size.y * 0.25, 110, 4), Rect2(size.x * 0.04, size.y * 0.84, 72, 3)]:
 		draw_rect(segment, Color(0.35, 0.16, 0.95, 0.34))
 		draw_rect(Rect2(segment.position + Vector2(18, 7), Vector2(segment.size.x * 0.55, 2)), Color(0.0, 0.94, 1.0, 0.28))
-	var title_panel := Rect2(20, 18, 300, 70)
+	var title_panel := Rect2(20, 18, maxf(300,FONT.get_string_size(location_title,HORIZONTAL_ALIGNMENT_LEFT,-1,25).x+32), 70)
 	draw_rect(title_panel, Color(0.025, 0.04, 0.08, 0.90))
 	draw_line(title_panel.position, title_panel.position + Vector2(34, 0), CYAN, 2)
-	draw_string(FONT, title_panel.position + Vector2(16, 29), "图书馆", HORIZONTAL_ALIGNMENT_LEFT, -1, 25, INK)
+	draw_string(FONT, title_panel.position + Vector2(16, 29), location_title, HORIZONTAL_ALIGNMENT_LEFT, -1, 25, INK)
 	var step := int(journey.data.get("step", 0)) + 1
 	draw_string(FONT, title_panel.position + Vector2(16, 55), "探索 · 第 %d / 4 站" % step, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("b7c9d7"))
 	var signal_panel := Rect2(size.x - 190, 18, 170, 42)
 	draw_rect(signal_panel, Color(0.025, 0.04, 0.08, 0.88))
 	draw_line(signal_panel.position + Vector2(12, 21), signal_panel.position + Vector2(38, 21), MAGENTA, 2)
-	draw_string(FONT, signal_panel.position + Vector2(50, 27), "信号干扰", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, INK)
+	draw_string(FONT, signal_panel.position + Vector2(50, 27), "信号干扰" if environment_state == "anomaly" else "信号稳定", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, INK)
 	var footer := "出口已开放 · 可以离开或继续调查" if journey.visit.can_leave() else "出口封锁 · 战胜守卫并领取奖励"
 	var footer_width := 380.0 if journey.visit.can_leave() else 350.0
 	draw_rect(Rect2(20, size.y - 58, footer_width, 38), Color(0.025, 0.04, 0.08, 0.92))

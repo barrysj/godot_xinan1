@@ -12,6 +12,22 @@ extends Resource
 @export_range(0, 1000) var attack_bonus: int = 0
 @export_range(0.1, 3.0, 0.01) var interval_multiplier: float = 1.0
 
+@export_group("新局成长预算")
+## Negative values inherit the original budget; old active runs retain the original fields.
+@export var balanced_health_bonus: int = -1
+@export var balanced_attack_bonus: int = -1
+@export var balanced_interval_multiplier: float = -1.0
+@export_multiline var balanced_description: String = ""
+
+func for_rules(version: int) -> CampusEquipment:
+	if version < 2: return self
+	var resolved: CampusEquipment = duplicate()
+	if balanced_health_bonus >= 0: resolved.health_bonus = balanced_health_bonus
+	if balanced_attack_bonus >= 0: resolved.attack_bonus = balanced_attack_bonus
+	if balanced_interval_multiplier >= 0: resolved.interval_multiplier = balanced_interval_multiplier
+	if not balanced_description.is_empty(): resolved.description = balanced_description
+	return resolved
+
 func apply(unit: Dictionary) -> void:
 	unit.max_hp += health_bonus
 	unit.atk += attack_bonus

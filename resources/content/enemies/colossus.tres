@@ -1,18 +1,22 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/content/skills/inventor.tres" id="skill"]
-[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_colossus.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/idle.png" id="atlas"]
+[ext_resource type="Resource" path="res://assets/art/characters/great_volume_boss/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
-region = Rect2(64, 144, 16, 16)
+region = Rect2(0, 0, 640, 640)
 [resource]
 script = ExtResource("s")
 id = "colossus"
-display_name = "粉笔巨像"
-description = "粉笔巨像：对射程内目标同排敌人造成72点伤害。"
+display_name = "馆藏巨典"
+description = "9秒起锁定位置并预警3秒，对半径2格造成75伤害；每10秒重复。"
 portrait = SubResource("portrait")
-health = 680
-attack = 38
-interval = 2.0
+battle_animation = ExtResource("battle_animation")
+health = 1400
+attack = 34
+interval = 2
 defense = 20
 skill = ExtResource("skill")
+
+attack_range = 1.45

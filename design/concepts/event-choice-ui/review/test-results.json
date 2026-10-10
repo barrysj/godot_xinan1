@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-08",
+  "baseline": "51c4118 + art/event-choice-ui worktree",
+  "engine": "Godot 4.7.2 Compatibility",
+  "shell": "PowerShell 7",
+  "checks": {
+    "choice_gui": [
+      197,
+      0
+    ],
+    "choice_headless_final": [
+      107,
+      0
+    ],
+    "core_gui": [
+      54,
+      0
+    ],
+    "campaign_headless": [
+      149,
+      0
+    ],
+    "campaign_gui": [
+      150,
+      0
+    ],
+    "item_reward": [
+      69,
+      0
+    ],
+    "reward_slots": [
+      22,
+      0
+    ],
+    "reward_eligibility": [
+      23,
+      0
+    ],
+    "screen_cleanup": [
+      64,
+      0
+    ],
+    "campus_playthrough": [
+      61,
+      0
+    ],
+    "debug": [
+      75,
+      0
+    ]
+  },
+  "screen_sizes": [
+    [
+      1920,
+      1080
+    ],
+    [
+      2560,
+      1440
+    ],
+    [
+      1920,
+      1200
+    ]
+  ],
+  "boundaries": [
+    "Desktop native only; no mobile, gamepad or exported Web validation",
+    "Choice fixtures set battle gates explicitly; complete campaign test separately advances actual simulation",
+    "Random frozen rewards may change optional owner-page assertion counts",
+    "Visual status remains review; task authorizes direct generation and integration"
+  ],
+  "repeat_commands_document": "docs/implementation/verification.md",
+  "log_files": [
+    ".godot/choice-delivery-gui.log",
+    ".godot/choice-exhausted-final.log",
+    ".godot/choice-core-delivery.log",
+    ".godot/choice-delivery-campaign.log",
+    ".godot/choice-campaign-gui.log",
+    ".godot/debug-mode.log"
+  ]
+}

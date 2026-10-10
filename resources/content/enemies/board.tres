@@ -1,20 +1,22 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/content/skills/inventor.tres" id="skill"]
-[ext_resource type="Texture2D" path="res://assets/pixel/kenney/tiny-dungeon.png" id="atlas"]
+[ext_resource type="Resource" path="res://resources/content/skills/enemy_board.tres" id="skill"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/projector/frames/idle.png" id="atlas"]
+[ext_resource type="Resource" path="res://assets/art/characters/projector/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
-region = Rect2(64, 144, 16, 16)
+region = Rect2(0, 0, 640, 640)
 [resource]
 script = ExtResource("s")
 id = "board"
-display_name = "错位黑板"
-description = "错位黑板：对射程内目标同排敌人造成72点伤害。"
+display_name = "投影独眼灵"
+description = "9秒起预警3秒，对人数最多的横排造成65伤害；每10秒重复。"
 portrait = SubResource("portrait")
-health = 680
-attack = 38
-interval = 2.0
-defense = 20
+battle_animation = ExtResource("battle_animation")
+health = 1000
+attack = 30
+interval = 2
+defense = 15
 skill = ExtResource("skill")
 
-attack_range = 3.2
+attack_range = 3.5

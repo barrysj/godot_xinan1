@@ -24,13 +24,18 @@ func _ready() -> void:
 	var roster: Array[int] = [0,1,2,3]
 	game.run.roster = roster
 	game.screen = "battle"
-	for id in ["disconnect","redirect","repair","takeover"]:
+	for id in ["disconnect","redirect","repair"]:
 		game.run.code_programs = [id,"repair" if id != "repair" else "disconnect"]
 		game._build_units()
 		game._start()
 		for tick in range(40): game._tick()
 		for actor in game.units:
 			if actor.side == 0: actor.hp = actor.max_hp*0.45
+		if id == "disconnect":
+			var allies: Array = game.units.filter(func(u): return u.side == 0)
+			var foes: Array = game.units.filter(func(u): return u.side == 1)
+			game.simulation._place_scan(allies[0],foes[0])
+			game.simulation._verify(allies[1],foes[0])
 		for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
 		var panel = game.code_panel
 		panel._process(0)
@@ -57,7 +62,7 @@ func _ready() -> void:
 		verify(programs.size() == 1,"one program event creates one burst")
 		if programs.is_empty(): continue
 		var burst: Dictionary = programs[0]
-		verify(burst.targets.size() == 2 if id == "repair" else burst.targets.is_empty(),"only actual immediate effects attach to actors")
+		verify(burst.targets.size() == (game.units.filter(func(u): return u.side == 0 and u.hp > 0).size() if id == "redirect" else 1),"only actual immediate effects attach to actors")
 		var old_age: float = burst.age
 		game.paused = true
 		fx._process(0.05)
@@ -69,10 +74,10 @@ func _ready() -> void:
 		verify(burst.age > old_age,"resumed game advances burst")
 		verify(game.units.map(func(u): return u.hp) == before_hp and game.simulation.blocks == before_blocks,"visual advance does not mutate combat health or currency")
 		if "--capture" in OS.get_cmdline_user_args():
-			await capture(game,fx,id,Vector2i(1920,1080))
-			if id == "takeover":
-				await capture(game,fx,id,Vector2i(2560,1440))
-				await capture(game,fx,id,Vector2i(1920,1200))
+			burst.age = burst.duration*0.35
+			for resolution in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+				await capture(game,fx,id,resolution)
+			if id == "redirect":
 				fx.reduced_motion = true
 				await capture(game,fx,"reduced",Vector2i(1920,1080))
 				fx.reduced_motion = false

@@ -68,7 +68,7 @@ func _after_impact_batch(due: Array[Dictionary]) -> void:
 			_dispatch("half_health", actor)
 	# Periodic systems resolve after the impact batch, before new action requests.
 	if _living(0).is_empty() or _living(1).is_empty() or elapsed >= 90: return
-	while elapsed + EPSILON >= next_pulse:
+	while pulse_interval > 0 and elapsed + EPSILON >= next_pulse:
 		next_pulse += pulse_interval
 		_maintenance_pulse()
 
@@ -180,9 +180,11 @@ func _pierce(actor: Dictionary, context: Dictionary, scale: float) -> bool:
 		var e: Dictionary = due[i]
 		if e.kind != "damage": continue
 		var direction: Vector2 = actor.position.direction_to(e.target.position)
+		if direction.is_zero_approx(): return false
 		var candidates := _living(1 - actor.side).filter(func(foe):
-			var offset: Vector2 = foe.position - actor.position
-			return foe.id != e.target.id and offset.dot(direction) > 0 and absf(offset.cross(direction)) <= 0.65 and AutoBattle.in_range(actor, foe))
+			var offset: Vector2 = foe.position - e.target.position
+			var behind := offset.dot(direction)
+			return foe.id != e.target.id and behind > EPSILON and behind <= 1.5 + EPSILON and absf(offset.cross(direction)) <= 0.35 + EPSILON and AutoBattle.in_range(actor, foe))
 		if candidates.is_empty(): return false
 		_event(due, actor, _target(actor, candidates), "damage", e.value * scale, true)
 		due[-1].synergy_skill = true

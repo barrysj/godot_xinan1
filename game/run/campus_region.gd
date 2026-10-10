@@ -1,17 +1,17 @@
 extends RefCounted
-## Logical placeholder geography; shared place IDs are not a real campus map.
+## Existing hotspot templates; physical places and route stops are separate resources.
 const PLACES = {
 	"gate":"校门", "walk":"步道", "court":"球场",
 	"hall":"走廊", "library":"图书馆", "end_b":"第二终端",
 	"end_c":"第三终端"}
-const MAPS = {
-	"library":[["gate"],["walk","court"],["hall"],["library"]],
-	"region_b":[["gate"],["hall","walk"],["court"],["end_b"]],
-	"region_c":[["gate"],["court","hall"],["walk"],["end_c"]]}
-const NAMES = {"library":"图书馆区域", "region_b":"第二终端路线", "region_c":"第三终端路线"}
+const Catalog = preload("res://game/run/campus_flow_catalog.gd")
+const IDS = ["library","region_b","region_c"]
 
 static func map_for(region: String) -> Array:
-	return MAPS.get(region, []).duplicate(true)
+	return Catalog.snapshot(region).get("layers",[]).duplicate(true)
+
+static func flow_for(region: String) -> Dictionary:
+	return Catalog.snapshot(region)
 
 static func hotspots(place: String, level: int, recorded: Array, seed_value: int) -> Array:
 	var rng = RandomNumberGenerator.new()
