@@ -557,24 +557,7 @@ def write_cards(folder,config):
             'game':{'genre':'SLG战棋','camera':'2.5D侧视','exaggeration':3},'tech':{'directions':['E'],'frames_per_dir':16,'frame_rate':12},
             'approved_reference_exception':'2026-10-07负责人允许已批准概念板替代三视图，单视角连续制作'}
     dump(folder/'action-input.json',inputs)
-    markdown=['# '+config['name']+'动作设计清单','',
-              '身份依据：'+config['concept']+'；单视角替代三视图经负责人2026-10-07确认。',
-              '游戏：现有自动战斗，沿用战棋动作包。预算：七种动作，骨骼连续运动与序列帧混合。',
-              '动作签名：'+config['signature'],'',
-              '| 动作 | 循环 | 设计采样 | 出手点 | 后续衔接 |',
-              '| --- | --- | --- | --- | --- |']
-    for wrapper in cards:
-        card=wrapper['action_card_v2'];action=card['action_id']
-        markdown.append('| '+action+' | '+card['loop_policy']+' | 16 | '+('8（运行释放0.45）' if action in [config['mode'],'cast'] else '—')+' | '+('末姿冻结，恢复生命由原表现层重置' if action=='death' else '原表现层返回idle／move／critical')+' |')
-    markdown += ['', '## 动作卡','']
-    for wrapper in cards:
-        markdown += ['### '+wrapper['action_card_v2']['action_id'],'','```json',json.dumps(wrapper,ensure_ascii=False,indent=2),'```','']
-    markdown += ['## 下游与衔接','',
-                '本轮仅朝右概念视角；朝左由已有引擎显示变换处理，未生产背面或八方向。',
-                'F1/F4/F8/F12/F16用于约束动作节奏，连续骨骼不等于16张PNG。16→1闭环检查以实际Godot GIF为依据。',
-                '攻击和施法由模拟动作锁定，受击不抢占；死亡打断，末帧停留；恢复生命回到现有静止状态。',
-                '远程F8表示发射，命中由模拟弹道抵达时决定；没有另建战斗状态机。','']
-    (folder/'action-design.md').write_text('\n'.join(markdown),encoding='utf-8')
+    # action-cards.json is the machine contract; domain design lives in docs/art/enemies/cast.md.
     # Execute the skill's original validate(data) and constants without its
     # optional YAML file front-end: inputs are already structured JSON.
     source=Path('C:/Users/SongJun/.codex/skills/character-action-design/scripts/validate_input.py')

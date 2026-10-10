@@ -11,10 +11,9 @@ variants:
     selection: "selected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/m1-player-cast-animation.md"
+      source: "docs/art/characters/player-cast.md"
       date: "2026-10-01"
       decision: "approved_retained_character_resources"
-      quote: "除了注释1的应援者动画，其他的概念、动画都登记为正式资源"
     root: "design/concepts/characters/guard/concept_001"
     files:
       identity_reference: "m1_guard_identity_reference_001.png"
@@ -143,20 +142,18 @@ variants:
       usage: ["battle", "deployment", "motion_preview"]
       numbering_correction: "2026-10-10 explicit owner instruction; contents and historical approval unchanged."
     approval_evidence:
-      source: "docs/art/tasks/m1-player-cast-animation.md"
+      source: "docs/art/characters/player-cast.md"
       date: "2026-10-01"
       decision: "approved_retained_character_resources"
-      quote: "除了注释1的应援者动画，其他的概念、动画都登记为正式资源"
   asset_002:
     stage: "asset"
     version: "002"
     selection: "selected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/m1-player-cast-animation.md"
+      source: "docs/art/characters/player-cast.md"
       date: "2026-10-10"
       decision: "approved_final_animation_and_integration"
-      quote: "可以了，全部提升到正式资源，只保留最新的版本，不保留中间过程。"
     root: "design/concepts/characters/guard/asset_002"
     files:
       frames_cast_00_png: "frames/cast_00.png"

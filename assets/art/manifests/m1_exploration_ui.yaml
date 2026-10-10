@@ -1,259 +1,159 @@
 schema_version: 3
 object:
-  id: m1_exploration_ui
+  id: "m1_exploration_ui"
   display_name: "M1 探索 UI · 图书馆布局概念"
-  type: ui
-  subtype: exploration_layout
+  type: "ui"
+  subtype: "exploration_layout"
 variants:
-  concept_001:
-    stage: concept
-    version: 001
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/001
-    files:
-      concept: library-exploration-layout.svg
-      review: review.png
-    metadata:
-      asset_type: ui_layout_concept
-      resolution: [1600, 900]
-      usage: [campaign_location, concept_review]
-      scene_reference: pending_user_provided_library_material
-      hotspot_count: 4
-      expanded_detail_count: 1
-      implementation_note: native_components_or_vector_only
-  concept_002:
-    stage: concept
-    version: 002
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/002
-    files:
-      concept: library-exploration-layout.svg
-      review: review.png
-    metadata:
-      resolution: [1600, 900]
-      style_layer: anomaly
-      hotspot_count: 4
-      expanded_detail_count: 1
-      implementation_note: native_components_or_vector_only
   concept_003:
-    stage: concept
-    version: 003
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/003
+    stage: "concept"
+    version: "003"
+    selection: "unselected"
+    approval: "pending"
+    root: "design/concepts/ui/exploration/m1_exploration_ui/concept_003"
     files:
-      concept: review-default.png
-      detail: review-detail.png
-      background_study: background-study.png
-      overlay_default: overlay-default.svg
-      overlay_detail: overlay-detail.svg
+      concept: "review-default.png"
+      detail: "review-detail.png"
+      background_study: "background-study.png"
+      overlay_default: "overlay-default.svg"
+      overlay_detail: "overlay-detail.svg"
     metadata:
       resolution: [1600, 900]
-      style_layer: anomaly
+      style_layer: "anomaly"
       hotspot_count: 4
-      detail_mode: click_popup
-      implementation_note: review_composite_only_native_ui_for_production
+      detail_mode: "click_popup"
+      implementation_note: "review_composite_only_native_ui_for_production"
   concept_004:
-    stage: concept
-    version: 004
-    selection: selected
-    approval: approved
+    stage: "concept"
+    version: "004"
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-exploration-ui.md
-      date: 2026-09-17
-      decision: approved
-      commit: cac5703
-      quote: "004 的视觉方向、布局与状态设计通过；正式组件、交互及多分辨率效果在后续运行验收"
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/004
+      source: "docs/art/ui/exploration.md"
+      date: "2026-09-17"
+      decision: "approved"
+      commit: "cac5703"
+    root: "design/concepts/ui/exploration/m1_exploration_ui/concept_004"
     files:
-      concept: review-detail.png
-      default: review-default.png
-      focus: review-focus.png
-      complete: review-complete.png
-      overlay_default: overlay-default.svg
-      overlay_focus: overlay-focus.svg
-      overlay_detail: overlay-detail.svg
-      overlay_complete: overlay-complete.svg
+      concept: "review-detail.png"
+      default: "review-default.png"
+      focus: "review-focus.png"
+      complete: "review-complete.png"
+      overlay_default: "overlay-default.svg"
+      overlay_focus: "overlay-focus.svg"
+      overlay_detail: "overlay-detail.svg"
+      overlay_complete: "overlay-complete.svg"
     metadata:
       resolution: [1600, 900]
-      style_layer: anomaly
-      detail_mode: click_popup
-      implementation_note: static_state_studies_not_runtime
+      style_layer: "anomaly"
+      detail_mode: "click_popup"
+      implementation_note: "static_state_studies_not_runtime"
   asset_005:
-    stage: asset
-    version: 005
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/005
+    stage: "asset"
+    version: "005"
+    selection: "unselected"
+    approval: "pending"
+    root: "design/concepts/ui/exploration/m1_exploration_ui/asset_005"
     files:
-      scene: preview.tscn
-      controller: preview.gd
-      hotspot: hotspot.gd
-      detail_panel: detail_panel.gd
-      source_notes: generation.md
+      scene: "preview.tscn"
+      controller: "preview.gd"
+      hotspot: "hotspot.gd"
+      detail_panel: "detail_panel.gd"
+      source_notes: "generation.md"
     metadata:
-      implementation_note: isolated_native_component_candidate_not_campaign_integration
-      concept_basis: concept_004
+      implementation_note: "isolated_native_component_candidate_not_campaign_integration"
+      concept_basis: "concept_004"
   asset_006:
-    stage: asset
-    version: 006
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/006
+    stage: "asset"
+    version: "006"
+    selection: "unselected"
+    approval: "pending"
+    root: "design/concepts/ui/exploration/m1_exploration_ui/asset_006"
     files:
-      panel: panel.png
-      button: button.png
-      memory: memory.png
-      character: character.png
-      terminal: terminal.png
-      guardian: guardian.png
-      source_notes: generation.md
+      panel: "panel.png"
+      button: "button.png"
+      memory: "memory.png"
+      character: "character.png"
+      terminal: "terminal.png"
+      guardian: "guardian.png"
+      source_notes: "generation.md"
     metadata:
-      implementation_note: imagegen_rgba_base_skins_pending_runtime_and_state_validation
-      concept_basis: concept_004
-  asset_007:
-    stage: asset
-    version: 007
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/007
-    files:
-      character: character.png
-      guardian: guardian.png
-      source_notes: generation.md
-    metadata:
-      implementation_note: partial_revision_two_icons_only_not_integrated
-      concept_basis: concept_004
-  asset_009:
-    stage: asset
-    version: 009
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/009
-    files:
-      memory: memory.png
-      character: character.png
-      terminal: terminal.png
-      guardian: guardian.png
-      source_notes: generation.md
-    metadata:
-      implementation_note: asymmetric_free_silhouette_hotspots_pending_runtime_validation
-      concept_basis: concept_004
-  asset_010:
-    stage: asset
-    version: 010
-    selection: unselected
-    approval: approved
-    approval_evidence:
-      source: docs/art/tasks/m1-exploration-ui.md
-      date: 2026-09-17
-      decision: approved
-      commit: 1777315
-      quote: "‘校园记忆’我更喜欢这一张，提升为资产。之后在游戏内预览"
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/010
-    files:
-      memory: memory.png
-      source_notes: generation.md
-    metadata:
-      implementation_note: approved_memory_hotspot_only_other_009_icons_remain_pending
-      concept_basis: concept_004
+      implementation_note: "imagegen_rgba_base_skins_pending_runtime_and_state_validation"
+      concept_basis: "concept_004"
   asset_011:
-    stage: asset
-    version: 011
-    selection: unselected
-    approval: approved
+    stage: "asset"
+    version: "011"
+    selection: "unselected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-exploration-ui.md
-      date: 2026-09-17
-      decision: approved
-      commit: 9bef750
-      quote: "好，纳入正式资产吧"
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/011
+      source: "docs/art/ui/exploration.md"
+      date: "2026-09-17"
+      decision: "approved"
+      commit: "9bef750"
+    root: "design/concepts/ui/exploration/m1_exploration_ui/asset_011"
     files:
-      panel: panel.png
-      button: button.png
-      memory: memory.png
-      character: character.png
-      terminal: terminal.png
-      guardian: guardian.png
-      scene: preview.tscn
-      controller: preview.gd
-      hotspot: hotspot.gd
-      source_notes: generation.md
+      panel: "panel.png"
+      button: "button.png"
+      memory: "memory.png"
+      character: "character.png"
+      terminal: "terminal.png"
+      guardian: "guardian.png"
+      scene: "preview.tscn"
+      controller: "preview.gd"
+      hotspot: "hotspot.gd"
+      source_notes: "generation.md"
     previews:
       godot:
-        scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/011/preview.tscn
+        scene: "res://design/concepts/ui/exploration/m1_exploration_ui/asset_011/preview.tscn"
     metadata:
-      implementation_note: approved_six_image_ui_asset_package_with_runtime_review
-      concept_basis: concept_004
+      implementation_note: "approved_six_image_ui_asset_package_with_runtime_review"
+      concept_basis: "concept_004"
     integration_authorization:
-      source: docs/art/tasks/m1-exploration-ui.md
+      source: "docs/art/ui/exploration.md"
       scope: "正式 M1 图书馆探索页技术接入；运行效果待人工验收"
-      date: 2026-09-18
+      date: "2026-09-18"
   asset_012:
-    stage: asset
-    version: 012
-    selection: selected
-    approval: approved
+    stage: "asset"
+    version: "012"
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-exploration-ui.md
-      date: 2026-09-18
-      decision: approved
-      commit: acc731d
-      quote: "这版可以。提升为正式资产。"
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui
+      source: "docs/art/ui/exploration.md"
+      date: "2026-09-18"
+      decision: "approved"
+      commit: "acc731d"
+    root: "design/concepts/ui/exploration/m1_exploration_ui"
     files:
-      panel: 012/panel.png
-      button: 012/button.png
-      panel_source: 012/panel-source.png
-      button_source: 012/button-source.png
-      memory: 011/memory.png
-      character: 011/character.png
-      terminal: 011/terminal.png
-      guardian: 011/guardian.png
-      scene: 012/preview.tscn
-      controller: 012/preview.gd
-      source_notes: 012/generation.md
+      panel: "asset_012/panel.png"
+      button: "asset_012/button.png"
+      panel_source: "asset_012/panel-source.png"
+      button_source: "asset_012/button-source.png"
+      memory: "asset_011/memory.png"
+      character: "asset_011/character.png"
+      terminal: "asset_011/terminal.png"
+      guardian: "asset_011/guardian.png"
+      scene: "asset_012/preview.tscn"
+      controller: "asset_012/preview.gd"
+      source_notes: "asset_012/generation.md"
     previews:
       godot:
-        scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/012/preview.tscn
+        scene: "res://design/concepts/ui/exploration/m1_exploration_ui/asset_012/preview.tscn"
     metadata:
-      implementation_note: approved_panel_and_button_revision_with_approved_011_hotspot_icons
-      concept_basis: concept_004
+      implementation_note: "approved_panel_and_button_revision_with_approved_011_hotspot_icons"
+      concept_basis: "concept_004"
     integration_authorization:
-      source: docs/art/tasks/m1-exploration-ui.md
+      source: "docs/art/ui/exploration.md"
       scope: "替换正式浮窗与按钮；四枚热点图标继续使用 011；使用 NinePatch 并移除规则白色焦点框"
-      date: 2026-09-18
-  asset_013:
-    stage: asset
-    version: 013
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-exploration-ui/m1_exploration_ui/013
-    files:
-      interaction_strip: interaction-strip.png
-      interaction_strip_source: interaction-strip-source.png
-      scene: preview.tscn
-      controller: preview.gd
-      source_notes: generation.md
-    previews:
-      godot:
-        scene: res://design/concepts/m1-exploration-ui/m1_exploration_ui/013/preview.tscn
-    metadata:
-      implementation_note: reusable_textless_hotspot_affordance_candidate_with_focus_reveal
-      concept_basis: concept_004
-      review_outcome: requires_revision_do_not_promote
+      date: "2026-09-18"
 integration:
-  status: authorized_active
-  active_variant: asset_012
-  root: assets/art/ui/m1_exploration_ui
+  status: "authorized_active"
+  active_variant: "asset_012"
+  root: "assets/art/ui/m1_exploration_ui"
   files:
-    panel: panel.png
-    button: button.png
-    memory: memory.png
-    character: character.png
-    terminal: terminal.png
-    guardian: guardian.png
-  evidence: "docs/art/tasks/m1-exploration-ui.md；asset_012 面板与按钮、asset_011 四枚热点图标组成当前正式套件；013 条带不采用；热点已接入无文字、错相轻浮动和呼吸聚焦反馈。"
+    panel: "panel.png"
+    button: "button.png"
+    memory: "memory.png"
+    character: "character.png"
+    terminal: "terminal.png"
+    guardian: "guardian.png"
+  evidence: "docs/art/ui/exploration.md；asset_012 面板与按钮、asset_011 四枚热点图标组成当前正式套件；013 条带不采用；热点已接入无文字、错相轻浮动和呼吸聚焦反馈。"

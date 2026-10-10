@@ -40,10 +40,10 @@ variants:
     selection: selected
     approval: approved
     approval_evidence:
-      source: docs/art/tasks/sample.md
+      source: docs/art/characters/sample.md
       date: 2026-09-15
       decision: approved
-    root: design/concepts/sample/character/001
+    root: design/concepts/characters/sample/concept_001
     files:
       concept: concept.png
   asset_002:
@@ -51,12 +51,12 @@ variants:
     version: 002
     selection: selected
     approval: approved
-    root: design/concepts/sample/character/002
+    root: design/concepts/characters/sample/asset_002
     files:
       locomotion_sheet: locomotion_sheet.png
       frame_metadata: animation.frames.json
       gif_idle: review/idle.gif
-    resource: design/concepts/sample/character/002/animation.tres
+    resource: design/concepts/characters/sample/asset_002/animation.tres
     animation:
       frames: frame_metadata
     previews:
@@ -64,7 +64,7 @@ variants:
         idle: gif_idle
       godot:
         unit: res://resources/content/characters/sample.tres
-        animation: res://design/concepts/sample/character/002/animation.tres
+        animation: res://design/concepts/characters/sample/asset_002/animation.tres
 relationships:
   projectile: sample_projectile
 integration:
@@ -75,7 +75,7 @@ integration:
   files:
     locomotion_sheet: locomotion_sheet.png
   resource: resources/content/animations/sample.tres
-  evidence: docs/art/tasks/sample.md
+  evidence: docs/art/characters/sample.md
 ```
 
 规则很短：

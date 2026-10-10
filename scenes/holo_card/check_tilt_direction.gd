@@ -1,8 +1,8 @@
 extends Node
 ## Actual rendered silhouette test: the pointer-side edge must recede on both axes.
 const Card = preload("res://scenes/holo_card/holo_card_view.gd")
-const SAMPLE = preload("res://design/concepts/class-photo-holo-card/card/002/card.tres")
-const OUTPUT = "res://design/concepts/class-photo-holo-card/review/codex-workflow/tilt-direction"
+const SAMPLE = preload("res://design/concepts/props/holo-card-sample/card/asset_002/card.tres")
+const OUTPUT = "res://.godot/art-review/holo-card-sample/tilt-direction"
 var failures := 0
 var results: Array = []
 func _ready() -> void:

@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "status": "asset_candidate_review",
+  "source": "Authored native SVG geometry; no generated bitmap slicing or external icon source.",
+  "concept_reference": "design/concepts/ui/battle-status/hud-family/concept_001/styleboard.png",
+  "canvas": [
+    32,
+    32
+  ],
+  "safe_margin_px": 2,
+  "ink": "#F4F8FC",
+  "default_stroke_px": 2.5,
+  "minimum_review_display_px": 20,
+  "alpha": "Transparent; no background geometry. Raster alpha and small-size legibility to be checked by Godot review renderer.",
+  "import": {
+    "mipmaps": false,
+    "texture_filter": "linear",
+    "modulate": "Runtime semantic colors; source remains monochrome."
+  },
+  "semantic_reference": "scenes/battle_demo/code_resource_glyph.gd",
+  "icons": [
+    {
+      "id": "intent_attack",
+      "file": "intent_attack.svg",
+      "label": "近战攻击",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "intent_ranged",
+      "file": "intent_ranged.svg",
+      "label": "远程攻击",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "intent_area",
+      "file": "intent_area.svg",
+      "label": "范围技能",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "intent_shield",
+      "file": "intent_shield.svg",
+      "label": "护盾",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "intent_heal",
+      "file": "intent_heal.svg",
+      "label": "治疗",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "intent_charge",
+      "file": "intent_charge.svg",
+      "label": "施法蓄力",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "health",
+      "file": "health.svg",
+      "label": "生命",
+      "role": "status_intent",
+      "nine_slice": null
+    },
+    {
+      "id": "code_red",
+      "file": "code_red.svg",
+      "label": "红色代码：右箭",
+      "role": "code_identity",
+      "nine_slice": null
+    },
+    {
+      "id": "code_blue",
+      "file": "code_blue.svg",
+      "label": "蓝色代码：双括号",
+      "role": "code_identity",
+      "nine_slice": null
+    },
+    {
+      "id": "code_green",
+      "file": "code_green.svg",
+      "label": "绿色代码：链环",
+      "role": "code_identity",
+      "nine_slice": null
+    },
+    {
+      "id": "code_purple",
+      "file": "code_purple.svg",
+      "label": "紫色代码：钥匙",
+      "role": "code_identity",
+      "nine_slice": null
+    },
+    {
+      "id": "shield_badge",
+      "file": "intent_shield.svg",
+      "label": "剩余护盾徽标",
+      "alias_of": "intent_shield",
+      "nine_slice": null
+    }
+  ]
+}

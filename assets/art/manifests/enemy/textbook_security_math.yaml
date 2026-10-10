@@ -1,28 +1,27 @@
 schema_version: 3
 object:
-  id: textbook_security_math
+  id: "textbook_security_math"
   display_name: "信息安全数学"
-  type: character
-  subtype: enemy
+  type: "character"
+  subtype: "enemy"
 variants:
   concept_001:
-    stage: concept
+    stage: "concept"
     version: "001"
-    selection: selected
-    approval: approved
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-enemy-cast.md
+      source: "docs/art/enemies/cast.md"
       date: "2026-09-30"
-      decision: approved
-      quote: "4本书的概念也通过"
-    root: design/concepts/enemy/textbook-security-math/concept_001
+      decision: "approved"
+    root: "design/concepts/enemy/textbook-security-math/concept_001"
     files:
-      concept: textbook_security_math_action_concept_001.png
-      generation: generation.md
+      concept: "textbook_security_math_action_concept_001.png"
+      generation: "generation.md"
     metadata:
-      asset_type: action_concept_board
+      asset_type: "action_concept_board"
       transparent: false
-      usage: [concept_review, action_design]
+      usage: ["concept_review", "action_design"]
 integration:
-  status: not_integrated
+  status: "not_integrated"
   active_variant: null

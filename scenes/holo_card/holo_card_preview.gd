@@ -2,7 +2,7 @@ extends Control
 const Card = preload("res://scenes/holo_card/holo_card_view.gd")
 const Visual = preload("res://game/art/holo_card_visual.gd")
 const SAMPLE = "res://assets/art/holo_cards/class_photo/card.tres"
-const EVIDENCE = "res://design/concepts/class-photo-holo-card/review/codex-workflow/photo-foil-002"
+const EVIDENCE = "res://.godot/art-review/holo-card-sample/photo-foil-002"
 const FONT = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 var card: Control
 var layout: HBoxContainer
@@ -246,7 +246,7 @@ func _check() -> void:
     print("HOLO_CARD_CHECK failures=",failures)
     get_tree().quit(failures)
 func _export_layers() -> void:
-    var dest = "res://design/concepts/class-photo-holo-card/card/001/ruic/assets"
+    var dest = "res://design/concepts/props/holo-card-sample/card/asset_001/ruic/assets"
     DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dest))
     for layer in ["background","subject","lineart","text"]:
         card.art.layer = layer

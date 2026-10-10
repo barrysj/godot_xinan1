@@ -3,7 +3,7 @@
   "status": "review",
   "integration": "authorized_trial_active",
   "concept": {
-    "path": "design/concepts/battle-status-components/hud-family/concept_001/styleboard.png",
+    "path": "design/concepts/ui/battle-status/hud-family/concept_001/styleboard.png",
     "sha256": "22eb41470ed5959d958e47c0ab5fb89106931e38c04a6f3c9ee0fd11cea3abcf",
     "approval": "2026-10-07 用户：看起来不错，生成正式资产吧"
   },
@@ -71,11 +71,11 @@
     "cast_start_ms": 220,
     "reduced_motion": "Static state changes only; no position/scale animation."
   },
-  "bounds": "Retained asset_001, authorized main campaign trial. Visual review pending; gameplay and runtime details belong to docs/battle-demo.md.",
+  "bounds": "Retained asset_001, authorized main campaign trial. Visual review pending; gameplay and runtime details belong to docs/combat/rules.md.",
   "integration_authorization": {
     "date": "2026-10-07",
     "quote": "尝试接入吧",
-    "source": "docs/art/tasks/battle-status-components.md",
+    "source": "docs/art/ui/battle-status.md",
     "owner": "scenes/battle_demo/status_skin.gd"
   },
   "runtime_layout": {
@@ -134,11 +134,7 @@
       ]
     }
   },
-  "retained_from": "tmp_002",
-  "retention": {
-    "date": "2026-10-08",
-    "quote": "保留当前版本与必要证据（推荐）",
-    "temporary_max": 2,
-    "visual_approval": "pending"
+  "versioning": {
+    "last_allocated_temporary": 2
   }
 }

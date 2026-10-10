@@ -14,7 +14,7 @@
 | `asset_manager/` | `catalog.py`、`server.py`、`static/` | Manifest 校验、HTTP 服务、资源台网页 |
 | `asset_manager/control/` | C# 源码、构建与启动测试 | Windows 桌面控制器；根目录入口自动补建缺失／过期缓存 |
 | `asset_manager/tests/` | Python 测试 | 资源台及与导出、提升之间的生产边界回归 |
-| `.` | `build_web_backgrounds.gd` | 校园／菜单 WebP 衍生图生成与 `--check` 只读核验；接入步骤见[平台素材规格映射](../../docs/web-publishing.md#平台素材规格映射) |
+| `.` | `build_web_backgrounds.gd` | 校园／菜单 WebP 衍生图生成与 `--check` 只读核验；接入步骤见[平台素材规格映射](../../docs/release/web-publishing.md#平台素材规格映射) |
 
 `.gd.uid` 是 Godot 脚本的稳定身份文件，随脚本一起移动并保留；`.tscn` 是 Godot 工具的可运行入口。缓存、临时帧和 EXE 位于 `.godot/`，不提交入库。
 
@@ -27,7 +27,7 @@ pwsh.exe -File run-motion-preview.ps1 -EnsureImport -Check
 py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 ```
 
-完整导出命令和运行包契约见 [战斗动画](../../docs/battle-animation.md#hybrid-animation-package)，验证结果见 [ART-03](../../docs/implementation/art-03.md)。
+完整导出命令和运行包契约见 [战斗动画](../../docs/combat/animation.md#共享混合动画运行包2026-09-16)，验证结果见 [ART-03](../../docs/art/art-03.md)。
 
 ### 姿态对比
 
@@ -57,4 +57,4 @@ promote_animation.py同时支持纯序列帧和混合包；rig_manifest.json列�
 
 人物索引入口：assets/art/asset_manifest.yaml → manifests/characters.yaml → manifests/characters/<角色>.yaml。提升与GIF导出通过资源台同一递归解析器查找对象；不依赖对象必须出现在根索引。
 
-正式资源实录入口为 `animation/capture_humanoid_gameplay.gd`＋`.tscn`；加载稳定正式五人资源，实例化原征途，以独立缓存存档捕获四人困难样本。与逐动作七态预览、两阵容三分辨率截图互补；命令与观看边界见[战斗动画](../../docs/battle-animation.md#我方角色正式包2026-10-10)。
+正式资源实录入口为 `animation/capture_humanoid_gameplay.gd`＋`.tscn`；加载稳定正式五人资源，实例化原征途，以独立缓存存档捕获四人困难样本。与逐动作七态预览、两阵容三分辨率截图互补；命令与观看边界见[战斗动画](../../docs/combat/animation.md#我方角色正式包2026-10-10)。

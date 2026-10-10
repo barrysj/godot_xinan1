@@ -11,7 +11,7 @@ variants:
     selection: selected
     approval: pending
     integration_authorization:
-      source: docs/art/tasks/m1-main-menu.md
+      source: docs/art/environments/main-menu.md
       date: 2026-09-29
       scope: web_only_low_resolution_delivery
     root: assets/art/web_backgrounds
@@ -93,4 +93,4 @@ integration:
     menu: scenes/menu/menu.gd
     campus: scenes/expedition/campus_location_skin.gd
   visual_review: pending
-  evidence: docs/art/tasks/m1-campus-locations.md
+  evidence: docs/art/environments/campus-locations.md

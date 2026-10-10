@@ -11,131 +11,24 @@ variants:
     selection: "selected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/chalk-spirit.md"
+      source: "docs/art/enemies/chalk-spirit.md"
       date: "2026-09-14"
       decision: "approved"
-      quote: "这个概念不错"
       commit: "a26fb1c"
-    root: "design/concepts/enemy/chalk-spirit/001"
+    root: "design/concepts/enemy/chalk-spirit/concept_001"
     files:
       concept: "chalk_spirit_concept_001.png"
-  asset_002:
-    stage: "asset"
-    version: "002"
-    selection: "unselected"
-    approval: "rejected"
-    approval_evidence:
-      source: "docs/art/tasks/chalk-spirit.md"
-      date: "2026-09-14"
-      decision: "rejected"
-      quote: "朝向不统一；动画像突然抽动、过渡帧过少"
-      commit: "fac11e6"
-    root: "design/concepts/enemy/chalk-spirit/002"
-    files:
-      source_sheet: "battle_sheet_source_rgb.png"
-      battle_sheet: "battle_sheet.png"
-      frame_metadata: "battle_sheet.frames.json"
-    resource: "design/concepts/enemy/chalk-spirit/002/battle_animation.tres"
-    animation:
-      frames: "frame_metadata"
-    previews:
-      godot:
-        unit: "res://resources/content/enemies/chalk.tres"
-        animation: "res://design/concepts/enemy/chalk-spirit/002/battle_animation.tres"
-  asset_003:
-    stage: "asset"
-    version: "003"
-    selection: "unselected"
-    approval: "rejected"
-    approval_evidence:
-      source: "docs/art/tasks/chalk-spirit.md"
-      date: "2026-09-15"
-      decision: "rejected"
-      quote: "远程／施法主体比待机主体明显偏小"
-    root: "design/concepts/enemy/chalk-spirit/003"
-    files:
-      locomotion_source: "locomotion_sheet_source_rgb.png"
-      combat_source: "combat_sheet_source_rgb.png"
-      reaction_source: "reaction_sheet_source_rgb.png"
-      locomotion_sheet: "locomotion_sheet.png"
-      combat_sheet: "combat_sheet.png"
-      reaction_sheet: "reaction_sheet.png"
-      frame_metadata: "battle_animation.frames.json"
-      gif_idle: "review/idle-preview.gif"
-      gif_move: "review/move-preview.gif"
-      gif_attack: "review/attack-preview.gif"
-      gif_cast: "review/cast-preview.gif"
-      gif_hurt: "review/hurt-preview.gif"
-      gif_critical: "review/critical-preview.gif"
-      gif_death: "review/death-preview.gif"
-    resource: "design/concepts/enemy/chalk-spirit/003/battle_animation.tres"
-    animation:
-      frames: "frame_metadata"
-    previews:
-      gifs:
-        idle: "gif_idle"
-        move: "gif_move"
-        attack: "gif_attack"
-        cast: "gif_cast"
-        hurt: "gif_hurt"
-        critical: "gif_critical"
-        death: "gif_death"
-      godot:
-        unit: "res://resources/content/enemies/chalk.tres"
-        animation: "res://design/concepts/enemy/chalk-spirit/003/battle_animation.tres"
-  asset_004:
-    stage: "asset"
-    version: "004"
-    selection: "unselected"
-    approval: "rejected"
-    approval_evidence:
-      source: "docs/art/tasks/chalk-spirit.md"
-      date: "2026-09-15"
-      decision: "rejected"
-      quote: "高度匹配后横向体量变胖"
-    root: "design/concepts/enemy/chalk-spirit/004"
-    files:
-      locomotion_source: "locomotion_sheet_source_rgb.png"
-      combat_source: "combat_sheet_source_rgb.png"
-      reaction_source: "reaction_sheet_source_rgb.png"
-      locomotion_sheet: "locomotion_sheet.png"
-      combat_sheet: "combat_sheet.png"
-      reaction_sheet: "reaction_sheet.png"
-      frame_metadata: "battle_animation.frames.json"
-      gif_idle: "review/idle-preview.gif"
-      gif_move: "review/move-preview.gif"
-      gif_attack: "review/attack-preview.gif"
-      gif_cast: "review/cast-preview.gif"
-      gif_hurt: "review/hurt-preview.gif"
-      gif_critical: "review/critical-preview.gif"
-      gif_death: "review/death-preview.gif"
-    resource: "design/concepts/enemy/chalk-spirit/004/battle_animation.tres"
-    animation:
-      frames: "frame_metadata"
-    previews:
-      gifs:
-        idle: "gif_idle"
-        move: "gif_move"
-        attack: "gif_attack"
-        cast: "gif_cast"
-        hurt: "gif_hurt"
-        critical: "gif_critical"
-        death: "gif_death"
-      godot:
-        unit: "res://resources/content/enemies/chalk.tres"
-        animation: "res://design/concepts/enemy/chalk-spirit/004/battle_animation.tres"
   asset_005:
     stage: "asset"
     version: "005"
     selection: "unselected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/chalk-spirit.md"
+      source: "docs/art/enemies/chalk-spirit.md"
       date: "2026-09-15"
       decision: "approved"
-      quote: "角色动画005也一并采用"
       commit: 6206374
-    root: "design/concepts/enemy/chalk-spirit/005"
+    root: "design/concepts/enemy/chalk-spirit/asset_005"
     files:
       locomotion_sheet: "locomotion_sheet.png"
       combat_sheet: "combat_sheet.png"
@@ -148,7 +41,7 @@ variants:
       gif_hurt: "review/hurt-preview.gif"
       gif_critical: "review/critical-preview.gif"
       gif_death: "review/death-preview.gif"
-    resource: "design/concepts/enemy/chalk-spirit/005/battle_animation.tres"
+    resource: "design/concepts/enemy/chalk-spirit/asset_005/battle_animation.tres"
     animation:
       frames: "frame_metadata"
     previews:
@@ -162,7 +55,7 @@ variants:
         death: "gif_death"
       godot:
         unit: "res://resources/content/enemies/chalk.tres"
-        animation: "res://design/concepts/enemy/chalk-spirit/005/battle_animation.tres"
+        animation: "res://design/concepts/enemy/chalk-spirit/asset_005/battle_animation.tres"
     metadata:
       normalized_canvas: [384, 384]
       display_size: [140, 140]
@@ -178,12 +71,11 @@ variants:
     selection: "selected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/chalk-spirit.md"
+      source: "docs/art/enemies/chalk-spirit.md"
       date: "2026-09-16"
       decision: "approved"
-      quote: "是的，批准成为正式资产"
       commit: "aaf67f7"
-    root: "design/concepts/enemy/chalk-spirit/006"
+    root: "design/concepts/enemy/chalk-spirit/asset_006"
     files:
       locomotion_sheet: "locomotion_sheet.png"
       combat_sheet: "combat_sheet.png"
@@ -207,7 +99,7 @@ variants:
       gif_all_actions: "review/all-actions.gif"
       animation_library: "animations.tres"
       battle_animation: "battle_animation.tres"
-    resource: "design/concepts/enemy/chalk-spirit/006/battle_animation.tres"
+    resource: "design/concepts/enemy/chalk-spirit/asset_006/battle_animation.tres"
     animation:
       frames: "frame_metadata"
     previews:
@@ -221,7 +113,7 @@ variants:
         death: "gif_death"
       godot:
         unit: "res://resources/content/enemies/chalk.tres"
-        animation: "res://design/concepts/enemy/chalk-spirit/006/battle_animation.tres"
+        animation: "res://design/concepts/enemy/chalk-spirit/asset_006/battle_animation.tres"
         projectile: "res://resources/content/animations/chalk_projectile.tres"
     metadata:
       normalized_canvas: [384, 384]
@@ -254,4 +146,4 @@ integration:
     reaction_sheet: "reaction_sheet.png"
     rig_build_metadata: "rig_manifest.json"
   resource: "assets/art/characters/chalk_spirit/battle_animation.tres"
-  evidence: "docs/art/tasks/chalk-spirit.md；2026-09-16 技术接入完成，效果待人工评审"
+  evidence: "docs/art/enemies/chalk-spirit.md；2026-09-16 技术接入完成，效果待人工评审"

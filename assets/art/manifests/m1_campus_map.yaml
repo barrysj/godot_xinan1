@@ -1,268 +1,247 @@
 schema_version: 3
 object:
-  id: m1_campus_map
+  id: "m1_campus_map"
   display_name: "M1 校园地图共用底图"
-  type: background
-  subtype: campaign_map
+  type: "background"
+  subtype: "campaign_map"
 variants:
   reference_topoexport:
-    stage: reference
-    selection: unselected
-    approval: unknown
-    root: design/references/m1-campus-map/topoexport
+    stage: "reference"
+    selection: "unselected"
+    approval: "unknown"
+    root: "design/references/m1-campus-map/topoexport"
     files:
-      source_1: core-2d.dxf
-      source_2: north-2d.dxf
-      source_3: north-3d.glb
-      source_4: southeast-2d.dxf
-      source_5: southeast-3d.glb
-      source_6: east-sports-2d.dxf
-      source_7: east-sports-3d.glb
-      source_8: west-2d.dxf
-      source_9: west-3d.glb
-      source_10: corner-2d.dxf
-      source_11: corner-3d.glb
-      source_12: license-038.txt
-      source_13: license-039.txt
-      source_14: license-052.txt
-      source_15: alignment-036.json
-      source_16: alignment-037.json
-      source_17: alignment-039.json
-      source_18: alignment-052.json
+      source_1: "core-2d.dxf"
+      source_2: "north-2d.dxf"
+      source_3: "north-3d.glb"
+      source_4: "southeast-2d.dxf"
+      source_5: "southeast-3d.glb"
+      source_6: "east-sports-2d.dxf"
+      source_7: "east-sports-3d.glb"
+      source_8: "west-2d.dxf"
+      source_9: "west-3d.glb"
+      source_10: "corner-2d.dxf"
+      source_11: "corner-3d.glb"
+      source_12: "license-038.txt"
+      source_13: "license-039.txt"
+      source_14: "license-052.txt"
+      source_15: "alignment-036.json"
+      source_16: "alignment-037.json"
+      source_17: "alignment-039.json"
+      source_18: "alignment-052.json"
     metadata:
-      usage: original_dxf_glb_and_registration_reference_not_generated_asset
-      provenance: design/references/m1-campus-map/README.md
+      usage: "original_dxf_glb_and_registration_reference_not_generated_asset"
+      provenance: "design/references/m1-campus-map/README.md"
   reference_images:
-    stage: reference
-    selection: unselected
-    approval: unknown
-    root: design/references/m1-campus-map/images
+    stage: "reference"
+    selection: "unselected"
+    approval: "unknown"
+    root: "design/references/m1-campus-map/images"
     files:
-      layout: layout-2d.png
-      top_down: top-down.png
-      overview: overview-3d.png
-      north: north-detail-3d.png
-      south: south-detail-3d.png
-      sports: sports-reference.png
+      layout: "layout-2d.png"
+      top_down: "top-down.png"
+      overview: "overview-3d.png"
+      north: "north-detail-3d.png"
+      south: "south-detail-3d.png"
+      sports: "sports-reference.png"
   concept_007:
-    stage: concept
-    version: 007
-    selection: selected
-    approval: approved
+    stage: "concept"
+    version: "007"
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-17
-      decision: approved_core_landmark_positions
-      quote: "这几个地标准确了"
-      commit: b585c71
-      scope: core_landmark_positions_and_ginkgo_alignment_only
-    root: design/concepts/m1-campus-map/review/landmarks
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-09-17"
+      decision: "approved_core_landmark_positions"
+      commit: "b585c71"
+      scope: "core_landmark_positions_and_ginkgo_alignment_only"
+    root: "design/concepts/environments/campus-map/review/landmarks"
     files:
-      concept: structure.svg
-      overlay: overlay.svg
-      geometry: geometry.json
-      review_page: review.html
+      concept: "structure.svg"
+      overlay: "overlay.svg"
+      geometry: "geometry.json"
+      review_page: "review.html"
     metadata:
-      representation: editable_vector_structure
-      composition: manual_trace_from_user_2d_reference
+      representation: "editable_vector_structure"
+      composition: "manual_trace_from_user_2d_reference"
   concept_015:
-    stage: concept
-    version: 015
-    selection: selected
-    approval: approved
+    stage: "concept"
+    version: "015"
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-18
-      decision: approved_day_concept_continue_state_candidates
-      quote: "看着好多了。可以继续了"
-      commit: f101db2
-      scope: day_concept_015_only_not_final_asset_or_integration
-    root: design/concepts/m1-campus-map/review/day-concept
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-09-18"
+      decision: "approved_day_concept_continue_state_candidates"
+      commit: "f101db2"
+      scope: "day_concept_015_only_not_final_asset_or_integration"
+    root: "design/concepts/environments/campus-map/review/day-concept"
     files:
-      concept: core-day.png
+      concept: "core-day.png"
     metadata:
-      representation: textured_ginkgo_main_road_trees
+      representation: "textured_ginkgo_main_road_trees"
   concept_016:
-    stage: concept
-    version: 016
-    selection: unselected
-    approval: pending
-    root: design/concepts/m1-campus-map/runtime-sources
+    stage: "concept"
+    version: "016"
+    selection: "unselected"
+    approval: "pending"
+    root: "design/concepts/environments/campus-map/runtime-sources"
     files:
-      concept: core-night.png
+      concept: "core-night.png"
     metadata:
-      representation: fixed_geometry_night_state
-  concept_023:
-    stage: concept
-    version: 023
-    selection: unselected
-    approval: approved
-    approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-18
-      decision: anomaly_concept_approved_at_c9070a4
-    root: design/concepts/m1-campus-map/review/anomaly-concept
-    files:
-      concept: core-anomaly.png
-    metadata:
-      representation: mixed_hard_and_rough_round_invasion
+      representation: "fixed_geometry_night_state"
   legacy_day_028:
-    stage: asset
-    version: 028
-    selection: selected
-    approval: review
+    stage: "asset"
+    version: "028"
+    selection: "selected"
+    approval: "review"
     approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-21
-      decision: daylight_revision_requested_for_three_state_preview
-    root: design/concepts/m1-campus-map/runtime-sources
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-09-21"
+      decision: "daylight_revision_requested_for_three_state_preview"
+    root: "design/concepts/environments/campus-map/runtime-sources"
     files:
-      texture: core-day.png
+      texture: "core-day.png"
     metadata:
-      representation: fixed_geometry_sunny_daylight_render
+      representation: "fixed_geometry_sunny_daylight_render"
   legacy_anomaly_030:
-    stage: asset
-    version: 030
-    selection: selected
-    approval: approved
+    stage: "asset"
+    version: "030"
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-22
-      commit: 39f4a4d
-      quote: 这一版可以，采纳，接下来做什么
-    root: design/concepts/m1-campus-map/runtime-sources
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-09-22"
+      commit: "39f4a4d"
+    root: "design/concepts/environments/campus-map/runtime-sources"
     files:
-      texture: core-anomaly.png
+      texture: "core-anomaly.png"
     metadata:
-      representation: global_building_and_local_anomaly_lighting
-      palette_source: data/visual/colors.json#anomaly
+      representation: "global_building_and_local_anomaly_lighting"
+      palette_source: "data/visual/colors.json#anomaly"
   integration_030:
-    stage: asset
-    version: 030
-    selection: selected
-    approval: review
+    stage: "asset"
+    version: "030"
+    selection: "selected"
+    approval: "review"
     approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-22
-      commit: 39f4a4d
-      decision: anomaly_presentation_approved_day_and_night_not_in_scope
-      quote: 这一版可以，采纳，接下来做什么
-    root: assets/art/campus_map
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-09-22"
+      commit: "39f4a4d"
+      decision: "anomaly_presentation_approved_day_and_night_not_in_scope"
+    root: "assets/art/campus_map"
     files:
-      day: day.png
-      night: night.png
-      anomaly: anomaly.png
+      day: "day.png"
+      night: "night.png"
+      anomaly: "anomaly.png"
     metadata:
-      representation: three_state_map_with_layered_anomaly_lighting
+      representation: "three_state_map_with_layered_anomaly_lighting"
       resolution: [1200, 680]
       crop: [200, 260, 1200, 680]
     integration_authorization:
-      scope: campaign_route_three_state_preview
-      source: docs/art/tasks/m1-campus-map.md
+      scope: "campaign_route_three_state_preview"
+      source: "docs/art/environments/campus-map.md"
   route_preview_035:
-    stage: asset
-    version: 035
-    selection: selected
-    approval: approved
+    stage: "asset"
+    version: "035"
+    selection: "selected"
+    approval: "approved"
     approval_evidence:
-      source: docs/art/tasks/m1-campus-map.md
-      date: 2026-09-24
-      commit: b3fc78d
-      scope: current_and_next_station_overlay_presentation_only
-      quote: 这个效果已经可以了
-    root: assets/art/campus_map
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-09-24"
+      commit: "b3fc78d"
+      scope: "current_and_next_station_overlay_presentation_only"
+    root: "assets/art/campus_map"
     files:
-      day: full-day.png
-      night: full-night.png
-      anomaly: full-anomaly.png
+      day: "full-day.png"
+      night: "full-night.png"
+      anomaly: "full-anomaly.png"
     metadata:
-      representation: current_and_next_station_cues
+      representation: "current_and_next_station_cues"
       resolution: [1600, 1200]
       display_crop: [200, 260, 1200, 800]
     integration_authorization:
-      scope: standalone_two_route_selection_preview
-      source: docs/art/tasks/m1-campus-map.md
-      owners: [scenes/expedition/campus_route_map.gd, scenes/expedition/campus_route_preview.gd]
+      scope: "standalone_two_route_selection_preview"
+      source: "docs/art/environments/campus-map.md"
+      owners: ["scenes/expedition/campus_route_map.gd", "scenes/expedition/campus_route_preview.gd"]
   asset_001:
-    stage: asset
-    version: 001
-    selection: selected
-    approval: review
-    root: design/concepts/m1-campus-map/campus-map/asset_001
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "design/concepts/environments/campus-map/campus-map/asset_001"
     files:
-      day: day.png
-      night: night.png
-      anomaly: anomaly.png
-      web_day: web/day.png
-      web_night: web/night.png
-      web_anomaly: web/anomaly.png
-      source_day: day.blend
-      source_night: night.blend
-      source_anomaly: anomaly.blend
-      preview_day: runtime-day-1920x1080.png
-      preview_night: runtime-night-1920x1080.png
-      preview_anomaly: runtime-anomaly-1920x1080.png
+      day: "day.png"
+      night: "night.png"
+      anomaly: "anomaly.png"
+      web_day: "web/day.png"
+      web_night: "web/night.png"
+      web_anomaly: "web/anomaly.png"
+      source_day: "day.blend"
+      source_night: "night.blend"
+      source_anomaly: "anomaly.blend"
+      preview_day: "runtime-day-1920x1080.png"
+      preview_night: "runtime-night-1920x1080.png"
+      preview_anomaly: "runtime-anomaly-1920x1080.png"
     metadata:
-      representation: six_tile_campus_with_repaired_north_roads
+      representation: "six_tile_campus_with_repaired_north_roads"
       resolution: [5400, 4500]
       web_resolution: [1800, 1500]
       logical_resolution: [1800, 1500]
-      retention_evidence: docs/art/tasks/m1-campus-map.md
-      historical_source: 053_at_3d16ad3
+      historical_source: "053_at_3d16ad3"
   expanded_preview_001:
-    stage: integration
-    version: 001
-    selection: selected
-    approval: review
-    root: assets/art/campus_map/expanded_neutral
+    stage: "integration"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/campus_map/expanded_neutral"
     files:
-      day: day.png
-      night: night.png
-      anomaly: anomaly.png
+      day: "day.png"
+      night: "night.png"
+      anomaly: "anomaly.png"
     metadata:
-      representation: full_map_for_campaign_selection_with_repaired_north_roads
+      representation: "full_map_for_campaign_selection_with_repaired_north_roads"
       resolution: [5400, 4500]
       logical_resolution: [1800, 1500]
-      derived_from: asset_001
-      light_boundary: game/run/expanded_campus_layout.json
+      derived_from: "asset_001"
+      light_boundary: "game/run/expanded_campus_layout.json"
     integration_authorization:
-      scope: existing_three_state_full_map_preview_and_main_campaign_route_selection
-      source: docs/art/tasks/m1-campus-map.md
-      owners: [scenes/expedition/expanded_campus_map.gd, scenes/expedition/campaign_route_map.gd, tools/campus-map-editor/editor.mjs]
+      scope: "existing_three_state_full_map_preview_and_main_campaign_route_selection"
+      source: "docs/art/environments/campus-map.md"
+      owners: ["scenes/expedition/expanded_campus_map.gd", "scenes/expedition/campaign_route_map.gd", "tools/campus-map-editor/editor.mjs"]
   web_expanded_preview_001:
-    stage: integration
-    version: web-1800x1500-v1
-    selection: selected
-    approval: review
-    root: assets/art/web_campus_map/expanded_neutral
+    stage: "integration"
+    version: "web-1800x1500-v1"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/web_campus_map/expanded_neutral"
     files:
-      day: day.png
-      night: night.png
-      anomaly: anomaly.png
+      day: "day.png"
+      night: "night.png"
+      anomaly: "anomaly.png"
     metadata:
-      representation: web_only_three_state_full_map
+      representation: "web_only_three_state_full_map"
       resolution: [1800, 1500]
       logical_resolution: [1800, 1500]
-      derived_from: asset_001
-      source_paths: design/concepts/m1-campus-map/campus-map/asset_001/web
-      platform: web
+      derived_from: "asset_001"
+      source_paths: "design/concepts/environments/campus-map/campus-map/asset_001/web"
+      platform: "web"
       mipmaps: true
-      resolver: game/visual/platform_asset_paths.gd
-      visual_review: pending
+      resolver: "game/visual/platform_asset_paths.gd"
+      visual_review: "pending"
     integration_authorization:
-      scope: web_only_low_resolution_delivery
-      source: docs/art/tasks/m1-campus-map.md
-      owners: [scenes/expedition/expanded_campus_map.gd]
-
+      scope: "web_only_low_resolution_delivery"
+      source: "docs/art/environments/campus-map.md"
+      owners: ["scenes/expedition/expanded_campus_map.gd"]
 integration:
-  status: authorized_active
-  active_variant: expanded_preview_001
-  owners: [scenes/expedition/expanded_campus_map.gd]
-  runtime_entry_points: [scenes/expedition/campaign_route_map.gd]
-  root: assets/art/campus_map/expanded_neutral
+  status: "authorized_active"
+  active_variant: "expanded_preview_001"
+  owners: ["scenes/expedition/expanded_campus_map.gd"]
+  runtime_entry_points: ["scenes/expedition/campaign_route_map.gd"]
+  root: "assets/art/campus_map/expanded_neutral"
   files:
-    day: day.png
-    night: night.png
-    anomaly: anomaly.png
-  visual_review: pending
-  evidence: docs/art/tasks/m1-campus-map.md
+    day: "day.png"
+    night: "night.png"
+    anomaly: "anomaly.png"
+  visual_review: "pending"
+  evidence: "docs/art/environments/campus-map.md"

@@ -1,16 +1,25 @@
-# 粉笔精灵轻量弹体 001 正式资产记录
+# 美术素材 · 来源与当前制作入口
 
-状态：正式资产。用户于 2026-09-15 回复“还不错。采用”，批准轻量弹体 001；候选与评审证据保留在原目录。
+图像来源含Codex内置imagegen；负责人提供的参考、上游模型及许可继续随原资料保留。
+当前状态与使用范围见[美术入口](../../../../docs/art/README.md)和[主Manifest](../../asset_manifest.yaml)。
 
-## 设计与生成
+现存参数／处理入口：[projectile.metadata.json](projectile.metadata.json)。源图和输出均随本包保留；重新生成云端图片不保证逐像素复现。
+
+设计与实现说明在相应领域文档就地维护，验证命令见[美术验证](../../../../docs/art/verification.md)。运行素材使用稳定assets/art路径。
+
+## 原始输入与处理依据
 
 - 日期：2026-09-15。
 - 工具：Codex 内置 ImageGen。
-- 身份参考：`chalk-spirit/001/chalk_spirit_concept_001.png`；战斗比例与朝向参考：`chalk-spirit/005/combat_sheet.png`。
+- 身份参考：`design/concepts/enemy/chalk-spirit/concept_001/chalk_spirit_concept_001.png`；战斗比例与朝向参考：`design/concepts/enemy/chalk-spirit/asset_005/combat_sheet.png`。
 - 设计：单枚朝右的断裂白粉笔弹体，左端为炭黑断面，中部仅保留少量青／品红异常裂纹；源图不烘焙尾迹、环境、命中特效或角色。
 - 运行目标：约 32×16 逻辑像素；由程序按飞行方向旋转，并在弹体后方绘制三颗递减尾迹点。
+- 原始图：1254×1254 RGBA；有效包围盒 `[370, 518, 898, 724]`。
+- 运行资源：`resources/content/animations/chalk_projectile.tres`，锚点 `[0.5, 0.5]`，尾迹间距 2 逻辑像素。
 
-生成提示词：
+## 原始生成提示词
+
+### 1 · 设计与生成
 
 ```text
 Use case: stylized-concept
@@ -25,20 +34,4 @@ Color palette: chalk white and warm pale gray, charcoal broken end, very small c
 Constraints: a single isolated projectile; no character; no hands; no muzzle; no environment; no separate debris; no motion trail; no glow cloud; no impact burst; no text; no symbols; no border; no watermark; no checkerboard pixels. Preserve a simple silhouette that remains recognizable at very small size. Output one square PNG with real transparency.
 ```
 
-## 确定性处理
-
-`design/concepts/enemy/chalk-projectile/001/build_projectile.py` 读取同候选目录的 `projectile_source_rgba.png`，将 alpha 小于 8 的生成噪点清零，按非透明包围盒裁切，再保持原横纵比缩放到 192×96 透明画布。有效内容为 164×64，运行显示尺寸为 32×16；脚本同时重建候选 `.tres`、元数据和静态尺寸预览。
-
-- 原始图：1254×1254 RGBA；有效包围盒 `[370, 518, 898, 724]`。
-- 原始 SHA-256：`d279a2797bd9271f70fe3d5b82c0cb0a62f456b5ad1d360fd9c7db25cc316046`。
-- 输出 SHA-256：`007a244cdc3887d93322188f9f03a103f9ae5de934630c5c01c1063fd5a87820`。
-- 运行资源：`resources/content/animations/chalk_projectile.tres`，锚点 `[0.5, 0.5]`，尾迹间距 2 逻辑像素。
-- 正式运行资源 SHA-256：`a6d9adaac60e654bcad964285928575af7876177a1fb185ccb5b39e3ea587c86`。
-
-## 评审入口
-
-- 单体与实际尺寸：[projectile-preview.png](review/projectile-preview.png)。
-- 真实战斗渲染：[远程 1920×1080](review/motion-preview-3-1920x1080.png)、[2560×1440](review/motion-preview-3-2560x1440.png)、[1920×1200](review/motion-preview-3-1920x1200.png)。
-- 预览命令：`pwsh.exe -File ./run-motion-preview.ps1 -Unit 'res://resources/content/enemies/chalk.tres' -Animation 'res://design/concepts/enemy/chalk-spirit/005/battle_animation.tres' -Projectile 'res://design/concepts/enemy/chalk-projectile/001/chalk_projectile.tres'`。
-
-资产已获批准；接入后的实际战斗效果仍需负责人按运行截图单独验收。
+生成配方是制作资料；稳定修订、缺失参数与历史输入的处理见[源资料与版本](../../../../docs/art/WORKFLOW.md#源资料与版本)。

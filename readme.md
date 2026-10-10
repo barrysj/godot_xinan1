@@ -1,23 +1,12 @@
 # Cyber Pop Campus
 
-Godot 2D 理工校园游戏。Codex 负责开发与美术生产，人类负责人决定玩法取舍并分阶段评审美术。
+Godot2D理工校园纪念游戏，当前围绕虚拟校园修复战役制作。使用PowerShell7运行项目脚本。
 
-## 开发入口
+- [文档导航](docs/README.md)：同领域设计、实现、调研和验证集中存放。
+- [当前能力与断点](docs/implementation-status.md)、[Roadmap](docs/roadmap.md)。
+- [战役与地图](docs/campaign/README.md)、[战斗与构筑](docs/combat/README.md)、[内容录入](docs/content/README.md)。
+- [开发入口](docs/development/README.md)：pwsh.exe -File .\run-debug.ps1。
+- [美术制作与当前资源](docs/art/README.md)、[资产Manifest](assets/art/asset_manifest.yaml)。
+- [构建与平台](docs/release/README.md)、[协作规则](AGENTS.md)。
 
-- [整体游戏设计](docs/game-design.md)
-- [校园演示](docs/campus-demo.md)与[校园地图](docs/campus-map.md)
-- [Debug 模式](docs/debug-mode.md)：`pwsh.exe -File .\run-debug.ps1`，右上角调试入口与独立存档。
-- [战斗与部署](docs/battle-demo.md)、[战斗动画与预览](docs/battle-animation.md)
-- [内容编辑](docs/content-authoring.md)、[Web 发布](docs/web-publishing.md)
-- [项目协作与目录职责](AGENTS.md)
-
-Windows 使用 PowerShell 7。按对应主题文档运行仓库中的 `run-*.ps1`；Godot 路径通过脚本的 `-EnginePath` 指定。
-
-## 美术入口
-
-- **开始任务、提交评审、使用网页版备选：**[美术工作流](docs/art/WORKFLOW.md)
-- **查当前规范与资料分工：**[美术执行契约](docs/art/ART_CONTRACT.md)
-- **查实际资产：**[资产登记表](assets/art/asset_manifest.yaml)
-- **发起任务：**[简短提示词](docs/art/prompts/ART_PROMPTS.md)
-
-当前评审通过对话中的图片、运行截图和动作预览完成。Serpent 是候选资产管理工具，尚未接入；不要将标签、生成成功或技术检查通过当作人工批准。
+具体启动参数、存档边界和工具用法在对应领域维护；不以旧模板状态或历史过程日志作为当前入口。

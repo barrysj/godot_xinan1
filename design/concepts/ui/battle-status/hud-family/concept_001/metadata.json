@@ -1,0 +1,26 @@
+{
+  "stage": "concept",
+  "approval": "approved",
+  "integration": "not_integrated",
+  "generator": "builtin image_gen",
+  "files": [
+    {
+      "file": "styleboard.png",
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGB",
+      "bytes": 1863661,
+      "sha256": "22eb41470ed5959d958e47c0ab5fb89106931e38c04a6f3c9ee0fd11cea3abcf",
+      "status": "approved"
+    }
+  ],
+  "version": "concept_001",
+  "approval_evidence": {
+    "date": "2026-10-07",
+    "quote": "看起来不错，生成正式资产吧",
+    "source": "docs/art/ui/battle-status.md"
+  },
+  "versioning": {
+    "last_allocated_temporary": 2
+  }
+}

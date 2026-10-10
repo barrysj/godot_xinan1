@@ -1,30 +1,29 @@
 schema_version: 3
 object:
-  id: battle_status_components
+  id: "battle_status_components"
   display_name: "战斗状态与产码组件"
-  type: ui
-  subtype: battle_hud
+  type: "ui"
+  subtype: "battle_hud"
 variants:
   concept_001:
-    stage: concept
+    stage: "concept"
     version: "001"
-    selection: selected
-    approval: approved
-    root: design/concepts/battle-status-components/hud-family/concept_001
+    selection: "selected"
+    approval: "approved"
+    root: "design/concepts/ui/battle-status/hud-family/concept_001"
     files:
-      concept: styleboard.png
-      metadata: metadata.json
-      source_notes: generation.md
+      concept: "styleboard.png"
+      metadata: "metadata.json"
+      source_notes: "generation.md"
     approval_evidence:
-      source: docs/art/tasks/battle-status-components.md
-      date: 2026-10-07
-      quote: "看起来不错，生成正式资产吧"
+      source: "docs/art/ui/battle-status.md"
+      date: "2026-10-07"
   asset_001:
-    stage: asset
+    stage: "asset"
     version: "001"
-    selection: selected
-    approval: review
-    root: design/concepts/battle-status-components/hud-family/asset_001
+    selection: "selected"
+    approval: "review"
+    root: "design/concepts/ui/battle-status/hud-family/asset_001"
     files:
       absorb_frame_svg: "frames/absorb_frame.svg"
       action_tip_svg: "frames/action_tip.svg"
@@ -94,24 +93,21 @@ variants:
       review_controller: "review.gd"
       frame_author: "author_frames.py"
     metadata:
-      source: native_svg_geometry
-      concept_basis: concept_001
+      source: "native_svg_geometry"
+      concept_basis: "concept_001"
       vector_count: 26
       png_count: 26
       style_count: 8
-      retention_date: 2026-10-08
-      retention_quote: "保留当前版本与必要证据（推荐）"
-      visual_approval: pending
+      visual_approval: "pending"
     integration_authorization:
-      source: docs/art/tasks/battle-status-components.md
-      date: 2026-10-07
-      quote: "尝试接入吧"
+      source: "docs/art/ui/battle-status.md"
+      date: "2026-10-07"
       scope: "原主线战斗状态组件试用；视觉效果待评审"
 integration:
-  status: authorized_active
-  active_variant: asset_001
-  owner: scenes/battle_demo/status_skin.gd
-  root: assets/art/ui/battle_status
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owner: "scenes/battle_demo/status_skin.gd"
+  root: "assets/art/ui/battle_status"
   files:
     absorb_frame_svg: "frames/absorb_frame.svg"
     action_tip_svg: "frames/action_tip.svg"
@@ -176,4 +172,4 @@ integration:
     components: "components.json"
     frames: "frames.json"
     icons: "icons/icons.json"
-  evidence: "docs/art/tasks/battle-status-components.md；2026-10-08留存当前版本，主线已授权试用，视觉效果待评审。"
+  evidence: "docs/art/ui/battle-status.md；2026-10-08留存当前版本，主线已授权试用，视觉效果待评审。"

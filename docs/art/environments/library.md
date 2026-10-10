@@ -1,0 +1,15 @@
+# 美术任务：M1 图书馆静态环境
+
+2026-10-10 精简：保留整体目标、现用版本与最终状态；删除逐次生成、小修改意见和阶段流水账。资产与接入状态分别维护，技术检查不代替负责人决定。
+
+## 目标与范围
+
+图书馆室内提供日常／夜间／异常三态、三固定视角，共九张背景；共用地点探索交互，不另造流程。
+
+## 当前对象与有效版本
+
+| 对象 | 现用／选定版本 | 状态来源 |
+| --- | --- | --- |
+| M1 图书馆环境 | `concept_005`（approved）、`concept_005_night`（approved）、`concept_005_anomaly_v3`（approved）、`asset_005_environment_set`（approved） | [Manifest](../../../assets/art/manifests/m1_library_environment.yaml) |
+
+版本明细、原始来源和实际接入路径由 Manifest 与保留源包维护，不在此复制逐文件清单。当前选定版本可能仍为 review；目录移动与文档清理不改变批准状态。验证入口见[美术验证](../verification.md)。

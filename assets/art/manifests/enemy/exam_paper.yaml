@@ -11,10 +11,9 @@ variants:
     selection: "selected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/m1-enemy-cast.md"
+      source: "docs/art/enemies/cast.md"
       date: "2026-09-25"
       decision: "approved"
-      quote: "03 05 也通过"
     root: "design/concepts/enemy/exam-paper/concept_002"
     files:
       concept: "exam_paper_action_concept_002.png"
@@ -44,10 +43,9 @@ variants:
       method: "existing_six_pose_sheet_seven_clips"
       visual_review: "pending"
     integration_authorization:
-      source: "docs/art/tasks/m1-enemy-cast.md"
+      source: "docs/art/enemies/cast.md"
       date: "2026-10-07"
       scope: "existing_enemy_actions_in_original_gameplay"
-      quote: "敌人动作暂时保留，先接入游戏不要卡住目标"
       owners: ["resources/content/enemies/pages.tres"]
 integration:
   status: "authorized_active"
@@ -61,4 +59,4 @@ integration:
     frame_metadata: "battle_animation.frames.json"
     rig_manifest: "rig_manifest.json"
   visual_review: "pending"
-  evidence: "docs/art/tasks/m1-enemy-cast.md"
+  evidence: "docs/art/enemies/cast.md"

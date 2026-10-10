@@ -11,10 +11,9 @@ variants:
     selection: "selected"
     approval: "approved"
     approval_evidence:
-      source: "docs/art/tasks/m1-enemy-cast.md"
+      source: "docs/art/enemies/cast.md"
       date: "2026-09-24"
       decision: "approved"
-      quote: "这两张概念通过"
     root: "design/concepts/enemy/cyber-librarian/concept_003"
     files:
       concept: "cyber_librarian_action_concept_003.png"
@@ -32,7 +31,6 @@ variants:
     root: "design/concepts/enemy/cyber-librarian/asset_001"
     files:
       action-cards_json: "action-cards.json"
-      action-design_md: "action-design.md"
       action-input_json: "action-input.json"
       animations_tres: "animations.tres"
       battle_animation_frames_json: "battle_animation.frames.json"
@@ -95,17 +93,16 @@ variants:
       review_note: "负责人批准仅留最新整套；正式子集已提升，已按负责人授权绑定原主线；接入观感待评审。"
       retained_from: "tmp_002"
     approval_evidence:
-      source: "docs/art/tasks/m1-enemy-animation.md"
+      source: "docs/art/enemies/cast.md"
       date: "2026-10-07"
       decision: "approved"
-      quote: "“已生成资产”用选择框筛选、而不是标签。只保留最新一版，并提升为正式资产"
 integration:
   status: "authorized_active"
   active_variant: "asset_001"
   owners: ["resources/content/enemies/cyber_librarian.tres"]
   root: "assets/art/characters/cyber_librarian"
   resource: "assets/art/characters/cyber_librarian/battle_animation.tres"
-  evidence: "docs/art/tasks/m1-enemy-animation.md"
+  evidence: "docs/art/enemies/cast.md"
   files:
     animations_tres: "animations.tres"
     frame_metadata: "battle_animation.frames.json"

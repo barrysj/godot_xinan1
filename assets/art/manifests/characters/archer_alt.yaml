@@ -62,10 +62,9 @@ variants:
       method: "rigid_head_root_bones_and_key_pose_frames"
       usage: ["approved_alternate_appearance", "motion_preview"]
     approval_evidence:
-      source: "docs/art/tasks/m1-player-cast-animation.md"
+      source: "docs/art/characters/player-cast.md"
       date: "2026-10-01"
       decision: "approved_retained_character_resources"
-      quote: "除了注释1的应援者动画，其他的概念、动画都登记为正式资源"
 integration:
   status: "not_integrated"
   active_variant: "asset_001"

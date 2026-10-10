@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "asset_candidate_review",
   "source": "Authored native SVG geometry; no generated bitmap slicing or external icon source.",
-  "concept_reference": "design/concepts/battle-status-components/hud-family/concept_001/styleboard.png",
+  "concept_reference": "design/concepts/ui/battle-status/hud-family/concept_001/styleboard.png",
   "canvas": [
     32,
     32

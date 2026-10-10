@@ -2,7 +2,7 @@
 param(
     [string]$Blender = 'E:/Games/SteamLibrary/steamapps/common/Blender/blender.exe',
     [string]$Python = 'python',
-    [string]$CardDirectory = 'design/concepts/class-photo-holo-card/card/001/ruic'
+    [string]$CardDirectory = 'design/concepts/props/holo-card-sample/card/asset_001/ruic'
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path

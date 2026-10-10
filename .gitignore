@@ -4,6 +4,25 @@
 # Godot-specific ignores
 .import/
 .godot/
+# Codex workflow intermediates belong in .godot/art-workflow/ and are never staged.
+# Also ignore legacy workflow directories; delivery previews belong in review/.
+**/review/codex-workflow/**
+!**/review/codex-workflow/**/
+# Existing final demonstration GIFs remain versioned.
+!design/concepts/characters/review/codex-workflow/humanoid-release/archer-sonic-ring.gif
+!design/concepts/characters/review/codex-workflow/humanoid-release/inventor-sonic-ring.gif
+!design/concepts/ui/battlefield/review/codex-workflow/hack-takeover.gif
+# Legacy asset QA tools may emit reports next to their inputs.
+/design/concepts/**/quality-result.json
+/design/concepts/**/asset-validation.json
+/design/concepts/**/import-validation.json
+/design/concepts/**/delivery-validation.json
+/design/concepts/**/validation.json
+/assets/art/**/quality-result.json
+/assets/art/**/asset-validation.json
+/assets/art/**/import-validation.json
+/assets/art/**/delivery-validation.json
+/assets/art/**/validation.json
 # Review evidence is served as source media and is not a runtime Godot resource.
 design/concepts/**/review/*.import
 

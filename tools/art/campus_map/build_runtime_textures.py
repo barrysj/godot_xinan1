@@ -7,9 +7,9 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[3]
 CROP = (200, 260, 1400, 940)
 SOURCES = {
-    "day": ROOT / "design/concepts/m1-campus-map/runtime-sources/core-day.png",
-    "night": ROOT / "design/concepts/m1-campus-map/runtime-sources/core-night.png",
-    "anomaly": ROOT / "design/concepts/m1-campus-map/runtime-sources/core-anomaly.png",
+    "day": ROOT / "design/concepts/environments/campus-map/runtime-sources/core-day.png",
+    "night": ROOT / "design/concepts/environments/campus-map/runtime-sources/core-night.png",
+    "anomaly": ROOT / "design/concepts/environments/campus-map/runtime-sources/core-anomaly.png",
 }
 OUTPUT = ROOT / "assets/art/campus_map"
 
