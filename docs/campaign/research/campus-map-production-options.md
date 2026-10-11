@@ -2,7 +2,7 @@
 
 当前采用可编辑3D母版离线渲染、运行时2D地图交互。玩家在选择下一站，地图不承担角色漫游；同一几何和正交相机输出三态，地点、路线和明暗由Godot叠层维护。这个选择控制了制作与适配成本，保留未来重渲染能力；自由视角3D暂不进入范围。
 
-当前地图已接入原战役选区流程，不能再把此前“尚未导入／尚未接入”的调研状态当成现状。设计与实施见[地图布局](../map-layout.md)、[战役档案](../core-02.md)及[校园图](../../art/environments/campus-map.md)。详细源文件和许可证见[原始参考](../../../design/references/m1-campus-map/README.md)，当前可编辑模型与只读核验见[源包](../../../design/concepts/environments/campus-map/campus-map/asset_001/README.md)。
+当前地图已接入原战役选区流程，不能再把此前“尚未导入／尚未接入”的调研状态当成现状。设计与实施见[地图布局](../map-layout.md)、[战役档案](../core-02.md)及[校园图](../../art/environments/campus-map.md)。详细源文件和许可证见[原始参考](../../../design/references/m1-campus-map/README.md)，当前可编辑模型与只读核验见[源包](../../../design/concepts/environments/campus-map/campus-map/asset_006/README.md)。
 
 ## 保留的来源结论
 

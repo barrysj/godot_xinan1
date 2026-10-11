@@ -44,82 +44,7 @@ variants:
       north: "north-detail-3d.png"
       south: "south-detail-3d.png"
       sports: "sports-reference.png"
-  concept_007:
-    stage: "concept"
-    version: "007"
-    selection: "selected"
-    approval: "approved"
-    approval_evidence:
-      source: "docs/art/environments/campus-map.md"
-      date: "2026-09-17"
-      decision: "approved_core_landmark_positions"
-      commit: "b585c71"
-      scope: "core_landmark_positions_and_ginkgo_alignment_only"
-    root: "design/concepts/environments/campus-map/review/landmarks"
-    files:
-      concept: "structure.svg"
-      overlay: "overlay.svg"
-      geometry: "geometry.json"
-      review_page: "review.html"
-    metadata:
-      representation: "editable_vector_structure"
-      composition: "manual_trace_from_user_2d_reference"
-  concept_015:
-    stage: "concept"
-    version: "015"
-    selection: "selected"
-    approval: "approved"
-    approval_evidence:
-      source: "docs/art/environments/campus-map.md"
-      date: "2026-09-18"
-      decision: "approved_day_concept_continue_state_candidates"
-      commit: "f101db2"
-      scope: "day_concept_015_only_not_final_asset_or_integration"
-    root: "design/concepts/environments/campus-map/review/day-concept"
-    files:
-      concept: "core-day.png"
-    metadata:
-      representation: "textured_ginkgo_main_road_trees"
-  concept_016:
-    stage: "concept"
-    version: "016"
-    selection: "unselected"
-    approval: "pending"
-    root: "design/concepts/environments/campus-map/runtime-sources"
-    files:
-      concept: "core-night.png"
-    metadata:
-      representation: "fixed_geometry_night_state"
-  legacy_day_028:
-    stage: "asset"
-    version: "028"
-    selection: "selected"
-    approval: "review"
-    approval_evidence:
-      source: "docs/art/environments/campus-map.md"
-      date: "2026-09-21"
-      decision: "daylight_revision_requested_for_three_state_preview"
-    root: "design/concepts/environments/campus-map/runtime-sources"
-    files:
-      texture: "core-day.png"
-    metadata:
-      representation: "fixed_geometry_sunny_daylight_render"
-  legacy_anomaly_030:
-    stage: "asset"
-    version: "030"
-    selection: "selected"
-    approval: "approved"
-    approval_evidence:
-      source: "docs/art/environments/campus-map.md"
-      date: "2026-09-22"
-      commit: "39f4a4d"
-    root: "design/concepts/environments/campus-map/runtime-sources"
-    files:
-      texture: "core-anomaly.png"
-    metadata:
-      representation: "global_building_and_local_anomaly_lighting"
-      palette_source: "data/visual/colors.json#anomaly"
-  integration_030:
+  core_crop:
     stage: "asset"
     version: "030"
     selection: "selected"
@@ -141,7 +66,7 @@ variants:
     integration_authorization:
       scope: "campaign_route_three_state_preview"
       source: "docs/art/environments/campus-map.md"
-  route_preview_035:
+  core_full:
     stage: "asset"
     version: "035"
     selection: "selected"
@@ -164,12 +89,17 @@ variants:
       scope: "standalone_two_route_selection_preview"
       source: "docs/art/environments/campus-map.md"
       owners: ["scenes/expedition/campus_route_map.gd", "scenes/expedition/campus_route_preview.gd"]
-  asset_001:
+  asset_006:
     stage: "asset"
-    version: "001"
+    version: "006"
     selection: "selected"
-    approval: "review"
-    root: "design/concepts/environments/campus-map/campus-map/asset_001"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-10-12"
+      commit: "2f2b9a2"
+      scope: "retained_asset_006_three_state_bundle_and_desktop_integration"
+    root: "design/concepts/environments/campus-map/campus-map/asset_006"
     files:
       day: "day.png"
       night: "night.png"
@@ -180,40 +110,100 @@ variants:
       source_day: "day.blend"
       source_night: "night.blend"
       source_anomaly: "anomaly.blend"
+      production: "README.md"
+      renderer: "render.py"
+      verification: "verify_bundle.py"
+      infill_recipe: "source/report.json"
+      infill_geometry: "source/infill-meshes.json"
+      production_input_2: "source/northwest/LICENSE.txt"
+      production_input_3: "source/northwest/topoexport_2D_vectorial.dxf"
+      production_input_4: "source/northwest/topoexport_3D_modeling.glb"
+      production_input_6: "source/recipe/align.py"
+      production_input_7: "source/recipe/build_infill.py"
+      production_input_8: "source/recipe/geometry.py"
+      production_input_9: "source/recipe/prepare_infill.py"
+      production_input_10: "source/recipe/validate_infill.py"
+      production_input_13: "source/southwest/LICENSE.txt"
+      production_input_14: "source/southwest/topoexport_2D_vectorial.dxf"
+      production_input_15: "source/southwest/topoexport_3D_modeling.glb"
+      continuation_input_1: "source/continuation/prepare.py"
+      continuation_input_2: "source/continuation/build.py"
+      continuation_input_3: "source/continuation/preserve.py"
+      continuation_input_4: "source/continuation/render_desktop.py"
+      continuation_input_5: "source/continuation/meshes.json"
+      continuation_input_6: "source/continuation/recipe.json"
+      continuation_input_8: "source/continuation/preservation.json"
+      continuation_extra_1: "source/continuation/find_ends.py"
+      continuation_extra_2: "source/continuation/caps.json"
+      continuation_extra_3: "source/continuation/coverage.wkt"
+      continuation_extra_4: "source/continuation/roads.wkt"
+      continuation_extra_5: "source/continuation/base-geometry.json"
+      continuation_extra_6: "source/continuation/build-evidence.json"
+      seam_input_1: "source/seams/prepare.py"
+      seam_input_2: "source/seams/build.py"
+      seam_input_3: "source/seams/find_ends.py"
+      seam_input_4: "source/seams/caps.json"
+      seam_input_5: "source/seams/coverage.wkt"
+      seam_input_6: "source/seams/roads.wkt"
+      seam_input_7: "source/seams/meshes.json"
+      seam_input_8: "source/seams/recipe.json"
+      seam_input_9: "source/seams/preservation.json"
+      seam_input_10: "source/seams/placement_check.py"
+      road_completion_1: "source/road-completion/plan.py"
+      road_completion_2: "source/road-completion/prepare.py"
+      road_completion_3: "source/road-completion/build.py"
+      road_completion_4: "source/road-completion/meshes.json"
+      road_completion_5: "source/road-completion/recipe.json"
+      road_completion_6: "source/road-completion/preservation.json"
       preview_day: "runtime-day-1920x1080.png"
       preview_night: "runtime-night-1920x1080.png"
       preview_anomaly: "runtime-anomaly-1920x1080.png"
     metadata:
-      representation: "six_tile_campus_with_repaired_north_roads"
-      resolution: [5400, 4500]
-      web_resolution: [1800, 1500]
+      representation: "campus_with_blended_ground_and_connected_seams"
+      resolution: [7680, 3600]
+      web_resolution: [3200, 1500]
       logical_resolution: [1800, 1500]
-      historical_source: "053_at_3d16ad3"
-  expanded_preview_001:
+      atlas_origin: [-700, 0]
+      atlas_size: [3200, 1500]
+      retention_date: "2026-10-12"
+      retention_scope: "three_state_blender_and_active_runtime_resolutions"
+  expanded_preview_006:
     stage: "integration"
-    version: "001"
+    version: "006"
     selection: "selected"
-    approval: "review"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-10-12"
+      commit: "2f2b9a2"
+      scope: "retained_asset_006_three_state_bundle_and_desktop_integration"
     root: "assets/art/campus_map/expanded_neutral"
     files:
       day: "day.png"
       night: "night.png"
       anomaly: "anomaly.png"
     metadata:
-      representation: "full_map_for_campaign_selection_with_repaired_north_roads"
-      resolution: [5400, 4500]
+      representation: "wide_full_map_with_unchanged_interactive_core"
+      resolution: [7680, 3600]
       logical_resolution: [1800, 1500]
-      derived_from: "asset_001"
+      atlas_origin: [-700, 0]
+      atlas_size: [3200, 1500]
+      derived_from: "asset_006"
       light_boundary: "game/run/expanded_campus_layout.json"
     integration_authorization:
       scope: "existing_three_state_full_map_preview_and_main_campaign_route_selection"
       source: "docs/art/environments/campus-map.md"
       owners: ["scenes/expedition/expanded_campus_map.gd", "scenes/expedition/campaign_route_map.gd", "tools/campus-map-editor/editor.mjs"]
-  web_expanded_preview_001:
+  web_expanded_preview_006:
     stage: "integration"
-    version: "web-1800x1500-v1"
+    version: "web-3200x1500-v6"
     selection: "selected"
-    approval: "review"
+    approval: "approved"
+    approval_evidence:
+      source: "docs/art/environments/campus-map.md"
+      date: "2026-10-12"
+      commit: "2f2b9a2"
+      scope: "retained_asset_006_three_state_bundle_and_desktop_integration"
     root: "assets/art/web_campus_map/expanded_neutral"
     files:
       day: "day.png"
@@ -221,10 +211,12 @@ variants:
       anomaly: "anomaly.png"
     metadata:
       representation: "web_only_three_state_full_map"
-      resolution: [1800, 1500]
+      resolution: [3200, 1500]
       logical_resolution: [1800, 1500]
-      derived_from: "asset_001"
-      source_paths: "design/concepts/environments/campus-map/campus-map/asset_001/web"
+      atlas_origin: [-700, 0]
+      atlas_size: [3200, 1500]
+      derived_from: "asset_006"
+      source_paths: "design/concepts/environments/campus-map/campus-map/asset_006/web"
       platform: "web"
       mipmaps: true
       resolver: "game/visual/platform_asset_paths.gd"
@@ -235,7 +227,7 @@ variants:
       owners: ["scenes/expedition/expanded_campus_map.gd"]
 integration:
   status: "authorized_active"
-  active_variant: "expanded_preview_001"
+  active_variant: "expanded_preview_006"
   owners: ["scenes/expedition/expanded_campus_map.gd"]
   runtime_entry_points: ["scenes/expedition/campaign_route_map.gd"]
   root: "assets/art/campus_map/expanded_neutral"

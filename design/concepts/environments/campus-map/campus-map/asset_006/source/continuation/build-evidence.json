@@ -1,0 +1,20 @@
+{
+  "day": {
+    "original_objects": 9381,
+    "added": 22,
+    "faces": 6257,
+    "source_sha256": "4eb0be0a56872237661d322300386bce8f05ffa2ce0254f8810d65ba086fb1a3"
+  },
+  "night": {
+    "original_objects": 9431,
+    "added": 22,
+    "faces": 6257,
+    "source_sha256": "99e3e8a8d7249c63d8034a0c512a42dbc7266376f694d5e22e59c85ce18f185b"
+  },
+  "anomaly": {
+    "original_objects": 9445,
+    "added": 22,
+    "faces": 6257,
+    "source_sha256": "adb4557252cfd9bd7003e712525d63dcfdaef58536beb82b0f30c8807d5cd264"
+  }
+}

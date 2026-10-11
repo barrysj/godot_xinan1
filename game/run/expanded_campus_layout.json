@@ -45,8 +45,8 @@
     "feather": 12,
     "outside_brightness": {
       "day": 0.82,
-      "night": 0.82,
-      "anomaly": 0.82
+      "night": 0.55,
+      "anomaly": 0.50
     }
   },
   "places": {

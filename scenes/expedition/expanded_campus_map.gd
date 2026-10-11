@@ -9,7 +9,10 @@ const TEXTURES = {
 	"night": "res://assets/art/campus_map/expanded_neutral/night.png",
 	"anomaly": "res://assets/art/campus_map/expanded_neutral/anomaly.png"
 }
-# Colour-matched continuation for aspect ratios wider than the fixed atlas.
+# The atlas surrounds the unchanged 1800x1500 interactive core.
+const ATLAS_ORIGIN = Vector2(-700, 0)
+const ATLAS_SIZE = Vector2(3200, 1500)
+# Colour-matched fallback beyond the rendered 32:15 canvas.
 # The second colour matches the route-focus shader's dimmed exterior.
 const BACKDROPS = {
 	"day": [Color("a7ae9f"), Color("444541")],
@@ -17,6 +20,12 @@ const BACKDROPS = {
 	"anomaly": [Color("091118"), Color("0a0c0c")]
 }
 const MIN_ZOOM = 1.0
+# Same campus outline; dark states need separate perceptual contrast and a softer transition.
+const LIGHT_TREATMENT = {
+	"day": {"saturation": 1.0, "ambient": Vector3.ZERO, "feather": 1.0},
+	"night": {"saturation": 0.8, "ambient": Vector3(0.012, 0.021, 0.028), "feather": 2.5},
+	"anomaly": {"saturation": 0.62, "ambient": Vector3(0.009, 0.017, 0.023), "feather": 2.5}
+}
 const MAX_ZOOM = 3.0
 const ZOOM_STEP = 1.25
 const VIEW_RESPONSE = 18.0
@@ -47,9 +56,10 @@ func _ready() -> void:
 	mouse_exited.connect(func(): preview(-1))
 	focus_material = ShaderMaterial.new()
 	focus_material.shader = preload("res://scenes/expedition/campus_route_focus.gdshader")
-	focus_material.set_shader_parameter("crop_origin", Vector2.ZERO)
-	focus_material.set_shader_parameter("crop_size", layout.SIZE)
-	focus_material.set_shader_parameter("texture_size", layout.SIZE)
+	focus_material.set_shader_parameter("crop_origin", ATLAS_ORIGIN)
+	focus_material.set_shader_parameter("crop_size", ATLAS_SIZE)
+	focus_material.set_shader_parameter("texture_size", ATLAS_SIZE)
+	focus_material.set_shader_parameter("texture_origin", ATLAS_ORIGIN)
 	var boundary = PackedVector2Array(layout.LIGHT_BOUNDARY)
 	focus_material.set_shader_parameter("light_boundary_count", boundary.size())
 	boundary.resize(32)
@@ -248,10 +258,14 @@ func _draw() -> void:
 	if not texture_cache.has(map_state):
 		texture_cache[map_state] = load(PlatformAssetPaths.resolve(TEXTURES[map_state]))
 	surface.texture = texture_cache[map_state]
-	surface.position = map_rect().position
-	surface.size = map_rect().size
+	surface.position = map_rect().position + ATLAS_ORIGIN * map_rect().size / layout.SIZE
+	surface.size = ATLAS_SIZE * map_rect().size / layout.SIZE
 	focus_material.set_shader_parameter("focused", active >= 0)
 	focus_material.set_shader_parameter("light_outside_brightness", float(layout.OUTSIDE_BRIGHTNESS[map_state]))
+	var light: Dictionary = LIGHT_TREATMENT[map_state]
+	focus_material.set_shader_parameter("light_outside_saturation", light.saturation)
+	focus_material.set_shader_parameter("light_inside_ambient", light.ambient)
+	focus_material.set_shader_parameter("light_boundary_feather", layout.LIGHT_FEATHER * float(light.feather))
 	focus_material.set_shader_parameter("inside_gain", 1.08 if map_state == "day" else 1.28)
 	if active >= 0:
 		var vertices = PackedVector2Array(layout.ROUTES[active].area)

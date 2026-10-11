@@ -1,0 +1,140 @@
+{
+  "northwest": {
+    "counts": {
+      "existing_buildings_skipped": 73,
+      "buildings": 36,
+      "small_buildings_skipped": 157,
+      "roads": 50,
+      "small_roads_skipped": 55,
+      "waterways": 1,
+      "ground": 1
+    },
+    "area_m2": {
+      "buildings": 84140.46212181757,
+      "roads": 28088.6480763884,
+      "waterways": 244.2258727196178,
+      "ground": 424884.1588288345
+    },
+    "gap_area_m2": 424884.1588288345,
+    "source_sha256": {
+      "LICENSE.txt": "84f1f4f007abf37bc03b982409e44e73e7059d1d8ade96d1719a1042a1f03a70",
+      "topoexport_2D_vectorial.dxf": "a837451115e887ff9b14000b24704aa92059fd475f1d76d8ed570e5b5b46e8ea",
+      "topoexport_3D_modeling.glb": "ceb76049b724f63841888f6d2551e5d415381e6b6af8749817292d51e2bd7c09"
+    },
+    "alignment": {
+      "code": "001EC1",
+      "translation_to_core": [
+        -399.89206569433793,
+        776.0279812262555
+      ],
+      "matches": 190,
+      "max_residual": 9.223356681457163e-06,
+      "layers": {
+        "TPX_FRAME_PROJECT": 1,
+        "TPX_WATERWAYS": 7,
+        "TPX_WATERWAYS_HATCH": 3,
+        "TPX_ROADS_CONTOURS": 121,
+        "TPX_ROADS_HATCH": 12,
+        "TPX_ROADS_AXES": 210,
+        "TPX_RAILWAYS_AXES": 4,
+        "TPX_BUILDINGS_SHADOWS_OUTLINES": 371,
+        "TPX_BUILDINGS_SHADOWS_HATCH": 368,
+        "TPX_BUILDINGS": 276,
+        "TPX_BUILDINGS_HATCH": 267,
+        "TPX_BUILDING_HEIGHTS_TEXT": 254,
+        "TPX_BUILDING_AREAS_TEXT": 254,
+        "TPX_CONTOUR_LINES_5M": 18,
+        "TPX_CONTOUR_LINES_5M_TEXT": 18
+      },
+      "frames": [
+        [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            954.8069250594708,
+            0.0
+          ],
+          [
+            954.8069250594708,
+            1061.549869356677
+          ],
+          [
+            0.0,
+            1061.549869356677
+          ]
+        ]
+      ]
+    }
+  },
+  "southwest": {
+    "counts": {
+      "small_buildings_skipped": 486,
+      "existing_buildings_skipped": 21,
+      "buildings": 46,
+      "small_roads_skipped": 35,
+      "roads": 50,
+      "waterways": 2,
+      "ground": 1
+    },
+    "area_m2": {
+      "buildings": 43656.38102677265,
+      "roads": 29622.13875125033,
+      "waterways": 15872.746796129879,
+      "ground": 542269.8624587348
+    },
+    "gap_area_m2": 542269.8654725893,
+    "source_sha256": {
+      "LICENSE.txt": "84f1f4f007abf37bc03b982409e44e73e7059d1d8ade96d1719a1042a1f03a70",
+      "topoexport_2D_vectorial.dxf": "66baa852a5a4d6afe917514aa9f722083c9d77d379b2856f272a457e6526b232",
+      "topoexport_3D_modeling.glb": "15618570828b1385b8993cb71a098137598bb39e5b6bddc90e66f9e9c11243a8"
+    },
+    "alignment": {
+      "code": "E7EBC4",
+      "translation_to_core": [
+        -506.55957576891774,
+        -687.6491288715279
+      ],
+      "matches": 37,
+      "max_residual": 7.037019047205788e-07,
+      "layers": {
+        "TPX_FRAME_PROJECT": 1,
+        "TPX_WATERWAYS": 8,
+        "TPX_WATERWAYS_HATCH": 4,
+        "TPX_ROADS_CONTOURS": 69,
+        "TPX_ROADS_HATCH": 6,
+        "TPX_ROADS_AXES": 140,
+        "TPX_RAILWAYS_AXES": 3,
+        "TPX_BUILDINGS_SHADOWS_OUTLINES": 641,
+        "TPX_BUILDINGS_SHADOWS_HATCH": 641,
+        "TPX_BUILDINGS": 553,
+        "TPX_BUILDINGS_HATCH": 553,
+        "TPX_BUILDING_HEIGHTS_TEXT": 550,
+        "TPX_BUILDING_AREAS_TEXT": 550,
+        "TPX_CONTOUR_LINES_5M": 20,
+        "TPX_CONTOUR_LINES_5M_TEXT": 20
+      },
+      "frames": [
+        [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            1273.5754455008428,
+            0.0
+          ],
+          [
+            1273.5754455008428,
+            744.6721433410421
+          ],
+          [
+            0.0,
+            744.6721433410421
+          ]
+        ]
+      ]
+    }
+  }
+}

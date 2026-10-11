@@ -15,4 +15,4 @@ concept_###与asset_###只表示资料阶段；批准状态看Manifest。当前�
 
 资源浏览器使用的缩略图、动作GIF和交付预览随源包保存在`review/`或Manifest指定位置并进入Git；清理前核对全部保留版本的files、previews和资源依赖，不删除仍用于浏览的文件。已有三个正式演示GIF沿用原路径，由Git忽略规则显式豁免。
 
-Codex工作流的临时截图、试渲染、接触表、审核报告、日志和临时脚本统一输出到`.godot/art-workflow/`，不进入Git。旧`review/codex-workflow/`目录也默认忽略；新交付预览使用`review/`，不再混入工作流临时目录。历史废稿和逐次审核从Git查阅，不在活动目录重建历史图库。校园三态源包入口见[校园图](concepts/environments/campus-map/campus-map/asset_001/README.md)。
+Codex工作流的临时截图、试渲染、接触表、审核报告、日志和临时脚本统一输出到`.godot/art-workflow/`，不进入Git。旧`review/codex-workflow/`目录也默认忽略；新交付预览使用`review/`，不再混入工作流临时目录。历史废稿和逐次审核从Git查阅，不在活动目录重建历史图库。校园三态源包入口见[校园图](concepts/environments/campus-map/campus-map/asset_006/README.md)。

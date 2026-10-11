@@ -1,0 +1,35 @@
+{
+  "base": "5042aae / asset_004",
+  "matched_cap_pairs": [
+    [
+      10,
+      100
+    ],
+    [
+      12,
+      72
+    ],
+    [
+      21,
+      88
+    ],
+    [
+      24,
+      91
+    ],
+    [
+      23,
+      74
+    ],
+    [
+      17,
+      73
+    ]
+  ],
+  "curved_outer_links": 3,
+  "buildings": 18,
+  "objects": 19,
+  "faces": 1382,
+  "ground_material": "shared world-space low-frequency color variation, unified world-up shading normal",
+  "noise_scale": 0.0045
+}

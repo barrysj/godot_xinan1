@@ -1,0 +1,20 @@
+{
+  "day": {
+    "preserved_objects": 9422,
+    "added_objects": 1,
+    "added_faces": 946,
+    "camera_unchanged": true
+  },
+  "night": {
+    "preserved_objects": 9472,
+    "added_objects": 1,
+    "added_faces": 946,
+    "camera_unchanged": true
+  },
+  "anomaly": {
+    "preserved_objects": 9486,
+    "added_objects": 1,
+    "added_faces": 946,
+    "camera_unchanged": true
+  }
+}

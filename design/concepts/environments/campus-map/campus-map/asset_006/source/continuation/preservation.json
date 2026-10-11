@@ -1,0 +1,20 @@
+{
+  "day": {
+    "preserved_objects": 9380,
+    "added_objects": 22,
+    "core_projection_error_pixels": 8.940696716308594e-05,
+    "source_sha256": "4eb0be0a56872237661d322300386bce8f05ffa2ce0254f8810d65ba086fb1a3"
+  },
+  "night": {
+    "preserved_objects": 9430,
+    "added_objects": 22,
+    "core_projection_error_pixels": 8.940696716308594e-05,
+    "source_sha256": "99e3e8a8d7249c63d8034a0c512a42dbc7266376f694d5e22e59c85ce18f185b"
+  },
+  "anomaly": {
+    "preserved_objects": 9444,
+    "added_objects": 22,
+    "core_projection_error_pixels": 8.940696716308594e-05,
+    "source_sha256": "adb4557252cfd9bd7003e712525d63dcfdaef58536beb82b0f30c8807d5cd264"
+  }
+}

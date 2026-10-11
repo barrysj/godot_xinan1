@@ -36,7 +36,7 @@ run-holo-card.ps1 -Mode Check、scenes/holo_card/check_tilt_direction.tscn以及
 源包验证可在项目根重跑：
 
 ```powershell
-& 'E:/Games/SteamLibrary/steamapps/common/Blender/blender.exe' -b -t 2 --python-exit-code 1 --python design/concepts/environments/campus-map/campus-map/asset_001/verify_bundle.py
+& 'E:/Games/SteamLibrary/steamapps/common/Blender/blender.exe' -b -t 2 --python-exit-code 1 --python design/concepts/environments/campus-map/campus-map/asset_002/verify_bundle.py
 ```
 
 生成文档保留原始生成／编辑提示词、必要输入关系及最终参数入口；五套由动作JSON派生的重复Markdown已移除，生成工具不再重建它们，七动作JSON及输入参数保持。仍被源包预览引用的旧版本作为技术依赖保留，不作为过程档案。整理不删除Git中的素材历史；按负责人授权把两个整理提交重放到main，重放前后文件树相同，用户布局未修改。
@@ -50,3 +50,38 @@ Godot直接加载搬迁后的粉笔帧包／混合包、弹体、两份闪卡和
 2026-10-10，代码基线main的2e520dd，整理基线d08ba91：核对99份保留生成文档／调用文件，补回原始提示词及制作依据，摘要维持摘要，机器可读调用中的14份提示词完整保留。保留版本在main中登记的1316份媒体文件全部存在，图像／GIF内容与基线一致，预览GIF入口未减少；资源台54对象／2042文件、missing／mismatch／errors均0。
 
 规则见[源资料与版本](WORKFLOW.md#源资料与版本)。.gitignore覆盖.godot/art-workflow、旧codex-workflow中间文件及旧工具的质量报告，保留三个已有演示GIF例外；交付预览与生成配方不被忽略。本次只修改文档及忽略规则，原图、运行资产、生成参数和Manifest未改变，不重新宣称视觉／施法预览验收通过。
+
+## 校园地图补景与旧版清理
+
+2026-10-12，施工基线5042aae，基于asset_004制作asset_005。修正扩展地面3072面、道路3064面的朝向；共享地面采用连续世界坐标的柔和色调变化与一致向上着色。异常态保留原深色／发光材质链，在其上乘入轻微变化。右上角接通6组对应道路断口，以一条弯道和两条支路衔接外围；两侧接缝补18栋简单建筑，共新增19对象、1382面。平面重叠检查确认新道路不穿过已有建筑，18栋新增建筑避开道路。
+
+三态原对象位置、顶点及核心网格拓扑逐一保持，相机参数不变；外围地面／道路只调整面朝向。source/seams/preservation.json记录9403／9453／9467个原对象核验，场景分别增加19对象。用户布局JSON SHA-256保持37aa8a257c550e76d25c6b2160efbe0a1a84f6dfca9a3846cd4cb04732878b6b。
+
+源包入口：design/concepts/environments/campus-map/campus-map/asset_005。render.py输出桌面7680×3600／48 samples，--web输出3200×1500／24 samples，Blender4.5.14／Cycles／OptiX；采用512像素分块降低显存压力。三态自包含工程直接可编辑，不依赖旧完整源包。
+
+```powershell
+& 'E:/Games/SteamLibrary/steamapps/common/Blender/blender.exe' -b -t 2 --python-exit-code 1 --python design/concepts/environments/campus-map/campus-map/asset_005/verify_bundle.py
+& 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe' --path . --rendering-method gl_compatibility res://scenes/expedition/expanded_campus_preview.tscn -- --expanded-map-check
+```
+
+最终高清与小尺寸三态各通过220／0检查，覆盖1920×1080／2560×1440／1920×1200、两侧实际纹理与画布覆盖、缩放／拖动／复位、点击与选区。六张实际导入纹理的尺寸和基础层像素与PNG逐字节一致；平台映射33／0。Blender源包检查通过，三态9422／9472／9486对象，无缺失外部依赖，058集合数量／面数、外围面朝向、原异常材质链与相机宽度均符合配方。最终runtime三张1920×1080截图来自高清底图。
+
+沿用原地图组件、shader纹理原点与编辑器适配，未改游戏逻辑、路线或存档。原双路线的兼容投影仍是现用依赖，其670／0及编辑器12项是e88bc48的已有结果，本轮不冒充重跑。
+
+旧源包中的26份必要制作输入已逐字节保留，新增端点、网格、参数和施工／重叠核验脚本随source/seams保留。按既有授权删除旧asset_004和tmp_008，只保留asset_005完整源包；不重写Git历史。AssetCatalog扫描54对象／2073文件，缺失／不一致／错误均0，资源台45项测试通过。文档链接和Git差异检查通过；临时试渲染、检查截图及本轮工作缓存在收尾清理，最终预览与必要制作依据随源包保留。
+
+Godot编辑器导入与三态实际运行正常退出0；仍有用户设置保存权限、Android编辑器设置销毁和根证书读取的环境告警，未阻断截图和像素核验。临时小尺寸／像素检查直接读取PNG产生export警告，正式组件使用导入资源。本版授权试接入，视觉效果待负责人复核，不继承上一版批准。Web验收限于原组件低分辨率显示、图片导入与平台映射，不包含新浏览器导出或移动设备；超过32:15仍回退匹配底色。
+
+### 夜间／异常亮区
+
+2026-10-12，基线9860507。沿用上述Godot expanded-map-check命令，三态×1920×1080／2560×1440／1920×1200共220检查、0失败；node --test tools/campus-map-editor/editor-core.test.mjs为6项、0失败。查看两态未选区截图和夜间16:10选区截图：外围退后，真实校园暗部更连续，路线高亮仍清楚。当前日间与保留基线截图逐像素比较仅2像素最大通道差1/255，属着色计算舍入，视觉保持。
+
+夜间／异常runtime预览随asset_005更新；三态Blender、两档底图未修改。image-quality-check复核PASS_WITH_NOTES：技术、主体、内容、构图和伪影检查通过，解剖不适用；异常右侧亮区内既有光斑仍可见，边界附近原材质差异未完全消除。未重新导出Web或验证移动设备。运行有根证书和shader缓存写入权限告警，进程正常退出0。
+
+### 两处指定道路补全
+
+2026-10-12，基线b16bb30，当前源包asset_006。用户确认坐标来自地图编辑器：(95,914)处四条边带接入最近横向道路，(989,54)处四条边带按原端点切线缓弯连接。三态各新增059道路对象1个、946面；已有9422／9472／9486个对象的变换、网格顶点与拓扑指纹和相机保持。几何贴地未覆盖面积0、建筑重叠0；原36份source输入逐字节保留，新增6份制作依据随source/road-completion保留。
+
+重跑入口沿用expanded-map-check，源包核验改为asset_006/verify_bundle.py。高清与小尺寸在原地图组件分别220检查／0失败，覆盖三态、1920×1080／2560×1440／1920×1200与缩放、拖动、点击、选区；最终保留的runtime截图来自高清底图。Blender三态只读重开、自包含依赖、059面数与法线、三态两档源图与运行图逐字节相等均通过。资源台54对象／2079文件，missing／mismatch／errors均0；docs检查192文档／41功能／855链接，0错误。布局JSON及亮区两份代码与b16bb30一致，布局SHA-256为dafbd8e8eb8c1a2efec18794a620e6f27402d73739500653b0a0b9bbec26bd73。
+
+两处道路视觉复查通过，无新增建筑穿插，夜间／异常外围仍较暗；新增道路为授权试接入、待负责人复核。按已有留存授权删除asset_005，仅保留asset_006整套，必要源输入和预览继续登记，不改Git历史。Web验证限原生组件的小尺寸图，不包括浏览器导出或手机。Godot原生运行仍有根证书／shader缓存权限告警；临时SceneTree小尺寸检查还触发GGT插件current_scene为空的启动异常，但地图脚本完成220项、进程退出0；正式场景高清检查无该脚本异常。编辑器导入仍有用户设置保存／Android退出设置环境告警，退出0。

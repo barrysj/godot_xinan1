@@ -1,0 +1,62 @@
+{
+  "day": {
+    "preserved_objects": 9403,
+    "added_objects": 19,
+    "added_faces": 1382,
+    "flipped_up_faces": {
+      "057 Ground continuation": 3072,
+      "057 Existing roads extended": 3064
+    },
+    "camera_unchanged": true,
+    "object_transforms_and_vertices_unchanged": true,
+    "core_topology_unchanged": true,
+    "shared_ground_base_color": [
+      0.5,
+      0.6800000071525574,
+      0.3499999940395355,
+      1.0
+    ],
+    "source_sha256": "2ba9d6195311aeee20b5083fb99219b382e6d70ed15b10f3c56138460a4ee5cd",
+    "preserved_color_chain": "unlinked base color"
+  },
+  "night": {
+    "preserved_objects": 9453,
+    "added_objects": 19,
+    "added_faces": 1382,
+    "flipped_up_faces": {
+      "057 Ground continuation": 3072,
+      "057 Existing roads extended": 3064
+    },
+    "camera_unchanged": true,
+    "object_transforms_and_vertices_unchanged": true,
+    "core_topology_unchanged": true,
+    "shared_ground_base_color": [
+      0.054999999701976776,
+      0.08500000089406967,
+      0.08500000089406967,
+      1.0
+    ],
+    "source_sha256": "734393a66cd206198edad206d5af1cb8f6e8d4a64f4e6f5d6f9925c9b7b7182e",
+    "preserved_color_chain": "unlinked base color"
+  },
+  "anomaly": {
+    "preserved_objects": 9467,
+    "added_objects": 19,
+    "added_faces": 1382,
+    "flipped_up_faces": {
+      "057 Ground continuation": 3072,
+      "057 Existing roads extended": 3064
+    },
+    "camera_unchanged": true,
+    "object_transforms_and_vertices_unchanged": true,
+    "core_topology_unchanged": true,
+    "shared_ground_base_color": [
+      0.5299999713897705,
+      0.6299999952316284,
+      0.38999998569488525,
+      1.0
+    ],
+    "source_sha256": "3f997a3d417b9f1aee437fadb28b7e72ec6abf032ef5e57f11eb1592750e7814",
+    "preserved_color_chain": "Mix (Legacy).001"
+  }
+}

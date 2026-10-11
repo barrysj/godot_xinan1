@@ -71,11 +71,9 @@ func run(view: Control) -> void:
 			view.board.set_state(state)
 			await settle(view)
 			var no_focus_shot = view.get_viewport().get_texture().get_image()
-			var no_focus_edge = int(view.board.map_rect().position.x)
-			var no_focus_mid = int(view.board.size.y / 2.0)
-			var no_focus_backdrop = no_focus_shot.get_pixel(no_focus_edge - 6, no_focus_mid)
-			var no_focus_atlas = no_focus_shot.get_pixel(no_focus_edge + 6, no_focus_mid)
-			check(Vector3(no_focus_backdrop.r, no_focus_backdrop.g, no_focus_backdrop.b).distance_to(Vector3(no_focus_atlas.r, no_focus_atlas.g, no_focus_atlas.b)) < 0.06, "unfocused atlas edge blends into backdrop")
+			check(_has_side_detail(no_focus_shot, false), "left surroundings contain rendered detail")
+			check(_has_side_detail(no_focus_shot, true), "right surroundings contain rendered detail")
+			check(Rect2(view.board.surface.position, view.board.surface.size).encloses(Rect2(Vector2.ZERO, view.board.size)), "wide atlas covers viewport")
 			no_focus_shot.save_png("res://.godot/expanded-map-unselected-%s-%dx%d.png" % [state, dimensions.x, dimensions.y])
 			if dimensions == Vector2i(1920, 1080) and state == "day":
 				var probe = Vector2i(view.board.get_global_transform_with_canvas() * view.board.project(Vector2(300, 200)))
@@ -104,11 +102,7 @@ func run(view: Control) -> void:
 				check(view.board.active_route() == route, "area focused")
 				var shot = view.get_viewport().get_texture().get_image()
 				check(shot.get_width() == dimensions.x and shot.get_height() == dimensions.y, "screenshot dimensions")
-				var seam_x = int(view.board.map_rect().position.x)
-				var seam_y = int(view.board.size.y / 2.0)
-				var backdrop = shot.get_pixel(seam_x - 6, seam_y)
-				var atlas_edge = shot.get_pixel(seam_x + 6, seam_y)
-				check(Vector3(backdrop.r, backdrop.g, backdrop.b).distance_to(Vector3(atlas_edge.r, atlas_edge.g, atlas_edge.b)) < 0.06, "wide-screen atlas edge blends into backdrop")
+				check(Rect2(view.board.surface.position, view.board.surface.size).encloses(Rect2(Vector2.ZERO, view.board.size)), "wide atlas covers viewport")
 				shot.save_png("res://.godot/expanded-map-%s-%d-%dx%d.png" % [state, route + 1, dimensions.x, dimensions.y])
 		var place_at = view.board.get_global_transform_with_canvas() * view.board.project(view.board.layout.PLACES["north"].point)
 		await click(view, place_at)
@@ -157,7 +151,7 @@ func run(view: Control) -> void:
 		await click(view, view.zoom_reset_button.get_global_rect().get_center())
 		check(is_equal_approx(view.board.zoom, 1.0) and view.board.map_offset.length() < 0.01, "reset restores full map: zoom %f offset %s" % [view.board.zoom, view.board.map_offset])
 		view.board.select_route(-1)
-		var route_point = view.board.get_global_transform_with_canvas() * view.board.project(Vector2(360, 650))
+		var route_point = view.board.get_global_transform_with_canvas() * view.board.project(_current_route_background(view))
 		await click(view, route_point)
 		check(view.board.selected_route == 0 and view.select_button.visible, "clicking map area opens select action")
 		await click(view, view.select_button.get_global_rect().get_center())
@@ -171,3 +165,29 @@ func run(view: Control) -> void:
 	print("EXPANDED_MAP_CHECK %d checks, %d failures" % [checks, failures])
 	if failures == 0: view.get_tree().quit(0)
 	else: view.get_tree().quit(1)
+
+func _current_route_background(view: Control) -> Vector2:
+	for y in range(40, 1460, 24):
+		for x in range(40, 1760, 24):
+			var source_point = Vector2(x, y)
+			var at = view.board.project(source_point)
+			var global_at = view.board.get_global_transform_with_canvas() * at
+			if view.board.route_at(at) != 0 or not view.board.place_at(at).is_empty(): continue
+			if view.controls_panel.get_global_rect().has_point(global_at): continue
+			if view.action_panel.get_global_rect().has_point(global_at): continue
+			return source_point
+	assert(false, "No selectable route background in current layout")
+	return Vector2(-1, -1)
+
+func _has_side_detail(shot: Image, right: bool) -> bool:
+	var width = shot.get_width()
+	var start = int(width * 0.9) if right else 0
+	var low = 1.0
+	var high = 0.0
+	# Avoid the top-right controls and bottom debug overlay.
+	for y in range(int(shot.get_height() * 0.42), int(shot.get_height() * 0.88), 8):
+		for x in range(start, start + int(width * 0.1), 8):
+			var value = shot.get_pixel(x, y).get_luminance()
+			low = minf(low, value)
+			high = maxf(high, value)
+	return high - low > 0.01
