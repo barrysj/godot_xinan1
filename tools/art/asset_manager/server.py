@@ -18,6 +18,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from catalog import AssetCatalog
+from thumbnails import ThumbnailCache
 
 
 APP_ID = "cyber-pop-art-manager-v4"
@@ -157,6 +158,59 @@ class PreviewManager(object):
             return True, self._last["message"]
 
 
+def browse_index(result):
+    """Keep large file lists and resource graphs behind the object detail endpoint."""
+    objects = []
+    for obj in result['objects']:
+        item = {key: obj[key] for key in ('id', 'name', 'category', 'has_generated_assets', 'counts', 'statuses')}
+        item['thumbnail'] = next(({'id': asset['id'], 'name': asset['name']} for asset in obj['assets'] if asset['id'] == obj['thumbnail_id']), None)
+        item['approval'] = next((v['approval'] for v in obj['variants'] if v['selection'] == 'selected' and v['stage'] == 'asset'), 'unknown')
+        objects.append(item)
+    return dict(result, objects=objects)
+
+
+class CatalogLoader:
+    def __init__(self, server):
+        self.server = server
+        self.lock = threading.Lock()
+        self.job = None
+        self.objects = {}
+        self.revision = None
+
+    def start(self, manifest, validate):
+        with self.lock:
+            if self.job and self.job['state'] == 'running':
+                if self.job['manifest'] == manifest and self.job['validate'] == validate:
+                    return dict(self.job)
+                raise RuntimeError('已有目录任务正在加载，请稍后重试')
+            self.job = {'id': secrets.token_hex(8), 'state': 'running', 'phase': '读取索引',
+                        'completed': 0, 'total': 0, 'manifest': manifest, 'validate': validate}
+            job_id = self.job['id']
+            threading.Thread(target=self._run, args=(job_id, manifest, validate), daemon=True).start()
+            return dict(self.job)
+
+    def _run(self, job_id, manifest, validate):
+        def progress(update):
+            with self.lock:
+                self.job.update(update)
+        try:
+            catalog = AssetCatalog(self.server.project_root)
+            result = catalog.scan(manifest, validate=validate, progress=progress)
+            index = browse_index(result)
+            with self.lock:
+                self.server.catalog = catalog
+                self.objects = {obj['id']: obj for obj in result['objects']}
+                self.revision = job_id
+                self.job.update(state='ready', phase='目录就绪', result=index)
+        except Exception as exc:
+            with self.lock:
+                self.job.update(state='failed', error='目录加载失败：%s' % exc)
+
+    def status(self, job_id):
+        with self.lock:
+            return dict(self.job) if self.job and self.job['id'] == job_id else None
+
+
 class ArtManagerServer(ThreadingHTTPServer):
     daemon_threads = True
 
@@ -167,6 +221,8 @@ class ArtManagerServer(ThreadingHTTPServer):
         self.preview = PreviewManager(self.project_root)
         self.token = secrets.token_urlsafe(32)
         self.default_manifest = str(self.project_root / "assets" / "art" / "asset_manifest.yaml")
+        self.loader = CatalogLoader(self)
+        self.thumbnails = ThumbnailCache(self.project_root)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -222,6 +278,22 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path in ('/api/load/status', '/api/object'):
+            if not self._authorized():
+                self._json(HTTPStatus.FORBIDDEN, {'error': '会话校验失败'})
+                return
+            query = parse_qs(parsed.query)
+            if parsed.path == '/api/load/status':
+                job = self.server.loader.status(query.get('id', [''])[0])
+                self._json(HTTPStatus.OK if job else HTTPStatus.NOT_FOUND, job or {'error': '加载任务已过期，请刷新'})
+            else:
+                with self.server.loader.lock:
+                    if query.get('revision', [''])[0] != self.server.loader.revision:
+                        self._json(HTTPStatus.CONFLICT, {'error': '目录已刷新，请重新加载'})
+                        return
+                    obj = self.server.loader.objects.get(query.get('id', [''])[0])
+                self._json(HTTPStatus.OK if obj else HTTPStatus.NOT_FOUND, obj or {'error': '对象不存在'})
+            return
         if parsed.path == "/api/health":
             self._json(HTTPStatus.OK, {
                 "app": APP_ID,
@@ -247,11 +319,29 @@ class Handler(BaseHTTPRequestHandler):
             if path is None:
                 self._json(HTTPStatus.NOT_FOUND, {"error": "资源不存在或未在 Manifest 登记"})
                 return
+            if query.get('size', [''])[0] == 'thumb':
+                if path.suffix.lower() not in ('.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.svg'):
+                    self._json(HTTPStatus.BAD_REQUEST, {'error': '该文件不是图片'})
+                    return
+                path = self.server.thumbnails.get(path)
             content_type = mimetypes.guess_type(str(path))[0] or "application/octet-stream"
             try:
-                size = path.stat().st_size
+                stat = path.stat()
+                size = stat.st_size
+                etag = '"%x-%x"' % (stat.st_mtime_ns, size)
+                if self.headers.get('If-None-Match') == etag:
+                    self.send_response(HTTPStatus.NOT_MODIFIED)
+                    self.send_header('ETag', etag)
+                    self.send_header('Cache-Control', 'private, max-age=0, must-revalidate')
+                    self.end_headers()
+                    return
                 self.send_response(HTTPStatus.OK)
-                self._security_headers(content_type)
+                self.send_header('Content-Type', content_type)
+                self.send_header('Cache-Control', 'private, max-age=0, must-revalidate')
+                self.send_header('ETag', etag)
+                self.send_header('X-Content-Type-Options', 'nosniff')
+                self.send_header('Referrer-Policy', 'no-referrer')
+                self.send_header('Cross-Origin-Resource-Policy', 'same-origin')
                 if path.suffix.lower() == ".svg":
                     self.send_header("Content-Security-Policy", "sandbox")
                 self.send_header("Content-Length", str(size))
@@ -317,12 +407,29 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._json(HTTPStatus.OK, {"selected": bool(selected), "path": selected})
             return
-        if parsed.path == "/api/scan":
+        if parsed.path in ('/api/load', '/api/scan'):
             manifest = payload.get("manifest", self.server.default_manifest)
             if not isinstance(manifest, str) or len(manifest) > 4096:
                 self._json(HTTPStatus.BAD_REQUEST, {"error": "Manifest 路径无效"})
                 return
-            result = self.server.catalog.scan(manifest)
+            if parsed.path == '/api/load':
+                validate = payload.get('validate', False)
+                if not isinstance(validate, bool):
+                    self._json(HTTPStatus.BAD_REQUEST, {'error': '校验选项无效'})
+                    return
+                try:
+                    job = self.server.loader.start(manifest, validate)
+                except RuntimeError as exc:
+                    self._json(HTTPStatus.CONFLICT, {'error': str(exc)})
+                    return
+                self._json(HTTPStatus.ACCEPTED, job)
+                return
+            # Preserve the delivery-validation API used by existing tools/tests.
+            catalog = AssetCatalog(self.server.project_root)
+            result = catalog.scan(manifest)
+            with self.server.loader.lock:
+                if not self.server.loader.job or self.server.loader.job['state'] != 'running':
+                    self.server.catalog = catalog
             self._json(HTTPStatus.OK, result)
             return
         if parsed.path == "/api/preview":

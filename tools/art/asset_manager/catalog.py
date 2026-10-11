@@ -46,7 +46,7 @@ def object_category(identity, collection):
 def has_generated_assets(variants):
     # Generated means real asset-stage output, independent of approval or use.
     return any(v['stage'] in ('asset', 'animation') and any(
-        f['integrity']['status'] == 'matched' and f['role'] in
+        f['exists'] and f['role'] in
         ('image', 'atlas', 'animation_resource', 'animation_library', 'effect_resource', 'projectile_resource')
         for f in v['files']) for v in variants)
 
@@ -160,7 +160,11 @@ def _registered_path(project_root, raw_path, base=None):
     if not path.is_absolute():
         path = Path(base or project_root) / path
     path = path.resolve()
-    return path if _inside(path, project_root) else None
+    try:
+        path.relative_to(project_root)
+        return path
+    except ValueError:
+        return None
 
 
 def _uri_path(project_root, uri):
@@ -168,7 +172,7 @@ def _uri_path(project_root, uri):
     return _registered_path(project_root, value[6:]) if value.startswith("res://") else None
 
 
-def godot_resource_info(path, trusted_project_root=None, visited=None):
+def godot_resource_info(path, trusted_project_root=None, visited=None, check_references=True):
     text = _read_text(path)
     lower = text.lower()
     if "battle_animation_set.gd" in lower or 'script_class="battleanimationset"' in lower:
@@ -189,6 +193,8 @@ def godot_resource_info(path, trusted_project_root=None, visited=None):
         for reference in re.findall(r'path="res://([^"]+)"', text):
             uri = "res://" + reference
             references.append(uri)
+            if not check_references:
+                continue
             target = (project_root / reference.replace("/", os.sep)).resolve()
             if not target.exists():
                 missing_refs.append(uri)
@@ -204,7 +210,7 @@ def godot_resource_info(path, trusted_project_root=None, visited=None):
     return {"resource_type": resource_type, "project_root": str(project_root) if project_root else None, "references": references, "missing_references": missing_refs, "skeletal_actions": skeletal_actions}
 
 
-def _role_for(file_id, path, stage="asset"):
+def _role_for(file_id, path, stage="asset", resource_info=None):
     key = str(file_id or "").lower()
     name = Path(path).name.lower()
     suffix = Path(path).suffix.lower()
@@ -213,7 +219,7 @@ def _role_for(file_id, path, stage="asset"):
     if name.endswith(".frames.json") or key in ("frames", "frame_metadata"):
         return "frame_metadata"
     if suffix in RESOURCE_EXTENSIONS:
-        resource_type = godot_resource_info(path).get("resource_type") if Path(path).is_file() else ""
+        resource_type = (resource_info if resource_info is not None else godot_resource_info(path)).get("resource_type") if Path(path).is_file() else ""
         return {"BattleAnimationSet": "animation_resource", "AnimationLibrary": "animation_library", "BattleEffectSet": "effect_resource", "BattleProjectileStyle": "projectile_resource"}.get(resource_type, "dependency")
     if "source" in key:
         return "source"
@@ -274,14 +280,14 @@ def _legacy_attack_modes(variant, project_root):
     return ["ranged" if reach and float(reach.group(1)) > 1.5 else "melee"]
 
 
-def _preview_target_info(config, project_root):
+def _preview_target_info(config, project_root, check_references=True):
     if config.get("card"):
         uri = str(config["card"])
         path = _uri_path(project_root, uri)
         root = Path(project_root) / "assets/art/holo_cards"
         if path is None or not _inside(path, root) or not path.is_file():
             return False, "卡片资源缺失或越出卡目录", None
-        info = godot_resource_info(path, project_root)
+        info = godot_resource_info(path, project_root, check_references=check_references)
         if "res://game/art/holo_card_visual.gd" not in info["references"] or info["missing_references"]:
             return False, "卡片类型或引用无效", None
         script = Path(project_root) / "run-holo-card.ps1"
@@ -305,7 +311,7 @@ def _preview_target_info(config, project_root):
             if (parent / ".gdignore").is_file():
                 return False, "%s位于 Godot 忽略目录；请使用 GIF 或正式资产预览" % label, None
     if animation:
-        info = godot_resource_info(_uri_path(project_root, animation), project_root)
+        info = godot_resource_info(_uri_path(project_root, animation), project_root, check_references=check_references)
         if info["resource_type"] != "BattleAnimationSet":
             return False, "动画资源类型不正确", None
         if info["missing_references"]:
@@ -322,26 +328,43 @@ class AssetCatalog(object):
         self.default_manifest = self.project_root / "assets" / "art" / "asset_manifest.yaml"
         self.files = {}
         self.preview_items = {}
+        self._validate = True
+        self._roots = {}
+        self._file_info = {}
+        self._progress = None
+        self._completed = 0
+        self._total = 0
 
     def _file_item(self, root, relative, variant_id=None, file_id=None, stage="asset", effective=False):
-        base = _registered_path(self.project_root, root or ".")
+        root_key = str(root or ".")
+        if root_key not in self._roots:
+            self._roots[root_key] = _registered_path(self.project_root, root_key)
+        base = self._roots[root_key]
         path = _registered_path(self.project_root, relative, base) if base else None
         if path is None:
             path = self.project_root / "__invalid_manifest_path__"
-        role = _role_for(file_id, path, stage)
+        if path not in self._file_info:
+            exists = path.is_file()
+            info = godot_resource_info(path, self.project_root, check_references=self._validate) if exists and path.suffix.lower() in RESOURCE_EXTENSIONS else {}
+            integrity = _file_status(path) if self._validate else {"status": "unknown" if exists else "missing", "label": "未校验" if exists else "文件缺失", "actual": None}
+            self._file_info[path] = (exists, info, integrity)
+        exists, info, integrity = self._file_info[path]
+        role = _role_for(file_id, path, stage, info)
         kind, label = _kind_for(role, path)
         item = {
-            "id": _asset_id(path), "file_id": file_id, "name": path.name, "path": str(path),
+            "id": hashlib.sha256(os.path.normcase(str(path)).encode("utf-8")).hexdigest()[:20], "file_id": file_id, "name": path.name, "path": str(path),
             "manifest_path": str(relative or ""), "root": str(root or "."), "kind": kind,
             "kind_label": label, "role": role, "variant_id": variant_id, "stage": stage,
-            "effective": effective, "exists": path.is_file(),
-            "is_image": path.suffix.lower() in IMAGE_EXTENSIONS and path.is_file(),
-            "integrity": _file_status(path), "metadata": {},
+            "effective": effective, "exists": exists,
+            "is_image": path.suffix.lower() in IMAGE_EXTENSIONS and exists,
+            "integrity": dict(integrity), "metadata": {},
         }
-        if path.suffix.lower() in RESOURCE_EXTENSIONS and path.is_file():
-            item.update(godot_resource_info(path, self.project_root))
-        if path.is_file():
+        item.update(info)
+        if exists:
             self.files[item["id"]] = path
+        self._completed += 1
+        if self._progress:
+            self._progress({"phase": "校验文件" if self._validate else "读取目录", "completed": self._completed, "total": self._total})
         return item
 
     def _manifest_path(self, raw_manifest):
@@ -488,9 +511,18 @@ class AssetCatalog(object):
             return {"id": source.stem, "kind": "Godot 引用", "status": "mismatch", "label": "未引用登记的生效资源", "source": str(owner)}
         return {"id": source.stem, "kind": "Godot 引用", "status": "matched", "label": "引用已连接", "source": str(owner), "target": target}
 
-    def scan(self, raw_manifest=None):
+    def scan(self, raw_manifest=None, validate=True, progress=None):
+        # Caches live for one scan only: refresh and delivery checks always see edits.
         self.files, self.preview_items = {}, {}
+        self._validate, self._progress = validate, progress
+        self._roots, self._file_info = {}, {}
+        self._completed, self._total = 0, 0
+        if progress:
+            progress({"phase": "读取索引", "completed": 0, "total": 0})
         main_path, loaded, errors = self._load_objects(raw_manifest)
+        for _, _, data, _ in loaded:
+            groups = list((data.get("variants") or {}).values()) + [data.get("integration") or {}]
+            self._total += sum(len(group.get("files") or {}) + bool(group.get("resource")) for group in groups if isinstance(group, dict))
         result_objects = []
         for object_id, manifest_path, data, collection in loaded:
             identity = data.get("object", {}) or {}
@@ -534,7 +566,7 @@ class AssetCatalog(object):
                         previews.append({"id": mode, "type": "gif", "file_id": linked["id"] if linked else None, "supported": bool(linked and linked["exists"]), "reason": "可播放" if linked and linked["exists"] else "GIF 文件缺失"})
                 godot = raw_previews.get("godot")
                 if isinstance(godot, dict):
-                    supported, reason, resolved = _preview_target_info(godot, self.project_root)
+                    supported, reason, resolved = _preview_target_info(godot, self.project_root, check_references=validate)
                     preview_asset_id = _preview_id(object_id, variant_id)
                     if supported:
                         self.preview_items[preview_asset_id] = resolved
@@ -545,7 +577,7 @@ class AssetCatalog(object):
                 has_missing_reference = any(item.get("missing_references") for item in files)
                 if "missing" in validation_statuses or has_missing_reference:
                     validation_status, validation_label = "missing", "文件缺失"
-                elif files:
+                elif files and validate:
                     validation_status, validation_label = "matched", "校验通过"
                 else:
                     validation_status, validation_label = "unknown", "待校验"
@@ -588,7 +620,7 @@ class AssetCatalog(object):
 
             checks = []
             for file_id, effective in effective_lookup.items():
-                if effective["is_image"]:
+                if validate and effective["is_image"]:
                     check = self._copy_check(file_id, selected_files.get(file_id), effective)
                     checks.append(check)
                     if check["status"] != "matched":
@@ -601,7 +633,7 @@ class AssetCatalog(object):
             owners = raw_integration.get("owners", []) or []
             if raw_integration.get("owner"):
                 owners = [raw_integration.get("owner")]
-            for owner in owners:
+            for owner in owners if validate else []:
                 check = self._owner_check(owner, expected_uris)
                 checks.append(check)
                 if check["status"] != "matched":
@@ -617,6 +649,8 @@ class AssetCatalog(object):
                 verified = "missing"
             elif "mismatch" in statuses:
                 verified = "mismatch"
+            elif not validate:
+                verified = "unknown"
             elif not statuses:
                 verified = "unknown"
             else:
@@ -658,11 +692,12 @@ class AssetCatalog(object):
 
         result_objects.sort(key=lambda item: (CATEGORY_ORDER.get(item["category"], 9), item["name"].lower(), item["id"]))
         unique_files = {asset["id"] for obj in result_objects for asset in obj["assets"]}
-        return {"manifest": str(main_path) if main_path else str(raw_manifest or self.default_manifest), "errors": errors, "objects": result_objects, "summary": {"objects": len(result_objects), "files": len(unique_files), "mismatches": sum(o["counts"]["integrity"]["mismatch"] for o in result_objects), "missing": sum(o["counts"]["integrity"]["missing"] for o in result_objects), "categories": {category: sum(o["category"] == category for o in result_objects) for category in CATEGORY_ORDER}}, "discovery": "manifest_only"}
+        return {"manifest": str(main_path) if main_path else str(raw_manifest or self.default_manifest), "validated": validate, "errors": errors, "objects": result_objects, "summary": {"objects": len(result_objects), "files": len(unique_files), "mismatches": sum(o["counts"]["integrity"]["mismatch"] for o in result_objects), "missing": sum(o["counts"]["integrity"]["missing"] for o in result_objects), "categories": {category: sum(o["category"] == category for o in result_objects) for category in CATEGORY_ORDER}}, "discovery": "manifest_only"}
 
     def resolve_file(self, asset_id):
         path = self.files.get(asset_id)
-        return path if path is not None and path.is_file() else None
+        # Re-resolve at request time so a replaced symlink cannot escape the project.
+        return path if path is not None and _inside(path, self.project_root) and path.is_file() else None
 
     def resolve_animation(self, asset_id):
         resolved = self.preview_items.get(asset_id)
@@ -671,8 +706,5 @@ class AssetCatalog(object):
         if resolved.get("card_uri"):
             supported, _, fresh = _preview_target_info({"card": resolved["card_uri"]}, self.project_root)
             return dict(fresh, project_root=self.project_root) if supported else None
-        for uri in (resolved.get("unit_uri"), resolved.get("animation_uri"), resolved.get("projectile_uri")):
-            path = _uri_path(self.project_root, uri) if uri else None
-            if uri and (path is None or not path.is_file()):
-                return None
-        return dict(resolved, project_root=self.project_root)
+        supported, _, fresh = _preview_target_info({"unit": resolved.get("unit_uri"), "animation": resolved.get("animation_uri"), "projectile": resolved.get("projectile_uri")}, self.project_root)
+        return dict(fresh, project_root=self.project_root) if supported else None

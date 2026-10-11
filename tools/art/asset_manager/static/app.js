@@ -1,11 +1,17 @@
 "use strict";
 
 const boot = JSON.parse(document.getElementById("boot-data").textContent);
-const state = { objects: [], filter: "全部", generatedOnly: false, selected: null, detailView: null, history: [] };
+const state = { objects: [], filter: "全部", query: "", generatedOnly: false, selected: null, detailView: null, history: [], revision: null, loading: false, details: new Map(), detailRequest: 0, mediaRequest: 0 };
 const manifest = document.getElementById("manifest");
 const manifestPicker = document.getElementById("pick-manifest");
 const engine = document.getElementById("engine");
 const scanButton = document.getElementById("scan");
+const refreshButton = document.getElementById("refresh");
+const search = document.getElementById("search");
+const loading = document.getElementById("loading");
+const loadProgress = document.getElementById("load-progress");
+const loadLabel = document.getElementById("load-label");
+const loadCount = document.getElementById("load-count");
 const notice = document.getElementById("notice");
 const grid = document.getElementById("grid");
 const empty = document.getElementById("empty");
@@ -37,8 +43,8 @@ function api(path, options = {}) {
   });
 }
 
-function fileUrl(asset) {
-  return `/api/file?id=${encodeURIComponent(asset.id)}&token=${encodeURIComponent(boot.token)}`;
+function fileUrl(asset, thumbnail = false) {
+  return `/api/file?id=${encodeURIComponent(asset.id)}&token=${encodeURIComponent(boot.token)}${thumbnail ? "&size=thumb" : ""}`;
 }
 
 function setNotice(message, tone = "") {
@@ -60,12 +66,12 @@ function countLabel(object) {
   if (object.counts.concepts) bits.push(`${object.counts.concepts} 概念版`);
   if (object.counts.atlases) bits.push(`${object.counts.atlases} 图集`);
   if (object.counts.animations) bits.push(`${object.counts.animations} 动画版`);
-  if (!bits.length) bits.push(`${object.variants.length} 版本`);
+  if (!bits.length) bits.push(`${object.counts.files} 文件`);
   return bits;
 }
 
 function matchesFilter(object, filter) {
-  return (filter === "全部" || object.category === filter) && (!state.generatedOnly || object.has_generated_assets);
+  return (filter === "全部" || object.category === filter) && (!state.generatedOnly || object.has_generated_assets) && (!state.query || `${object.name} ${object.id} ${object.category}`.toLowerCase().includes(state.query));
 }
 
 function renderFilters() {
@@ -75,6 +81,7 @@ function renderFilters() {
     const count = state.objects.filter(item => matchesFilter(item, category)).length;
     const button = document.createElement("button");
     button.className = `filter${state.filter === category ? " active" : ""}`;
+    button.setAttribute("aria-pressed", String(state.filter === category));
     button.textContent = category;
     const badge = document.createElement("em"); badge.textContent = String(count); button.append(badge);
     button.addEventListener("click", () => { state.filter = category; renderFilters(); renderGrid(); });
@@ -88,30 +95,37 @@ function renderGrid() {
   const visible = state.objects.filter(item => matchesFilter(item, state.filter));
   grid.replaceChildren(); empty.hidden = visible.length > 0;
   if (!visible.length) {
-    empty.querySelector("h3").textContent = state.objects.length ? "这个分类还是空的" : "Manifest 没有对象";
-    empty.querySelector("p").textContent = state.objects.length ? "换个分类看看吧。" : "先登记对象，再重新校验。";
+    empty.querySelector("h3").textContent = state.objects.length ? "没有符合条件的素材" : "目录中没有素材";
+    empty.querySelector("p").textContent = state.objects.length ? "试试其他关键词或分类。" : "在工具中检查目录，再点击刷新。";
   }
   visible.forEach(object => {
     const card = document.createElement("button"); card.className = "object-card"; card.dataset.objectId = object.id;
     const thumb = document.createElement("div"); thumb.className = "thumb";
-    const thumbAsset = object.assets.find(item => item.id === object.thumbnail_id);
+    const thumbAsset = object.thumbnail;
     if (thumbAsset) {
-      const image = document.createElement("img"); image.src = fileUrl(thumbAsset); image.alt = `${object.name}缩略图`; image.loading = "lazy"; thumb.append(image);
+      const image = document.createElement("img"); image.src = fileUrl(thumbAsset, true); image.alt = `${object.name}缩略图`; image.loading = "lazy"; image.decoding = "async"; thumb.append(image);
     } else {
       const placeholder = document.createElement("div"); placeholder.className = "thumb-placeholder"; placeholder.textContent = "◇"; thumb.append(placeholder);
     }
     const body = document.createElement("div"); body.className = "card-body";
     const top = document.createElement("div"); top.className = "card-top";
     const category = document.createElement("span"); category.className = "category"; category.textContent = object.category;
-    const verified = object.holo_card ? (object.warnings.length ? "missing" : "matched") : object.integration.verified_status;
-    const status = document.createElement("span"); status.className = `status integrity-${verified}`; status.textContent = (object.holo_card ? validationLabels : integrationLabels)[verified] || verified;
+    const status = document.createElement("span"); status.className = `status state-${object.approval}`; status.textContent = object.approval !== "unknown" ? approvalLabels[object.approval] : (object.category === "闪卡" ? "照片卡" : object.has_generated_assets ? "已有资产" : object.counts.files ? "概念素材" : "待制作");
     top.append(category, status);
     const title = document.createElement("h3"); title.textContent = object.name;
     const counts = document.createElement("div"); counts.className = "counts";
     countLabel(object).forEach(label => { const tag = document.createElement("span"); tag.textContent = label; counts.append(tag); });
     body.append(top, title, counts); card.append(thumb, body);
+    card.title = `${object.name} · ${countLabel(object).join("、")}，点击查看版本与预览`;
     card.addEventListener("click", () => openDetail(object)); grid.append(card);
   });
+  trackVisibleImages();
+}
+
+function fileInfo(...nodes) {
+  const fold = document.createElement("details"); fold.className = "file-info";
+  const label = document.createElement("summary"); label.textContent = "文件信息";
+  fold.append(label, ...nodes); return fold;
 }
 
 function metadataList(metadata) {
@@ -129,7 +143,7 @@ function metadataList(metadata) {
 function assetCard(asset, compact = false, showOriginalAction = true) {
   const card = document.createElement("article"); card.className = `asset-card${compact ? " compact" : ""}`;
   if (asset.is_image && !compact) {
-    const image = document.createElement("img"); image.className = "asset-preview"; image.src = fileUrl(asset); image.alt = asset.name; image.loading = "lazy"; card.append(image);
+    const image = document.createElement("img"); image.className = "asset-preview"; image.src = fileUrl(asset, true); image.alt = asset.name; image.loading = "lazy"; image.decoding = "async"; card.append(image);
   }
   const info = document.createElement("div"); info.className = "asset-info";
   const heading = document.createElement("div"); heading.className = "asset-title";
@@ -138,8 +152,8 @@ function assetCard(asset, compact = false, showOriginalAction = true) {
   heading.append(title, kind);
   const path = document.createElement("p"); path.className = "asset-path"; path.textContent = asset.manifest_path || asset.path;
   const integrity = document.createElement("p"); integrity.className = `integrity integrity-${asset.integrity.status}`;
-  integrity.textContent = `${asset.integrity.label} · 实时 SHA-256 ${asset.integrity.actual ? asset.integrity.actual.slice(0, 12) : "—"}`;
-  info.append(heading, path, integrity);
+  integrity.textContent = asset.integrity.actual ? `${asset.integrity.label} · SHA-256 ${asset.integrity.actual.slice(0, 12)}` : asset.integrity.label;
+  info.append(heading, fileInfo(path, integrity));
   const actions = document.createElement("div"); actions.className = "asset-actions";
   if (asset.is_image && showOriginalAction) {
     const original = document.createElement("button"); original.className = "original"; original.textContent = "原图";
@@ -157,7 +171,8 @@ function godotPreviewPanel(variant) {
   const button = document.createElement("button"); button.className = "preview"; button.textContent = "预览"; button.disabled = !godot.supported; button.title = godot.reason;
   button.addEventListener("click", () => startPreview(godot, button));
   const target = document.createElement("p"); target.className = `reason${godot.supported ? "" : " bad"}`;
-  target.textContent = [godot.unit, godot.animation, godot.projectile].filter(Boolean).join(" · ") || godot.reason;
+  target.textContent = godot.reason;
+  target.title = [godot.unit, godot.animation, godot.projectile].filter(Boolean).join(" · ");
   row.append(button, target); return row;
 }
 
@@ -208,10 +223,13 @@ function appendAssetList(panel, assets) {
 
 function variantDetails(variant) {
   const details = document.createElement("div"); details.className = "variant-details";
+  const root = document.createElement("p"); root.className = "asset-path"; root.textContent = variant.root;
+  const check = document.createElement("p"); check.className = "integrity"; check.textContent = variant.summary.validation_label;
+  details.append(fileInfo(root, check));
   if (variant.approval_evidence?.source) {
     const evidence = document.createElement("p"); evidence.className = "evidence";
     evidence.textContent = `评审依据：${variant.approval_evidence.source}`;
-    details.append(evidence);
+    details.querySelector(".file-info").append(evidence);
   }
 
   const visibleFiles = variant.files.filter(item => item.role !== "preview_gif");
@@ -263,7 +281,7 @@ function variantCard(object, variant, expanded = false) {
   const thumb = document.createElement("div"); thumb.className = "variant-thumb";
   const thumbAsset = variant.files.find(item => item.id === variant.summary.thumbnail_id);
   if (thumbAsset) {
-    const image = document.createElement("img"); image.src = fileUrl(thumbAsset); image.alt = `${object.name} ${variant.version} 缩略图`; image.loading = "lazy"; thumb.append(image);
+    const image = document.createElement("img"); image.src = fileUrl(thumbAsset, true); image.alt = `${object.name} ${variant.version} 缩略图`; image.loading = "lazy"; image.decoding = "async"; thumb.append(image);
   } else { const placeholder = document.createElement("span"); placeholder.textContent = "◇"; thumb.append(placeholder); }
   const copy = document.createElement("div"); copy.className = "variant-copy";
   const top = document.createElement("div"); top.className = "variant-summary-top";
@@ -274,18 +292,15 @@ function variantCard(object, variant, expanded = false) {
   selected.title = "选用状态：当前制作或接入流程选择的是哪一个版本。";
   const approved = document.createElement("span"); approved.className = `state-badge state-${variant.approval}`; approved.textContent = approvalLabels[variant.approval] || variant.approval;
   approved.title = "批准状态：负责人是否认可这个具体版本。选用不等于批准。";
-  const validationStatus = variant.summary.validation_status;
-  const validation = document.createElement("span"); validation.className = `validation-badge validation-${validationStatus}`; validation.textContent = variant.summary.validation_label || validationLabels[validationStatus] || validationStatus;
-  validation.title = "校验状态：管理器根据登记文件与 Godot 引用实时计算，不是 Manifest 字段。";
-  badges.append(selected, approved, validation); top.append(title, version, badges);
-  const root = document.createElement("code"); root.className = "variant-root"; root.textContent = variant.root;
+  badges.append(selected, approved); top.append(title, version, badges);
   const facts = document.createElement("div"); facts.className = "variant-facts";
   [`日期 ${variant.summary.date}`, `${variant.summary.images} 张图片`, `${variant.summary.animations} 个动画`].forEach(text => { const span = document.createElement("span"); span.textContent = text; facts.append(span); });
-  copy.append(top, root, facts);
+  copy.append(top, facts);
   const chevron = document.createElement("span"); chevron.className = "variant-chevron"; chevron.textContent = "展开";
   toggle.append(thumb, copy, chevron);
-  const body = variantDetails(variant); body.hidden = !expanded;
-  const setExpanded = value => { body.hidden = !value; section.classList.toggle("expanded", value); toggle.setAttribute("aria-expanded", String(value)); chevron.textContent = value ? "收起" : "展开"; if (value && state.detailView) state.detailView.variantId = variant.id; };
+  const body = document.createElement("div"); body.hidden = !expanded;
+  let built = false;
+  const setExpanded = value => { if (value && !built) { body.append(variantDetails(variant)); built = true; } body.hidden = !value; section.classList.toggle("expanded", value); toggle.setAttribute("aria-expanded", String(value)); chevron.textContent = value ? "收起" : "展开"; if (value && state.detailView) state.detailView.variantId = variant.id; };
   toggle.addEventListener("click", () => setExpanded(toggle.getAttribute("aria-expanded") !== "true"));
   section.append(toggle, body); setExpanded(expanded); return section;
 }
@@ -299,7 +314,7 @@ function integrationSection(object) {
   const active = object.variants.find(variant => variant.id === integration.active_variant);
   if (active) {
     const jump = document.createElement("button"); jump.className = "integration-jump"; jump.textContent = `${object.name} · 版本 ${active.version}`;
-    jump.title = "前往资产版本"; jump.addEventListener("click", () => navigateDetail(object, { stage: "asset", variantId: active.id })); section.append(jump);
+    jump.textContent = "资产版本"; jump.title = `前往 ${object.name} 版本 ${active.version}`; jump.addEventListener("click", () => navigateDetail(object, { stage: "asset", variantId: active.id })); section.append(jump);
   }
   if (integration.effective_files.length) {
     const list = document.createElement("div"); list.className = "asset-list compact-list";
@@ -325,16 +340,16 @@ function relationshipSection(object) {
     const target = state.objects.find(item => item.id === relation.object_id);
     const card = document.createElement("button"); card.className = `relationship-card integrity-${relation.status}`; card.disabled = !target;
     const thumb = document.createElement("div"); thumb.className = "relationship-thumb";
-    const asset = target?.assets.find(item => item.id === relation.thumbnail_id);
+    const asset = target?.thumbnail;
     if (asset) {
-      const image = document.createElement("img"); image.src = fileUrl(asset); image.alt = `${relation.target_name}缩略图`; image.loading = "lazy"; thumb.append(image);
+      const image = document.createElement("img"); image.src = fileUrl(asset, true); image.alt = `${relation.target_name}缩略图`; image.loading = "lazy"; thumb.append(image);
     } else { const placeholder = document.createElement("span"); placeholder.textContent = "◇"; thumb.append(placeholder); }
     const copy = document.createElement("div");
     const kind = document.createElement("span"); kind.className = "relationship-kind"; kind.textContent = relation.kind === "projectile" ? "弹体" : relation.kind;
     const name = document.createElement("strong"); name.textContent = relation.target_name || relation.object_id;
     const status = document.createElement("small"); status.textContent = target ? "打开详情 →" : relation.status_label;
     copy.append(kind, name, status); card.append(thumb, copy);
-    if (target) card.addEventListener("click", () => navigateDetail(target, { stage: target.variants.some(item => item.stage === "asset") ? "asset" : target.variants[0]?.stage }));
+    if (target) card.addEventListener("click", () => navigateDetail(target));
     list.append(card);
   });
   section.append(list); return section;
@@ -389,10 +404,29 @@ function stageBrowser(object, options = {}) {
   show(preferred, options.variantId || null); return browser;
 }
 
-function openDetail(object, options = {}) {
+async function openDetail(object, options = {}) {
+  const request = ++state.detailRequest;
+  const revision = state.revision;
+  try {
+    let full = state.details.get(object.id);
+    if (!full) {
+      detailContent.replaceChildren();
+      const pending = document.createElement("p"); pending.className = "detail-lead"; pending.textContent = `正在加载 ${object.name} 的版本…`; detailContent.append(pending);
+      detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+      full = await api(`/api/object?id=${encodeURIComponent(object.id)}&revision=${encodeURIComponent(revision)}`, { signal: AbortSignal.timeout(20000) });
+      if (revision === state.revision) state.details.set(object.id, full);
+    }
+    if (request === state.detailRequest && revision === state.revision) renderDetail(full, options);
+  } catch (error) {
+    if (request !== state.detailRequest) return;
+    detailContent.textContent = error.message; setNotice(error.message, "error");
+  }
+}
+
+function renderDetail(object, options = {}) {
   if (!options.preserveHistory) state.history = [];
   state.selected = object.id; detailContent.replaceChildren(); detailBack.hidden = state.history.length === 0;
-  const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = `${object.category} · ${object.type}${object.subtype ? ` / ${object.subtype}` : ""}`;
+  const kicker = document.createElement("p"); kicker.className = "detail-kicker"; kicker.textContent = object.category;
   const title = document.createElement("h2"); title.id = "detail-title"; title.textContent = object.name;
   if (object.holo_card) {
     detailContent.append(kicker, title);
@@ -419,10 +453,8 @@ function openDetail(object, options = {}) {
     detail.querySelector(".detail-sheet").scrollTop = 0;
     return;
   }
-  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = `对象 ID：${object.id}。版本默认折叠，校验、选用与批准状态分别显示。`;
-  const legend = document.createElement("div"); legend.className = "state-legend";
-  legend.innerHTML = "<span><strong>校验</strong>：文件与 Godot 引用的实时结果（非 Manifest 字段）</span><span><strong>选用</strong>：当前流程选择的版本</span><span><strong>批准</strong>：负责人认可的版本</span>";
-  detailContent.append(kicker, title, lead, legend);
+  const lead = document.createElement("p"); lead.className = "detail-lead"; lead.textContent = "选择版本，查看图集与动作预览。";
+  detailContent.append(kicker, title, lead);
   object.warnings.forEach(message => { const warning = document.createElement("div"); warning.className = "warning"; warning.textContent = message; detailContent.append(warning); });
   detailContent.append(stageBrowser(object, options));
   const relations = relationshipSection(object); if (relations) detailContent.append(relations);
@@ -441,7 +473,7 @@ function returnDetail() {
   openDetail(object, { stage: previous.stage, variantId: previous.variantId, preserveHistory: true });
 }
 
-function closeDetail() { detail.classList.remove("open"); detail.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; state.selected = null; state.detailView = null; state.history = []; }
+function closeDetail() { state.detailRequest++; detail.classList.remove("open"); detail.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; state.selected = null; state.detailView = null; state.history = []; detailContent.replaceChildren(); }
 function showOriginal(asset) { lightboxImage.src = fileUrl(asset); lightboxCaption.textContent = asset.manifest_path || asset.path; lightbox.showModal(); }
 
 async function startPreview(preview, button) {
@@ -480,25 +512,80 @@ async function chooseManifest() {
   finally { manifestPicker.disabled = false; }
 }
 
-async function scan() {
-  scanButton.disabled = true; setNotice("正在读取 Manifest，并实时核对文件与 Godot 引用…");
+function setProgress(label, completed, total) {
+  loading.hidden = false; loadLabel.textContent = label;
+  if (total) {
+    loadProgress.value = Math.round(completed / total * 100);
+    loadCount.textContent = `${completed} / ${total} · ${loadProgress.value}%`;
+  } else {
+    loadProgress.removeAttribute("value"); loadCount.textContent = "准备中";
+  }
+}
+
+function trackVisibleImages() {
+  const request = ++state.mediaRequest;
+  if (state.loading) return;
+  // Lazy images outside this viewport must not keep the loading bar waiting.
+  const images = [...grid.querySelectorAll("img")].filter(image => {
+    const rect = image.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0;
+  });
+  let finished = images.filter(image => image.complete).length;
+  let failed = images.filter(image => image.complete && !image.naturalWidth).length;
+  if (!images.length) { loading.hidden = true; return; }
+  setProgress("加载可见缩略图", finished, images.length);
+  const update = () => {
+    if (request !== state.mediaRequest || state.loading) return;
+    setProgress(failed ? `缩略图就绪，${failed} 张无法读取` : "缩略图就绪", finished, images.length);
+    if (finished === images.length) {
+      if (failed) setNotice(`${failed} 张缩略图无法读取，请在素材详情中检查文件。`, "error");
+      setTimeout(() => { if (request === state.mediaRequest && !state.loading) loading.hidden = true; }, 1500);
+    }
+  };
+  images.filter(image => !image.complete).forEach(image => {
+    const done = event => { finished++; if (event.type === "error") failed++; update(); };
+    image.addEventListener("load", done, { once: true }); image.addEventListener("error", done, { once: true });
+  });
+  update();
+}
+
+async function scan(validate = false) {
+  if (state.loading) return;
+  state.loading = true; state.mediaRequest++;
+  scanButton.disabled = true; refreshButton.disabled = true; manifestPicker.disabled = true;
+  const selectedManifest = manifest.value.trim();
+  document.getElementById("tools-menu").open = false;
+  setProgress(validate ? "准备完整校验" : "读取素材索引", 0, 0);
+  setNotice(""); grid.setAttribute("aria-busy", "true");
   try {
-    const payload = await api("/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ manifest: manifest.value.trim() }) });
-    state.objects = payload.objects; state.filter = "全部";
-    summary.textContent = `${payload.summary.objects} 个对象 · ${payload.summary.files} 个登记文件 · ${payload.summary.mismatches} 处不一致`;
+    let job = await api("/api/load", { method: "POST", signal: AbortSignal.timeout(10000), headers: { "Content-Type": "application/json" }, body: JSON.stringify({ manifest: selectedManifest, validate }) });
+    while (job.state === "running") {
+      setProgress(job.phase, job.completed, job.total);
+      await new Promise(resolve => setTimeout(resolve, 120));
+      job = await api(`/api/load/status?id=${encodeURIComponent(job.id)}`, { signal: AbortSignal.timeout(15000) });
+    }
+    if (job.state === "failed") throw new Error(job.error);
+    const payload = job.result;
+    state.objects = payload.objects; state.revision = job.id; state.details.clear(); closeDetail();
+    summary.textContent = `${payload.summary.objects} 个素材`;
     renderFilters(); renderGrid();
     if (payload.errors.length || payload.summary.mismatches || payload.summary.missing) {
       const issues = [`${payload.summary.mismatches} 处不一致`, `${payload.summary.missing} 个缺失`];
       if (payload.errors.length) issues.push(payload.errors.map(item => `${item.path}：${item.message}`).join("；"));
-      setNotice(`校验完成；${issues.join("；")}`, "error");
-    } else setNotice(`校验完成：${payload.summary.objects} 个对象，文件与引用均有效。`, "success");
-  } catch (error) { state.objects = []; renderFilters(); renderGrid(); setNotice(error.message, "error"); }
-  finally { scanButton.disabled = false; }
+      setNotice(`${validate ? "校验" : "目录加载"}完成；${issues.join("；")}`, "error");
+    } else if (validate) setNotice(`完整校验通过：${payload.summary.files} 个文件，文件与引用均有效。`, "success");
+  } catch (error) { setNotice(error.message, "error"); loading.hidden = true; }
+  finally {
+    state.loading = false; scanButton.disabled = false; refreshButton.disabled = false; manifestPicker.disabled = false; grid.setAttribute("aria-busy", "false");
+    if (state.objects.length) trackVisibleImages();
+    else loading.hidden = true;
+  }
 }
 
 document.getElementById("defaults").addEventListener("click", () => { manifest.value = boot.defaultManifest; });
 manifestPicker.addEventListener("click", chooseManifest);
-scanButton.addEventListener("click", scan);
+scanButton.addEventListener("click", () => scan(true));
+refreshButton.addEventListener("click", () => scan());
+search.addEventListener("input", () => { state.query = search.value.trim().toLowerCase(); renderFilters(); renderGrid(); });
 detailBack.addEventListener("click", returnDetail);
 detail.querySelectorAll("[data-close]").forEach(node => node.addEventListener("click", closeDetail));
 document.getElementById("lightbox-close").addEventListener("click", () => lightbox.close());
