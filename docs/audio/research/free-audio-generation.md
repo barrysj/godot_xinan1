@@ -4,7 +4,7 @@
 
 ## 选型结论
 
-先用 **ElevenMusic.io 制作云端 BGM 候选、jsfxr 制作短电子音效**；需要批量生产和本地自动化时，再试 **ACE-Step 1.5 制作 BGM、Stable Audio 3 Small-SFX 制作环境与拟音素材**。Stable Audio 网页是可商用的无安装备选，但本轮未核准其精确免费额度。这是根据许可、功能与部署成本作出的适配判断，不是实际试听后的音质排名。
+持续生产优先评估 **ACE-Step 1.5 本地 BGM、Stable Audio 3 Small-SFX 环境／拟音与 jsfxr 短电子声**；云端优先试 Stable Audio 的编辑工作台，精确免费额度须账户内确认。ElevenMusic 保留为少量 BGM 对照候选，不以每天 5 次下载作为批量生产依据。此前优先推荐 ElevenMusic 只覆盖少量试样，未充分比较返工成本；当前完整选型与素材清单见[制作方案](../production.md)。这是许可、功能与部署成本判断，不是音质实测排名。
 
 免费生成、免费下载、允许用于商业游戏是三个条件。本地模型没有云端次数收费，仍消耗下载流量、磁盘、算力与维护时间；第三方托管同一模型不自动免费。
 
@@ -40,7 +40,7 @@
 
 ### ElevenLabs 平台／API Music
 
-[ElevenLabs Music Terms](https://elevenlabs.io/music-terms) Exhibit A 的 Free 列每月 11 分钟生成、禁止下载、无 API；Media Rights 行与通用免费帮助页的表述并不完全相同。按具体产品与适用条款区分，本项目免费音乐优先使用独立 ElevenMusic.io，不将其下载额度套到 ElevenLabs API。
+[ElevenLabs Music Terms](https://elevenlabs.io/music-terms) Exhibit A 的 Free 列每月 11 分钟生成、禁止下载、无 API；Media Rights 行与通用免费帮助页的表述并不完全相同。按具体产品与适用条款区分。使用 Eleven 系免费音乐时，独立 ElevenMusic.io 提供已核准的下载入口；整体生产选型见[制作方案](../production.md)，不将独立站下载额度套到 ElevenLabs API。
 
 ## 本地候选
 

@@ -6,6 +6,11 @@
 
 - [AUDIO-01 · 战斗命中、技能与环境声音](audio-01.md)
 
+## 制作方案
+
+- [音频制作与接入方案](production.md)
+
 ## 调研
 
 - [免费 BGM 与音效生成方案](research/free-audio-generation.md)
+- [开源音频生产 skill 调研](research/audio-production-skills.md)
