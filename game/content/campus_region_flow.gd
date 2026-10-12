@@ -21,6 +21,10 @@ func snapshot() -> Dictionary:
 				"background":stop.place.background_id, "landmark":stop.place.landmark,
 				"offset":[stop.place.offset.x, stop.place.offset.y], "library_interior":stop.place.library_interior,
 				"hotspot_template":stop.hotspot_template, "encounter_id":stop.encounter.id, "power":stop.power}
+			var scenes: Array = []
+			for scene in stop.place.scenes:
+				scenes.append(scene.snapshot() if scene != null else {})
+			result.stops[stop.id].scenes = scenes
 		result.layers.append(layer)
 	return result
 

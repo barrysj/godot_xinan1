@@ -2,6 +2,7 @@ extends RefCounted
 const Regions = preload("res://game/run/campus_region.gd")
 const Visit = preload("res://game/run/location_visit.gd")
 const FlowRules = preload("res://game/run/campus_flow_rules.gd")
+const PlaceScenes = preload("res://game/run/place_scenes.gd")
 var data: Dictionary = {}
 var visit = Visit.new()
 
@@ -21,6 +22,7 @@ func enter(index: int, recorded: Array) -> bool:
 	if index < 0 or index >= layer.size(): return false
 	var place: String = layer[index]
 	visit.begin(place,data.level,recorded,(data.id+place).hash(),str(stop(place).hotspot_template))
+	visit.data.scene_id = PlaceScenes.entries(stop(place))[0].id
 	data.screen = "visit"
 	return true
 
@@ -48,6 +50,28 @@ func title(id: String) -> String:
 
 func is_library() -> bool:
 	return bool(stop().get("library_interior",false))
+
+func current_scene() -> Dictionary:
+	return PlaceScenes.find(stop(),str(visit.data.get("scene_id",PlaceScenes.entries(stop())[0].id)))
+
+func switch_scene(id: String) -> bool:
+	if data.get("screen") != "visit" or visit.data.is_empty() or PlaceScenes.find(stop(),id).is_empty(): return false
+	visit.data.scene_id = id
+	return true
+
+func passage() -> Dictionary:
+	if visit.data.is_empty(): return {}
+	var scenes: Array = PlaceScenes.entries(stop())
+	var current := str(current_scene().get("id",""))
+	for i in range(scenes.size()):
+		if scenes[i].id != current: continue
+		if i+1 < scenes.size():
+			return {"action":"scene:"+scenes[i+1].id,"title":scenes[i+1].title,"enabled":data.get("screen") == "visit","hint":"前往"+scenes[i+1].title}
+		var enabled: bool = data.get("screen") == "visit" and visit.can_leave()
+		var final_stop: bool = int(data.step) == data.map.size()-1
+		return {"action":"leave","title":"区域出口" if final_stop else "路线图","enabled":enabled,
+			"hint":("离开地点，完成区域探索" if final_stop else "离开地点，返回路线图") if enabled else "出口封锁 · 战胜守卫并领取奖励"}
+	return {}
 
 func restore(source: Variant) -> bool:
 	if not source is Dictionary or source.get("schema") != 2: return false
@@ -90,6 +114,10 @@ func restore(source: Variant) -> bool:
 	if not source.visit.is_empty():
 		if source.finished or not restored.restore(source.visit,source.map[int(source.step)]): return false
 		if not source.map[int(source.step)].has(source.visit.place): return false
+		var place: Dictionary = source.flow.stops[source.visit.place]
+		var scene_id: Variant = source.visit.get("scene_id",PlaceScenes.entries(place)[0].id)
+		if not scene_id is String or PlaceScenes.find(place,scene_id).is_empty(): return false
+		restored.data.scene_id = scene_id
 	if (source.screen in ["visit","event","battle","report","reward","reward_owner","operation"]) != (not source.visit.is_empty()): return false
 	if (source.screen == "complete") != source.finished: return false
 	if source.screen in ["reward","reward_owner","operation"] and not restored.data.guard_won: return false
@@ -102,6 +130,8 @@ func restore(source: Variant) -> bool:
 	data.schema = 2
 	data.flow.schema = 1
 	data.flow.revision = int(data.flow.revision)
+	for place in data.flow.stops.values():
+		for scene in place.get("scenes",[]): scene.floor = int(scene.floor)
 	data.step = int(data.step)
 	data.level = int(data.level)
 	visit = restored

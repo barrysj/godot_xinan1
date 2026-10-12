@@ -415,6 +415,18 @@ func _campaign_action(id: String) -> void:
 		chosen_supply = not chosen_supply
 		_home()
 	elif id == "codex": _open_codex()
+	elif id == "passage":
+		if screen != "campaign" or journey.data.get("screen") != "visit": return
+		var target: Dictionary = journey.passage()
+		if target.get("enabled",false): _campaign_action(str(target.action))
+	elif id.begins_with("scene:"):
+		if screen != "campaign" or journey.data.get("screen") != "visit": return
+		if journey.current_scene().id == id.trim_prefix("scene:"): return
+		if journey.switch_scene(id.trim_prefix("scene:")) and _save_campaign():
+			var previous_focus := get_viewport().gui_get_focus_owner()
+			campaign_panel._close_library_detail()
+			if is_instance_valid(previous_focus) and previous_focus.is_visible_in_tree(): previous_focus.grab_focus()
+			campaign_panel.exploration_board.change_scene()
 	elif id.begins_with("enter:"):
 		if journey.enter(int(id.trim_prefix("enter:")),progress.campaign.memories):
 			_ensure_starting_partner()

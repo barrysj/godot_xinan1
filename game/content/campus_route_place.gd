@@ -10,3 +10,6 @@ extends Resource
 @export_group("已有背景")
 @export_enum("south_gate", "pinxue_courtyard", "pinxue_atrium", "xuezi_cafeteria", "student_activity_center", "west_lake_center", "chengdian_auditorium_commercial_street", "yinhua_halal_cafeterias", "basic_laboratory_building", "west_lake_entrance", "sports_field", "library_front") var background_id: String = "south_gate"
 @export var library_interior: bool = false
+@export_group("地点内场景")
+## 首项为默认场景。留空时沿用原背景；同一地点的所有访问共用配置。
+@export var scenes: Array[CampusPlaceScene] = []

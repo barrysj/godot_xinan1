@@ -66,6 +66,7 @@ static func validate_snapshot(value: Variant, region: String) -> Array[String]:
 					var size: Array = layout.size
 					if anchor[0]+offset[0] < 0 or anchor[0]+offset[0] > size[0] or anchor[1]+offset[1] < 0 or anchor[1]+offset[1] > size[1]: errors.append(id+"：地点落在地图外")
 			if not stop.get("library_interior") is bool: errors.append(id+"：室内标记无效")
+			for error in preload("res://game/run/place_scenes.gd").validate(stop.get("scenes",[])): errors.append(id+"："+error)
 			if stop.get("hotspot_template") not in TEMPLATES: errors.append(id+"：热点模板无效")
 			if stop.get("encounter_id") not in encounters: errors.append(id+"：敌阵未注册")
 			var power: Variant = stop.get("power")

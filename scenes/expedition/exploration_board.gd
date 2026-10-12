@@ -3,9 +3,15 @@ extends Control
 
 signal picked(index: int)
 signal layout_changed
+signal scene_requested(id: String)
+signal passage_requested
+const PlaceScenes = preload("res://game/run/place_scenes.gd")
+const SceneNavigation = preload("res://scenes/expedition/place_scene_navigation.gd")
 const Hotspot = preload("res://scenes/expedition/exploration_hotspot.gd")
+const PassageHotspot = preload("res://scenes/expedition/passage_hotspot.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const FONT = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
+const Feedback = preload("res://scenes/expedition/exploration_feedback.gd")
 const DEFAULT_ENVIRONMENT_STATE := "anomaly"
 const DEFAULT_ENVIRONMENT_VIEWPOINT := "atrium-down"
 const CYAN = Color("00f0ff")
@@ -32,6 +38,29 @@ var environment_texture: Texture2D
 var environment_path := ""
 var location_title := "图书馆"
 var buttons: Array[Button] = []
+var scene_navigation: Control
+var scene_title := ""
+var passage_hotspot: Button
+var passage_exit_title := ""
+var room_layout: Dictionary = {}
+var has_room_layout := false
+var previous_background: Texture2D
+var transition_alpha := 0.0
+var transition_tween: Tween
+var footer_buttons: Array[Control] = []
+
+func configure_place_scenes() -> bool:
+	var scene: Dictionary = journey.current_scene()
+	if scene.is_empty(): return false
+	has_room_layout = scene.has("layout")
+	room_layout = scene.get("layout",{})
+	if not set_campus_environment(PlaceScenes.path(scene),journey.title(str(journey.visit.data.place))): return false
+	scene_title = "%s · %s" % [scene.title,PlaceScenes.floor_label(int(scene.floor))]
+	scene_navigation = SceneNavigation.new()
+	scene_navigation.scenes = PlaceScenes.entries(journey.stop())
+	scene_navigation.current = scene.id
+	scene_navigation.scene_requested.connect(func(id: String): scene_requested.emit(id))
+	return true
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(820, 680)
@@ -42,6 +71,15 @@ func _ready() -> void:
 	if environment_texture == null:
 		_load_environment_texture()
 	_build()
+	if scene_navigation != null:
+		passage_hotspot = PassageHotspot.new()
+		passage_hotspot.name = "PassageHotspot"
+		passage_hotspot.pressed.connect(func(): passage_requested.emit())
+		add_child(passage_hotspot)
+		_refresh_passage()
+		add_child(scene_navigation)
+		scene_navigation.focus_layout_changed.connect(_wire_focus)
+		_layout()
 
 func set_environment_variant(state: String, viewpoint: String) -> bool:
 	var path := ExplorationSkin.library_environment_path(state, viewpoint)
@@ -86,6 +124,7 @@ func _build() -> void:
 		var spot: Dictionary = journey.visit.data.hotspots[i]
 		var item := Hotspot.new()
 		item.kind = spot.kind
+		item.visible = not has_room_layout or room_layout.has(spot.kind)
 		item.tooltip_text = {"battle":"封锁守卫", "memory":"校园记忆", "person":"同行伙伴", "system":"记忆终端线索"}[spot.kind]
 		item.artwork = ExplorationSkin.texture(ART[spot.kind])
 		item.completed = _completed(spot)
@@ -99,10 +138,61 @@ func _build() -> void:
 		buttons[i].focus_neighbor_right = buttons[(i + 1) % buttons.size()].get_path()
 		buttons[i].focus_neighbor_left = buttons[(i + buttons.size() - 1) % buttons.size()].get_path()
 	_layout()
-	if not buttons.is_empty():
-		buttons[0].grab_focus()
+	for item in buttons:
+		if item.visible:
+			item.grab_focus()
+			break
+
+func change_scene() -> void:
+	# Preserve the HUD and floor filter; only scene-dependent controls are updated.
+	var old_texture := environment_texture
+	var scene: Dictionary = journey.current_scene()
+	set_campus_environment(PlaceScenes.path(scene),location_title)
+	has_room_layout = scene.has("layout")
+	room_layout = scene.get("layout",{})
+	scene_title = "%s · %s" % [scene.title,PlaceScenes.floor_label(int(scene.floor))]
+	selected = -1
+	for item in buttons:
+		item.visible = not has_room_layout or room_layout.has(item.kind)
+		item.selected = false
+	scene_navigation.set_current(scene.id)
+	_refresh_passage()
+	_layout()
+	Feedback.play(self)
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == null or not focused.is_visible_in_tree() or (focused is BaseButton and focused.disabled):
+		scene_navigation.scene_buttons[scene.id].grab_focus()
+	if transition_tween != null: transition_tween.kill()
+	previous_background = old_texture
+	transition_alpha = 1.0
+	transition_tween = create_tween()
+	transition_tween.tween_method(func(value: float): transition_alpha = value; queue_redraw(),1.0,0.0,Feedback.seconds("scene_transition")).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	transition_tween.tween_callback(func(): previous_background = null)
+
+func _wire_focus() -> void:
+	if scene_navigation == null or not is_instance_valid(scene_navigation.floor_picker): return
+	var chain: Array[Control] = []
+	for item in buttons:
+		if item.visible: chain.append(item)
+	if is_instance_valid(passage_hotspot) and not passage_hotspot.disabled: chain.append(passage_hotspot)
+	chain.append(scene_navigation.floor_picker)
+	for item in scene_navigation.map_buttons.values():
+		if item.visible: chain.append(item)
+	chain.append_array(scene_navigation.scene_buttons.values())
+	for item in footer_buttons:
+		if is_instance_valid(item) and item.visible and not item.disabled: chain.append(item)
+	for i in range(chain.size()):
+		var before := chain[(i+chain.size()-1)%chain.size()].get_path()
+		var after := chain[(i+1)%chain.size()].get_path()
+		chain[i].focus_previous = before
+		chain[i].focus_next = after
+		chain[i].focus_neighbor_left = before
+		chain[i].focus_neighbor_right = after
+		chain[i].focus_neighbor_top = before
+		chain[i].focus_neighbor_bottom = after
 
 func _pick(index: int) -> void:
+	Feedback.play(self)
 	set_selected(index)
 	picked.emit(index)
 
@@ -114,11 +204,25 @@ func set_selected(index: int) -> void:
 	queue_redraw()
 
 func refresh() -> void:
+	_refresh_passage()
 	for i in range(buttons.size()):
 		var spot: Dictionary = journey.visit.data.hotspots[i]
+		if not buttons[i].completed and _completed(spot): buttons[i].celebrate()
 		buttons[i].completed = _completed(spot)
 		buttons[i].queue_redraw()
 	queue_redraw()
+
+func _refresh_passage() -> void:
+	if not is_instance_valid(passage_hotspot): return
+	var target: Dictionary = journey.passage()
+	if passage_hotspot.disabled and target.get("action") == "leave" and target.get("enabled",false): passage_hotspot.celebrate()
+	passage_hotspot.destination = str(target.get("title","通路"))
+	passage_hotspot.tooltip_text = str(target.get("hint",""))
+	passage_hotspot.disabled = not target.get("enabled",false)
+	if target.get("action") == "leave" and not passage_exit_title.is_empty():
+		passage_hotspot.destination = passage_exit_title
+		if not passage_hotspot.disabled: passage_hotspot.tooltip_text = "离开地点，返回"+passage_exit_title
+	passage_hotspot.queue_redraw()
 
 func hotspot_rect(index: int) -> Rect2:
 	if index < 0 or index >= buttons.size():
@@ -131,13 +235,29 @@ func hotspot_button(index: int) -> Button:
 func _layout() -> void:
 	if journey == null:
 		return
+	if is_instance_valid(passage_hotspot):
+		passage_hotspot.size = Vector2(128,150)
+		passage_hotspot.position = Vector2(size.x-174,clampf(size.y*0.65,440,size.y-240))-passage_hotspot.size/2
+		if room_layout.has("passage"): passage_hotspot.position = _layout_point(room_layout.passage)-passage_hotspot.size/2
 	for i in range(buttons.size()):
 		var spot: Dictionary = journey.visit.data.hotspots[i]
 		var center: Vector2 = size * Vector2(POSITIONS[spot.kind])
+		if scene_navigation != null:
+			center = Vector2(30,130)+Vector2(maxf(390,size.x-390),maxf(230,size.y-330))*Vector2(POSITIONS[spot.kind])
 		buttons[i].size = Vector2(118, 118)
+		if room_layout.has(spot.kind): center = _layout_point(room_layout[spot.kind])
 		buttons[i].position = center - buttons[i].size / 2.0
+	_wire_focus()
 	queue_redraw()
 	layout_changed.emit()
+
+func _layout_point(value: Array) -> Vector2:
+	var texture_size := environment_texture.get_size()
+	var reference_size := Vector2(1920,1080)
+	var reference_crop := reference_size/maxf(reference_size.x/texture_size.x,reference_size.y/texture_size.y)
+	var source_point := (texture_size-reference_crop)/2+Vector2(value[0],value[1])*reference_crop
+	var crop := _cover_source_rect(texture_size)
+	return ((source_point-crop.position)/crop.size*size).clamp(Vector2(70,110),size-Vector2(70,180))
 
 func _completed(spot: Dictionary) -> bool:
 	return journey.visit.data.guard_won if spot.kind == "battle" else journey.visit.data.viewed.has(spot.id)
@@ -165,6 +285,8 @@ func _draw() -> void:
 		draw_rect(desk.grow(-7), Color(0.0, 0.94, 1.0, 0.18), false, 2)
 	else:
 		draw_texture_rect_region(environment_texture, Rect2(Vector2.ZERO, size), _cover_source_rect(environment_texture.get_size()))
+		if previous_background != null and transition_alpha > 0:
+			draw_texture_rect_region(previous_background,Rect2(Vector2.ZERO,size),_cover_source_rect(previous_background.get_size()),Color(1,1,1,transition_alpha))
 		var tint := Color(0.02, 0.04, 0.08, 0.20)
 		if environment_state == "anomaly":
 			tint = Color(0.035, 0.02, 0.10, 0.16)
@@ -179,7 +301,8 @@ func _draw() -> void:
 	draw_line(title_panel.position, title_panel.position + Vector2(34, 0), CYAN, 2)
 	draw_string(FONT, title_panel.position + Vector2(16, 29), location_title, HORIZONTAL_ALIGNMENT_LEFT, -1, 25, INK)
 	var step := int(journey.data.get("step", 0)) + 1
-	draw_string(FONT, title_panel.position + Vector2(16, 55), "探索 · 第 %d / 4 站" % step, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("b7c9d7"))
+	var subtitle := scene_title if not scene_title.is_empty() else "探索 · 第 %d 站" % step
+	draw_string(FONT, title_panel.position + Vector2(16, 55), subtitle, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("b7c9d7"))
 	var signal_panel := Rect2(size.x - 190, 18, 170, 42)
 	draw_rect(signal_panel, Color(0.025, 0.04, 0.08, 0.88))
 	draw_line(signal_panel.position + Vector2(12, 21), signal_panel.position + Vector2(38, 21), MAGENTA, 2)

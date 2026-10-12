@@ -1,4 +1,5 @@
 extends Button
+const Feedback = preload("res://scenes/expedition/exploration_feedback.gd")
 ## Transparent rectangular hit target around an approved free-silhouette marker.
 
 var kind := "memory"
@@ -9,11 +10,14 @@ var motion_phase := 0.0
 var interaction_strength := 0.0
 var motion_time := 0.0
 var interaction_tween: Tween
+var press_amount := 0.0
+var press_tween: Tween
+var completion_flash := 0.0
 
 const IDLE_PERIOD := 2.2
 const IDLE_LIFT := 4.0
 const IDLE_PULSE := 0.05
-const COMPLETED_LIFT := 1.5
+const COMPLETED_LIFT := 0.0
 const INTERACTION_SCALE := 0.06
 
 func _ready() -> void:
@@ -26,6 +30,13 @@ func _ready() -> void:
 	mouse_exited.connect(_refresh_interaction)
 	focus_entered.connect(_refresh_interaction)
 	focus_exited.connect(_refresh_interaction)
+	button_down.connect(func():
+		if press_tween != null: press_tween.kill()
+		press_amount = 1.0)
+	button_up.connect(func():
+		if press_tween != null: press_tween.kill()
+		press_tween = create_tween()
+		press_tween.tween_property(self,"press_amount",0.0,Feedback.seconds("micro")).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT))
 
 func _process(delta: float) -> void:
 	motion_time = fmod(motion_time + delta, IDLE_PERIOD)
@@ -36,8 +47,9 @@ func set_motion_index(index: int) -> void:
 
 func motion_sample(at_time: float) -> Dictionary:
 	var wave := sin(TAU * at_time / IDLE_PERIOD + motion_phase)
-	var offset_y := wave * (COMPLETED_LIFT if completed else IDLE_LIFT)
-	var breathing := 0.0 if completed else (wave + 1.0) * 0.5 * IDLE_PULSE
+	var quiet := completed or disabled
+	var offset_y := wave * (COMPLETED_LIFT if quiet else IDLE_LIFT*0.5)
+	var breathing := 0.0 if quiet else (wave + 1.0) * 0.5 * IDLE_PULSE*0.5
 	var active := clampf(interaction_strength, 0.0, 1.0)
 	if selected:
 		offset_y = 0.0
@@ -45,7 +57,7 @@ func motion_sample(at_time: float) -> Dictionary:
 		active = maxf(active, 0.20)
 	return {
 		"offset_y": offset_y,
-		"scale": 1.0 + breathing + active * INTERACTION_SCALE,
+		"scale": 1.0 + breathing + active * INTERACTION_SCALE - press_amount*0.08,
 		"active": active,
 	}
 
@@ -55,7 +67,7 @@ func _refresh_interaction() -> void:
 		interaction_tween.kill()
 	var entering := target > interaction_strength
 	interaction_tween = create_tween()
-	interaction_tween.tween_property(self, "interaction_strength", target, 0.12 if entering else 0.18) \
+	interaction_tween.tween_property(self, "interaction_strength", target, Feedback.seconds("micro" if entering else "normal")) \
 		.set_trans(Tween.TRANS_BACK if entering else Tween.TRANS_QUAD) \
 		.set_ease(Tween.EASE_OUT)
 
@@ -63,8 +75,9 @@ func _draw() -> void:
 	if artwork == null:
 		return
 	var sample := motion_sample(motion_time)
-	var at := size / 2.0 + Vector2(0, sample.offset_y)
+	var at := Vector2(size.x/2,59) + Vector2(0, sample.offset_y)
 	var tint := Color(0.54, 0.64, 0.66, 0.72) if completed else Color.WHITE
+	if disabled: tint = Color(0.54,0.64,0.66,0.62)
 	var art_size := Vector2(106, 106) * float(sample.scale)
 	var accent := Color("ff2daa") if kind == "battle" else Color("99eaff")
 	var glow_alpha := 0.07 + 0.12 * float(sample.active)
@@ -85,3 +98,10 @@ func _draw() -> void:
 			at + Vector2(35, -37),
 			at + Vector2(47, -50),
 		]), Color("95e6b1"), 3, true)
+	if completion_flash > 0:
+		draw_arc(at,55+(1-completion_flash)*14,0,TAU,48,Color(0.58,0.90,0.69,completion_flash),3,true)
+
+func celebrate() -> void:
+	completion_flash = 1.0
+	Feedback.play(self,true)
+	create_tween().tween_property(self,"completion_flash",0.0,Feedback.seconds("scene_transition")).set_ease(Tween.EASE_OUT)

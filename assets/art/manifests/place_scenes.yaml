@@ -1,0 +1,55 @@
+schema_version: 3
+object:
+  id: "place_scenes"
+  display_name: "地点场景导航"
+  type: "ui"
+  subtype: "location_navigation"
+variants:
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "unselected"
+    approval: "review"
+    approval_evidence:
+      source: "docs/art/ui/place-scenes.md"
+      date: "2026-10-11"
+      decision: "user_waived_review_and_authorized_delivery"
+    root: "design/concepts/ui/place-scenes/asset_001"
+    files:
+      next: "next.svg"
+      previous: "previous.svg"
+      scene: "scene.svg"
+      preview: "preview.png"
+      source_notes: "generation.md"
+    metadata:
+      source: "native_svg_geometry"
+      canvas: "32x32"
+      license: "project_original"
+  asset_002:
+    stage: "asset"
+    version: "002"
+    selection: "selected"
+    approval: "review"
+    approval_evidence:
+      source: "docs/art/ui/place-scenes.md"
+      date: "2026-10-11"
+      decision: "user_waived_review_and_requested_passage_hotspot"
+    root: "design/concepts/ui/place-scenes/asset_002"
+    files:
+      passage: "passage.svg"
+      scene: "../asset_001/scene.svg"
+      preview: "preview.png"
+      source_notes: "generation.md"
+    metadata:
+      source: "native_svg_geometry"
+      canvas: "128x128"
+      license: "project_original"
+integration:
+  status: "authorized_active"
+  active_variant: "asset_002"
+  owner: "scenes/expedition/place_scene_navigation.gd"
+  root: "assets/art/ui/place_scenes"
+  files:
+    passage: "passage.svg"
+    scene: "scene.svg"
+  evidence: "docs/art/ui/place-scenes.md"

@@ -1,5 +1,6 @@
 schema_version: 3
 objects:
+  place_scenes: "manifests/place_scenes.yaml"
   event_choice_ui: "manifests/event_choice_ui.yaml"
   battlefield_redesign: "manifests/battlefield_redesign.yaml"
   enemy: "manifests/enemy.yaml"

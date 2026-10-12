@@ -36,6 +36,8 @@ var exploration_board: Control
 var exploration_popup: PanelContainer
 var exploration_popup_box: VBoxContainer
 var exploration_detail_index := -1
+var exploration_popup_tween: Tween
+var exploration_progress: Dictionary = {}
 var environment_preview_board: Control
 var environment_preview_status: Label
 var environment_preview_state := "anomaly"
@@ -808,13 +810,10 @@ func _library_location(journey, prologue: bool) -> void:
 	column.add_child(exploration_stage)
 	exploration_board = ExplorationBoard.new()
 	exploration_board.journey = journey
-	var place := str(journey.visit.data.place)
-	if journey.is_library():
-		if not exploration_board.set_environment_variant(LIBRARY_ENVIRONMENT_STATE,LIBRARY_ENVIRONMENT_VIEWPOINT):
-			push_error("Missing approved library environment")
-	else:
-		if not exploration_board.set_campus_environment(CampusPresentation.background(journey.data.region,place,"anomaly",journey.data.flow),journey.title(place)):
-			push_error("Missing approved campus environment: " + place)
+	exploration_board.passage_exit_title = "基地" if prologue else ""
+	if not exploration_board.configure_place_scenes(): push_error("Missing location scene")
+	exploration_board.scene_requested.connect(func(id: String): action.emit("scene:"+id))
+	exploration_board.passage_requested.connect(func(): action.emit("passage"))
 	exploration_board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	exploration_stage.add_child(exploration_board)
 	exploration_board.picked.connect(func(index): _open_library_detail(journey,index))
@@ -833,9 +832,24 @@ func _library_location(journey, prologue: bool) -> void:
 	actions.offset_right = -20
 	actions.offset_bottom = -14
 	exploration_stage.add_child(actions)
-	_exploration_button("离开地点","leave",journey.visit.can_leave(),actions,198)
-	_exploration_button("返回基地","base",true,actions,198)
+	var leave := _exploration_button("离开地点","leave",journey.visit.can_leave(),actions,198)
+	var home := _exploration_button("返回基地","base",true,actions,198)
+	for item in [leave,home]:
+		CampusUi.apply_hub_button(item)
+		item.add_theme_font_size_override("font_size",18)
+	exploration_board.footer_buttons.assign([leave,home])
+	exploration_board._wire_focus()
 	exploration_stage.resized.connect(_place_exploration_popup)
+	if journey.data.get("screen") == "visit":
+		var key: String = str(journey.data.id)+":"+str(journey.visit.data.place)
+		var before: Dictionary = exploration_progress.get(key,{})
+		var after := {"viewed":journey.visit.data.viewed.duplicate(),"exit":journey.visit.can_leave()}
+		if not before.is_empty():
+			for i in range(journey.visit.data.hotspots.size()):
+				var spot: Dictionary = journey.visit.data.hotspots[i]
+				if after.viewed.has(spot.id) and not before.viewed.has(spot.id): exploration_board.buttons[i].celebrate()
+			if after.exit and not before.exit: exploration_board.passage_hotspot.celebrate()
+		exploration_progress[key] = after
 
 func _build_exploration_popup() -> void:
 	exploration_popup = PanelContainer.new()
@@ -898,7 +912,15 @@ func _open_library_detail(journey, index: int) -> void:
 	primary.size_flags_horizontal = Control.SIZE_SHRINK_END
 	primary.focus_neighbor_top = close.get_path()
 	close.focus_neighbor_bottom = primary.get_path()
+	primary.focus_next = close.get_path()
+	primary.focus_previous = close.get_path()
+	close.focus_next = primary.get_path()
+	close.focus_previous = primary.get_path()
 	exploration_popup.show()
+	if exploration_popup_tween != null: exploration_popup_tween.kill()
+	exploration_popup.modulate.a = 0.0
+	exploration_popup_tween = create_tween()
+	exploration_popup_tween.tween_property(exploration_popup,"modulate:a",1.0,preload("res://scenes/expedition/exploration_feedback.gd").seconds("normal")).set_ease(Tween.EASE_OUT)
 	exploration_popup.reset_size()
 	_place_exploration_popup()
 	primary.grab_focus()
