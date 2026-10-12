@@ -35,7 +35,7 @@ Stages 数组的顺序就是站次；一个 Stage 的 Choices 是互斥岔路，
 
 地点资源位于 `resources/campaign/places/`。**Landmark＋Offset** 得到地图位置：Landmark 对应浏览器地图地标的英文 ID，Offset 使用 1800×1500 原图坐标。移动地标会带动所有引用它的地点；仅移动一个地点时改该地点的 Offset。
 
-Background Id 选择现有校园背景。Library Interior 启用原图书馆室内与照片交互，路线预览仍显示正面。修改共享地点会影响所有引用者；要独立位置或名称，先复制地点资源、改 ID，再替换站点的 Place。地点不包含玩家访问状态。
+Background Id 选择现有校园背景。Library Interior 启用原图书馆室内与照片交互，路线预览仍显示正面。修改共享地点会影响所有引用者；要独立位置或名称，先复制地点资源、改 ID，再替换站点的 Place。地点不包含玩家访问状态。会堂商业街在地图导览中展开成电会堂／商业街两个图标，共用同一站点Choices和原进入动作；新增图标不会新增访问／战斗站次。精确旧占位快照的落点可由表现层校正；后续自定义Landmark／Offset仍有效。
 
 ## 字段与内容边界
 

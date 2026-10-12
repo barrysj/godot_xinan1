@@ -114,7 +114,7 @@ func run_checks(hub) -> void:
 	if map_selector != null:
 		await hub.get_tree().process_frame
 		await hub.get_tree().process_frame
-		verify(map_selector.campaign_selectable and not map_selector.action_panel.visible, "campaign entry awaits route selection")
+		verify(map_selector.campaign_selectable and map_selector.select_button.disabled, "campaign entry awaits route selection")
 		verify(map_selector.campaign_region_for_route(0) == "library" and map_selector.campaign_region_for_route(1) == "region_b" and map_selector.campaign_region_for_route(2) == "region_c", "three visual routes map to existing campaign regions")
 		map_selector.board.set_zoom(1.5)
 		verify(map_selector.board.place_at(map_selector.board.project(map_selector.board.layout.PLACES["library"].point)) == "library", "campaign map keeps place hit after zoom")
@@ -139,9 +139,8 @@ func run_checks(hub) -> void:
 			var map_capture = hub.get_viewport().get_texture().get_image()
 			verify(map_capture.get_size() == Vector2i(1920, 1080), "campaign map screenshot size")
 			map_capture.save_png("res://.godot/campaign-map-select-1920x1080.png")
-		map_selector._focus_selected()
-		verify(map_selector.focused_route == 2 and map_selector.explore_button.visible and map_selector.back_button.visible, "selection focuses route before exploration")
-		map_selector._explore()
+		verify(map_selector.route_nodes.buttons.size() == 6 and map_selector.back_button.visible, "selected region exposes all geographic places")
+		map_selector._confirm_route()
 		verify(hub.campaign_panel.action_button("strategy:region_c:region:keep") != null,"original map leads to starting build selection")
 		hub._campaign_action("strategy:region_c:region:keep")
 		verify(hub.campaign_mode == "region" and hub.journey.data.region == "region_c", "map selection enters existing campaign flow")

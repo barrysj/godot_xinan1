@@ -52,6 +52,8 @@ pwsh.exe -NoProfile -File .\run-tool-suite-control.ps1
 
 基地选区读取本文件的 `routes`；`campaign_region` 只指定进入哪个已有区域。区域游玩顺序改在 `resources/campaign/regions/*.tres` 的 Stages 中，候选引用 `stops/` 的探索站点，站点再引用 `places/` 的共享地点。最后一站自动为终点。
 
-地点资源用 Landmark 引用本文件地标，用 Offset 保留相对偏移；移动地图地标会带动所有关联地点。`campus_presentation.gd` 现在从本次流程定义读取显示，不再硬编码故事绑定。名称、背景、室内标记和敌阵不在浏览器编辑器维护。详情见[区域流程配置](flow-authoring.md)。
+地点资源用 Landmark 引用本文件地标，用 Offset 保留相对偏移；移动地图地标会带动所有关联地点。`campus_presentation.gd`从本次流程定义读取显示；仅对保存快照中的精确旧占位坐标做地标纠正，不覆盖后来手工修改的Landmark／Offset。名称、背景、室内标记和敌阵不在浏览器编辑器维护。详情见[区域流程配置](flow-authoring.md)。
 
 游戏连线依据站次生成，地图编辑器路径拐点仅控制基地选区的展示线；两者无需逐点对应。故事落点仍是暂定位置，不代表实地步行路线。开发阶段旧探索不迁移，请通过已有重开入口开始新档。
+
+2026-10-13地点校正：基础实验大楼新增地标basic_laboratory_building，使用负责人提供的(925,740)；会堂商业街的探索地点资源锚定hall，地图导览分别展开hall／shopping两个地理节点，仍共享一个原探索站点。学子食堂、银桦食堂区、西湖中心、操场分别引用cafe_1／cafe_2／west_lake／playground。其余未经确认的微地点继续使用现有暂定偏移。最新导览验证见[界面验证](../ui/verification.md#地图与下一站导览)。

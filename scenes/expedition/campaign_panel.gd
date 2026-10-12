@@ -6,7 +6,7 @@ const ExplorationBoard = preload("res://scenes/expedition/exploration_board.gd")
 const ExplorationSkin = preload("res://scenes/expedition/exploration_skin.gd")
 const CampusLocationSkin = preload("res://scenes/expedition/campus_location_skin.gd")
 const CampusPresentation = preload("res://game/run/campus_presentation.gd")
-const RouteMap = preload("res://scenes/expedition/campaign_route_map.gd")
+const StationPicker = preload("res://scenes/expedition/campus_station_picker.gd")
 const Journey = preload("res://game/run/campaign_journey.gd")
 const CampusUi = preload("res://scenes/ui/campus_ui.gd")
 const ChoiceOutcomes = preload("res://scenes/expedition/choice_outcomes.gd")
@@ -24,6 +24,7 @@ var column: VBoxContainer
 var page_margin: MarginContainer
 var page_scroll: ScrollContainer
 var home_root: Control
+var station_picker: Control
 var home_overlay: Control
 var home_return_focus: Control
 var default_parent: Control
@@ -84,6 +85,7 @@ func clear(title: String, detail: String) -> void:
 	text(detail,21)
 
 func _show_standard_page() -> void:
+	_clear_station_picker()
 	choice_page.dismiss()
 	close_home_overlay(false)
 	home_root.hide()
@@ -91,6 +93,7 @@ func _show_standard_page() -> void:
 	default_parent = column
 
 func _show_home_page() -> void:
+	_clear_station_picker()
 	choice_page.dismiss()
 	close_home_overlay(false)
 	page_margin.hide()
@@ -646,47 +649,21 @@ func _empty(box: Control) -> void:
 		box.remove_child(child)
 		child.queue_free()
 
-func route(journey, restored: bool = false) -> void:
-	var current: String = "基地" if journey.data.visited.is_empty() else journey.title(journey.data.visited.back())
-	clear(journey.data.flow.title,"当前位置："+current+" · 第 %d / %d 站 · 选择目的地，突破封锁后继续前进。" % [journey.data.step+1,journey.data.map.size()])
-	var content := HBoxContainer.new()
-	content.add_theme_constant_override("separation",24)
-	column.add_child(content)
-	var board := RouteMap.new()
-	board.name = "RouteMap"
-	board.journey = journey
-	board.map_state = "day" if restored else "anomaly"
-	board.custom_minimum_size = Vector2(820,maxf(680,size.y-230))
-	board.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_child(board)
-	var side := VBoxContainer.new()
-	side.custom_minimum_size.x = 350
-	side.add_theme_constant_override("separation",14)
-	content.add_child(side)
-	text("可选目的地",23,side)
-	for index in range(journey.data.map[journey.data.step].size()):
-		var place: String = journey.data.map[journey.data.step][index]
-		var choice := button(journey.title(place),"",true,side)
-		# Selection previews a destination; only the explicit travel action enters it.
-		choice.pressed.connect(board.choose.bind(index))
-	var detail := _detail_box(side)
-	board.picked.connect(func(index): _route_detail(journey,index,detail))
-	_route_detail(journey,0,detail)
-	text("滚轮缩放 · 拖动查看校园",17,side)
-	button("返回基地","base",true,side)
+func _clear_station_picker() -> void:
+	if not is_instance_valid(station_picker): return
+	station_picker.hide()
+	station_picker.get_parent().remove_child(station_picker)
+	station_picker.queue_free()
+	station_picker = null
 
-func _route_detail(journey, index: int, detail: Control) -> void:
-	_empty(detail)
-	var place: String = journey.data.map[journey.data.step][index]
-	var picture := TextureRect.new()
-	picture.texture = ExplorationSkin.texture(CampusPresentation.background(journey.data.region,place,"anomaly",journey.data.flow))
-	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	picture.custom_minimum_size = Vector2(320,200)
-	detail.add_child(picture)
-	text("下一站 · "+journey.title(place),23,detail)
-	text("突破守卫后离开，即可带回终端。" if journey.data.step == journey.data.map.size()-1 else "击败守卫、领取奖励后，可以继续调查或前往下一站。",19,detail)
-	button("前往","enter:"+str(index),true,detail)
+func route(journey, restored: bool = false) -> void:
+	_show_home_page()
+	_clear_column()
+	station_picker = StationPicker.new()
+	station_picker.journey = journey
+	station_picker.restored = restored
+	home_root.add_child(station_picker)
+	station_picker.action.connect(func(id: String): action.emit(id))
 
 func location(journey, prologue: bool = false) -> void:
 	_library_location(journey,prologue)

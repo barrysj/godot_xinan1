@@ -50,6 +50,10 @@
     }
   },
   "places": {
+    "basic_laboratory_building": {
+      "title": "基础实验大楼",
+      "point": [925, 740]
+    },
     "west": {
       "title": "西侧教学区",
       "point": [

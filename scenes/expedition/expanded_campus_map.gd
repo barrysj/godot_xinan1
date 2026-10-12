@@ -37,6 +37,10 @@ var hovered_route = -1
 var hover_overrides_selection = true
 var selection_enabled = true
 var selected_place = ""
+var hidden_label_ids: Array[String] = []
+var spatial_navigation_only := false
+var route_area_focus := true
+var draw_route_paths := true
 var surface: TextureRect
 var overlay: Control
 var focus_material: ShaderMaterial
@@ -225,10 +229,10 @@ func _gui_input(event: InputEvent) -> void:
 			if drag_distance > 5.0: pan(delta)
 			accept_event()
 			return
-		preview(route_at(event.position))
-		var place = place_at(event.position)
+		if not spatial_navigation_only: preview(route_at(event.position))
+		var place = "" if spatial_navigation_only else place_at(event.position)
 		tooltip_text = place_title(place) + " · 点击查看" if not place.is_empty() else ""
-		mouse_default_cursor_shape = CURSOR_POINTING_HAND if not place.is_empty() or hovered_route >= 0 else CURSOR_ARROW
+		mouse_default_cursor_shape = CURSOR_ARROW if spatial_navigation_only else (CURSOR_POINTING_HAND if not place.is_empty() or hovered_route >= 0 else CURSOR_ARROW)
 	elif event is InputEventMouseButton:
 		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
 			set_zoom(zoom * (ZOOM_STEP if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / ZOOM_STEP), event.position)
@@ -241,12 +245,12 @@ func _gui_input(event: InputEvent) -> void:
 			else:
 				dragging = false
 				if drag_distance <= 5.0:
-					var place = place_at(event.position)
+					var place = "" if spatial_navigation_only else place_at(event.position)
 					if not place.is_empty():
 						selected_place = place
 						place_picked.emit(place)
 					else:
-						var index = route_at(event.position)
+						var index = -1 if spatial_navigation_only else route_at(event.position)
 						if selection_enabled and index >= 0: select_route(index)
 					queue_redraw()
 			accept_event()
@@ -260,7 +264,7 @@ func _draw() -> void:
 	surface.texture = texture_cache[map_state]
 	surface.position = map_rect().position + ATLAS_ORIGIN * map_rect().size / layout.SIZE
 	surface.size = ATLAS_SIZE * map_rect().size / layout.SIZE
-	focus_material.set_shader_parameter("focused", active >= 0)
+	focus_material.set_shader_parameter("focused", active >= 0 and route_area_focus)
 	focus_material.set_shader_parameter("light_outside_brightness", float(layout.OUTSIDE_BRIGHTNESS[map_state]))
 	var light: Dictionary = LIGHT_TREATMENT[map_state]
 	focus_material.set_shader_parameter("light_outside_saturation", light.saturation)
@@ -276,8 +280,10 @@ func _draw() -> void:
 	overlay.queue_redraw()
 
 func _draw_overlay() -> void:
+	if spatial_navigation_only: return
 	var active = active_route()
 	for index in range(layout.ROUTES.size()):
+		if not draw_route_paths: break
 		if active >= 0 and index != active: continue
 		var color = Color(layout.ROUTES[index].color)
 		var path = PackedVector2Array()
@@ -291,6 +297,7 @@ func _draw_overlay() -> void:
 		var size_px = 7.0 if chosen else 5.0
 		overlay.draw_circle(at, size_px + 3, Color("0d1b2b"))
 		overlay.draw_circle(at, size_px, Color("fff4ce") if chosen else Color("78e2ef"))
+		if hidden_label_ids.has(id): continue
 		var label = place.title
 		var width = font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x + 16
 		var box = Rect2(at + Vector2(8, -30), Vector2(width, 28))

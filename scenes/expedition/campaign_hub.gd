@@ -518,6 +518,7 @@ func _open_map_region() -> void:
 	var preview = preload("res://scenes/expedition/expanded_campus_preview.tscn").instantiate()
 	preview.name = "CampaignMapRegionPreview"
 	preview.campaign_selectable = true
+	preview.completed_regions = progress.campaign.terminals.duplicate()
 	add_child(preview)
 	campaign_panel.hide()
 	preview.board.set_state("day" if progress.campaign.restored else "anomaly")

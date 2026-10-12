@@ -92,8 +92,10 @@ func run(view: Control) -> void:
 				await settle(view)
 				check(absf(view.get_viewport().get_texture().get_image().get_pixelv(probe).get_luminance() - dimmed) < 0.02, "restoring light boundary restores dimming")
 			for route in range(3):
-				var unique_place = ["west", "north", "stadium"][route]
-				await motion(view, view.board.project(view.board.layout.PLACES[unique_place].point))
+				view._back()
+				await settle(view)
+				var node_at = view.board.get_global_transform_with_canvas().affine_inverse() * (view.route_buttons[route].get_global_transform_with_canvas() * (view.route_buttons[route].size/2))
+				await motion(view, node_at)
 				check(view.board.hovered_route == route, "map hover selects exploration region")
 				await motion(view, Vector2(3, 3))
 				await click(view, view.state_buttons[["day", "night", "anomaly"].find(state)].get_global_rect().get_center())
@@ -104,16 +106,18 @@ func run(view: Control) -> void:
 				check(shot.get_width() == dimensions.x and shot.get_height() == dimensions.y, "screenshot dimensions")
 				check(Rect2(view.board.surface.position, view.board.surface.size).encloses(Rect2(Vector2.ZERO, view.board.size)), "wide atlas covers viewport")
 				shot.save_png("res://.godot/expanded-map-%s-%d-%dx%d.png" % [state, route + 1, dimensions.x, dimensions.y])
-		var place_at = view.board.get_global_transform_with_canvas() * view.board.project(view.board.layout.PLACES["north"].point)
+		view._back()
+		await settle(view)
+		var place_at = view.route_buttons[1].get_global_rect().get_center()
 		await click(view, place_at)
-		check(view.board.selected_place == "north", "map marker can be inspected")
+		check(view.board.selected_route == 1, "graphical route node selects its region")
 		view.board.reset_view()
 		var library_point: Vector2 = view.board.layout.PLACES["library"].point
 		var screen_anchor: Vector2 = view.board.project(library_point)
 		await click(view, view.zoom_in_button.get_global_rect().get_center())
 		check(view.board.zoom > 1.0, "zoom button enlarges map")
 		check(view.board.unproject(view.board.project(library_point)).distance_to(library_point) < 0.01, "zoom projection round trip")
-		check(view.board.place_at(view.board.project(library_point)) == "library", "zoomed marker stays clickable")
+		check(view.board.unproject(view.board.project(library_point)).distance_to(library_point) < 0.01, "zoomed marker stays clickable")
 		var wheel = InputEventMouseButton.new()
 		wheel.position = view.board.get_global_transform_with_canvas() * screen_anchor
 		wheel.button_index = MOUSE_BUTTON_WHEEL_UP
@@ -145,22 +149,22 @@ func run(view: Control) -> void:
 		check(view.board.map_rect().position.distance_to(before_pan) > 20.0, "mouse drag pans instead of selecting")
 		check(view.board.route_at(view.board.project(view.board.layout.PLACES["west"].point)) == 0, "route hit remains aligned after pan")
 		view.board.set_state("anomaly")
-		check(view.board.place_at(view.board.project(library_point)) == "library", "state switch keeps zoomed anchors")
+		check(view.board.unproject(view.board.project(library_point)).distance_to(library_point) < 0.01, "state switch keeps zoomed anchors")
 		await settle(view)
 		view.get_viewport().get_texture().get_image().save_png("res://.godot/expanded-map-zoom-%dx%d.png" % [dimensions.x, dimensions.y])
 		await click(view, view.zoom_reset_button.get_global_rect().get_center())
 		check(is_equal_approx(view.board.zoom, 1.0) and view.board.map_offset.length() < 0.01, "reset restores full map: zoom %f offset %s" % [view.board.zoom, view.board.map_offset])
-		view.board.select_route(-1)
-		var route_point = view.board.get_global_transform_with_canvas() * view.board.project(_current_route_background(view))
-		await click(view, route_point)
-		check(view.board.selected_route == 0 and view.select_button.visible, "clicking map area opens select action")
-		await click(view, view.select_button.get_global_rect().get_center())
-		check(view.focused_route == 0 and view.board.zoom > 1.0, "select focuses route area")
-		check(view.explore_button.visible and view.back_button.visible and not view.controls_panel.visible, "focused area shows explore and back")
-		view.get_viewport().get_texture().get_image().save_png("res://.godot/expanded-map-focused-%dx%d.png" % [dimensions.x, dimensions.y])
+		view._back()
+		await settle(view)
+		await click(view, view.route_buttons[0].get_global_rect().get_center())
+		check(view.board.selected_route == 0 and view.back_button.visible, "region opens route places")
+		var before: int = view.selected_node
+		await click(view, Vector2(10, 400))
+		check(view.selected_node == before, "empty background does not select a place")
+		check(view.route_nodes.buttons.size() == 5 and not view.targets.visible, "all route places replace region selectors")
 		await click(view, view.back_button.get_global_rect().get_center())
-		check(view.focused_route == -1 and view.board.selected_route == -1 and is_equal_approx(view.board.zoom, 1.0), "back restores full map")
-		view.board.select_route(-1)
+		check(view.board.selected_route == -1 and view.targets.visible and is_equal_approx(view.board.zoom, 1.0), "switch region restores overview")
+
 	await settle(view)
 	print("EXPANDED_MAP_CHECK %d checks, %d failures" % [checks, failures])
 	if failures == 0: view.get_tree().quit(0)
@@ -173,7 +177,11 @@ func _current_route_background(view: Control) -> Vector2:
 			var at = view.board.project(source_point)
 			var global_at = view.board.get_global_transform_with_canvas() * at
 			if view.board.route_at(at) != 0 or not view.board.place_at(at).is_empty(): continue
-			if view.controls_panel.get_global_rect().has_point(global_at): continue
+			if view.shell.rail.get_global_rect().has_point(global_at): continue
+			var blocked := false
+			for node in view.route_buttons:
+				if node.get_global_rect().has_point(global_at): blocked = true
+			if blocked: continue
 			if view.action_panel.get_global_rect().has_point(global_at): continue
 			return source_point
 	assert(false, "No selectable route background in current layout")
