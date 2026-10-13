@@ -87,7 +87,7 @@ func busy() -> bool:
 	return pressed_side >= 0 or (is_instance_valid(panel) and panel.visible)
 
 func active() -> bool:
-	return hub.debug_enabled and hub.screen == "battle" and hub.phase in ["prepare","battle"] and not hub.leaving and hub.pending_exit.is_empty() and not hub.pause_overlay.visible and not hub.debug_panel.panel.visible and not is_instance_valid(hub.team_panel) and not is_instance_valid(hub.codex_panel)
+	return hub.debug_enabled and hub.screen == "battle" and hub.phase == "prepare" and not hub.leaving and hub.pending_exit.is_empty() and not hub.pause_overlay.visible and not hub.debug_panel.panel.visible and not is_instance_valid(hub.team_panel) and not is_instance_valid(hub.codex_panel)
 
 func _process(_delta: float) -> void:
 	var available: Vector2 = hub.get_viewport_rect().size
@@ -300,6 +300,10 @@ func _select_character(index: int) -> void:
 	portrait.texture = definition.portrait
 
 func apply_edit() -> void:
+	if not active():
+		close()
+		hub._note("开战后仅可查看；返回整备再调整角色。")
+		return
 	# Commit typed input even when the user has not pressed Enter in a field.
 	for key in stat_fields:
 		if stat_fields[key].get_line_edit().has_focus(): stat_fields[key].apply()

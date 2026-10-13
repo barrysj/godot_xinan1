@@ -194,24 +194,32 @@ func run_checks(owner_hub) -> void:
 	hub._process(0.5)
 	verify(hub.elapsed > 0 and hub.simulation.units == hub.units,"original simulation runs modified roster")
 	verify(hub.units.filter(func(unit): return unit.side == 1).all(func(unit): return not unit.presentation.facing_right),"enemies keep left-facing presentation during combat")
-	await click_unit(1,empty)
+	var settings: Dictionary = hub.debug_battle_tuning.duplicate(true)
 	var elapsed: float = hub.elapsed
+	for side in [0,1]:
+		hub.inspector.close_info()
+		var slot: int = ally_empty if side == 0 else empty
+		var at := point(side,slot)
+		await mouse(at,true)
+		await mouse(at,false)
+		verify(not editor.panel.visible and not editor.busy() and not hub.paused,"combat click is read-only for side %d" % side)
+		verify(hub.inspector.pinned,"ordinary unit details remain available")
+		await motion(hub._slot_rect(side,0).get_center())
+		verify(not editor.ghost.visible and hub.debug_battle_tuning == settings,"combat cannot drag or change units")
+	hub.inspector.close_info()
+	hub.paused = true
+	await mouse(point(1,empty),true)
+	await mouse(point(1,empty),false)
+	verify(not editor.panel.visible and hub.paused,"manual pause does not unlock combat editing")
+	hub.paused = false
+	editor.open_unit(1,empty)
+	editor.apply_edit()
+	verify(not editor.panel.visible and hub.debug_battle_tuning == settings,"quick editor APIs cannot bypass preparation guard")
 	hub._process(1)
-	verify(hub.elapsed == elapsed,"quick menu freezes live simulation")
-	editor.stat_fields.atk.value = 78
-	var save_path: String = hub.progress.path
-	var previous: Dictionary = hub.debug_battle_tuning.duplicate(true)
-	hub.progress.path = "res://.godot/missing-battle-preparation-directory/profile.json"
-	await helpers.click(hub,editor.apply_button)
-	verify(editor.panel.visible and hub.paused and hub.debug_battle_tuning == previous,"failed checkpoint keeps old config and editable paused menu")
-	hub.progress.path = save_path
-	await helpers.click(hub,editor.apply_button)
-	verify(hub.phase == "prepare" and hub.elapsed == 0 and editor.unit_at(1,empty).atk == 78,"live edit restarts through original checkpoint into preparation")
-	verify(hub.units.all(func(unit): return unit.hp == unit.max_hp and unit.damage == 0),"live edit resets health and statistics")
-	verify(hub.simulation.units == hub.units,"simulation shares actual initialized units")
+	verify(hub.elapsed > elapsed,"read-only combat clicks do not freeze simulation")
+	await capture("battle-preparation-combat-locked")
 	var saved_text: String = JSON.stringify(hub.progress.active_run)
 	verify(not saved_text.contains("debug_battle_tuning") and not saved_text.contains("5321"),"temporary identities and stats stay out of ordinary checkpoint")
-	await capture("battle-preparation-final")
 	verify((Model.Content.MANIFEST.characters+Model.Content.MANIFEST.enemies).map(func(definition): return [definition.id,definition.health,definition.attack,definition.defense,definition.interval]) == resources,"registered resources remain unchanged")
 	for index in profiles.size():
 		var current: PackedByteArray = FileAccess.get_file_as_bytes(profiles[index]) if FileAccess.file_exists(profiles[index]) else PackedByteArray()
