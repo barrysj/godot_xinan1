@@ -8,7 +8,7 @@ Git更新源码，不更新每个checkout自己的Godot缓存。新全局脚本�
 
 ## Windows 窗口入口
 
-Debug 启动器的“检查”页提供“工程检查”“缓存修复”“启用检查”“关闭检查”，无需直接运行脚本。两态游戏启动前都自动准备并检测；窗口和日志行为见[Windows 启动器](launcher.md)。
+Debug 启动器的“检查”页只提供“一键检查”“修复工程”，无需直接运行脚本。两态游戏启动前都自动准备并检测；窗口和日志行为见[Windows 启动器](launcher.md)。hooks 设置留给内部维护命令。
 
 ## 内部自动化命令
 
@@ -34,7 +34,7 @@ Windows Debug／Release 启动器通过tools/game_launcher/launch-action.ps1，�
 
 ## main更新后的自动触发
 
-Debug 窗口点击“启用检查”即可配置；以下仅为内部自动化命令：
+以下仅为内部维护／自动化命令，不放入日常窗口：
 
 ```powershell
 pwsh.exe -NoProfile -File .\tools/development/install-project-hooks.ps1

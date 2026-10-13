@@ -75,7 +75,7 @@ PowerShell7 / Godot4.7.2 Compatibility：`./tools/game_launcher/legacy/run-debug
 
 ## Windows 独立启动器与入口收归（待统筹）
 
-2026-10-13，基线 codex/godot-startup-guard 6c3053c 加本功能，分支 codex/windows-game-launcher。原 10 个根目录启动／检查脚本移到 tools/ 对应目录，更新资源台信任路径、hooks 分发和文档引用；内部高级夹具保留，日常使用两个已构建的 GUI EXE。Debug 具有校园调试、直接原序章战斗、正常游戏、预检／强制导入、原校园自检、内容工具和可选 main hooks；Release 仅正常游戏。窗口读取共用颜色 Token，状态由后台事件更新，锁保护同工作区重入，失败可查看日志。
+2026-10-13，基线 codex/godot-startup-guard 6c3053c 加本功能，分支 codex/windows-game-launcher。原 10 个根目录启动／检查脚本移到 tools/ 对应目录，更新资源台信任路径、hooks 分发和文档引用；内部高级夹具保留，日常使用两个已构建的 GUI EXE。Debug 日常入口保留校园调试、直接原序章战斗和正常游戏；检查页只提供一键检查／修复工程，细分校验与 hooks 转为内部自动化。Release 仅正常游戏。窗口读取共用颜色 Token，状态由后台事件更新，锁保护同工作区重入，失败可查看日志。
 
 原生窗口最小／扩大尺寸、动作名、默认 Enter 入口／TabStop 和源码／二进制一致性：Debug 36／0、Release 9／0；实际按钮调用工程预检9／0、原战斗34／0、完整校园调试174／0、Release调试关闭6／0、内容校验errors=0。工程预检捕获命令行分隔符后的日志参数错误并修复；两个已复现的 Android EditorSettings 退出提示只作 Windows 无关项过滤，其他脚本／资源／编辑器错误保持阻断。
 
@@ -86,3 +86,5 @@ PowerShell7 / Godot4.7.2 Compatibility：`./tools/game_launcher/legacy/run-debug
 已知边界：只验证 Windows 本地源码入口，需要 Godot／PowerShell7，不执行发行导出。既有默认动作预览夹具在旧基线与迁移后均报告施法姿势取样未命中；保留的 CodeCheck 旧夹具仍存在主线奖励卡／旧技能数组断言失败，本轮未修改其 GDScript 或游戏规则，不能用历史39／0宣布当前夹具通过。新启动器使用已通过的原校园与直接战斗专项。真实仓库尚未启用 hooks。
 
 待统筹：日常开发／用户启动入口改为独立原生窗口，根目录旧脚本不再是操作入口；本轮不改高层总览／Roadmap。
+
+当前检查页精简核验（2026-10-13，基线9d0a8ae）：只显示一键检查／修复工程，检查页Enter默认一键检查。两个原生窗口实际运行并截图，最小／扩大尺寸和入口／二进制一致性回归Debug21／0、Release9／0，文档链接895／0。启动后端与存档规则不变；截图.godot/art-workflow/game-launcher/Debug-compact.png已在对话展示。内部回归入口test-launchers.ps1随可见操作更新。

@@ -2,7 +2,7 @@
 
 ## 启动与入口
 
-双击项目根目录 `CampusDebugLauncher.exe`，点击“校园调试”进入完整探索流程，或点击“战斗试玩”直接进入新的序章战斗，四人自动部署并开战。Debug 检查页包含工程检查、缓存修复、功能自检和内容工具。正常游戏双击 `CampusReleaseLauncher.exe`。具体入口与维护见[Windows 启动器](launcher.md)。
+双击项目根目录 `CampusDebugLauncher.exe`，点击“校园调试”进入完整探索流程，或点击“战斗试玩”直接进入新的序章战斗，四人自动部署并开战。Debug 检查页只保留“一键检查”“修复工程”。正常游戏双击 `CampusReleaseLauncher.exe`。具体入口与维护见[Windows 启动器](launcher.md)。
 
 两态均使用正式角色资源，Release 使用正常存档并关闭校园调试能力。它们是本地运行入口，不替代发行包导出。原启动脚本已转为内部自动化／高级夹具；日常无需运行脚本或输入命令行选项。
 

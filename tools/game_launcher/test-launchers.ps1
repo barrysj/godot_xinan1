@@ -39,7 +39,7 @@ foreach ($mode in @('Debug','Release')) {
     Write-Output "NATIVE_WINDOW_CHECK $mode checks=$($report.checks) failures=$($report.failures)"
 }
 Invoke-Native 'Debug' @('--checks-page', '--capture', "$evidence/Debug-checks.png")
-foreach ($entry in @(@('Debug','Battle'), @('Debug','Campus'), @('Release','Play'), @('Debug','Health'), @('Debug','Repair'), @('Debug','ContentCheck'))) {
+foreach ($entry in @(@('Debug','Battle'), @('Debug','Campus'), @('Release','Play'), @('Debug','Health'), @('Debug','Repair'))) {
     $mode, $action = $entry
     Invoke-Native $mode @('--engine', $EnginePath, '--verify-launch', $action, '--capture', "$evidence/$mode-$action.png")
     $file = Join-Path $root ".godot/game-launcher/gui-$($mode.ToLowerInvariant())-$($action.ToLowerInvariant()).json"

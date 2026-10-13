@@ -7,7 +7,7 @@
 ## 从这里开始
 
 - 总清单：`res://resources/content/manifest.tres`。
-- 快速预览：Debug 启动器“检查”页的“内容预览”；“内容检查”校验 Resource 清单。编辑器仍可打开 `res://scenes/content/content_preview.tscn` 按 F6。
+- 快速预览：编辑器打开 `res://scenes/content/content_preview.tscn` 按 F6。Resource 清单校验的内部自动化命令见本页验证章节。
 - 示例人物：`characters/morning.tres`（晨读生）。
 - 示例装备：`equipment/ribbon.tres`（晨光发带）。
 - 示例技能：`skills/archer.tres`（穿云）。

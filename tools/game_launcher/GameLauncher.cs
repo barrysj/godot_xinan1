@@ -113,12 +113,11 @@ namespace CyberPopCampus.GameLauncher
             AddAction(startRows, 1, "Campus", "校园调试", "完整探索流程 · F8 调试面板 · 独立调试档", false);
             AddAction(startRows, 2, "Play", "正常游戏", "正式进度与正式资源", false);
             startPage.Controls.Add(startRows);
-            var checkRows = Rows(4);
-            AddPair(checkRows, 0, "Health", "工程检查", "Repair", "缓存修复", "资源导入、脚本依赖和主流程预检");
-            AddPair(checkRows, 1, "SelfCheck", "功能自检", "ContentCheck", "内容检查", "原校园调试回归 / 内容 Resource 校验");
-            AddPair(checkRows, 2, "ContentPreview", "内容预览", null, null, "独立预览窗口，查看现有内容配置");
-            AddPair(checkRows, 3, "HooksOn", "启用检查", "HooksOff", "关闭检查", "main 更新后自动预检；保留已有 hooks");
+            var checkRows = Rows(2);
+            AddAction(checkRows, 0, "Health", "一键检查", "自动检查资源与主流程，按需修复导入", true);
+            AddAction(checkRows, 1, "Repair", "修复工程", "重新导入并验证工程，保留玩家存档", false);
             checksPage.Controls.Add(checkRows);
+            tabs.SelectedIndexChanged += delegate { AcceptButton = tabs.SelectedIndex == 0 ? Actions["Battle"] : Actions["Health"]; ((Control)AcceptButton).Focus(); };
             layout.Controls.Add(tabs, 0, 2);
             AcceptButton = Actions["Battle"];
 #else
@@ -169,15 +168,6 @@ namespace CyberPopCampus.GameLauncher
             var button = MakeAction(action, title, primary); item.Controls.Add(button, 0, 0);
             button.Dock = DockStyle.None; button.Size = new Size(158, 54); button.Anchor = AnchorStyles.None;
             var description = Label(explanation, 10, muted); description.Margin = new Padding(16, 0, 0, 0); item.Controls.Add(description, 1, 0);
-            rows.Controls.Add(item, 0, row);
-        }
-        private void AddPair(TableLayoutPanel rows, int row, string first, string firstTitle, string second, string secondTitle, string explanation) {
-            var item = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 3, RowCount = 1 };
-            item.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 128)); item.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 128)); item.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            var firstButton = MakeAction(first, firstTitle, false); item.Controls.Add(firstButton, 0, 0);
-            firstButton.Dock = DockStyle.None; firstButton.Size = new Size(118, 44); firstButton.Anchor = AnchorStyles.None;
-            if (second != null) { var secondButton = MakeAction(second, secondTitle, false); item.Controls.Add(secondButton, 1, 0); secondButton.Dock = DockStyle.None; secondButton.Size = new Size(118, 44); secondButton.Anchor = AnchorStyles.None; }
-            var description = Label(explanation, 9, muted); description.Margin = new Padding(12, 0, 0, 0); item.Controls.Add(description, 2, 0);
             rows.Controls.Add(item, 0, row);
         }
         private Button MakeAction(string action, string title, bool primary) {
