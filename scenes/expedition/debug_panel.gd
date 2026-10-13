@@ -8,6 +8,9 @@ var was_menu_open = false
 var backdrop: ColorRect
 var difficulty_selector: OptionButton
 var difficulty_apply: Button
+var tuning_button: Button
+var tuning_editor: VBoxContainer
+var editing_battle := false
 
 func _ready() -> void:
 	layer = 20
@@ -65,7 +68,7 @@ func _ready() -> void:
 
 func _layout_popup() -> void:
 	var available: Vector2 = panel.get_parent().size
-	panel.size = Vector2(minf(800,available.x-64),minf(800,available.y-64))
+	panel.size = Vector2(minf(1240 if editing_battle else 800,available.x-64),minf(960 if editing_battle else 800,available.y-64))
 	panel.position = (available-panel.size)/2
 
 func open() -> void:
@@ -81,14 +84,20 @@ func open() -> void:
 	_refresh()
 
 func _refresh(message: String = "") -> void:
+	editing_battle = false
+	_layout_popup()
 	panel.clear("DEBUG · 调试模式", "独立调试存档 · 不影响正式进度\n面板打开时战斗暂停。地点路线、已领取奖励和永久记录不随重抽重置。")
 	panel.page_scroll.scroll_vertical = 0
 	if not message.is_empty(): panel.text(message,20)
+	var tuning_blocked: String = Commands.reason(hub,"difficulty")
+	tuning_button = panel.button("战斗修改","tuning",tuning_blocked.is_empty())
+	panel.text("调整敌人、背景与属性，应用后重开本场。" if tuning_blocked.is_empty() else tuning_blocked,18)
 	panel.text("战斗难度 · 当前：" + Commands.Difficulties.preset(hub.debug_battle_difficulty).name,22)
 	var difficulty_row = HBoxContainer.new()
 	difficulty_row.add_theme_constant_override("separation",16)
 	panel.column.add_child(difficulty_row)
 	var difficulty_blocked = Commands.reason(hub,"difficulty")
+	if difficulty_blocked.is_empty() and hub.BattleTuning.active(hub): difficulty_blocked = "已启用自定义属性；在战斗修改中恢复默认后可使用难度预设。"
 	difficulty_selector = OptionButton.new()
 	difficulty_selector.custom_minimum_size = Vector2(220,58)
 	difficulty_selector.add_theme_font_size_override("font_size",24)
@@ -120,7 +129,37 @@ func close() -> void:
 	hub.pause_overlay.visible = was_menu_open
 	hub.queue_redraw()
 
+func _show_tuning() -> void:
+	editing_battle = true
+	panel.clear("战斗修改", "六个敌方位置 · 修改只在应用后生效 · 切换地点恢复默认")
+	panel.page_scroll.scroll_vertical = 0
+	tuning_editor = preload("res://scenes/expedition/battle_tuning_panel.gd").new()
+	panel.column.add_child(tuning_editor)
+	tuning_editor.setup(hub)
+	tuning_editor.back_requested.connect(_refresh)
+	tuning_editor.apply_requested.connect(_apply_tuning)
+	_layout_popup()
+
+func _apply_tuning(settings: Dictionary) -> void:
+	var error: String = hub.BattleTuning.validate(hub,settings)
+	if not error.is_empty():
+		tuning_editor.show_error(error)
+		return
+	panel.hide()
+	entry.show()
+	hub.pause_overlay.hide()
+	hub.paused = false
+	hub.pause_before_menu = false
+	error = hub.BattleTuning.apply(hub,settings)
+	if not error.is_empty():
+		open()
+		_show_tuning()
+		tuning_editor.show_error(error)
+
 func _action(id: String) -> void:
+	if id == "tuning":
+		if Commands.reason(hub,"difficulty").is_empty(): _show_tuning()
+		return
 	if id == "close":
 		close()
 		return

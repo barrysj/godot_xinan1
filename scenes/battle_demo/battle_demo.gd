@@ -94,6 +94,9 @@ func _unit(label: String, role: int, side: int, slot: int, hp: float, atk: float
 		"timer": interval, "def": defense, "shield": 0.0, "count": 0,
 		"flash": 0.0, "damage": 0.0, "healing": 0.0}
 
+func _encounter_definition():
+	return Content.encounter(encounter_id if not encounter_id.is_empty() else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
+
 func _build_units() -> void:
 	units.clear()
 	beams.clear()
@@ -102,7 +105,7 @@ func _build_units() -> void:
 		if role < 0: continue
 		var u = _ally_unit(role, slot)
 		units.append(u)
-	var group = Content.encounter(encounter_id if not encounter_id.is_empty() else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
+	var group = _encounter_definition()
 	for i in range(group.units.size()):
 		units.append(_from_definition(group.units[i], -1, 1, group.slots[i]))
 	for i in range(units.size()):

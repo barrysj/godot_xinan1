@@ -17,7 +17,7 @@
 ## 实现与规则入口
 
 - 使用与行为事实源：[Debug 模式](debug.md)。
-- `tools/game_launcher/GameLauncher.cs`、`tools/game_launcher/launch-action.ps1`、`game/debug/campus_debug.gd`、`scenes/expedition/debug_panel.gd`、`campaign_hub.gd`。
+- `tools/game_launcher/GameLauncher.cs`、`tools/game_launcher/launch-action.ps1`、`game/debug/campus_debug.gd`、`game/debug/battle_tuning.gd`、`scenes/expedition/debug_panel.gd`、`battle_tuning_panel.gd`、`campaign_hub.gd`。
 - 检查入口：`scenes/expedition/debug_check.gd`、`debug_battle_check.gd`；共享命令见[验证 E23](verification.md)。
 
 ## 验证与证据
@@ -88,3 +88,13 @@ PowerShell7 / Godot4.7.2 Compatibility：`./tools/game_launcher/legacy/run-debug
 待统筹：日常开发／用户启动入口改为独立原生窗口，根目录旧脚本不再是操作入口；本轮不改高层总览／Roadmap。
 
 当前检查页精简核验（2026-10-13，基线9d0a8ae）：只显示一键检查／修复工程，检查页Enter默认一键检查。两个原生窗口实际运行并截图，最小／扩大尺寸和入口／二进制一致性回归Debug21／0、Release9／0，文档链接895／0。启动后端与存档规则不变；截图.godot/art-workflow/game-launcher/Debug-compact.png已在对话展示。内部回归入口test-launchers.ps1随可见操作更新。
+## 当前战斗修改器（待统筹）
+
+2026-10-13，基线19bea36加本功能，codex/windows-game-launcher。F8调试面板“战斗修改”提供六个敌方位置的图形化配置、10种已注册敌人／空位、三张现有战斗背景预览、单敌人六项最终属性及己方生命／攻击倍率。编辑暂停并只改草稿，应用走原重开／开战入口；默认恢复须应用。设置只绑定本次活动局与遭遇／站次／终局阶段，自定义状态禁用难度预设，Release拒绝，资源／构筑／存档schema不变。实现与行为见[战斗修改器](battle-tuning.md)。
+
+共享遭遇获取接口使替换发生在原单位／位置／代码效果／动画初始化前，属性在原装备、成长和强度后作用于实例。保存失败沿用原Campaign回退，并恢复同一临时战斗上下文与旧参数，避免解码重建导致作用域丢失。普通战斗与调试难度的旧路径仍保留。
+
+PowerShell7／Godot4.7.2：tools/development/tests/battle-tuning.test.ps1的headless模型／UI信号回归50／0，最终GUI -Capture 70／0、非Debug隔离2／0。覆盖真实鼠标打开／选择位置／应用、敌人身份与六属性、渲染背景、己方基准倍率、重复敌人、反复应用不叠加、原模拟推进、非法配置／NaN／背景路径拒绝、实际不可写保存失败、默认恢复、地点切换和共享Resource／两玩家档字节不变。
+
+三尺寸1920×1080、2560×1440、1920×1200均运行并检查操作按钮位于滚动可视区、倍率行高度和实际像素截图；battle-tuning-editor-*与battle-tuning-applied.png在.godot中，已目视并在对话展示。使用现有背景／头像／Theme／颜色，不生产新素材。仅Windows桌面验收，不宣布真人平衡、永久资源编辑、预设导入导出或其他平台通过。待统筹：现有Debug新增临时场景／敌阵／属性试调能力，不改变主线或平台范围。
+原入口回归：tools/game_launcher/test-launchers.ps1使用默认GUI引擎28／0；原战斗headless34／0、图形39／0、完整校园Debug174／0、Release6／0，正式／调试档字节不变。原生窗口Debug21／0、Release9／0，启动器新增F8修改提示。文档198份／41功能ID／900链接错误0，PowerShell26文件解析错误0，git diff --check通过。以上结果属于本地源码入口与实际运行UI，不代替真人平衡或发行验收。

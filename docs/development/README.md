@@ -4,6 +4,7 @@
 
 - [Windows启动器](launcher.md)
 - [Debug操作](debug.md)
+- [战斗修改器](battle-tuning.md)
 - [工程预检与缓存修复](project-health.md)
 - [跨领域集成](integration.md)
 - [共用验证约定](verification.md)

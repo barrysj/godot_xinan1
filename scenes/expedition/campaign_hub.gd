@@ -12,6 +12,8 @@ var debug_enabled = false
 var debug_battle_preview = false
 var debug_panel: CanvasLayer
 var debug_battle_difficulty := "normal"
+var debug_battle_tuning: Dictionary = {}
+const BattleTuning = preload("res://game/debug/battle_tuning.gd")
 const DebugCommands = preload("res://game/debug/campus_debug.gd")
 const OPERATIONS = ["修正目标","撤销越权","限制写入"]
 const FINAL_LINES = ["前代：新增内容不是需要回滚的错误？\n当前 AI：目标是维护一个容纳变化的校园，而不是永远保持初始版本。",
@@ -24,6 +26,7 @@ func _ready() -> void:
 	if debug_enabled: progress.path = "user://campus_debug_progress.json"
 	if debug_battle_preview: progress.path = "res://.godot/debug-battle-preview.json"
 	if "--debug-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/debug-check-profile.json"
+	if "--battle-tuning-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-tuning-check-profile.json"
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		progress.path = "res://.godot/profile-reset-ui.json"
 	theme = preload("res://resources/theme/theme-main.tres").duplicate()
@@ -48,6 +51,9 @@ func _ready() -> void:
 		debug_panel.hub = self
 		add_child(debug_panel)
 	if debug_battle_preview: _launch_debug_battle()
+	if "--battle-tuning-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/battle_tuning_check.gd").new()
+		test_runner.run_checks(self)
 	if "--debug-battle-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/debug_battle_check.gd").new()
 		test_runner.run_checks(self)
@@ -75,6 +81,17 @@ func _launch_debug_battle() -> void:
 		print("DEBUG_BATTLE_STARTED encounter=", encounter_id, " allies=", _living(0).size())
 	queue_redraw()
 
+func _encounter_definition():
+	var group = super._encounter_definition()
+	if not BattleTuning.active(self): debug_battle_tuning.clear()
+	return BattleTuning.encounter(self,group)
+
+func _battle_backdrop() -> Texture2D:
+	if BattleTuning.active(self) and not debug_battle_tuning.get("background","").is_empty():
+		background_crop = Rect2(0.085,0.123,0.83,0.833)
+		return load(BattleTuning.BACKGROUNDS[debug_battle_tuning.background].path)
+	return super._battle_backdrop()
+
 func _build_units() -> void:
 	super._build_units()
 	if not debug_enabled: return
@@ -85,6 +102,7 @@ func _build_units() -> void:
 		unit.max_hp = roundf(unit.max_hp * difficulty.health)
 		unit.hp = unit.max_hp
 		unit.atk = roundf(unit.atk * difficulty.attack)
+	BattleTuning.apply_stats(self)
 
 func _show_library_environment_preview() -> void:
 	if not campaign_enabled or not is_instance_valid(campaign_panel):

@@ -6,7 +6,7 @@
 
 | 启动器 | 操作 | 实际入口 |
 | --- | --- | --- |
-| Debug · 启动 | 战斗试玩 | 原序章战斗，四人自动部署并开战；每次新建 `.godot/debug-battle-preview.json` |
+| Debug · 启动 | 战斗试玩 | 原序章战斗，四人自动部署并开战；F8 → 战斗修改可调敌人／背景／数值；每次新建 `.godot/debug-battle-preview.json` |
 | Debug · 启动 | 校园调试 | 原校园流程，F8 调试；`user://campus_debug_progress.json` |
 | Debug · 启动 | 正常游戏 | 与 Release 同样的正式进度和资源 |
 | Release | 开始游戏 | 原校园流程；`user://campus_progress.json`，调试能力关闭 |
@@ -38,3 +38,5 @@ pwsh.exe -NoProfile -File tools/game_launcher/test-launchers.ps1 -EnginePath '<G
 原校园、Debug、战斗的高级 Smoke／Capture／固定难度夹具保存在 `tools/game_launcher/legacy/`；内容命令在 `tools/content/`；工程检查和 hooks 在 `tools/development/`；美术预览和工具集构建脚本在 `tools/art/`。这些不是日常用户入口。美术／地图原窗口仍是 `tools/art/asset_manager/control/ArtManagerControl.exe`，本次只修正内部脚本引用。
 
 验证结果和已知边界统一见 [DEV-01](dev-01.md)。仅覆盖 Windows 桌面，不宣布发行包、Web／手机或真人体验验收。
+
+战斗修改器使用见[调试说明](battle-tuning.md)，继续使用原战斗流程和临时预览档。
