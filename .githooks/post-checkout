@@ -1,0 +1,3 @@
+#!/bin/sh
+# Git's portable dispatch only; all project commands run in PowerShell 7.
+exec pwsh.exe -NoProfile -File tools/development/check-main-hook.ps1
