@@ -62,17 +62,17 @@
 
 ## 独立动作预览
 
-PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、濒危、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
+PowerShell 7 运行 `pwsh.exe -File ./tools/art/run-motion-preview.ps1`；可选择待机、移动、近战、远程、施法、受击、濒危、退场，支持重播、0.25×慢速、循环、暂停和单步（0.05 秒）。右侧显示动作编号、事件时间与命中结果，并放大显示当前角色；十字为逻辑脚底。使用现有主题与战场组件，无存档读写，不修改人物定义。
 
 - `-Unit 'res://路径/角色资源.tres'` 加载角色元数据；近战、远程入口根据 `attack_modes` 置灰。旧资源未显式配置时，从 `action_profile` 与 `attack_range` 推断；未来双能力角色配置为近战与远程均可用。
-- Guard 即梦近战留存候选 008：`pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Animation res://design/concepts/characters/guard/asset_001/battle_animation.tres -Action Melee -Speed 0.5`。008 的近战来自即梦视频并对齐待机色板，其他动作保存于同一版本目录。普通预览保持可见窗口，关闭窗口后命令返回。
+- Guard 即梦近战留存候选 008：`pwsh.exe -File ./tools/art/run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Animation res://design/concepts/characters/guard/asset_001/battle_animation.tres -Action Melee -Speed 0.5`。008 的近战来自即梦视频并对齐待机色板，其他动作保存于同一版本目录。普通预览保持可见窗口，关闭窗口后命令返回。
 - `design/.gdignore` 排除概念图的编辑器导入；独立预览器在开发运行时直接解码 `design/concepts/` 下 PNG，并不改变正式游戏资源。显式动画若未成功加载，`-Check` 会失败，避免回退占位图后仍误报通过。`-EnsureImport` 不会因概念 PNG 缺 `.import` 而反复启动编辑器；正式资产的描述或缓存缺失、过期时仍会导入一次。
 - `-Check` 自动验证八种模式、入口可用性与截图姿态；`-Capture` 输出三尺寸下当前角色支持的动作截图，攻击／施法取实际释放时刻，受击／退场取首次实际命中，避免短动作已归待机后才截图。启动器核验本次日志与完成标记，未真正完成会失败；`-Tour` 连续展示可用模式后退出。
 - `-Animation 'res://路径/动画资源.tres'` 为预览角色加载一个 `BattleAnimationSet`，不覆盖正式角色定义。未传入时使用角色定义中的当前战斗动画，未配置的角色才回退旧占位图。
 - `-Projectile 'res://路径/弹体资源.tres'` 仅给本次预览的动画资源深复制件挂载 `BattleProjectileStyle`，便于先审弹体再决定是否正式接入，不会修改角色定义或候选动画文件。
 - Godot 内置 Movie Maker 可录制：`--write-movie .godot/battle-motion-preview.avi --fixed-fps 60 res://scenes/battle_demo/motion_preview.tscn -- --motion-preview-tour`。运行预览时还可直接在编辑器观察动画。
-- `BattleAnimationSet.presentation_scene` 可选绑定实现 `apply_presentation(context)` 的 `Node2D` 表现场景。表现场景用 `handles_presentation_state(state)` 声明骨骼负责的动作；未声明或返回 `false` 的动作自动回退到同一资源的 `SpriteFrames`，因此真实战斗与预览器共用一套混合后端。`run-motion-preview.ps1` 会从动画资源自动解析该场景；`-Presentation` 只保留为开发覆盖入口。`-Action` 选择单个动作，`-Speed` 精确设置 `0.05`～`4.0` 倍速；暂停后的“单步”仍固定推进 `0.05` 秒模拟时间。
-- 粉笔精灵正式 006 示例：`pwsh.exe -File .\run-motion-preview.ps1 -Unit res://resources/content/enemies/chalk.tres -Action Ranged -Speed 0.5`。待机、移动、远程、施法、受击和濒危由骨骼表现，退场自动回退到资产 006 自带的 005 序列帧。标准模拟器负责前摇、出手、弹道、命中和收招，表现场景只消费当前动作、时间、方向、尺寸和受击色调；不得在表现场景中另行推进战斗时间。
+- `BattleAnimationSet.presentation_scene` 可选绑定实现 `apply_presentation(context)` 的 `Node2D` 表现场景。表现场景用 `handles_presentation_state(state)` 声明骨骼负责的动作；未声明或返回 `false` 的动作自动回退到同一资源的 `SpriteFrames`，因此真实战斗与预览器共用一套混合后端。`tools/art/run-motion-preview.ps1` 会从动画资源自动解析该场景；`-Presentation` 只保留为开发覆盖入口。`-Action` 选择单个动作，`-Speed` 精确设置 `0.05`～`4.0` 倍速；暂停后的“单步”仍固定推进 `0.05` 秒模拟时间。
+- 粉笔精灵正式 006 示例：`pwsh.exe -File .\tools/art/run-motion-preview.ps1 -Unit res://resources/content/enemies/chalk.tres -Action Ranged -Speed 0.5`。待机、移动、远程、施法、受击和濒危由骨骼表现，退场自动回退到资产 006 自带的 005 序列帧。标准模拟器负责前摇、出手、弹道、命中和收招，表现场景只消费当前动作、时间、方向、尺寸和受击色调；不得在表现场景中另行推进战斗时间。
 
 跨片段验收不能只检查统一画布与锚点：同一画布仍可能装入不同大小的主体。候选生成器应比较待机／移动与攻击／施法的主体轮廓尺度，设置宽松的自动拦截区间，并用头盔、躯干核心等稳定部位做人工复核；尾迹、弹体和碎块只能作为动作效果，不能作为主体尺寸依据。
 
@@ -85,7 +85,7 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 - BattleAnimationSet.animation_library 指定骨骼轨道；presentation_scene 指向包内 presentation.tscn。其 AnimationPlayer 引用同一 animations.tres，手动定位而不自动播放。共享 hybrid_presentation.gd 只消费状态、age／duration、motion_time、尺寸、中心、朝向与色调；未处理状态由共享 SpriteFrames 渲染器回退。
 - 模拟动作与事件携带 melee／ranged；旧 attack 经角色 attack_modes 解析为对应序列帧。双能力角色可分别提供两种轨道，不能复制模拟状态机。资源台也按元数据映射历史 attack 的动作按钮。
 - 普通角色仅提供资源；特殊脚本同时在 BattleAnimationSet.presentation_extension／extension_reason 与 rig_manifest.extension 登记，提升工具拒绝未登记脚本。
-- 用 `pwsh.exe -File ./run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'` 导出全部动作；增加 `-Action Ranged` 只导出远程。普通预览、-Action、-Tour、-Check 和资源台均不写资产。
+- 用 `pwsh.exe -File ./tools/art/run-motion-preview.ps1 -ExportPreviews -Unit res://resources/content/enemies/chalk.tres -PythonPath '<含 Pillow 的 python.exe>'` 导出全部动作；增加 `-Action Ranged` 只导出远程。普通预览、-Action、-Tour、-Check 和资源台均不写资产。
 - 显式导出在同一 Godot 进程中用 352×352 隔离视口连续捕获；通用后处理仅读取清单。GIF 覆盖待机→动作→收招→待机，死亡停末帧；全量导出含巡演。缓存位于 .godot，输出限于 Manifest 解析出的候选 review/。
 - 用 `py -3 tools/art/promotion/promote_animation.py chalk_spirit` 提升已批准候选，`--check` 检查确定性内容与依赖；正式包只包含允许列表及 Godot 导入元数据。角色直接引用正式包，不引用候选目录。
 - 验证前先增量导入；新增 hybrid_contract_check.tscn 覆盖候选直接加载、尺寸／锚点、左右朝向及死亡回退。真实战斗截图可用 `--demo-capture --demo-encounter=encounter_classroom --demo-capture-at=1.5`，同一实际战斗场景输出 .godot/battle_demo_combat.png。
@@ -112,9 +112,9 @@ PowerShell 7 运行 `pwsh.exe -File ./run-motion-preview.ps1`；可选择待机�
 逐人包保存 `model.json`、最终模型、3D 导向、转绘源图与映射；正式目录只包含 `rig_manifest.runtime_files`。帧元数据的 `clips.<动作>.poses`、fps、loop 与实际 SpriteFrames 同步，支持资源台逐动作 GIF。模型／概念／review 不进入运行目录。Debug／Release 均加载正式包，`Current` 参数兼容同一正式动画。
 
 ```powershell
-pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Action Melee -Speed 0.5
-pwsh.exe -File ./run-motion-preview.ps1 -Unit res://resources/content/characters/archer.tres -Check
-pwsh.exe -File ./run-battle-demo.ps1 -Mode Debug
+pwsh.exe -File ./tools/art/run-motion-preview.ps1 -Unit res://resources/content/characters/guard.tres -Action Melee -Speed 0.5
+pwsh.exe -File ./tools/art/run-motion-preview.ps1 -Unit res://resources/content/characters/archer.tres -Check
+pwsh.exe -File ./tools/game_launcher/legacy/run-battle-demo.ps1 -Mode Debug
 ```
 
 `authored_assets_check.tscn` 验证五人正式引用、头像、七态、固定画布／脚底、不同濒危与退场姿势、死亡停末帧及整身帧后端。图形运行追加 `-- --capture`，两组合法四人阵容覆盖五人，输出三规定分辨率截图至 `.godot/characters-battle-party*.png`。

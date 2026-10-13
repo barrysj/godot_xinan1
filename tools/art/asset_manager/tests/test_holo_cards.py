@@ -13,7 +13,7 @@ class HoloCardsTests(unittest.TestCase):
         self.addCleanup(self.fixture.close)
         self.root = self.fixture.root
         self.fixture.text("game/art/holo_card_visual.gd", "extends Resource\n")
-        self.fixture.text("run-holo-card.ps1", "param()\n")
+        self.fixture.text("tools/art/run-holo-card.ps1", "param()\n")
         self.index = self.fixture.text("assets/art/asset_manifest.yaml",
             "schema_version: 3\nobjects:\n  holo_cards:\n    type: holo_card\n    root: assets/art/holo_cards\n")
         self.photo = self.fixture.file("assets/art/holo_cards/first/photo.jpg")

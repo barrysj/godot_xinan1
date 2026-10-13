@@ -12,7 +12,7 @@
 ## 实现与规则入口
 
 - 实现入口：[random_checks.gd](../../scenes/expedition/random_checks.gd)
-- 开发战斗样本入口：[run-battle-demo.ps1](../../run-battle-demo.ps1)、[demo_battle_presets.gd](../../game/combat/demo_battle_presets.gd)、[demo_options.gd](../../scenes/battle_demo/demo_options.gd)；使用原 `battle_demo.tscn` 和共享战斗模拟。操作见[战斗 Demo](rules.md)。
+- 开发战斗样本入口：[tools/game_launcher/legacy/run-battle-demo.ps1](../../tools/game_launcher/legacy/run-battle-demo.ps1)、[demo_battle_presets.gd](../../game/combat/demo_battle_presets.gd)、[demo_options.gd](../../scenes/battle_demo/demo_options.gd)；使用原 `battle_demo.tscn` 和共享战斗模拟。操作见[战斗 Demo](rules.md)。
 - 规则事实源：[设计](../campaign/design.md)
 - 跨系统边界参见[集成约束](../development/integration.md)；本文件不另存规则数值或美术审批记录。
 
@@ -27,11 +27,11 @@
 
 | 命令 / 入口 | 结果与覆盖 |
 | --- | --- |
-| `pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Difficulty Easy -Smoke` | PASS，当前三人动画、真实战斗完成、暂停、重试不叠加属性、难度循环与遭遇对应背景 |
+| `pwsh.exe -NoProfile -File .\tools/game_launcher/legacy/run-battle-demo.ps1 -Difficulty Easy -Smoke` | PASS，当前三人动画、真实战斗完成、暂停、重试不叠加属性、难度循环与遭遇对应背景 |
 | 同命令 `-Difficulty Normal -Smoke` | PASS，常规属性样本完成 |
 | 同命令 `-Difficulty Hard -Smoke` | PASS，三名角色各自覆盖待机、移动、攻击、施法、受击、濒危和退场；濒危 / 退场对应真实生命条件，正常进入失败结果 |
 | 同命令 `-Difficulty Hard -Animations Formal -Smoke` | PASS，正式资源选择与完整战斗 |
-| `pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Smoke` | PASS，保留旧手动夹具及 1× / 2×结果一致性 |
+| `pwsh.exe -NoProfile -File .\tools/game_launcher/legacy/run-battle-demo.ps1 -Smoke` | PASS，保留旧手动夹具及 1× / 2×结果一致性 |
 | 同脚本 `-CodeCheck` | `MAIN_CODE_CHECK checks=39 failures=0`，原主线集成检查 |
 | `presentation_check.tscn`、`animation_check.tscn`（headless） | 均 PASS，共享表现与动画回归 |
 | 同脚本 `-Difficulty Hard -Capture -CaptureAt 10.6 -Size <尺寸>` | 1920×1080、2560×1440、1920×1200 三种图形实机截图完成，断言实际像素尺寸一致；已查看构图、难度标题与当前三人动画 |

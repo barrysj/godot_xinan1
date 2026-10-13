@@ -36,7 +36,7 @@
 
 原生布局场景已导入并通过实例化／移动坐标检查，未冒充人工逐节点拖拽体验验收；实体手柄、Web、移动端未验。提示音实现为短程序化 UI 音，未作真人听感验收。编辑指南见[原生布局录入](flow-authoring.md#在-godot-中拖动热点与通道)。
 
-最近2026-10-10主线合并：expedition.tscn -- --campaign-flow-check为149／0，流程预览120／0，run-debug.ps1 -Check174／0。地点检查134／0；三地区顺序、永久解锁、重复结算及终局按原场景覆盖。真实纪念内容、60～90分钟、最新Web和手机仍待验。
+最近2026-10-10主线合并：expedition.tscn -- --campaign-flow-check为149／0，流程预览120／0，tools/game_launcher/legacy/run-debug.ps1 -Check174／0。地点检查134／0；三地区顺序、永久解锁、重复结算及终局按原场景覆盖。真实纪念内容、60～90分钟、最新Web和手机仍待验。
 
 campus_playthrough_check.tscn覆盖15处地点与12张背景：无头61／0、三尺寸GUI105／0。它会为视觉遍历设置守卫结果，不代替真实战斗；后者由完整战役与starting_strategy_check覆盖。地图GUI检查使用expanded_campus_preview.tscn -- --expanded-map-check，按当前场景的完成标记判断。
 

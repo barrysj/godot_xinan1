@@ -66,10 +66,10 @@ objects:
 PowerShell 7，在项目根执行：
 
 ```powershell
-./run-holo-card.ps1
-./run-holo-card.ps1 -Mode Check
-./run-holo-card.ps1 -Card res://你的卡牌.tres
-./run-holo-card.ps1 -Mode Layers
+./tools/art/run-holo-card.ps1
+./tools/art/run-holo-card.ps1 -Mode Check
+./tools/art/run-holo-card.ps1 -Card res://你的卡牌.tres
+./tools/art/run-holo-card.ps1 -Mode Layers
 ./tools/art/holo_card/build-blender.ps1 -Python 'C:/Users/SongJun/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'
 ```
 
@@ -87,7 +87,7 @@ PowerShell 7，在项目根执行：
 
 `dc8da12`：资源台 25 项测试通过，实际页面 9 对象／102 登记文件／0 不一致；截图脚本实际输出 1600×1400 PNG，重复生成 SHA256 一致，预览进程参数核对为活动卡资源。命令：`py -3 -B -m unittest discover -s tools/art/asset_manager/tests`。这是已记录的实现验证，不表示每次文档更新都重跑引擎。
 
-新增内容至少重建并查看 review、检查资源台引用与独立预览；修改共享效果还应运行 `run-holo-card.ps1 -Mode Check` 及 `scenes/holo_card/check_tilt_direction.tscn` 四向检查。后者尚未包含在 Mode Check 中；样本预览和四向检查的临时证据输出到.godot/art-review/holo-card-sample，不登记过程截图。截图脚本失败要查看日志并核对输出，不将既有 PNG 当成本次成功结果。
+新增内容至少重建并查看 review、检查资源台引用与独立预览；修改共享效果还应运行 `tools/art/run-holo-card.ps1 -Mode Check` 及 `scenes/holo_card/check_tilt_direction.tscn` 四向检查。后者尚未包含在 Mode Check 中；样本预览和四向检查的临时证据输出到.godot/art-review/holo-card-sample，不登记过程截图。截图脚本失败要查看日志并核对输出，不将既有 PNG 当成本次成功结果。
 
 Windows Godot 4.7.2 Compatibility 实际渲染通过；四种窗口尺寸、两向倾斜、流光开关、静态、竖图替换、实例隔离和模拟触摸均有证据。实际手机触控、Web 导出、性能预算和批量性能与最终发布适配尚未验收。小屏卡内文字偏小，预览另提供标题与原图入口；正式列表不应把卡内小字作为唯一信息。
 

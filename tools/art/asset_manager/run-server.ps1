@@ -10,7 +10,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).
 
 $projectRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
 $serverPath = Join-Path $PSScriptRoot 'server.py'
-$previewScript = Join-Path $projectRoot 'run-motion-preview.ps1'
+$previewScript = Join-Path $projectRoot 'tools/art/run-motion-preview.ps1'
 $python = Get-Command py.exe -ErrorAction SilentlyContinue
 if (-not $python) { throw 'Python 3 launcher not found. Install Python 3 or expose py.exe.' }
 if (-not (Test-Path -LiteralPath $serverPath -PathType Leaf)) { throw "Art manager server not found: $serverPath" }

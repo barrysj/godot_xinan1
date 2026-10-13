@@ -9,7 +9,7 @@
 
 ## 实现与契约
 
-[资源台README](../../tools/art/asset_manager/README.md)是字段、服务和控制器契约；根入口run-tool-suite-control.ps1，旧run-art-manager-control.ps1仅兼容。地图几何编辑归[布局](../campaign/map-layout.md)，站次和内容归[流程配置](../campaign/flow-authoring.md)。
+[资源台README](../../tools/art/asset_manager/README.md)是字段、服务和控制器契约；日常双击tools/art/asset_manager/control/ArtManagerControl.exe，构建／兼容脚本已收归同目录。地图几何编辑归[布局](../campaign/map-layout.md)，站次和内容归[流程配置](../campaign/flow-authoring.md)。
 
 加载入口：`tools/art/asset_manager/catalog.py`（浏览／完整校验）、`server.py`（后台任务／目录修订／详情）、`thumbnails.py`（可清除浏览缓存）、`static/`（素材库／搜索／进度／折叠工具）。不改变Manifest字段或源资产批准状态。
 

@@ -8,11 +8,7 @@
 
 ## 可视化编辑器
 
-在项目根目录的 PowerShell 7 终端启动开发工具集，点击“地图编辑”卡的“启动”，再点“打开”：
-
-```powershell
-pwsh.exe -NoProfile -File .\run-tool-suite-control.ps1
-```
+双击 `tools/art/asset_manager/control/ArtManagerControl.exe` 打开原开发工具集，点击“地图编辑”卡的“启动”，再点“打开”。游戏 Debug／Release 使用另一套独立启动器，地图工具保持原窗口入口。
 
 默认地址是 `http://127.0.0.1:8767/`。工具集显示实时状态、PID 和运行目录；关闭工具集窗口不会停止地图服务，完成编辑后可点“停止”。服务只监听本机 `127.0.0.1`。也可不用工具集，直接执行 `pwsh.exe -NoProfile -File .\tools\campus-map-editor\run-server.ps1`；若需另选端口，用 `-Port 8768`，但工具集只检测默认的 8767 端口。纯 Node 调试可执行 `node tools/campus-map-editor/server.mjs --port 8768`，在终端按 Ctrl+C 关闭。
 

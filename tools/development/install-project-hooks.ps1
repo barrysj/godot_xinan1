@@ -1,8 +1,10 @@
 param(
-    [string]$ProjectPath = $PSScriptRoot,
+    [string]$ProjectPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')),
     [string]$EnginePath = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe',
     [switch]$Remove
 )
+$projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use pwsh.exe.' }
 $ProjectPath = (Resolve-Path -LiteralPath $ProjectPath).Path
 $current = & git -C $ProjectPath config --get core.hooksPath

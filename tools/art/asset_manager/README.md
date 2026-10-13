@@ -2,9 +2,9 @@
 
 ## 开发工具集启动
 
-PowerShell 7 在项目根运行 `./run-tool-suite-control.ps1`：缺少 EXE 或控制器源码更新时自动构建，再打开窗口。旧入口 `./run-art-manager-control.ps1` 也会打开同一个工具集。EXE 与 C# 源码同目录，清理 .godot 不会移除它；构建产物被 Git 忽略。需系统 .NET Framework C# 编译器；若重新编译时报文件占用，关闭控制器窗口后重试，不需要停止已启动的服务。
+日常双击 `tools/art/asset_manager/control/ArtManagerControl.exe`。维护／自动化使用同目录 `run-tool-suite-control.ps1`，缺少 EXE 或源码更新时先构建；`run-art-manager-control.ps1` 仅保留内部兼容。游戏 Debug／Release 使用独立[启动器](../../../docs/development/launcher.md)。EXE 与 C# 源码同目录，清理 .godot 不会移除它；本工具集构建产物被 Git 忽略。构建需系统 .NET Framework C# 编译器；若文件占用，关闭控制器窗口后重试。
 
-可直接双击项目内 `tools/art/asset_manager/control/ArtManagerControl.exe`；也可执行 `& './tools/art/asset_manager/control/ArtManagerControl.exe'`。EXE 从自身目录向上查找项目，不依赖启动时的当前目录；不要单独搬到项目外。直接运行 EXE 不自动编译，新工作树首次请先用根启动脚本。窗口分别管理“美术资源”和“地图编辑”，显示服务状态、PID 和运行目录，各有“启动／打开／停止”按钮。资源台默认使用 `127.0.0.1:8765`，地图编辑器默认使用 `127.0.0.1:8767`。关闭工具集窗口不会停止服务。
+EXE 从自身目录向上查找项目，不依赖启动时的当前目录；不要单独搬到项目外。新工作树首次由维护工具构建。窗口分别管理“美术资源”和“地图编辑”，显示服务状态、PID 和运行目录，各有“启动／打开／停止”按钮。资源台默认使用 `127.0.0.1:8765`，地图编辑器默认使用 `127.0.0.1:8767`。关闭工具集窗口不会停止服务。
 
 工具集只会停止健康接口核验为当前工作树、且 PID 未变化的服务；同端口若被其他程序或工作树占用，显示“端口占用”并禁用对应操作。地图编辑器需要 Node.js；美术资源台需要 Python。
 
@@ -108,7 +108,7 @@ integration:
 推荐使用开发工具集：
 
 ```powershell
-pwsh.exe -NoProfile -File .\run-tool-suite-control.ps1
+pwsh.exe -NoProfile -File .\tools/art/asset_manager/control/run-tool-suite-control.ps1
 ```
 
 构建脚本用 Windows 自带的 .NET Framework C# 编译器，在源码同目录生成兼容原名称的 `tools/art/asset_manager/control/ArtManagerControl.exe`。根启动脚本在缺失或源码／构建脚本内容哈希变化时自动构建，同目录 `.exe.sources` 保存签名，两者均不入库。两张工具卡独立检测、启停；停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
@@ -122,4 +122,4 @@ py -3 -m unittest discover -s tools/art/asset_manager/tests -v
 
 资源台启动动作预览前会先让 Godot 增量导入当前项目资源；这是为了修复切换分支后 `.godot/imported` 目录存在但内部缓存不完整时出现的灰屏。
 
-服务只监听 `127.0.0.1`。文件和预览由本次启动令牌保护；预览入口限定为当前项目的 `run-motion-preview.ps1` 或闪卡的 `run-holo-card.ps1`。预览按钮旁跟踪进程运行、结束和失败；运行包含导入阶段，不代表画面已经就绪。闪卡导入最多等待 120 秒，导入失败可查 `.godot/holo-import.log`，运行失败可查 `.godot/holo-card.log`。原图按钮统一位于文件信息下面，弹窗可点空白区域或“关闭”退出。
+服务只监听 `127.0.0.1`。文件和预览由本次启动令牌保护；预览入口限定为当前项目的 `tools/art/run-motion-preview.ps1` 或闪卡的 `tools/art/run-holo-card.ps1`。预览按钮旁跟踪进程运行、结束和失败；运行包含导入阶段，不代表画面已经就绪。闪卡导入最多等待 120 秒，导入失败可查 `.godot/holo-import.log`，运行失败可查 `.godot/holo-card.log`。原图按钮统一位于文件信息下面，弹窗可点空白区域或“关闭”退出。

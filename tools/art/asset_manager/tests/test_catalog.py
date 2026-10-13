@@ -29,7 +29,7 @@ class ProjectFixture(object):
             (self.root / relative).mkdir(parents=True, exist_ok=True)
         (self.root / "game/content/battle_animation_set.gd").write_text("extends Resource\n", encoding="utf-8")
         (self.root / "game/content/battle_projectile_style.gd").write_text("extends Resource\n", encoding="utf-8")
-        (self.root / "run-motion-preview.ps1").write_text("param()\n", encoding="utf-8")
+        self.text("tools/art/run-motion-preview.ps1", "param()\n")
 
     def close(self):
         self.temp.cleanup()
@@ -342,7 +342,7 @@ class PreviewTests(unittest.TestCase):
     def test_preview_uses_explicit_unit_animation_and_projectile_without_shell(self, which, popen):
         process = mock.Mock(); process.poll.return_value = None; popen.return_value = process
         manager = PreviewManager(self.fixture.root)
-        resolved = {"script": self.fixture.root / "run-motion-preview.ps1", "unit_uri": "res://resources/content/characters/chalk.tres", "animation_uri": "res://resources/content/animations/chalk.tres", "projectile_uri": "res://resources/content/animations/projectile.tres"}
+        resolved = {"script": self.fixture.root / "tools/art/run-motion-preview.ps1", "unit_uri": "res://resources/content/characters/chalk.tres", "animation_uri": "res://resources/content/animations/chalk.tres", "projectile_uri": "res://resources/content/animations/projectile.tres"}
         ok, message = manager.start(resolved, str(self.engine))
         self.assertTrue(ok); self.assertIn("准备预览", message)
         command = popen.call_args[0][0]

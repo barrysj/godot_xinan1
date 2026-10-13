@@ -9,10 +9,11 @@ foreach ($hook in @('post-merge', 'post-checkout', 'post-commit')) {
     Copy-Item -LiteralPath (Join-Path $project ".githooks/$hook") -Destination "$fixture/.githooks/$hook"
 }
 [IO.File]::WriteAllText("$fixture/.gitignore", ".godot/`n")
-[IO.File]::WriteAllText("$fixture/check-project.ps1", @'
+[IO.File]::WriteAllText("$fixture/tools/development/check-project.ps1", @'
 param([string]$EnginePath)
-Add-Content -LiteralPath (Join-Path $PSScriptRoot '.godot/hook-calls.txt') -Value 'checked'
-if (Test-Path -LiteralPath (Join-Path $PSScriptRoot '.godot/fail-check')) { exit 1 }
+$fixtureRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+Add-Content -LiteralPath (Join-Path $fixtureRoot '.godot/hook-calls.txt') -Value 'checked'
+if (Test-Path -LiteralPath (Join-Path $fixtureRoot '.godot/fail-check')) { exit 1 }
 exit 0
 '@)
 $checks = 0
@@ -34,11 +35,11 @@ try {
     Invoke-FixtureGit @('add', '--', '.')
     Invoke-FixtureGit @('commit', '--quiet', '-m', 'fixture')
     Invoke-FixtureGit @('config', '--local', 'core.hooksPath', 'custom-hooks')
-    & pwsh.exe -NoProfile -File (Join-Path $project 'install-project-hooks.ps1') -ProjectPath $fixture -EnginePath $EnginePath 2>$null
+    & pwsh.exe -NoProfile -File (Join-Path $project 'tools/development/install-project-hooks.ps1') -ProjectPath $fixture -EnginePath $EnginePath 2>$null
     Expect ($LASTEXITCODE -ne 0) 'custom hook configuration is preserved'
     Expect ((& git -C $fixture config --get core.hooksPath) -eq 'custom-hooks') 'existing path remains unchanged'
     Invoke-FixtureGit @('config', '--local', '--unset', 'core.hooksPath')
-    & pwsh.exe -NoProfile -File (Join-Path $project 'install-project-hooks.ps1') -ProjectPath $fixture -EnginePath $EnginePath
+    & pwsh.exe -NoProfile -File (Join-Path $project 'tools/development/install-project-hooks.ps1') -ProjectPath $fixture -EnginePath $EnginePath
     Expect ($LASTEXITCODE -eq 0) 'hook installer succeeds'
     Expect ((& git -C $fixture config --get core.hooksPath) -eq '.githooks') 'local hook dispatch is configured'
 
@@ -77,7 +78,7 @@ try {
     Expect (($output -join "`n") -match 'main 工程预检失败') 'post hook failure is explicitly reported'
     Remove-Item -LiteralPath "$fixture/.godot/fail-check"
 
-    & pwsh.exe -NoProfile -File (Join-Path $project 'install-project-hooks.ps1') -ProjectPath $fixture -Remove
+    & pwsh.exe -NoProfile -File (Join-Path $project 'tools/development/install-project-hooks.ps1') -ProjectPath $fixture -Remove
     Expect ($LASTEXITCODE -eq 0) 'uninstall succeeds'
     $before = CountCalls
     [IO.File]::WriteAllText("$fixture/source.txt", 'uninstalled')

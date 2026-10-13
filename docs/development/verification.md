@@ -15,7 +15,7 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 
 ## 检出／合并后的本地导入
 
-自动化入口：check-project.ps1，常用试玩／Debug／战斗启动器已共用预检；可安装main更新后的Git hooks。安装／卸载、检测／修复、验证及边界见[工程预检](project-health.md)。
+自动化入口：tools/development/check-project.ps1，常用试玩／Debug／战斗启动器已共用预检；可安装main更新后的Git hooks。安装／卸载、检测／修复、验证及边界见[工程预检](project-health.md)。
 
 工作树通过测试不代表另一个main checkout的Godot缓存已更新。首次检出、合入新增脚本类型／图片资源后，命令行直接启动前应在实际目标工程执行一次编辑器导入；也可在Godot编辑器打开该工程并等待扫描／导入完成，再运行。已有编辑器仍保留旧解析状态时重新打开项目。不要为了绕过未导入而删除类型声明、改名字段或替换合法SVG。
 

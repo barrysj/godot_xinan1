@@ -4,7 +4,7 @@
 
 ## 入口与存档
 
-`scenes/menu/menu.tscn` 的 Start 进入正常流程；`pwsh.exe -File .\run-debug.ps1` 使用独立调试档。启动、调试面板和即时战斗见 [Debug](../development/debug.md)。正式 profile 为 v4，构筑 ShortRun schema8，当前 Journey schema2；旧活动战役需要重开，永久档案不会因此删除。存档职责见 [SAVE-02](../progression/save-02.md)。
+双击根目录 `CampusReleaseLauncher.exe` 进入正常流程；`CampusDebugLauncher.exe` 的“校园调试”使用独立调试档。启动器见[使用说明](../development/launcher.md)，调试面板和即时战斗见 [Debug](../development/debug.md)。正式 profile 为 v4，构筑 ShortRun schema8，当前 Journey schema2；旧活动战役需要重开，永久档案不会因此删除。存档职责见 [SAVE-02](../progression/save-02.md)。
 
 地点守卫战胜利并领取奖励后，玩家主动离开；失败保留构筑和战前阵位，可无限重试。中途返回保存检查点，半场战斗续玩从战前开始。暂停与菜单分开，速度支持 0.5／1／1.5／2 倍。旧五层随机短局保留为兼容与开发夹具，已经不是新档主线。
 

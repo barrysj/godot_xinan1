@@ -290,7 +290,7 @@ def _preview_target_info(config, project_root, check_references=True):
         info = godot_resource_info(path, project_root, check_references=check_references)
         if "res://game/art/holo_card_visual.gd" not in info["references"] or info["missing_references"]:
             return False, "卡片类型或引用无效", None
-        script = Path(project_root) / "run-holo-card.ps1"
+        script = Path(project_root) / "tools/art/run-holo-card.ps1"
         if not script.is_file():
             return False, "缺少卡片预览入口", None
         return True, "可预览", {"script": script, "card_uri": uri}
@@ -316,7 +316,7 @@ def _preview_target_info(config, project_root, check_references=True):
             return False, "动画资源类型不正确", None
         if info["missing_references"]:
             return False, "动画引用缺失：" + "、".join(info["missing_references"][:3]), None
-    script = Path(project_root) / "run-motion-preview.ps1"
+    script = Path(project_root) / "tools/art/run-motion-preview.ps1"
     if not script.is_file():
         return False, "项目缺少动作预览入口", None
     return True, "可预览", {"script": script, "unit_uri": unit or None, "animation_uri": animation or None, "projectile_uri": projectile or None}

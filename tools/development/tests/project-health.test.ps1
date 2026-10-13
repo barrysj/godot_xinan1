@@ -17,6 +17,9 @@ function WriteSource([string]$Path, [string]$Text) {
     [IO.File]::WriteAllText((Join-Path $fixture $Path), $Text, [Text.UTF8Encoding]::new($false))
 }
 try {
+    Expect (@(Get-GodotHealthErrors 'ERROR: EditorSettings not instantiated yet when getting setting "export/android/android_sdk_path".').Count -eq 0) 'known desktop-irrelevant editor teardown setting is ignored'
+    Expect (@(Get-GodotHealthErrors 'ERROR: EditorSettings not instantiated yet when getting setting "rendering/unknown".').Count -eq 1) 'other editor errors remain fatal'
+    Expect (@(Get-GodotHealthErrors 'SCRIPT ERROR: Parse Error: Could not resolve external class member "scenes".').Count -eq 1) 'actual class dependency error remains fatal'
     WriteSource 'project.godot' @'
 config_version=5
 [application]

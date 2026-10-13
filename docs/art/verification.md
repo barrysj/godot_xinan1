@@ -7,7 +7,7 @@
 ```powershell
 py -3 -B -m unittest discover -s tools/art/asset_manager/tests -v
 node --check tools/art/asset_manager/static/app.js
-pwsh.exe -File run-motion-preview.ps1 -EnsureImport -Check
+pwsh.exe -File tools/art/run-motion-preview.ps1 -EnsureImport -Check
 py -3 tools/art/promotion/promote_animation.py guard --variant asset_002 --check
 ```
 
@@ -25,7 +25,7 @@ Python需具备项目工具要求的版本／依赖，本机PATH中的python可�
 
 ## 闪卡
 
-run-holo-card.ps1 -Mode Check、scenes/holo_card/check_tilt_direction.tscn以及scenes/codex/holo_card_check.tscn／holo_catalog_check.tscn覆盖四向倾斜、换图、集合发现与图鉴详情。Mode Check尚未包含四向专项；样本／四向检查过程输出在.godot/art-review，不作为永久记录。日常review用render-review.ps1显式生成，制作步骤与边界见[闪卡说明](holo-cards.md)。未验批量性能、手机和最新Web。
+tools/art/run-holo-card.ps1 -Mode Check、scenes/holo_card/check_tilt_direction.tscn以及scenes/codex/holo_card_check.tscn／holo_catalog_check.tscn覆盖四向倾斜、换图、集合发现与图鉴详情。Mode Check尚未包含四向专项；样本／四向检查过程输出在.godot/art-review，不作为永久记录。日常review用render-review.ps1显式生成，制作步骤与边界见[闪卡说明](holo-cards.md)。未验批量性能、手机和最新Web。
 
 ## 清理核验
 

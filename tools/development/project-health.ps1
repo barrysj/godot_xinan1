@@ -33,9 +33,13 @@ function Invoke-GodotHealthStage {
     $info.CreateNoWindow = $true
     $info.RedirectStandardOutput = $true
     $info.RedirectStandardError = $true
-    foreach ($argument in $Arguments) { $info.ArgumentList.Add($argument) }
-    $info.ArgumentList.Add('--log-file')
-    $info.ArgumentList.Add($LogPath)
+    # Engine options must precede the user-argument separator used by game checks.
+    $separator = [Array]::IndexOf($Arguments, '--')
+    for ($index = 0; $index -lt $Arguments.Count; $index++) {
+        if ($index -eq $separator) { $info.ArgumentList.Add('--log-file'); $info.ArgumentList.Add($LogPath) }
+        $info.ArgumentList.Add($Arguments[$index])
+    }
+    if ($separator -lt 0) { $info.ArgumentList.Add('--log-file'); $info.ArgumentList.Add($LogPath) }
     $process = [Diagnostics.Process]::new()
     $process.StartInfo = $info
     try {
@@ -55,8 +59,9 @@ function Invoke-GodotHealthStage {
 
 function Get-GodotHealthErrors {
     param([string]$Text)
-    # Existing machine/editor warnings do not invalidate the source import.
-    $known = 'Failed to read the root certificate store|EditorSettings not instantiated yet.*export/android/shutdown_adb_on_exit'
+    # Two observed Android editor teardown settings do not affect this desktop probe.
+    # Keep the allowlist narrow: all other editor/resource/script errors stay fatal.
+    $known = 'Failed to read the root certificate store|EditorSettings not instantiated yet when getting setting "export/android/(?:shutdown_adb_on_exit|android_sdk_path)"'
     foreach ($line in ($Text -split "`n")) {
         if ($line -match '^SCRIPT ERROR:|^ERROR:' -and $line -notmatch $known) { $line.Trim() }
     }

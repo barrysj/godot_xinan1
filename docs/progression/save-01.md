@@ -45,4 +45,4 @@ profile v4／旧checkpoint schema 1／旧run schema 5／M1独立checkpoint schem
 
 choice_pages_check无头107／0、GUI197／0覆盖真实JSON与磁盘重读、原子写失败、坏存档与旧字段缺省；完整原战役149／0／GUI150／0。精确入口归verification，叙事规则归RUN-02／game-design。半场战斗仍从战前恢复；没有新存档文件体系。Web导出未实测，事件数据include_filter已补齐。
 
-最终边界补验：choice_pages_check无头107／0包含合法空奖励继续后进入事件的真实JSON恢复；run-debug.ps1 -Check -EnginePath <Godot console> 为75／0。旧短局／测试入口未创建campaign_panel时的输入仍安全转交原控制器。GUI197项与终端54项为本任务布局验证，空池后事件补验不涉及新的画面变化。
+最终边界补验：choice_pages_check无头107／0包含合法空奖励继续后进入事件的真实JSON恢复；tools/game_launcher/legacy/run-debug.ps1 -Check -EnginePath <Godot console> 为75／0。旧短局／测试入口未创建campaign_panel时的输入仍安全转交原控制器。GUI197项与终端54项为本任务布局验证，空池后事件补验不涉及新的画面变化。

@@ -84,7 +84,7 @@ class PreviewManager(object):
         }
 
     def default_engine(self):
-        script = self.project_root / "run-motion-preview.ps1"
+        script = self.project_root / "tools/art/run-motion-preview.ps1"
         try:
             text = script.read_text(encoding="utf-8-sig")
         except OSError:
@@ -118,8 +118,8 @@ class PreviewManager(object):
                 return False, "Godot 路径无效，请在页面配置 EnginePath"
             script = Path(resolved["script"]).resolve()
             is_card = bool(resolved.get("card_uri"))
-            expected_script = "run-holo-card.ps1" if is_card else "run-motion-preview.ps1"
-            if script.parent != self.project_root or script.name != expected_script:
+            expected_script = "tools/art/run-holo-card.ps1" if is_card else "tools/art/run-motion-preview.ps1"
+            if script != (self.project_root / expected_script).resolve():
                 return False, "预览入口不受信"
             args = [pwsh, "-NoProfile", "-File", str(script), "-Godot" if is_card else "-EnginePath", engine]
             if is_card:

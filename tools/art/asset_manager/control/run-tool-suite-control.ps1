@@ -1,8 +1,9 @@
 # Build the shared desktop tool controller when missing or stale, then open it.
 param([switch]$PassThru)
+$projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../../..'))
+
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).' }
 $ErrorActionPreference = 'Stop'
-$projectRoot = $PSScriptRoot
 $outputPath = Join-Path $projectRoot 'tools/art/asset_manager/control/ArtManagerControl.exe'
 $buildScript = Join-Path $projectRoot 'tools/art/asset_manager/control/build-control.ps1'
 $sourcePath = Join-Path $projectRoot 'tools/art/asset_manager/control/ToolSuiteControl.cs'

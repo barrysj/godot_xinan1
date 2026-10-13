@@ -2,23 +2,13 @@
 
 ## 启动与入口
 
-在项目目录使用 PowerShell 7：
+双击项目根目录 `CampusDebugLauncher.exe`，点击“校园调试”进入完整探索流程，或点击“战斗试玩”直接进入新的序章战斗，四人自动部署并开战。Debug 检查页包含工程检查、缓存修复、功能自检和内容工具。正常游戏双击 `CampusReleaseLauncher.exe`。具体入口与维护见[Windows 启动器](launcher.md)。
 
-```powershell
-pwsh.exe -File .\run-battle-demo.ps1
-# 启动菜单选 Debug，或直接：
-pwsh.exe -File .\run-battle-demo.ps1 -Mode Debug
-# 原直接入口仍保留：
-pwsh.exe -File .\run-debug.ps1
-```
+两态均使用正式角色资源，Release 使用正常存档并关闭校园调试能力。它们是本地运行入口，不替代发行包导出。原启动脚本已转为内部自动化／高级夹具；日常无需运行脚本或输入命令行选项。
 
-统一启动菜单只选择 Debug / Release，回车默认 Debug。Debug 直接进入新的序章战斗，四人自动部署并立即开战；复用原校园战斗与战报，无需先完成基地教学。默认本地当前三人动画，可加 `-Animations Formal` 使用正式资源；缺少候选的工作区使用该参数。Release 进入原校园基地，使用正常存档和正式角色资源，关闭校园调试能力。两种模式是本地运行选项，不替代发行包导出。
+在 Debug 窗口选择实际 Godot 引擎，Release 可点“引擎设置”。启动前自动导入并预检，运行结束核对错误日志；诊断契约见[工程预检](project-health.md)。进入游戏后，**右上角“调试”**打开面板，F8 也可开关，Esc／P 关闭面板。入口随画面角落锚定，不覆盖战斗菜单。打开时暂停战斗，返回时保留此前暂停状态；执行调试操作后回到游戏。退出确认和队伍／地点／图鉴窗口打开时，先关闭原窗口再进入调试。
 
-`run-debug.ps1` 仍用于调试完整校园进度，从基地进入原序章／探索流程；需要直接试战斗时使用 `run-battle-demo.ps1 -Mode Debug`。后者在 `--campus-debug` 外加 `--debug-battle`；仅传战斗参数而未启用 Debug，不会开启战斗预览。
-
-可通过 `-EnginePath '完整 Godot 路径'` 指定引擎。脚本在启动前自动准备导入并预检主入口，运行结束核对错误日志；执行方式与故障修复见[工程预检](project-health.md)。随后直接进入校园主流程；**右上角“调试”**打开面板，F8 也可开关，Esc／P 关闭面板。入口随画面角落锚定，不覆盖战斗菜单。打开时暂停战斗，返回时保留此前暂停状态；执行调试操作后回到游戏。退出确认和队伍／地点／图鉴窗口打开时，先关闭原窗口再进入调试。
-
-普通 `run-campus-demo.ps1`／F5 不启用这些能力。显式启动参数是 `-- --campus-debug`，不根据编辑器或引擎的 debug build 自动开启。
+Release／F5 不启用这些能力。后台显式使用 `-- --campus-debug`；战斗试玩另加 `--debug-battle`，不根据编辑器或引擎的 debug build 自动开启。
 
 调试界面使用居中弹窗：当前场景保留在半透明遮罩下，弹窗随窗口尺寸居中，内容溢出时可滚动。点击弹窗外的遮罩也可关闭，点击不会穿透到下方游戏按钮。
 
@@ -53,16 +43,16 @@ pwsh.exe -File .\run-debug.ps1
 - `game/debug/campus_debug.gd`：命令前置条件、难度应用、重抽快照、执行与失败回滚。
 - `scenes/expedition/debug_panel.gd`：角落入口、难度下拉框、原生按钮、暂停和快捷键。
 - `scenes/expedition/campaign_hub.gd`：读取存档前选择路径、接入主线、正式重开入口；战斗预览沿用序章遭遇、默认阵型和 `_start()`，仅启用 Debug 时给本场敌人应用临时难度倍率。
-- `run-battle-demo.ps1`：Debug 直接启动战斗，Release 启动正常校园。
-- `run-debug.ps1`：等待 Godot 进程退出，核对引擎退出码、错误日志与检查完成标记。
+- `tools/game_launcher/legacy/run-battle-demo.ps1`：Debug 直接启动战斗，Release 启动正常校园。
+- `tools/game_launcher/legacy/run-debug.ps1`：等待 Godot 进程退出，核对引擎退出码、错误日志与检查完成标记。
 
 ## 验证
 
-实际战斗启动检查：`pwsh.exe -File .\run-battle-demo.ps1 -Mode Debug -Smoke`；将 `-Smoke` 换成 `-Capture` 检查三种尺寸与实际点击“应用重开”，截图 `.godot/debug-battle-launch-<尺寸>.png`、`debug-battle-launch-menu.png`。检查读取真实启动后的状态，不自行创建战斗来代替启动流程，完成标记为 `DEBUG_BATTLE_CHECK`。完整校园调试继续使用下列入口：
+实际战斗启动检查：`pwsh.exe -File .\tools/game_launcher/legacy/run-battle-demo.ps1 -Mode Debug -Smoke`；将 `-Smoke` 换成 `-Capture` 检查三种尺寸与实际点击“应用重开”，截图 `.godot/debug-battle-launch-<尺寸>.png`、`debug-battle-launch-menu.png`。检查读取真实启动后的状态，不自行创建战斗来代替启动流程，完成标记为 `DEBUG_BATTLE_CHECK`。完整校园调试继续使用下列入口：
 
 ```powershell
-pwsh.exe -File .\run-debug.ps1 -Check
-pwsh.exe -File .\run-debug.ps1 -Capture
+pwsh.exe -File .\tools/game_launcher/legacy/run-debug.ps1 -Check
+pwsh.exe -File .\tools/game_launcher/legacy/run-debug.ps1 -Capture
 ```
 
 `-Check` 无窗口执行；`-Capture` 图形运行并截图，二者互斥。两者使用 `.godot/debug-check-profile.json`，不使用玩家调试档或正式档。图形检查还验证右上角按钮的真实鼠标输入、菜单避让、1920×1080／2560×1440／1920×1200 实际像素尺寸。日志 `.godot/debug-mode.log`，截图 `.godot/debug-corner-*.png`、`debug-battle-panel.png`、`debug-reward-panel.png`、`debug-home.png`。

@@ -1,6 +1,6 @@
 # 美术工具目录
 
-这些是开发工具，不是角色运行资产。日常入口仍在项目根：`run-art-manager-control.ps1` 打开资源台控制器，`run-motion-preview.ps1` 打开动作预览；只有加 `-ExportPreviews` 才生产 GIF。
+这些是开发工具，不是角色运行资产。日常双击 `tools/art/asset_manager/control/ArtManagerControl.exe` 打开美术／地图工具集，在资源浏览器点击动作／闪卡预览。`tools/art/run-motion-preview.ps1`、`run-holo-card.ps1` 仅作为内部后端；只有显式 `-ExportPreviews` 才生产 GIF。独立游戏启动器的说明见[Windows 启动器](../../docs/development/launcher.md)。
 
 | 目录 | 工具 | 用途 |
 | --- | --- | --- |
@@ -23,7 +23,7 @@
 ```powershell
 py -3 -m unittest discover -s tools/art/asset_manager/tests -v
 pwsh.exe -File tools/art/asset_manager/control/test-launcher.ps1
-pwsh.exe -File run-motion-preview.ps1 -EnsureImport -Check
+pwsh.exe -File tools/art/run-motion-preview.ps1 -EnsureImport -Check
 py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 ```
 

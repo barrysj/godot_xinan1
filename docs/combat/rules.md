@@ -1,23 +1,12 @@
 # 战斗 Demo
 
-战前布阵与自走棋战斗复用原校园流程的界面和模拟。`run-battle-demo.ps1` 现在统一选择 Debug / Release 并进入校园流程；独立 `battle_demo.tscn` 保留为自动化与美术试验夹具，不连接正式存档。
+战前布阵与自走棋战斗复用原校园流程的界面和模拟。日常使用独立 Windows Debug／Release 启动器；独立 `battle_demo.tscn` 保留为自动化与美术试验夹具，不连接正式存档。
 
 当前为侧视 2D 版：我方从左侧、敌方从右侧接近，按空间距离移动、索敌与攻击。已有庭院、实验室和教室三张战斗背景，五名我方角色使用正式整身动画包；未接入绘制资产的角色仍使用 Kenney CC0 像素占位。待机、移动、攻击、弹道、伤害数字、治疗粒子、护盾轮廓与技能提示均已接入。占位素材来源与许可证位于 `assets/pixel/kenney/`，正式绘制资产状态见 `assets/art/asset_manifest.yaml`；最新五人正式包均为 asset_002。
 
 `pixel_battle.gd` 负责表现，继承 `battle_demo.gd` 的战斗规则与交互。战斗与正式冒险共用自动移动、索敌和射程规则。
 
-在 PowerShell 7 中运行：
-
-```powershell
-pwsh.exe -File .\run-battle-demo.ps1
-```
-
-不带参数时显示 **Debug / Release** 启动菜单，回车默认 Debug，输入 `0` 退出。也可直接指定模式：
-
-```powershell
-pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Mode Debug
-pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Mode Release
-```
+双击根目录 `CampusDebugLauncher.exe`，点击“战斗试玩”；正常游戏使用 `CampusReleaseLauncher.exe` 的“开始游戏”。启动器画面设置选择分辨率和全屏，不再显示命令行模式菜单。使用与诊断见[Windows 启动器](../development/launcher.md)。
 
 | 模式 | 入口与存档 | 动画及调试能力 |
 | --- | --- | --- |
@@ -32,10 +21,10 @@ Debug／Release 默认 `-Animations Formal`，五人均加载稳定 `assets/art/
 
 ### 固定战斗试验
 
-固定难度参数只作为显式试验入口保留，不出现在启动菜单中，也不能和 `-Mode` 混用：
+以下参数仅供维护／自动化夹具，不作为日常启动入口；固定难度不能和 `-Mode` 混用：
 
 ```powershell
-pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Difficulty Hard
+pwsh.exe -NoProfile -File .\tools/game_launcher/legacy/run-battle-demo.ps1 -Difficulty Hard
 ```
 
 将 `Hard` 换成 `Easy` 或 `Normal` 可运行其他样本；三档自动部署满血四人并开战，`-Difficulty Manual` 保留空棋盘手动部署。战中可暂停、调整倍速和重试；点击“返回整备”后可“切换难度”再开战，手动夹具仍“切换敌阵”。
@@ -51,7 +40,7 @@ pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Difficulty Hard
 所有样本当前默认使用正式五人资源；Current 参数兼容同一正式路径。可指定 `-Animations Formal`：
 
 ```powershell
-pwsh.exe -NoProfile -File .\run-battle-demo.ps1 -Difficulty Hard -Animations Formal
+pwsh.exe -NoProfile -File .\tools/game_launcher/legacy/run-battle-demo.ps1 -Difficulty Hard -Animations Formal
 ```
 
 未指定 `-Mode` 的 `-Capture -CaptureAt 10.6` 保留旧单场 Viewport 截图到 `.godot/battle_demo_combat.png` 后退出；未指定 `-Difficulty` 时使用手动正式资源夹具。`CaptureAt` 只控制该单场截图，不控制模式集成检查。
@@ -71,7 +60,7 @@ Godot 按 F5 后从模板主菜单的 Start 进入正常校园；独立实验室
 
 试验建议：将守护者部署在前排中间、冲刺手放前排右侧、远射手放后排左侧、应援者放后排中间，比较装备给不同同学的结果。
 
-验证入口：`pwsh.exe -File .\run-battle-demo.ps1 -Smoke`。不指定难度的检查默认使用正式资产，保留两组敌人、不同装备携带者、胜利恢复和 1×／2×结果一致性检查。指定 `-Difficulty Easy/Normal/Hard -Smoke` 则检查真实战斗、动画选择、暂停、重试数值和难度切换；困难当前动画检查还要求三名角色各自出现全部七个状态。原 `-CodeCheck` / `-CodeCapture` 保留主线集成检查入口，不接受难度与动画覆盖。
+验证入口：`pwsh.exe -File .\tools/game_launcher/legacy/run-battle-demo.ps1 -Smoke`。不指定难度的检查默认使用正式资产，保留两组敌人、不同装备携带者、胜利恢复和 1×／2×结果一致性检查。指定 `-Difficulty Easy/Normal/Hard -Smoke` 则检查真实战斗、动画选择、暂停、重试数值和难度切换；困难当前动画检查还要求三名角色各自出现全部七个状态。原 `-CodeCheck` / `-CodeCapture` 保留主线集成检查入口，不接受难度与动画覆盖。
 
 已使用本机 Godot 4.7.2 检查战斗与桌面画面。本次难度启动选项只验证 Windows 桌面；手机、Web 导出和跨平台中文字体不在该检查范围。完整美术收尾和真人平衡体验仍待验证。
 

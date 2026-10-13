@@ -26,9 +26,9 @@ $env:PYTHONIOENCODING = 'utf-8'
 
 ```powershell
 $candidate = 'res://design/concepts/enemy/return-stamp/asset_001'
-pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Unit "$candidate/preview_unit.tres" -Animation "$candidate/battle_animation.tres" -Check
-pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Unit "$candidate/preview_unit.tres" -Animation "$candidate/battle_animation.tres" -ExportPreviews -PythonPath $pythonPath
-pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Unit "$candidate/preview_unit.tres" -Animation "$candidate/battle_animation.tres" -Action Melee -Capture
+pwsh.exe -NoProfile -File ./tools/art/run-motion-preview.ps1 -Unit "$candidate/preview_unit.tres" -Animation "$candidate/battle_animation.tres" -Check
+pwsh.exe -NoProfile -File ./tools/art/run-motion-preview.ps1 -Unit "$candidate/preview_unit.tres" -Animation "$candidate/battle_animation.tres" -ExportPreviews -PythonPath $pythonPath
+pwsh.exe -NoProfile -File ./tools/art/run-motion-preview.ps1 -Unit "$candidate/preview_unit.tres" -Animation "$candidate/battle_animation.tres" -Action Melee -Capture
 ```
 
 远程对象截图用 `-Action Ranged`；施法用 `-Action Cast`。截图工具按单位前摇结束的首个模拟步取图；检查释放时刻，避免截图时短动作已结束。预览单位只是动作评审用，属性和 inventor 技能不属于正式敌人设计。
@@ -47,8 +47,8 @@ Get-Content .godot/enemy-contract.log
 正式包验证将上述契约检查参数换为 `--production`，先正常导入 PNG；此模式不安装候选 PNG 加载器，使用稳定正式路径。每套提升可用 `python tools/art/promotion/promote_animation.py <对象ID> --variant asset_001 --check` 核对逐文件一致性。
 
 ```powershell
-pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Unit res://tools/art/animation/enemy_cast/preview_units/cyber_librarian.tres -Animation res://assets/art/characters/cyber_librarian/battle_animation.tres -Check
-pwsh.exe -NoProfile -File ./run-motion-preview.ps1 -Unit res://tools/art/animation/enemy_cast/preview_units/cyber_librarian.tres -Animation res://assets/art/characters/cyber_librarian/battle_animation.tres -Action Cast -Capture
+pwsh.exe -NoProfile -File ./tools/art/run-motion-preview.ps1 -Unit res://tools/art/animation/enemy_cast/preview_units/cyber_librarian.tres -Animation res://assets/art/characters/cyber_librarian/battle_animation.tres -Check
+pwsh.exe -NoProfile -File ./tools/art/run-motion-preview.ps1 -Unit res://tools/art/animation/enemy_cast/preview_units/cyber_librarian.tres -Animation res://assets/art/characters/cyber_librarian/battle_animation.tres -Action Cast -Capture
 ```
 
 preview_units 中的五定义只用于现有动作预览，引用正式动画；属性和 inventor 技能是测试时钟，不是主线敌人规则，不纳入正式资产包。资产已批准与实际主线接入分开登记；本批暂为 not_integrated。

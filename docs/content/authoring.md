@@ -7,7 +7,7 @@
 ## 从这里开始
 
 - 总清单：`res://resources/content/manifest.tres`。
-- 快速预览：`res://scenes/content/content_preview.tscn`，打开后按 **F6**。
+- 快速预览：Debug 启动器“检查”页的“内容预览”；“内容检查”校验 Resource 清单。编辑器仍可打开 `res://scenes/content/content_preview.tscn` 按 F6。
 - 示例人物：`characters/morning.tres`（晨读生）。
 - 示例装备：`equipment/ribbon.tres`（晨光发带）。
 - 示例技能：`skills/archer.tres`（穿云）。
@@ -110,9 +110,9 @@ Kind 决定普通战斗、精英、事件或首领。战斗地点引用 Encounte
 在工程目录使用 PowerShell 7：
 
 ```powershell
-pwsh.exe -File .\run-content.ps1 -Mode Validate
-pwsh.exe -File .\run-content.ps1 -Mode Preview
-pwsh.exe -File .\run-content.ps1 -Mode Check
+pwsh.exe -File .\tools/content/run-content.ps1 -Mode Validate
+pwsh.exe -File .\tools/content/run-content.ps1 -Mode Preview
+pwsh.exe -File .\tools/content/run-content.ps1 -Mode Check
 ```
 
 引擎路径不同可附加 `-Godot '你的Godot路径'`。首次添加脚本或图片后，先用 Godot 编辑器打开工程，等待导入完成。
