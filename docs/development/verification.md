@@ -13,6 +13,23 @@ $engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mo
 
 图形检查移除--headless并加--rendering-method gl_compatibility，用户参数放在--之后。检查明确完成标记、失败数与脚本错误，不能只看退出码。每个测试用独立.godot档案；缓存和可重建截图不入Git。正式人工批准由对象当前说明与Manifest维护，不靠测试推断。
 
+## 检出／合并后的本地导入
+
+工作树通过测试不代表另一个main checkout的Godot缓存已更新。首次检出、合入新增脚本类型／图片资源后，命令行直接启动前应在实际目标工程执行一次编辑器导入；也可在Godot编辑器打开该工程并等待扫描／导入完成，再运行。已有编辑器仍保留旧解析状态时重新打开项目。不要为了绕过未导入而删除类型声明、改名字段或替换合法SVG。
+
+```powershell
+$engine = 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe'
+$importLog = Join-Path (Get-Location) '.godot/merged-import.log'
+$startupLog = Join-Path (Get-Location) '.godot/merged-startup.log'
+& $engine --headless --editor --import --path . --quit --log-file $importLog
+& $engine --headless --path . --quit-after 5 --log-file $startupLog res://scenes/expedition/expedition.tscn
+if (Select-String -LiteralPath $startupLog -Pattern 'SCRIPT ERROR:|Failed to load script|has no resource loaders') {
+    throw "Merged project startup failed: $startupLog"
+}
+```
+
+Godot可能在脚本编译失败时仍退出0，必须检查启动日志。新增全局类型需要当前checkout的`.godot/global_script_class_cache.cfg`，SVG需要本地导入元数据与`.godot/imported`衍生纹理；这些缓存不提交Git。合并验收应在实际目标checkout完成导入与主入口启动，而不只沿用功能分支的缓存和测试。`--check-only --script`不会完整建立项目autoload，不用它代替原玩家场景的启动检查。
+
 ## 按领域验证
 
 - [战役／地图／流程编辑](../campaign/verification.md)

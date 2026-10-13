@@ -36,3 +36,5 @@
 2026-10-11，基线 `e4da771` 后的探索优化：原生 Godot 2D 布局 `.tscn`＋Marker2D 可拖动热点与通道；CampusPlaceScene.Layout 冻结位置到原检查点。图书馆按中庭伙伴、书架记忆、走廊终端、广场守卫分房间显示，地点进度继续共享。切换复用现有画板，保留筛选／有效焦点；增加短转场、按压回弹、详情淡入、完成／解锁提示和低音量程序化提示音，时长读取既有动画 Token。小地图文字加大、当前位置白环、悬停联动及实际顺序通路；底部离场／回基地降为次级按钮。编辑步骤与边界见[原生布局录入](flow-authoring.md#在-godot-中拖动热点与通道)。新增实现入口：`game/content/exploration_layout.gd`、`exploration_marker.gd`、`resources/campaign/layouts/library/`、`scenes/expedition/exploration_feedback.gd`。验证结果归本领域验证页，待统筹合入能力快照。
 
 2026-10-13，按负责人要求将 `art/location-scenes` 的三个功能提交 squash 整合到 `main` 基线 `301b838`。保留地图导览的完整地点节点、点击详情、当前站次权限、实验大楼地标及会堂／商业街共用站点；离开地点回到最新下一站导览。整合检查覆盖场景与地图导览的衔接，结果见下述验证页；待统筹同步高层能力快照。
+
+主工程合入新增地点场景后，首次命令行运行须先完成目标checkout的Godot脚本类型与SVG导入；否则合法的scenes字段和图标preload也会解析失败。2026-10-13主工程缓存修复的启动与界面证据见[战役验证](verification.md)，执行步骤见[合并后本地导入](../development/verification.md#检出合并后的本地导入)。

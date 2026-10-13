@@ -65,3 +65,9 @@ Godot `--headless --editor --path . --quit --log-file .godot/campus-flow-final-i
 ## 地图与编辑器
 
 Node命令：node --test tools/campus-map-editor/editor-core.test.mjs tools/campus-map-editor/server.test.mjs；最新12／0。2026-10-09真实1280×720浏览器有侧栏切换、坐标拾取、保存／备份／并发拒绝与只读失败提示证据，用户布局字节保留；未验触控。旧分块拼接、树木位置和亮区每次微调的记录已删除，当前资产和源包见[校园图](../art/environments/campus-map.md)。
+
+## 主工程合并后的资源导入
+
+2026-10-13，实际main主工程E:/Documents/works/godot_xinan1、基线32cd09d。直接启动原expedition.tscn稳定复现scenes外部成员解析失败与scene.svg／passage.svg无资源加载器；Godot仍退出0，日志判错返回1。主工程缺少CampusPlaceScene全局类型缓存与两张SVG的导入记录。仅在该工程运行headless编辑器--import后，同一启动路径通过，未改玩法、类型字段或源素材；原生Compatibility三尺寸place_scenes_check.tscn -- --capture通过218／0，涵盖SVG通道、场景切换、小地图和返回当前地图导览。
+
+截图在目标工程.godot/art-workflow/place-scenes/，日志为导入／启动／地点GUI；不入Git。执行方式及日志判错见[合并后本地导入](../development/verification.md#检出合并后的本地导入)。根证书、旧Kenney直接读图及编辑器退出EditorSettings告警仍为已有边界，最终运行无Script／Parse／依赖编译错误；未以本轮重新宣称真人或发布验收。
