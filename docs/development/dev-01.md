@@ -71,4 +71,4 @@ PowerShell7 / Godot4.7.2 Compatibility：`./run-debug.ps1 -Check -EnginePath <Go
 
 ## 启动导入与依赖预检（待统筹）
 
-2026-10-13，main 82a04c9＋codex/godot-startup-guard：check-project.ps1与共享project-health.ps1自动准备当前checkout导入，加载原主入口并对日志／成功标记判错。检测失败只修复复验一次，真正代码错误阻止启动；独立profile不接入另一套存档。真实引擎回归14／0，原项目预检9／0；实现契约、命令及覆盖见[工程预检](project-health.md)。待统筹：开发启动／合并验收增加本地预检，平台与玩法范围不变。
+2026-10-13，main 82a04c9＋codex/godot-startup-guard：run-campus-demo／run-battle-demo／run-debug已共用启动预检；Release启动集成6／0。check-project.ps1与共享project-health.ps1自动准备当前checkout导入，加载原主入口并对日志／成功标记判错。检测失败只修复复验一次，真正代码错误阻止启动；独立profile不接入另一套存档。真实引擎回归14／0，原项目预检9／0；实现契约、命令及覆盖见[工程预检](project-health.md)。待统筹：开发启动／合并验收增加本地预检，平台与玩法范围不变。

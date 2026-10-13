@@ -24,9 +24,13 @@ pwsh.exe -NoProfile -File .\check-project.ps1 -Repair
 
 就绪记录、日志和缓存不进Git；不自动清空整个.godot。强制导入仍不能修好的错误需按保留日志诊断源码／资源，不反复重试。此预检覆盖启动依赖和已加载资源，不代替完整战役、所有延迟加载内容或发布平台验收。
 
+## 启动入口接入
+
+run-campus-demo.ps1、run-battle-demo.ps1和run-debug.ps1在启动可见游戏前调用同一预检；运行结束也检查实际日志，不以退出0代替成功。已有Debug／Release／战斗参数和存档规则不变。Debug检查还有时间上限与完成标记要求，避免失败后静默挂起或被当成通过。
+
 ## 验证
 
-2026-10-13，基线main 82a04c9＋本功能：隔离真实Godot工程回归14／0，实际项目启动预检9／0。回归命令：
+2026-10-13，基线main 82a04c9＋本功能：隔离真实Godot工程回归14／0，实际项目启动预检9／0；Release启动集成先通过9项预检，再通过原DEBUG_CHECK 6／0。回归命令：
 
 ```powershell
 pwsh.exe -NoProfile -File tools/development/tests/project-health.test.ps1 -EnginePath 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe'

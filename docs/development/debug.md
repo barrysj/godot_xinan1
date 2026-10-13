@@ -16,7 +16,7 @@ pwsh.exe -File .\run-debug.ps1
 
 `run-debug.ps1` 仍用于调试完整校园进度，从基地进入原序章／探索流程；需要直接试战斗时使用 `run-battle-demo.ps1 -Mode Debug`。后者在 `--campus-debug` 外加 `--debug-battle`；仅传战斗参数而未启用 Debug，不会开启战斗预览。
 
-可通过 `-EnginePath '完整 Godot 路径'` 指定引擎。脚本直接进入校园主流程；**右上角“调试”**打开面板，F8 也可开关，Esc／P 关闭面板。入口随画面角落锚定，不覆盖战斗菜单。打开时暂停战斗，返回时保留此前暂停状态；执行调试操作后回到游戏。退出确认和队伍／地点／图鉴窗口打开时，先关闭原窗口再进入调试。
+可通过 `-EnginePath '完整 Godot 路径'` 指定引擎。脚本在启动前自动准备导入并预检主入口，运行结束核对错误日志；执行方式与故障修复见[工程预检](project-health.md)。随后直接进入校园主流程；**右上角“调试”**打开面板，F8 也可开关，Esc／P 关闭面板。入口随画面角落锚定，不覆盖战斗菜单。打开时暂停战斗，返回时保留此前暂停状态；执行调试操作后回到游戏。退出确认和队伍／地点／图鉴窗口打开时，先关闭原窗口再进入调试。
 
 普通 `run-campus-demo.ps1`／F5 不启用这些能力。显式启动参数是 `-- --campus-debug`，不根据编辑器或引擎的 debug build 自动开启。
 
@@ -54,7 +54,7 @@ pwsh.exe -File .\run-debug.ps1
 - `scenes/expedition/debug_panel.gd`：角落入口、难度下拉框、原生按钮、暂停和快捷键。
 - `scenes/expedition/campaign_hub.gd`：读取存档前选择路径、接入主线、正式重开入口；战斗预览沿用序章遭遇、默认阵型和 `_start()`，仅启用 Debug 时给本场敌人应用临时难度倍率。
 - `run-battle-demo.ps1`：Debug 直接启动战斗，Release 启动正常校园。
-- `run-debug.ps1`：等待 Godot 进程退出并返回引擎退出码。
+- `run-debug.ps1`：等待 Godot 进程退出，核对引擎退出码、错误日志与检查完成标记。
 
 ## 验证
 

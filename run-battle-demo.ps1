@@ -73,10 +73,13 @@ if ($integrationCheck) {
     } elseif ($Smoke) { $arguments += '--debug-check' }
 }
 if ($Mode) { Write-Host "启动模式：$Mode / $Animations" }
+. (Join-Path $PSScriptRoot 'tools/development/project-health.ps1')
+$health = Initialize-GodotProject -ProjectPath $PSScriptRoot -EnginePath $EnginePath
+Write-Host "启动预检通过：$($health.Checks) 项"
 $quotedArguments = $arguments | ForEach-Object { '"{0}"' -f $_ }
 $windowStyle = if ($Smoke -or $Capture -or $CodeCheck -or $CodeCapture) { 'Hidden' } else { 'Normal' }
 $gameProcess = Start-Process -FilePath $EnginePath -ArgumentList $quotedArguments -WorkingDirectory $PSScriptRoot -WindowStyle $windowStyle -Wait -PassThru
-if ($gameProcess.ExitCode -ne 0) { exit $gameProcess.ExitCode }
+Assert-GodotRunLog -LogPath $logPath -ExitCode $gameProcess.ExitCode
 $output = Get-Content -LiteralPath $logPath -Raw
 if ($output -match 'SCRIPT ERROR|Parse Error|Assertion failed|Cannot load formal animation|Missing formal frame') { throw "Launch failed. See $logPath" }
 if ($integrationCheck) {
