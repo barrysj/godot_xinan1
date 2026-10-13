@@ -100,7 +100,7 @@ func setup(owner_hub) -> void:
 		var column := VBoxContainer.new()
 		numbers.add_child(column)
 		column.add_child(Ui.label(Model.STATS[key].name,17))
-		var spin := _number(Model.STATS[key].min,Model.STATS[key].max,Model.STATS[key].step)
+		var spin := number(Model.STATS[key].min,Model.STATS[key].max,Model.STATS[key].step)
 		spin.custom_minimum_size.x = 170
 		column.add_child(spin)
 		spin.value_changed.connect(func(value: float):
@@ -115,13 +115,13 @@ func setup(owner_hub) -> void:
 	health_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	health_label.custom_minimum_size.x = 130
 	allies.add_child(health_label)
-	ally_health = _number(0.1,5,0.1)
+	ally_health = number(0.1,5,0.1)
 	allies.add_child(ally_health)
 	var attack_label := Ui.label("己方攻击 ×",20)
 	attack_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	attack_label.custom_minimum_size.x = 130
 	allies.add_child(attack_label)
-	ally_attack = _number(0.1,5,0.1)
+	ally_attack = number(0.1,5,0.1)
 	allies.add_child(ally_attack)
 	ally_health.value_changed.connect(func(value: float):
 		if loading: return
@@ -131,12 +131,12 @@ func setup(owner_hub) -> void:
 		if loading: return
 		draft.ally_attack = value
 		draft.enabled = true)
-	message = Ui.label("输入最终战斗属性；应用后满血重开，仅对本次 Debug 生效。",17,"daily",true)
+	message = Ui.label("输入最终属性；整备时应用后继续调整。单独编辑的同学使用绝对数值，优先于己方倍率。",17,"daily",true)
 	add_child(message)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation",16)
 	add_child(actions)
-	apply_button = _button("应用重开",actions)
+	apply_button = _button("应用修改" if hub.phase == "prepare" else "应用重开",actions)
 	apply_button.pressed.connect(func(): apply_requested.emit(draft.duplicate(true)))
 	reset_button = _button("恢复默认",actions)
 	reset_button.pressed.connect(func(): draft = Model.defaults(hub); _refresh())
@@ -144,7 +144,7 @@ func setup(owner_hub) -> void:
 	back.pressed.connect(func(): back_requested.emit())
 	_refresh()
 
-func _number(minimum: float, maximum: float, step: float) -> SpinBox:
+static func number(minimum: float, maximum: float, step: float) -> SpinBox:
 	var spin := SpinBox.new()
 	spin.min_value = minimum
 	spin.max_value = maximum
@@ -153,6 +153,8 @@ func _number(minimum: float, maximum: float, step: float) -> SpinBox:
 	spin.add_theme_font_size_override("font_size",20)
 	spin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var edit: LineEdit = spin.get_line_edit()
+	# Commit before Button.pressed; Godot submits SpinBox focus loss deferred.
+	edit.focus_exited.connect(spin.apply)
 	var normal := Ui.panel_style("daily","quiet")
 	normal.set_content_margin_all(8)
 	edit.add_theme_stylebox_override("normal",normal)

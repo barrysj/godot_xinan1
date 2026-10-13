@@ -13,6 +13,7 @@ var debug_battle_preview = false
 var debug_panel: CanvasLayer
 var debug_battle_difficulty := "normal"
 var debug_battle_tuning: Dictionary = {}
+var battle_context: CanvasLayer
 const BattleTuning = preload("res://game/debug/battle_tuning.gd")
 const DebugCommands = preload("res://game/debug/campus_debug.gd")
 const OPERATIONS = ["修正目标","撤销越权","限制写入"]
@@ -26,6 +27,7 @@ func _ready() -> void:
 	if debug_enabled: progress.path = "user://campus_debug_progress.json"
 	if debug_battle_preview: progress.path = "res://.godot/debug-battle-preview.json"
 	if "--debug-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/debug-check-profile.json"
+	if "--battle-preparation-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-preparation-check-profile.json"
 	if "--battle-tuning-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-tuning-check-profile.json"
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		progress.path = "res://.godot/profile-reset-ui.json"
@@ -50,7 +52,13 @@ func _ready() -> void:
 		debug_panel = preload("res://scenes/expedition/debug_panel.gd").new()
 		debug_panel.hub = self
 		add_child(debug_panel)
+		battle_context = preload("res://scenes/expedition/battle_context_editor.gd").new()
+		battle_context.hub = self
+		add_child(battle_context)
 	if debug_battle_preview: _launch_debug_battle()
+	if "--battle-preparation-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/battle_preparation_check.gd").new()
+		test_runner.run_checks(self)
 	if "--battle-tuning-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/battle_tuning_check.gd").new()
 		test_runner.run_checks(self)
@@ -76,10 +84,34 @@ func _launch_debug_battle() -> void:
 	formation = lineup
 	_guard()
 	if not last_save_ok: return
-	_start()
-	if last_save_ok and screen == "battle" and phase == "battle":
-		print("DEBUG_BATTLE_STARTED encounter=", encounter_id, " allies=", _living(0).size())
+	if screen == "battle" and phase == "prepare":
+		print("DEBUG_BATTLE_PREPARED encounter=", encounter_id, " allies=", _living(0).size())
 	queue_redraw()
+
+func _preparation_hint(guide: String) -> String:
+	return "拖动角色换位 · 点击角色更换与改属性 · 调整好后开战" if debug_enabled else guide
+
+func _ally_unit(role: int, slot: int) -> Dictionary:
+	var unit: Dictionary = super._ally_unit(BattleTuning.ally_role(self,role),slot)
+	unit.deployment_role = role
+	return unit
+
+func _debug_ally_unit(role: int, slot: int) -> Dictionary:
+	return super._ally_unit(role,slot)
+
+func _can_deploy_role(role: int, slot: int) -> bool:
+	for other in formation:
+		if other < 0 or other == role or other == formation[slot]: continue
+		if BattleTuning.ally_role(self,other) == BattleTuning.ally_role(self,role): return false
+	return true
+
+func _deployment_definition(role: int):
+	return Content.character(BattleTuning.ally_role(self,role))
+
+func _inspection_unit(role: int) -> Dictionary:
+	for unit in units:
+		if unit.side == 0 and unit.get("deployment_role",unit.role) == role: return unit
+	return super._inspection_unit(role)
 
 func _encounter_definition():
 	var group = super._encounter_definition()
@@ -154,6 +186,7 @@ func _input(event: InputEvent) -> void:
 	super._input(event)
 
 func _request_exit(destination: String) -> void:
+	if is_instance_valid(battle_context): battle_context.close()
 	if is_instance_valid(debug_panel) and debug_panel.panel.visible: debug_panel.close()
 	super._request_exit(destination)
 

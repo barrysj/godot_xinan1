@@ -73,6 +73,7 @@ func _layout_popup() -> void:
 
 func open() -> void:
 	if panel.visible: return
+	if is_instance_valid(hub.battle_context): hub.battle_context.close()
 	# Do not replace an exit confirmation or another interactive modal.
 	if not hub.pending_exit.is_empty() or hub.reset_pending or is_instance_valid(hub.team_panel) or is_instance_valid(hub.location_panel) or is_instance_valid(hub.codex_panel): return
 	was_paused = hub.paused
@@ -89,9 +90,9 @@ func _refresh(message: String = "") -> void:
 	panel.clear("DEBUG · 调试模式", "独立调试存档 · 不影响正式进度\n面板打开时战斗暂停。地点路线、已领取奖励和永久记录不随重抽重置。")
 	panel.page_scroll.scroll_vertical = 0
 	if not message.is_empty(): panel.text(message,20)
-	var tuning_blocked: String = Commands.reason(hub,"difficulty")
+	var tuning_blocked: String = Commands.reason(hub,"restart")
 	tuning_button = panel.button("战斗修改","tuning",tuning_blocked.is_empty())
-	panel.text("调整敌人、背景与属性，应用后重开本场。" if tuning_blocked.is_empty() else tuning_blocked,18)
+	panel.text("调整敌人、背景与属性；整备中应用后继续整备。" if tuning_blocked.is_empty() else tuning_blocked,18)
 	panel.text("战斗难度 · 当前：" + Commands.Difficulties.preset(hub.debug_battle_difficulty).name,22)
 	var difficulty_row = HBoxContainer.new()
 	difficulty_row.add_theme_constant_override("separation",16)
@@ -158,7 +159,7 @@ func _apply_tuning(settings: Dictionary) -> void:
 
 func _action(id: String) -> void:
 	if id == "tuning":
-		if Commands.reason(hub,"difficulty").is_empty(): _show_tuning()
+		if Commands.reason(hub,"restart").is_empty(): _show_tuning()
 		return
 	if id == "close":
 		close()

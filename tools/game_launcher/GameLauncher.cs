@@ -109,7 +109,7 @@ namespace CyberPopCampus.GameLauncher
             var checksPage = new TabPage("检查") { BackColor = surface, ForeColor = ink, Padding = new Padding(12) };
             tabs.TabPages.Add(startPage); tabs.TabPages.Add(checksPage);
             var startRows = Rows(3);
-            AddAction(startRows, 0, "Battle", "战斗试玩", "四人自动开战 · F8 调整敌人、背景和数值", true);
+            AddAction(startRows, 0, "Battle", "战斗试玩", "先整备再开战 · 拖动换位 · 点击角色编辑 · F8 改背景", true);
             AddAction(startRows, 1, "Campus", "校园调试", "完整探索流程 · F8 调试面板 · 独立调试档", false);
             AddAction(startRows, 2, "Play", "正常游戏", "正式进度与正式资源", false);
             startPage.Controls.Add(startRows);

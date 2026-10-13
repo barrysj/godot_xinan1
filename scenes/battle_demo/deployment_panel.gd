@@ -39,7 +39,7 @@ class Card extends Control:
 		var rect = face_rect()
 		var deployed: bool = panel.game.formation.has(role)
 		Comic.card(self, rect, panel.game.PAPER, panel.game.GOLD if panel.selected_role == role else panel.game.DARK)
-		var definition = panel.game.Content.character(role)
+		var definition = panel.game._deployment_definition(role)
 		var portrait_at = rect.position + Vector2(rect.size.x / 2 - 20, 5)
 		draw_texture_rect(definition.portrait, Rect2(portrait_at, Vector2(40, 40)), false, Color(1, 1, 1, 0.55 if deployed else 1.0))
 		var font: Font = panel.game.font
@@ -169,6 +169,7 @@ func is_swap_source(role: int) -> bool:
 func can_place(slot: int) -> bool:
 	if selected_role < 0 or slot < 0 or slot >= 6: return false
 	if not game._deployment_roster().has(selected_role): return false
+	if not game._can_deploy_role(selected_role,slot): return false
 	if mode == Mode.ACTIONS: return false
 	if mode == Mode.SWAP:
 		return game.formation.has(selected_role) and game.formation[slot] != selected_role

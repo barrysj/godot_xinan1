@@ -6,7 +6,7 @@
 
 | 启动器 | 操作 | 实际入口 |
 | --- | --- | --- |
-| Debug · 启动 | 战斗试玩 | 原序章战斗，四人自动部署并开战；F8 → 战斗修改可调敌人／背景／数值；每次新建 `.godot/debug-battle-preview.json` |
+| Debug · 启动 | 战斗试玩 | 原序章四人自动部署后停在整备；拖动换位／点击角色编辑，F8 改背景，手动开战；每次新建 `.godot/debug-battle-preview.json` |
 | Debug · 启动 | 校园调试 | 原校园流程，F8 调试；`user://campus_debug_progress.json` |
 | Debug · 启动 | 正常游戏 | 与 Release 同样的正式进度和资源 |
 | Release | 开始游戏 | 原校园流程；`user://campus_progress.json`，调试能力关闭 |

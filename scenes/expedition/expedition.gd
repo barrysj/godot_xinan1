@@ -266,6 +266,9 @@ func _paragraph(at: Vector2, value: String, color: Color = DARK, font_size: int 
 func _node_pos(stage_index: int, index: int) -> Vector2:
 	return Vector2(120 + stage_index * 165, 405 if stage_index == 0 else (295 if stage_index == 4 else ([265,230,280][stage_index-1] if index == 0 else [460,420,475][stage_index-1])))
 
+func _preparation_hint(guide: String) -> String:
+	return guide
+
 func _draw() -> void:
 	if font == null or town == null:
 		return
@@ -279,7 +282,7 @@ func _draw() -> void:
 			var deployed = 6 - formation.count(-1)
 			if deployed > 0 and deployed < 4: guide = "已部署 %d / 4：继续选择卡片和我方空格。" % deployed
 			elif deployed == 4: guide = "已沿用上场阵位：可拖动调整，或点击「开战」。" if run.stage > 0 else "四人已就绪：可调整站位，或点击「开战」。"
-			_center(Vector2(633, 600), guide, PAPER, 16)
+			_center(Vector2(633, 600), _preparation_hint(guide), PAPER, 16)
 		return
 	scale_factor = minf(size.x / 1280.0, size.y / 720.0)
 	origin = (size - Vector2(1280, 720) * scale_factor) / 2

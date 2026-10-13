@@ -130,6 +130,12 @@ func _gear_definition(id: String):
 func _deployment_roster() -> Array:
 	return [0, 1, 2, 3]
 
+func _deployment_definition(role: int):
+	return Content.character(role)
+
+func _can_deploy_role(_role: int, _slot: int) -> bool:
+	return true
+
 func _deployment_changed() -> void:
 	_build_units()
 

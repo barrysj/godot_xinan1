@@ -44,7 +44,7 @@ func run_checks(hub) -> void:
 		finish(hub)
 		return
 	verify(hub.debug_battle_preview, "launcher requests battle preview")
-	verify(hub.screen == "battle" and hub.phase == "battle" and hub.elapsed == 0, "startup already running a battle without check setup")
+	verify(hub.screen == "battle" and hub.phase == "prepare" and hub.elapsed == 0, "startup waits in preparation without check setup")
 	verify(hub.formation == hub.RunModel.new().formation and hub._living(0).size() == 4, "four original characters deployed at startup")
 	verify(hub._living(1).size() > 0 and hub.encounter_id == "encounter_patrol", "ordinary encounter loaded")
 	verify(not hub.campaign_panel.visible and not hub.paused, "base panel does not cover battle")
@@ -57,7 +57,11 @@ func run_checks(hub) -> void:
 	var build: Dictionary = hub.run.to_dict()
 	var encounter: String = hub.encounter_id
 	hub._process(1.0)
-	verify(hub.elapsed > 0 and hub.phase == "battle", "actual startup simulation advances")
+	verify(hub.elapsed == 0 and hub.phase == "prepare", "preparation never advances combat")
+	hub._start()
+	verify(hub.phase == "battle", "explicit original start enters combat")
+	hub._process(1.0)
+	verify(hub.elapsed > 0 and hub.phase == "battle", "explicitly started simulation advances")
 	if "--debug-battle-capture" in OS.get_cmdline_user_args():
 		for resolution in [Vector2i(1920,1080), Vector2i(2560,1440), Vector2i(1920,1200)]:
 			hub.get_window().size = resolution

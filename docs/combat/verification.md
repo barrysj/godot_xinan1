@@ -37,3 +37,7 @@
 静态五人七片段与两合法阵容三分辨率另由原 `authored_assets_check.tscn -- --capture` 验证5包／0失败，日志postmerge-battle-authored。自然两战不强制濒死／死亡来追求状态覆盖，不代表全流程招募或平衡；生命、盾和动作均来自原模拟。最终查看并展示守护／发明家释放与敌人施法预警实机图；所有缓存仍归 `.godot`，无需新美术版本。修改和边界统一见UI-02；ART-02引用该结果。既有环境根证书／Kenney读图警告保留，最终无Script／Parse错误；未重新导出Web或验证触控／实体手柄。
 
 表中的状态、选择页和页面清理结果也供[UI验证](../ui/verification.md)引用。当前支持纯帧和混合后端，不声称最新Web／手机／手柄验收。
+
+## 敌方朝向与 Debug 整备（2026-10-13，待统筹）
+
+基线76b9540加当前修改；原表现层的敌方在整备、移动、出招、死亡与重开时固定朝左，逻辑寻路／技能／弹道方向不变。`scenes/battle_demo/presentation_check.tscn`无头PASS／0失败：10种注册敌人的四逻辑方向、序列帧翻转、混合上下文与节点镜像，以及原不同帧率／速度的模拟结果、事件和暂停一致性。`scenes/battle_demo/deployment_check.tscn -- --deployment-check`无头PASS／0失败，覆盖原手牌与交换保存；必须带隔离标志。Debug直接整备的真实鼠标／键盘、拖动预览朝向、三尺寸与存档隔离结果和入口归[DEV-01](../development/dev-01.md)。截图已展示，仅Windows本地验收。

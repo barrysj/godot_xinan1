@@ -70,6 +70,28 @@ func _ready() -> void:
 		hybrid_unit.animation.state = &"death"
 		battle._update_battle_presentations()
 		check(not hybrid_node.visible, "Fallback hides the rig node")
+	# Every registered enemy has the same left-facing renderer contract, even
+	# when the logical target or path would point to the right.
+	for definition in battle.Content.MANIFEST.enemies:
+		var foe: Dictionary = battle._from_definition(definition,-1,1,0)
+		foe.id = 1000+battle.units.size()
+		battle.AutoBattle.initialize(foe)
+		foe.animation = Animator.new(foe.battle_animation)
+		foe.presentation = Presenter.new()
+		for direction in [Vector2.LEFT,Vector2.RIGHT,Vector2.UP,Vector2.DOWN]:
+			foe.screen_facing = direction
+			foe.presentation.advance(0,foe)
+			check(not foe.presentation.facing_right and foe.presentation.pose(foe,true).flip,"Enemy remains left-facing: "+definition.id)
+		check(foe.battle_animation.flip_with_facing,"Directional enemy art opts in to mirroring: "+definition.id)
+		battle.units.append(foe)
+	battle._clear_battle_presentations()
+	battle._create_battle_presentations()
+	battle._update_battle_presentations()
+	for foe in battle.units:
+		if foe.side != 1: continue
+		check(not battle._presentation_context(foe,Vector2.ZERO,4).facing_right,"Rig context faces left: "+foe.content_id)
+		var rig = battle.battle_presentations.get(foe.id)
+		if is_instance_valid(rig) and rig.visible: check(rig.scale.x < 0,"Hybrid enemy rig mirrors left: "+foe.content_id)
 	var outcomes = []
 	var event_traces: Array = []
 	var trace: Array = []

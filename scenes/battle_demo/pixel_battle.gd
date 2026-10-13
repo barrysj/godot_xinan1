@@ -175,6 +175,8 @@ func _build_units() -> void:
 	for u in units:
 		u.animation = BattleAnimation.new(u.battle_animation, u.get("attack_modes", 1))
 		u.presentation = UnitPresentation.new()
+		u.screen_facing = Board.direction(u.facing)
+		u.presentation.advance(0,u)
 	_create_battle_presentations()
 	_update_battle_presentations()
 	effects.clear()
@@ -293,7 +295,7 @@ func _update_battle_presentations() -> void:
 	for u in units:
 		var view: Node2D = battle_actor_views.get(u.id)
 		if not is_instance_valid(view): continue
-		view.visible = not (phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role))
+		view.visible = not (phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.get("deployment_role",u.role)))
 		var at := _unit_center(u) + Vector2(0, 13)
 		# Sorting follows ground contact; recoil and animation move only the content.
 		view.position = origin + at * scale_factor
@@ -487,10 +489,10 @@ func _draw_fallback_pawn(canvas: CanvasItem, u: Dictionary, at: Vector2, factor:
 		canvas.draw_polyline(poly, Color("8dd7e7"), 3)
 
 func _draw_unit(u: Dictionary) -> void:
-	if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): return
+	if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.get("deployment_role",u.role)): return
 	var p = _unit_center(u) + Vector2(0, 13)
-	var chosen: bool = phase == "prepare" and u.side == 0 and u.role == selected and (not is_instance_valid(deployment) or deployment.selected_role == u.role)
-	var swap_source: bool = phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.is_swap_source(u.role)
+	var chosen: bool = phase == "prepare" and u.side == 0 and u.get("deployment_role",u.role) == selected and (not is_instance_valid(deployment) or deployment.selected_role == u.get("deployment_role",u.role))
+	var swap_source: bool = phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.is_swap_source(u.get("deployment_role",u.role))
 	# Small base, not a character card: the actor stands on the map.
 	Floor.draw_shadow(self, p+Vector2(0,3))
 	if swap_source:
@@ -633,7 +635,7 @@ func _draw() -> void:
 	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
 	for u in units:
 		if u.hp <= 0: continue
-		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.role): continue
+		if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.get("deployment_role",u.role)): continue
 		if not is_instance_valid(inspector) or inspector.observed.is_empty(): continue
 		if u.id != inspector.observed.id: continue
 		Floor.draw_reach(self, u.position, u.attack_range)

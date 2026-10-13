@@ -131,6 +131,8 @@ func _button(title: String, callback: Callable) -> Button:
 	return result
 
 func active() -> bool:
+	var context = game.get("battle_context")
+	if is_instance_valid(context) and context.busy(): return false
 	return not game.paused and not game.leaving and not is_instance_valid(game.get("team_panel")) and not is_instance_valid(game.get("codex_panel")) and game.get("preview_elapsed") == null and (game.get("screen") == null or game.get("screen") == "battle")
 
 func _process(_delta: float) -> void:

@@ -31,6 +31,13 @@ static func enemy(id: String):
 		if definition.id == id: return definition
 	return null
 
+static func ally_row(hub, role: int) -> Dictionary:
+	if not active(hub): return {}
+	return hub.debug_battle_tuning.get("allies",{}).get(Content.role_id(role),{})
+
+static func ally_role(hub, role: int) -> int:
+	return Content.role_index(ally_row(hub,role).get("id",Content.role_id(role)))
+
 static func stats(unit: Dictionary) -> Dictionary:
 	var result := {}
 	for key in STATS: result[key] = float(unit[key])
@@ -53,7 +60,7 @@ static func defaults(hub) -> Dictionary:
 		var index: int = group.slots.find(slot)
 		var id: String = "" if index < 0 else group.units[index].id
 		rows.append({"slot":slot, "id":id, "stats":default_stats(hub,id)})
-	return {"scope":scope(hub), "enabled":false, "background":"", "ally_health":1.0, "ally_attack":1.0, "enemies":rows}
+	return {"scope":scope(hub), "enabled":false, "background":"", "ally_health":1.0, "ally_attack":1.0, "allies":{}, "enemies":rows}
 
 static func snapshot(hub) -> Dictionary:
 	if active(hub): return hub.debug_battle_tuning.duplicate(true)
@@ -65,7 +72,7 @@ static func snapshot(hub) -> Dictionary:
 
 static func validate(hub, settings: Dictionary) -> String:
 	if not hub.debug_enabled: return "请从 Debug 启动器进入。"
-	var blocked: String = Commands.reason(hub,"difficulty")
+	var blocked: String = Commands.reason(hub,"restart")
 	if not blocked.is_empty(): return blocked
 	if settings.get("scope","") != scope(hub): return "当前地点已变化，请重新打开修改器。"
 	if typeof(settings.get("enabled")) != TYPE_BOOL: return "战斗配置无效。"
@@ -85,12 +92,32 @@ static func validate(hub, settings: Dictionary) -> String:
 		if row.id.is_empty(): continue
 		if enemy(row.id) == null: return "敌人不在现有清单中。"
 		count += 1
-		if typeof(row.get("stats")) != TYPE_DICTIONARY: return "敌人数值无效。"
-		for key in STATS:
-			var value = row.stats.get(key)
-			var rule: Dictionary = STATS[key]
-			if typeof(value) not in [TYPE_INT,TYPE_FLOAT] or not is_finite(float(value)) or value < rule.min or value > rule.max: return rule.name + "超出可调范围。"
+		var error: String = validate_stats(row.get("stats"))
+		if not error.is_empty(): return error
 	if count == 0: return "至少放置一名敌人。"
+	var allies = settings.get("allies",{})
+	if typeof(allies) != TYPE_DICTIONARY: return "友方配置无效。"
+	for anchor in allies:
+		var row = allies[anchor]
+		if typeof(anchor) != TYPE_STRING or Content.role_index(anchor) < 0 or typeof(row) != TYPE_DICTIONARY: return "友方位置无效。"
+		if typeof(row.get("id")) != TYPE_STRING or Content.role_index(row.id) < 0: return "同学不在现有清单中。"
+		var error: String = validate_stats(row.get("stats"))
+		if not error.is_empty(): return error
+	var deployed := {}
+	for role in hub.formation:
+		if role < 0: continue
+		var anchor: String = Content.role_id(role)
+		var id: String = allies.get(anchor,{}).get("id",anchor)
+		if deployed.has(id): return "同一位同学不能重复部署。"
+		deployed[id] = true
+	return ""
+
+static func validate_stats(values) -> String:
+	if typeof(values) != TYPE_DICTIONARY: return "角色数值无效。"
+	for key in STATS:
+		var value = values.get(key)
+		var rule: Dictionary = STATS[key]
+		if typeof(value) not in [TYPE_INT,TYPE_FLOAT] or not is_finite(float(value)) or value < rule.min or value > rule.max: return rule.name + "超出可调范围。"
 	return ""
 
 static func encounter(hub, source):
@@ -113,6 +140,9 @@ static func apply_stats(hub) -> void:
 		if unit.side == 0:
 			unit.max_hp = roundf(unit.max_hp * settings.ally_health)
 			unit.atk = roundf(unit.atk * settings.ally_attack)
+			var row: Dictionary = ally_row(hub,unit.get("deployment_role",unit.role))
+			if not row.is_empty():
+				for key in STATS: unit[key] = float(row.stats[key])
 		else:
 			for row in settings.enemies:
 				if row.slot == unit.slot:
@@ -121,12 +151,19 @@ static func apply_stats(hub) -> void:
 		unit.hp = unit.max_hp
 		unit.timer = unit.interval
 
-static func apply(hub, settings: Dictionary) -> String:
+static func apply(hub, settings: Dictionary, prepare_only := false) -> String:
 	var error: String = validate(hub,settings)
 	if not error.is_empty(): return error
 	# First commit the ordinary restart with the previous settings. A failed save
 	# must not make an uncommitted edit visible to the next battle build.
 	if hub.paused: return "请先结束当前调试操作。"
+	# Preparation edits are temporary instance changes and need no checkpoint.
+	# Applying them never starts the clock; the ordinary Start action does that.
+	if hub.phase == "prepare" and hub.screen == "battle":
+		hub.debug_battle_tuning = settings.duplicate(true) if settings.enabled else {}
+		hub._build_units()
+		hub.queue_redraw()
+		return ""
 	var current_node: Dictionary = hub.run.node.duplicate(true)
 	if not Commands.execute(hub,"restart"):
 		# Campaign checkpoints intentionally omit the transient battle node. Keep
@@ -135,6 +172,10 @@ static func apply(hub, settings: Dictionary) -> String:
 		return "重开失败：" + hub.progress.error_message
 	var previous: Dictionary = hub.debug_battle_tuning.duplicate(true)
 	hub.debug_battle_tuning = settings.duplicate(true) if settings.enabled else {}
+	if prepare_only:
+		hub._build_units()
+		hub.queue_redraw()
+		return ""
 	hub._start()
 	if not hub.last_save_ok:
 		hub.debug_battle_tuning = previous

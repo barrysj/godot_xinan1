@@ -29,7 +29,10 @@ func advance(delta: float, unit: Dictionary) -> void:
 	hurt_age += delta
 	motion_time += delta
 	var direction: Vector2 = unit.get("screen_facing", unit.get("facing", Vector2.ZERO))
-	if absf(direction.x) > 0.15: facing_right = direction.x > 0
+	# Enemy art faces the player side consistently, independent of path/target.
+	# Logical facing still drives targeting and projectile trajectories.
+	if unit.get("side",-1) == 1: facing_right = false
+	elif absf(direction.x) > 0.15: facing_right = direction.x > 0
 
 func pose(unit: Dictionary, animated: bool) -> Dictionary:
 	var offset := Vector2.ZERO

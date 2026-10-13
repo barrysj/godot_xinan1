@@ -55,7 +55,8 @@ func run_checks(hub) -> void:
 		verify(hub.debug_battle_tuning.is_empty() and not is_instance_valid(hub.debug_panel),"normal mode has no modifier UI or settings")
 		finish(hub)
 		return
-	verify(hub.screen == "battle" and hub.phase == "battle","original launcher starts actual battle")
+	verify(hub.screen == "battle" and hub.phase == "prepare","original launcher waits for explicit start")
+	hub._start()
 	var build: Dictionary = hub.run.to_dict().duplicate(true)
 	var encounter: String = hub.encounter_id
 	var default_background: Texture2D = hub.battle_background
