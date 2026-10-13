@@ -29,6 +29,7 @@ static func decode(snapshot: Dictionary) -> Dictionary:
 			if not (row.get(key) is int or row.get(key) is float): return {}
 		report.append({"name":row.name, "damage":maxi(0,int(row.damage)), "healing":maxi(0,int(row.healing))})
 	if screen == "report" and report.size() != 4: return {}
-	return {"run":model, "screen":screen, "report":report, "won":bool(snapshot.get("won",false)),
+	if not preload("res://game/combat/battle_report.gd").valid_snapshot(snapshot.get("report_details",{})): return {}
+	return {"run":model, "screen":screen, "report":report, "report_details":snapshot.get("report_details",{}).duplicate(true), "won":bool(snapshot.get("won",false)),
 		"elapsed":maxf(0,float(snapshot.get("elapsed",0))), "seconds":maxf(0,float(snapshot.get("seconds",0))),
 		"selected":Run.Content.role_index(snapshot.selected_id) if snapshot.get("selected_id") is String else int(snapshot.get("selected",0)), "speed":float(snapshot.get("speed",1)) if snapshot.get("speed",1) in [0.5,1.0,1.5,2.0] else 1.0}

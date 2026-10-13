@@ -15,9 +15,11 @@ var finished := false
 var won := false
 var next_action_id := 0
 var active_action_id := -1
+var report_stats = preload("res://game/combat/battle_report.gd").new()
 
 func reset(roster: Array[Dictionary]) -> void:
 	units = roster
+	report_stats.reset(roster)
 	projectiles.clear()
 	events.clear()
 	elapsed = 0
@@ -45,6 +47,7 @@ func _emit(kind: String, actor: Dictionary, target: Dictionary, action_id: int, 
 		"actor_id": actor.id, "target_id": target.id,
 		"from": actor.position, "to": target.position}
 	snapshot.merge(extra, true)
+	report_stats.observe(snapshot, snapshot.get("program_effect",false))
 	events.append(snapshot)
 
 ## Shared request boundary. Future manual abilities/items add explicit kinds here.
@@ -459,7 +462,7 @@ func _resolve(due: Array[Dictionary]) -> void:
 	for e in due:
 		if not e.valid: continue
 		_emit("impact", e.actor, e.target, e.action_id, {"effect": e.kind, "value": e.value,
-			"actual": e.actual, "special": e.special, "from": e.get("origin", e.actor.position),
+			"actual": e.actual, "special": e.special, "program_effect":e.get("program_effect",false), "from": e.get("origin", e.actor.position),
 			"blocked": e.blocked, "shield_break": e.get("shield_break", false),
 			"hp": maxf(0, e.target.hp), "max_hp": e.target.max_hp, "shield": e.target.shield})
 	_after_impact_batch(due)

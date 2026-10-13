@@ -98,11 +98,13 @@ func run_checks(owner_hub) -> void:
 	hub.debug_panel.open()
 	verify(not hub.debug_panel.panel.visible,"direct debug open respects terminal preview")
 	verify(not Commands.reason(hub,"difficulty").is_empty() and not Commands.reason(hub,"skip").is_empty(),"finished preview offers only restart developer transition")
+	var previous_report_details: Dictionary = hub.report_details.duplicate(true)
 	var save_path: String = hub.progress.path
 	hub.progress.path = "res://.godot/missing-preview-result-directory/profile.json"
 	await helpers.click(hub,hub.battle_preview_results.retry_button)
 	verify(hub.screen == "report" and visible_buttons() == ["退出游戏","重新战斗"] and hub.battle_preview_results.error_label.visible,"failed retry keeps two-action report and readable error")
 	verify(hub.debug_battle_tuning == settings and Model.active(hub),"failed retry preserves configured battle scope")
+	verify(hub.report_details == previous_report_details and hub.report_view.snapshot == previous_report_details,"failed retry preserves visible and stored detailed statistics")
 	hub.progress.path = save_path
 	await helpers.click(hub,hub.battle_preview_results.retry_button)
 	verify(hub.screen == "battle" and hub.phase == "prepare" and hub.elapsed == 0 and not hub.battle_preview_results.visible,"actual retry returns to preparation without auto-start")

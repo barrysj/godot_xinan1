@@ -150,11 +150,11 @@ func _followup(actor: Dictionary, target: Dictionary, scale: float, label: Strin
 	_emit("chain_followup", actor, target, -1, {"label":label})
 	_note(actor.name + " · " + label)
 
-func _heal(actor: Dictionary, target: Dictionary, amount: float) -> void:
+func _heal(actor: Dictionary, target: Dictionary, amount: float, program_effect: bool = false) -> void:
 	var actual := minf(amount, target.max_hp - target.hp)
 	target.hp += actual
 	actor.healing += actual
-	_emit("impact", actor, target, -1, {"effect":"heal", "actual":actual, "special":true, "hp":target.hp, "shield":target.shield})
+	_emit("impact", actor, target, -1, {"effect":"heal", "actual":actual, "program_effect":program_effect, "special":true, "hp":target.hp, "shield":target.shield})
 
 func _maintenance_pulse() -> void:
 	if pending_pulse == "disconnect":
@@ -253,6 +253,7 @@ func cast_program(id: String, target_id: int = -1, payment: Dictionary = {}) -> 
 			mark.users = []
 			var hit: Array[Dictionary] = []
 			_event(hit, actor, target, "damage", program.damage, true)
+			hit[-1].program_effect = true
 			_resolve(hit)
 			affected_ids.append(target.id)
 		"recoil":
@@ -260,7 +261,7 @@ func cast_program(id: String, target_id: int = -1, payment: Dictionary = {}) -> 
 				_recoil_shield(ally, program)
 				affected_ids.append(ally.id)
 		"repair":
-			_heal(actor, target, program.heal_amount)
+			_heal(actor, target, program.heal_amount, true)
 			affected_ids.append(target.id)
 	casts += 1
 	program_uses[id] = program_uses.get(id, 0) + 1
@@ -288,7 +289,9 @@ func use_item(id: String, destination: String, source: String = "") -> bool:
 	last_error = item_error(id, destination, source)
 	if not last_error.is_empty(): return false
 	var entry = Codes.item(id)
-	if entry.effect == "convert": blocks[source] -= entry.amount
+	if entry.effect == "convert":
+		blocks[source] -= entry.amount
+		report_stats.converted[source] = report_stats.converted.get(source, 0) + entry.amount
 	items[id] -= 1
 	item_uses[id] = true
 	item_ready = elapsed + Codes.RULES.item_cooldown
@@ -441,7 +444,7 @@ func _recoil_shield(ally: Dictionary, program) -> void:
 	var gain := super.grant_shield(ally, program.shield, "recoil", program.duration + _program_reward_bonus(program.id, "program_duration_bonus"))
 	for layer in ally.shield_layers:
 		if layer.source == "recoil": layer.priority = 1; layer.exploded = false
-	_emit("impact", ally, ally, -1, {"effect":"shield", "actual":gain, "special":true, "hp":ally.hp, "shield":ally.shield})
+	_emit("impact", ally, ally, -1, {"effect":"shield", "actual":gain, "program_effect":true, "special":true, "hp":ally.hp, "shield":ally.shield})
 
 func _shield_ended(target: Dictionary, layer: Dictionary, reason: String) -> void:
 	if layer.source != "recoil" or layer.get("exploded", false) or closing or finished: return

@@ -113,3 +113,6 @@ PowerShell7／Godot4.7.2：`tools/development/tests/battle-tuning.test.ps1`无�
 `tools/development/tests/battle-tuning.test.ps1 -Capture`原修改器70／0、整备／战中只读71／0、试玩结果35／0，三项关闭模式各2／0。结果专项通过真实自然胜负、原开战／重试／退出鼠标、仅两可见按钮、旧点击区域／快捷键不可逃逸、角色配置及背景保持、满血／统计重置、保存失败重试、Debug跳过与两玩家档字节不变。1920×1080、2560×1440、1920×1200结果页实机截图已查看并展示；胜／败截图`.godot/battle-preview-victory-<尺寸>.png`、`battle-preview-defeat.png`。仅Windows本地源码入口，未做Web／移动端验收。
 
 最终复验：无头修改器50／0、整备限定64／0、试玩结果31／0，三项关闭模式各2／0；原启动器28／0（原生Debug21／0、Release9／0，真实Battle／Campus／Play／检查／修复／图形入口与玩家档保持均通过），完整校园Debug174／0、Release6／0。25个PowerShell文件解析0错误，功能文档103份／41功能ID／612链接错误0，`git diff --check`通过。结果属于当前本地源码和Windows实机，不代替其他平台／真人平衡验收。
+
+
+试玩详细战报（2026-10-13，基线5894923，待统筹）：主线与试玩共用 [COMBAT-03](../combat/combat-03.md) 的双方贡献、恢复前生命、行动次数、真实程序／代码收支和退场时刻。结束动作仍为退出／重开，键盘焦点可进入统计页签和行；保存失败恢复原可见数据。详细统计与存档验证归战斗档案，原试玩结束专项GUI增至36／0。

@@ -32,7 +32,12 @@ func _ready() -> void:
 		actions.add_child(button)
 	quit_button.focus_next = quit_button.get_path_to(retry_button)
 	quit_button.focus_previous = quit_button.focus_next
-	retry_button.focus_next = retry_button.get_path_to(quit_button)
+	retry_button.focus_next = retry_button.get_path_to(hub.report_view.tabs)
+	hub.report_view.tabs.focus_previous = hub.report_view.tabs.get_path_to(retry_button)
+	hub.report_view.tabs.focus_next = hub.report_view.tabs.get_path_to(hub.report_view.table)
+	hub.report_view.table.focus_previous = hub.report_view.table.get_path_to(hub.report_view.tabs)
+	hub.report_view.table.focus_next = hub.report_view.table.get_path_to(quit_button)
+	quit_button.focus_previous = quit_button.get_path_to(hub.report_view.table)
 	retry_button.focus_previous = retry_button.focus_next
 	quit_button.focus_neighbor_right = quit_button.focus_next
 	retry_button.focus_neighbor_left = retry_button.focus_next

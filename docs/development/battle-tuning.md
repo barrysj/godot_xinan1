@@ -38,7 +38,7 @@ F8／右上角“调试” → “战斗修改”：
 
 - `game/debug/battle_tuning.gd`：注册内容、输入校验、草稿快照、战斗作用域、角色替换与应用／回退。
 - `scenes/expedition/battle_context_editor.gd`：单一点击／拖动手势、阵位预览、附近快捷菜单、焦点与暂停恢复。
-- `battle_preview_results.gd`：试玩结果的两个按钮、焦点、窗口适配和错误提示，统计仍由原战报绘制。
+- `battle_preview_results.gd`：试玩结果的两个按钮、焦点、窗口适配和错误提示，统计由共享 `battle_report_view.gd` 展示，主线与试玩口径相同，详见 [COMBAT-03](../combat/combat-03.md)。
 - `battle_tuning_panel.gd`、`debug_panel.gd`：共享 Theme／颜色、完整敌阵和背景配置。
 - `campaign_hub.gd`：Debug 整备启动、临时角色与背景接口；`deployment_panel.gd` 继续维护原编队。
 - `scenes/battle_demo/unit_presentation.gd`、`pixel_battle.gd`：初始与持续朝向、共用帧／混合呈现。

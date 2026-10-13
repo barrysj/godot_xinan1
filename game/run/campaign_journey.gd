@@ -92,6 +92,7 @@ func restore(source: Variant) -> bool:
 		if id != "inventor": return false
 	if not source.get("screen") in ["route","visit","event","battle","report","reward","reward_owner","operation","complete"]: return false
 	if source.screen == "report" and not source.get("won") is bool: return false
+	if not preload("res://game/combat/battle_report.gd").valid_snapshot(source.get("report_details",{})): return false
 	if source.screen == "report":
 		if not source.get("report",[]) is Array: return false
 		for row in source.get("report",[]):

@@ -13,6 +13,8 @@ var screen = "base":
 		_sync_battle_page_visibility()
 var chosen_node = 0
 var report: Array[Dictionary] = []
+var report_details: Dictionary = {}
+var report_view: Control
 var notice = ""
 var chosen_supply = false
 var expedition_seconds = 0.0
@@ -33,6 +35,9 @@ func _equip_item(id: String, role: int) -> bool:
 
 func _ready() -> void:
 	super._ready()
+	report_view = preload("res://scenes/expedition/battle_report_view.gd").new()
+	report_view.hub = self
+	add_child(report_view)
 	is_test = "--run-smoke" in OS.get_cmdline_user_args() or "--run-capture" in OS.get_cmdline_user_args() or "--pause-flow-smoke" in OS.get_cmdline_user_args()
 	is_test = is_test or "--meta-smoke" in OS.get_cmdline_user_args() or "--meta-capture" in OS.get_cmdline_user_args()
 	is_test = is_test or "--codex-check" in OS.get_cmdline_user_args()
@@ -93,6 +98,7 @@ func _enter_node() -> void:
 		_note(run.node.name + ("：部署四人后出发。" if run.stage == 0 else "：已沿用上场阵位，可调整后出发。"))
 
 func _build_units() -> void:
+	report_details = {}
 	encounter_id = run.node.get("encounter_id", "encounter_final" if run.node.get("kind") == "boss" else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
 	super._build_units()
 	if run == null:
@@ -144,10 +150,6 @@ func _process(delta: float) -> void:
 	if screen == "battle":
 		super._process(delta)
 		if phase == "result" and not paused:
-			report.clear()
-			for u in units:
-				if u.side == 0:
-					report.append({"name": u.name, "damage": int(u.damage), "healing": int(u.healing)})
 			if result_won: run.code_supplies = simulation.items.duplicate()
 			screen = "report"
 	else:
@@ -439,22 +441,27 @@ func _book_icon(p: Vector2, width: float) -> void:
 func _report_subtitle() -> String:
 	return "全员已恢复，准备收取战利品。" if result_won else "保留本局构筑和装备，重新编队后可以无限重试。"
 
+func _finish_battle() -> void:
+	_capture_report()
+	super._finish_battle()
+
+func _capture_report(skipped: bool = false) -> void:
+	# Freeze terminal health before the original victory recovery mutates units.
+	report_details = simulation.report_stats.snapshot(simulation, skipped)
+	report.clear()
+	for row in report_details.rows:
+		if row.side == 0: report.append({"name":row.name, "damage":int(row.damage), "healing":int(row.healing)})
+
+func _sync_battle_page_visibility() -> void:
+	super._sync_battle_page_visibility()
+	if not is_instance_valid(report_view): return
+	var showing: bool = screen == "report" and not leaving
+	if showing and not report_view.visible: report_view.present(report_details, report, elapsed)
+	report_view.visible = showing
+
 func _draw_report() -> void:
 	_header("战斗胜利" if result_won else "暂时受阻", _report_subtitle())
 	_pixel_panel(Rect2(80, 127, 1115, 422), PAPER)
-	_text(Vector2(112, 171), "%s  /  %.1f 秒" % [run.node.name, elapsed], DARK, 25)
-	_text(Vector2(540, 221), "造成伤害", DARK, 19)
-	_text(Vector2(866, 221), "有效治疗", DARK, 19)
-	var max_damage = 1
-	for entry in report:
-		max_damage = maxi(max_damage, entry.damage)
-	for i in range(report.size()):
-		var entry = report[i]
-		var y = 271 + i * 57
-		_text(Vector2(115, y), entry.name, DARK, 23)
-		draw_rect(Rect2(332, y - 17, 425 * float(entry.damage) / max_damage, 20), Color("90b37c"))
-		_text(Vector2(772, y), str(entry.damage), DARK, 19)
-		_text(Vector2(899, y), str(entry.healing), DARK, 19)
 	_draw_report_actions()
 
 func _draw_report_actions() -> void:

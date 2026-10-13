@@ -128,7 +128,7 @@ func _ready() -> void:
 
 func _pack_checkpoint() -> Dictionary:
 	return {"schema":1, "run":run.to_dict(), "screen":screen, "selected":selected, "selected_id":Content.role_id(selected),
-		"report":report.duplicate(true), "won":result_won, "elapsed":elapsed,
+		"report":report.duplicate(true), "report_details":report_details.duplicate(true), "won":result_won, "elapsed":elapsed,
 		"seconds":expedition_seconds, "speed":speed}
 
 func _checkpoint() -> bool:
@@ -225,6 +225,8 @@ func _continue_run() -> void:
 	encounter = int(run.node.get("encounter",0))
 	_build_units()
 	report = data.report
+	report_details = data.report_details
+	if screen == "report": report_view.present(report_details,report,data.elapsed)
 	result_won = data.won
 	expedition_seconds = data.seconds
 	if screen != "battle": elapsed = data.elapsed

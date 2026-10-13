@@ -43,3 +43,17 @@
 基线76b9540加当前修改；原表现层的敌方在整备、移动、出招、死亡与重开时固定朝左，逻辑寻路／技能／弹道方向不变。`scenes/battle_demo/presentation_check.tscn`无头PASS／0失败：10种注册敌人的四逻辑方向、序列帧翻转、混合上下文与节点镜像，以及原不同帧率／速度的模拟结果、事件和暂停一致性。`scenes/battle_demo/deployment_check.tscn -- --deployment-check`无头PASS／0失败，覆盖原手牌与交换保存；必须带隔离标志。Debug直接整备的真实鼠标／键盘、拖动预览朝向、三尺寸与存档隔离结果和入口归[DEV-01](../development/dev-01.md)。截图已展示，仅Windows本地验收。
 
 广播中继素材基准专项（2026-10-13，基线d6cedc0）：原共享镜像规则未区分素材已经朝左，现按BattleAnimationSet声明的基准判断帧／混合／拖动镜像。`scenes/battle_demo/radio_facing_check.tscn`GUI实测镜头位于中心左侧，修复前能明确报错；headless与混合后端契约通过，三桌面尺寸实机已展示。制作工具字段保留与批准边界见[ART-03](../art/art-03.md)。
+
+## 详细结算报告（2026-10-13，待统筹）
+
+基线 `5894923` 加本次工作树；共享实现与统计口径见 [COMBAT-03](combat-03.md)。PowerShell 7／Godot 4.7.2，所有运行使用独立 `.godot` 测试档，不修改真实玩家档。
+
+| 入口 | 结果与覆盖 |
+| --- | --- |
+| `tools/development/tests/battle-report.test.ps1`，console | 统计33／0，主线49／0，试玩50／0；命中／盾／治疗、真实动作和程序、追击来源、四色转换收支、快照合法性、原保存和重开 |
+| 同入口 `-Capture`，GUI | 统计33／0，主线54／0，试玩55／0；1920×1080、2560×1440、1920×1200，真实鼠标／键盘、同类六敌阵位、行完整可见、结束生命冻结、新旧 Campaign／Run JSON、原领奖和整备重开，截图已展示 |
+| `tools/development/tests/battle-tuning.test.ps1 -Capture` | 原修改器70／0、直接整备71／0、试玩结束36／0；三项关闭模式各2／0。真实自然胜败、仅两个结束动作、保存失败时数据和可见战报不丢失，两玩家档字节不变 |
+| `game/combat/accuracy_check.tscn`、`code_cycle_check.tscn`，console | 命中准确性51／0，产码33／0 |
+| `scenes/battle_demo/presentation_check.tscn`、`scenes/expedition/screen_cleanup_check.tscn`，console | 表现时钟PASS／0失败，原战报→领奖→地点清理52／0 |
+
+界面可滚动显示较长程序和同批退场记录，旧报告缺失指标显示未记录；不推断胜负因果。没有改变原伤害／技能规则。仅本地 Windows 源码和桌面图形运行验收，不代表最新发布包、Web、手机或实体手柄通过。

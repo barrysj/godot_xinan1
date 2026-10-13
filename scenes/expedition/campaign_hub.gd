@@ -31,6 +31,7 @@ func _ready() -> void:
 	if "--preview-result-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-preview-result-check-profile.json"
 	if "--battle-preparation-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-preparation-check-profile.json"
 	if "--battle-tuning-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-tuning-check-profile.json"
+	if "--battle-report-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-report-check-%d.json" % Time.get_ticks_usec()
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		progress.path = "res://.godot/profile-reset-ui.json"
 	theme = preload("res://resources/theme/theme-main.tres").duplicate()
@@ -295,6 +296,7 @@ func _checkpoint() -> bool:
 		journey.data.screen = "report"
 		journey.data.won = result_won
 		journey.data.report = report.duplicate(true)
+		journey.data.report_details = report_details.duplicate(true)
 		journey.data.elapsed = elapsed
 	return _save_campaign()
 
@@ -313,12 +315,14 @@ func _continue_run() -> void:
 	equipment = run.shoe_wearer
 	if journey.data.screen == "battle": _guard()
 	elif journey.data.screen == "report":
-		screen = "report"
+		report_details = journey.data.get("report_details",{}).duplicate(true)
 		result_won = journey.data.won
 		report.clear()
 		for row in journey.data.get("report",[]): report.append(row.duplicate(true))
 		elapsed = float(journey.data.get("elapsed",0))
 		run.node = {"name":journey.title(journey.visit.data.place),"kind":"battle"}
+		screen = "report"
+		report_view.present(report_details,report,elapsed)
 		campaign_panel.hide()
 	else: _show_journey()
 
@@ -392,9 +396,7 @@ func _victory() -> void:
 	if debug_battle_preview:
 		# Debug skip uses the same report, never the campaign reward transition.
 		phase = "result"
-		report.clear()
-		for unit in units:
-			if unit.side == 0: report.append({"name":unit.name,"damage":int(unit.damage),"healing":int(unit.healing)})
+		_capture_report(true)
 		screen = "report"
 		_checkpoint()
 		return

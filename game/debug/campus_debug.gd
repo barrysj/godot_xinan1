@@ -67,6 +67,7 @@ static func execute(hub, command: String, difficulty: String = "") -> bool:
 	var previous = hub.run.to_dict()
 	var previous_screen: String = hub.screen
 	var previous_report = hub.report.duplicate(true)
+	var previous_details: Dictionary = hub.report_details.duplicate(true)
 	var previous_won: bool = hub.result_won
 	if command == "restart":
 		hub.report.clear()
@@ -95,8 +96,10 @@ static func execute(hub, command: String, difficulty: String = "") -> bool:
 		# Campaign save already restores its committed model. Legacy runs need an
 		# explicit rollback because their normal checkpoint helper only reports errors.
 		if hub.campaign_mode.is_empty(): hub.run.restore(previous)
-		hub.screen = previous_screen
 		hub.report = previous_report
+		hub.report_details = previous_details
+		hub.screen = previous_screen
+		if previous_screen == "report": hub.report_view.present(previous_details,previous_report,hub.elapsed)
 		hub.result_won = previous_won
 		return false
 	hub.queue_redraw()
