@@ -20,6 +20,7 @@ static func reason(hub, command: String) -> String:
 	if not hub.debug_enabled: return "请从 Debug 启动脚本进入。"
 	if hub.progress.load_blocked: return "存档无法读取，请先在基地重开存档。"
 	if hub.reset_pending or not hub.pending_exit.is_empty(): return "请先完成或取消当前确认。"
+	if hub.debug_battle_preview and hub.screen == "report" and command != "restart": return "试玩已结束，请重新战斗或退出游戏。"
 	var campaign: bool = not hub.campaign_mode.is_empty()
 	var visit: Dictionary = hub.journey.visit.data
 	if command in ["skip","restart","difficulty"]:

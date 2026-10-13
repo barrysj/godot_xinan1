@@ -248,6 +248,9 @@ func _header(title: String, subtitle: String) -> void:
 	_pixel_panel(Rect2(20, 16, 1220, 70), Color("202027"))
 	_text(Vector2(42, 47), title, PAPER, 27)
 	_text(Vector2(43, 71), subtitle, Color("c5c2ca"), 14)
+	_draw_header_actions()
+
+func _draw_header_actions() -> void:
 	_text(Vector2(936, 52), "修复资源  %d" % progress.points, GOLD, 18)
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
@@ -433,8 +436,11 @@ func _book_icon(p: Vector2, width: float) -> void:
 	draw_rect(Rect2(p + Vector2(width * 0.18, 4), Vector2(width * 0.12, width - 8)), Color("855d4e"))
 	draw_rect(Rect2(p + Vector2(width * 0.40, width * 0.18), Vector2(width * 0.42, width * 0.3)), PAPER)
 
+func _report_subtitle() -> String:
+	return "全员已恢复，准备收取战利品。" if result_won else "保留本局构筑和装备，重新编队后可以无限重试。"
+
 func _draw_report() -> void:
-	_header("战斗胜利" if result_won else "暂时受阻", "全员已恢复，准备收取战利品。" if result_won else "保留本局构筑和装备，重新编队后可以无限重试。")
+	_header("战斗胜利" if result_won else "暂时受阻", _report_subtitle())
 	_pixel_panel(Rect2(80, 127, 1115, 422), PAPER)
 	_text(Vector2(112, 171), "%s  /  %.1f 秒" % [run.node.name, elapsed], DARK, 25)
 	_text(Vector2(540, 221), "造成伤害", DARK, 19)
@@ -449,6 +455,9 @@ func _draw_report() -> void:
 		draw_rect(Rect2(332, y - 17, 425 * float(entry.damage) / max_damage, 20), Color("90b37c"))
 		_text(Vector2(772, y), str(entry.damage), DARK, 19)
 		_text(Vector2(899, y), str(entry.healing), DARK, 19)
+	_draw_report_actions()
+
+func _draw_report_actions() -> void:
 	_flow_button(Rect2(405, 587, 470, 66), ("结算" if run.node.kind == "boss" else "领奖") if result_won else "重试")
 
 func _draw_summary() -> void:

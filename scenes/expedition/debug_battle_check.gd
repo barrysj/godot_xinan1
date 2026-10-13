@@ -91,7 +91,7 @@ func run_checks(hub) -> void:
 		if hub.screen == "report": break
 		hub._process(0.05)
 	verify(hub.screen == "report", "startup battle reaches ordinary report")
-	verify(Commands.execute(hub, "difficulty", "hard") and hub.screen == "battle" and hub.phase == "battle", "battle report can restart for another difficulty")
+	verify(Commands.execute(hub, "restart") and hub.screen == "battle" and hub.phase == "prepare", "preview report restarts into preparation")
 	for index in profiles.size():
 		var current: PackedByteArray = FileAccess.get_file_as_bytes(profiles[index]) if FileAccess.file_exists(profiles[index]) else PackedByteArray()
 		verify(current == originals[index], "player profile unchanged: " + profiles[index])

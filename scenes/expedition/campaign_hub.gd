@@ -14,6 +14,7 @@ var debug_panel: CanvasLayer
 var debug_battle_difficulty := "normal"
 var debug_battle_tuning: Dictionary = {}
 var battle_context: CanvasLayer
+var battle_preview_results: Control
 const BattleTuning = preload("res://game/debug/battle_tuning.gd")
 const DebugCommands = preload("res://game/debug/campus_debug.gd")
 const OPERATIONS = ["修正目标","撤销越权","限制写入"]
@@ -27,6 +28,7 @@ func _ready() -> void:
 	if debug_enabled: progress.path = "user://campus_debug_progress.json"
 	if debug_battle_preview: progress.path = "res://.godot/debug-battle-preview.json"
 	if "--debug-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/debug-check-profile.json"
+	if "--preview-result-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-preview-result-check-profile.json"
 	if "--battle-preparation-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-preparation-check-profile.json"
 	if "--battle-tuning-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-tuning-check-profile.json"
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
@@ -55,7 +57,14 @@ func _ready() -> void:
 		battle_context = preload("res://scenes/expedition/battle_context_editor.gd").new()
 		battle_context.hub = self
 		add_child(battle_context)
-	if debug_battle_preview: _launch_debug_battle()
+	if debug_battle_preview:
+		battle_preview_results = preload("res://scenes/expedition/battle_preview_results.gd").new()
+		battle_preview_results.hub = self
+		add_child(battle_preview_results)
+		_launch_debug_battle()
+	if "--preview-result-check" in OS.get_cmdline_user_args():
+		test_runner = load("res://scenes/expedition/battle_preview_result_check.gd").new()
+		test_runner.run_checks(self)
 	if "--battle-preparation-check" in OS.get_cmdline_user_args():
 		test_runner = load("res://scenes/expedition/battle_preparation_check.gd").new()
 		test_runner.run_checks(self)
@@ -169,6 +178,11 @@ func _home() -> void:
 	if debug_enabled: campaign_panel.text("DEBUG · 当前使用独立调试存档",18)
 
 func _input(event: InputEvent) -> void:
+	if debug_battle_preview and screen == "report":
+		if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.keycode == KEY_F8):
+			if event.is_action_pressed("ui_cancel"): battle_preview_results.quit_button.grab_focus()
+			get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(campaign_panel) and is_instance_valid(campaign_panel.home_overlay) and not paused:
 		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause"):
 			if reset_pending: _profile_action("reset_cancel")
@@ -362,6 +376,9 @@ func _guard() -> void:
 	if _save_campaign(): campaign_panel.hide()
 
 func _after_report() -> void:
+	if debug_battle_preview:
+		_preview_result_action("retry")
+		return
 	if campaign_mode.is_empty():
 		super._after_report()
 		return
@@ -372,6 +389,15 @@ func _after_report() -> void:
 	else: _victory()
 
 func _victory() -> void:
+	if debug_battle_preview:
+		# Debug skip uses the same report, never the campaign reward transition.
+		phase = "result"
+		report.clear()
+		for unit in units:
+			if unit.side == 0: report.append({"name":unit.name,"damage":int(unit.damage),"healing":int(unit.healing)})
+		screen = "report"
+		_checkpoint()
+		return
 	journey.visit.data.guard_won = true
 	if campaign_mode == "finale":
 		journey.data.screen = "operation"
@@ -664,12 +690,50 @@ func _to_base() -> void:
 		_home()
 
 func _gui_input(event: InputEvent) -> void:
+	if debug_battle_preview and screen == "report":
+		# Old painted reward/menu hitboxes cannot leak through the two buttons.
+		if event is InputEventMouse: accept_event()
+		return
 	super._gui_input(event)
 	if campaign_enabled and screen == "base" and not campaign_panel.visible: _home()
 
+func _sync_battle_page_visibility() -> void:
+	super._sync_battle_page_visibility()
+	var terminal: bool = debug_battle_preview and screen == "report" and not leaving
+	if is_instance_valid(battle_preview_results): battle_preview_results.visible = terminal
+	if is_instance_valid(debug_panel): debug_panel.entry.visible = not terminal and not debug_panel.panel.visible
+
+func _preview_result_action(id: String) -> void:
+	if not debug_battle_preview or screen != "report" or leaving: return
+	if id == "quit":
+		pending_exit = "quit"
+		# Preview settings are temporary. Use the existing quit primitive without
+		# another checkpoint or a campaign exit/menu dialog.
+		_leave_without_save()
+	elif id == "retry":
+		var node: Dictionary = run.node.duplicate(true)
+		if not DebugCommands.execute(self,"restart"):
+			# Failed Campaign saves restore a build without its transient node.
+			run.node = node
+			phase = "result"
+			screen = "report"
+			campaign_panel.hide()
+			battle_preview_results.show_error("重开未完成："+progress.error_message)
+		queue_redraw()
+
+func _report_subtitle() -> String:
+	return "试玩已结束。本次阵容与配置保留；重新战斗返回整备，准备好再开战。" if debug_battle_preview else super._report_subtitle()
+
+func _draw_header_actions() -> void:
+	if debug_battle_preview and screen == "report": _text(Vector2(936,52),"战斗试玩",GOLD,18)
+	else: super._draw_header_actions()
+
+func _draw_report_actions() -> void:
+	if not debug_battle_preview: super._draw_report_actions()
+
 func _draw_report() -> void:
 	super._draw_report()
-	if campaign_mode.is_empty(): return
+	if debug_battle_preview or campaign_mode.is_empty(): return
 	var next_step = "领取一份奖励，再返回地点。可以继续调查，也可以离开。"
 	if campaign_mode == "finale": next_step = "节点已击破：接下来执行系统操作。"
 	if not result_won: next_step = "阵容与装备保留。调整前排与后排，再挑战一次。"

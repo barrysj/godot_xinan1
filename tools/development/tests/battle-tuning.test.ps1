@@ -5,7 +5,7 @@ $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
 . (Join-Path $root 'tools/development/project-health.ps1')
 $health = Initialize-GodotProject -ProjectPath $root -EnginePath $EnginePath
 Write-Output "PROJECT_HEALTH_CHECK checks=$($health.Checks) failures=0"
-foreach ($fixture in @('battle-tuning','battle-preparation')) {
+foreach ($fixture in @('battle-tuning','battle-preparation','preview-result')) {
     foreach ($mode in @('debug','disabled')) {
         $log = Join-Path $root ".godot/$fixture-$mode.log"
         $arguments = @('--path',$root,'--rendering-method','gl_compatibility','--quit-after','3600')

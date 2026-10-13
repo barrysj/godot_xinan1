@@ -72,7 +72,7 @@ func _layout_popup() -> void:
 	panel.position = (available-panel.size)/2
 
 func open() -> void:
-	if panel.visible: return
+	if panel.visible or (hub.debug_battle_preview and hub.screen == "report"): return
 	if is_instance_valid(hub.battle_context): hub.battle_context.close()
 	# Do not replace an exit confirmation or another interactive modal.
 	if not hub.pending_exit.is_empty() or hub.reset_pending or is_instance_valid(hub.team_panel) or is_instance_valid(hub.location_panel) or is_instance_valid(hub.codex_panel): return
