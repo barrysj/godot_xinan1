@@ -269,6 +269,7 @@ func _presentation_context(actor: Dictionary, at: Vector2, factor: float) -> Dic
 		"duration": actor.animation._duration(actor.animation.state),
 		"motion_time": actor.presentation.motion_time,
 		"facing_right": actor.presentation.facing_right,
+		"flip_h": actor.battle_animation.should_flip(actor.presentation.facing_right),
 		"tint": pose.tint,
 	}
 
@@ -470,7 +471,7 @@ func _draw_fallback_pawn(canvas: CanvasItem, u: Dictionary, at: Vector2, factor:
 	var canvas_origin: Vector2 = origin if canvas == self else origin - (canvas as Node2D).position
 	var world = Transform2D(0, Vector2.ONE * scale_factor, 0, canvas_origin)
 	var stretch: Vector2 = pose.stretch
-	if animated_texture != null and u.battle_animation.flip_with_facing and pose.flip:
+	if animated_texture != null and u.battle_animation.should_flip(u.presentation.facing_right):
 		stretch.x *= -1
 	var local = Transform2D(pose.rotation, stretch, 0, p)
 	canvas.draw_set_transform_matrix(world * local)

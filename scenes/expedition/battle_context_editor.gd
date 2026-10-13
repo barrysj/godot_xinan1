@@ -150,7 +150,7 @@ func handle_input(event: InputEvent) -> bool:
 		hub.inspector.close_info()
 		ghost.texture = unit.animation.texture() if unit.animation.texture() != null else unit.portrait
 		ghost.size = unit.battle_animation.display_size if unit.battle_animation != null else Vector2(64,64)
-		ghost.flip_h = unit.battle_animation != null and unit.battle_animation.flip_with_facing and not unit.presentation.facing_right
+		ghost.flip_h = unit.battle_animation != null and unit.battle_animation.should_flip(unit.presentation.facing_right)
 		return true
 	if pressed_side < 0: return false
 	var side := pressed_side

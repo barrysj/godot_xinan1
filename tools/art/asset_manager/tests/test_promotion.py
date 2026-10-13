@@ -109,7 +109,7 @@ class PromotionTest(unittest.TestCase):
             rig['runtime_files'].append('frames/idle.png')
             rig_path.write_text(json.dumps(rig))
             metadata = candidate / 'battle_animation.frames.json'
-            metadata.write_text(json.dumps({'source': 'design/concepts/private/video.mp4', 'clips': {'idle': {}, 'death': {}}}))
+            metadata.write_text(json.dumps({'source': 'design/concepts/private/video.mp4', 'clips': {'idle': {}, 'death': {}}, 'source_facing_right': False}))
             with (candidate / 'battle_animation.tres').open('a') as output:
                 output.write('\n[ext_resource path="res://design/concepts/sample/001/frames/idle.png"]')
             promote('sample', root=root)
@@ -117,6 +117,7 @@ class PromotionTest(unittest.TestCase):
             deployed = root / 'assets/art/sample'
             self.assertEqual((deployed / 'frames/idle.png').read_bytes(), b'frame')
             self.assertNotIn('source', json.loads((deployed / 'battle_animation.frames.json').read_text()))
+            self.assertFalse(json.loads((deployed / 'battle_animation.frames.json').read_text())['source_facing_right'])
             self.assertFalse((deployed / 'presentation.tscn').exists())
 
     def test_partial_hybrid_is_rejected_before_writing(self):

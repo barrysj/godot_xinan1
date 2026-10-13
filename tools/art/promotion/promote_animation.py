@@ -112,7 +112,7 @@ def plan(object_id, variant_id=None, root=ROOT):
                 # Generation inputs stay with the approved source. The deployed
                 # metadata only describes playback, never source images/videos.
                 source_metadata = json.loads(text)
-                playback_fields = ('clips', 'canvas', 'display_size', 'anchor', 'impact_ratio', 'flip_with_facing')
+                playback_fields = ('clips', 'canvas', 'display_size', 'anchor', 'impact_ratio', 'flip_with_facing', 'source_facing_right')
                 text = json.dumps({key: source_metadata[key] for key in playback_fields
                                    if key in source_metadata}, ensure_ascii=False, indent=2) + '\n'
             # Resource UIDs are checkout caches; paths are portable and authoritative.

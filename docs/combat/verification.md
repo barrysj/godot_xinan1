@@ -41,3 +41,5 @@
 ## 敌方朝向与 Debug 整备（2026-10-13，待统筹）
 
 基线76b9540加当前修改；原表现层的敌方在整备、移动、出招、死亡与重开时固定朝左，逻辑寻路／技能／弹道方向不变。`scenes/battle_demo/presentation_check.tscn`无头PASS／0失败：10种注册敌人的四逻辑方向、序列帧翻转、混合上下文与节点镜像，以及原不同帧率／速度的模拟结果、事件和暂停一致性。`scenes/battle_demo/deployment_check.tscn -- --deployment-check`无头PASS／0失败，覆盖原手牌与交换保存；必须带隔离标志。Debug直接整备的真实鼠标／键盘、拖动预览朝向、三尺寸与存档隔离结果和入口归[DEV-01](../development/dev-01.md)。截图已展示，仅Windows本地验收。
+
+广播中继素材基准专项（2026-10-13，基线d6cedc0）：原共享镜像规则未区分素材已经朝左，现按BattleAnimationSet声明的基准判断帧／混合／拖动镜像。`scenes/battle_demo/radio_facing_check.tscn`GUI实测镜头位于中心左侧，修复前能明确报错；headless与混合后端契约通过，三桌面尺寸实机已展示。制作工具字段保留与批准边界见[ART-03](../art/art-03.md)。

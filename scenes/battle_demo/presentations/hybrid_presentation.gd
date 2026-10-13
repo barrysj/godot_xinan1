@@ -38,7 +38,7 @@ func apply_presentation(context: Dictionary) -> void:
 	position = context.get("center", Vector2.ZERO)
 	var dimensions: Vector2 = context.get("display_size", canvas_size)
 	scale = dimensions / canvas_size
-	if not context.get("facing_right", true): scale.x *= -1
+	if context.get("flip_h",not context.get("facing_right", true)): scale.x *= -1
 	modulate = context.get("tint", Color.WHITE)
 	var clip := player.get_animation(state)
 	var changed := selected_clip != state

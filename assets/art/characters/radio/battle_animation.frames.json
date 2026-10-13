@@ -72,5 +72,6 @@
     0.9375
   ],
   "impact_ratio": 0.45,
-  "flip_with_facing": true
+  "flip_with_facing": true,
+  "source_facing_right": false
 }
