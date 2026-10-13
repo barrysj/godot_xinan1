@@ -28,9 +28,23 @@ pwsh.exe -NoProfile -File .\check-project.ps1 -Repair
 
 run-campus-demo.ps1、run-battle-demo.ps1和run-debug.ps1在启动可见游戏前调用同一预检；运行结束也检查实际日志，不以退出0代替成功。已有Debug／Release／战斗参数和存档规则不变。Debug检查还有时间上限与完成标记要求，避免失败后静默挂起或被当成通过。
 
+## main更新后的自动触发
+
+工具分支合入后，在仓库运行一次：
+
+```powershell
+pwsh.exe -NoProfile -File .\install-project-hooks.ps1
+```
+
+本地Git配置指向版本化.githooks。post-merge、post-checkout、post-commit通过小型分发入口调用PowerShell7，仅在当前分支是main时检查实际checkout。覆盖快进／普通合并、切回main、squash暂存工作树及后续提交。EnginePath保存在本地配置；同库worktrees共享配置，但检查各自的源码／缓存。安装时保留已有不同hooksPath和默认hooks目录内的自定义文件，遇到它们会拒绝覆盖，应手动整合。
+
+后置hook检查失败会明确报错，但Git操作可能已完成，不能自动回滚或阻止提交。最终验收／CI应显式调用check-project.ps1并要求返回0；启动入口也继续拦截不健康工程。冲突解决后再检查。已打开的Godot编辑器仍保留旧内存状态时需要重新打开项目，本工具验证新进程。
+
+卸载：`pwsh.exe -NoProfile -File .\install-project-hooks.ps1 -Remove`，保留版本化工具和启动预检。本地Git设置不随克隆传播。本轮在隔离仓库验证安装／卸载，尚未修改真实仓库hooksPath。
+
 ## 验证
 
-2026-10-13，基线main 82a04c9＋本功能：隔离真实Godot工程回归14／0，实际项目启动预检9／0；Release启动集成先通过9项预检，再通过原DEBUG_CHECK 6／0。回归命令：
+2026-10-13，基线main 82a04c9＋本功能：隔离真实Godot工程回归14／0，实际项目启动预检9／0；Release启动集成先通过9项预检，再通过原DEBUG_CHECK 6／0；Debug入口174／0，原生Git hook回归14／0。回归命令：
 
 ```powershell
 pwsh.exe -NoProfile -File tools/development/tests/project-health.test.ps1 -EnginePath 'F:/Applications/Godot_v4.7.2-stable_mono_win64/Godot_v4.7.2-stable_mono_win64_console.exe'
@@ -38,4 +52,6 @@ pwsh.exe -NoProfile -File tools/development/tests/project-health.test.ps1 -Engin
 
 覆盖未导入SVG／缺少类型缓存、自动导入、缓存复用、导入元数据丢失修复、未提交与同状态多次改动、真实坏代码、退出0报错、缺失成功标记和并发锁。隔离夹具与证据在.godot/art-workflow/project-health-tests；夹具Git元数据在结束时移除。
 
-官方契约：[命令行导入](https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html)、[版本控制与缓存](https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html)。
+Hook回归入口为tools/development/tests/project-hooks.test.ps1，使用同样的-EnginePath参数。覆盖有空格路径、现有设置保护、main／非main筛选、原生快进／squash／提交／切换触发、失败报告与Git已完成行为边界、卸载。证据在.godot/art-workflow/project-hook-tests。
+
+官方契约：[命令行导入](https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html)、[版本控制与缓存](https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html)、[Git hooks](https://git-scm.com/docs/githooks)。
