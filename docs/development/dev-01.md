@@ -68,3 +68,7 @@ PowerShell7 / Godot4.7.2 Compatibility：`./run-debug.ps1 -Check -EnginePath <Go
 ## 正式动画与独立暂停合并验证（2026-10-10，已汇总（2026-10-10））
 
 基线ed4d275＋main c3dc5c2。debug_panel保留独立暂停和原菜单可见性恢复，同时将所选难度传给main新增命令；debug_check沿用完整奖励归属筛选，并按真实事件选项结束多轮记忆后再离站，保留重抽拒绝、遍历上限和失败诊断。没有修改玩家事件或存档规则。PowerShell7执行run-debug.ps1 -Check为174／0，run-battle-demo.ps1 -Mode Debug -Smoke34／0、-Capture39／0；三规定尺寸实机图debug-battle-launch-*已核验，原玩家档保持不变。完整战役149／0、独立暂停与慢速51／0、多轮事件GUI197／0。日志.godot/campus-main-merge-*及debug-mode.log；Web／移动端未验证。
+
+## 启动导入与依赖预检（待统筹）
+
+2026-10-13，main 82a04c9＋codex/godot-startup-guard：check-project.ps1与共享project-health.ps1自动准备当前checkout导入，加载原主入口并对日志／成功标记判错。检测失败只修复复验一次，真正代码错误阻止启动；独立profile不接入另一套存档。真实引擎回归14／0，原项目预检9／0；实现契约、命令及覆盖见[工程预检](project-health.md)。待统筹：开发启动／合并验收增加本地预检，平台与玩法范围不变。
