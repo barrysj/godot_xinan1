@@ -340,7 +340,7 @@ func _floating_card(parent: Control) -> VBoxContainer:
 func _home_routes(progress) -> void:
 	var box := _home_dialog("选择区域")
 	for region in ["library","region_b","region_c"]:
-		button({"library":"图书馆","region_b":"第二终端","region_c":"第三终端"}[region],"region:"+region,true,box)
+		button(Journey.Regions.flow_for(region).title,"region:"+region,true,box)
 	var back := button("返回基地","hub_close",true,box)
 	back.pressed.connect(close_home_overlay)
 	_focus_home_action.call_deferred(box.get_child(1))

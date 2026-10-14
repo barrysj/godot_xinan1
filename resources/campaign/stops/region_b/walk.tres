@@ -3,7 +3,7 @@
 [ext_resource type="Resource" path="res://resources/campaign/places/yinhua_halal_cafeterias.tres" id="place"]
 [ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounter"]
 [resource]
-resource_name = "银桦食堂区 · walk"
+resource_name = "yinhua_halal_cafeterias · walk"
 script = ExtResource("s")
 id = "walk"
 place = ExtResource("place")

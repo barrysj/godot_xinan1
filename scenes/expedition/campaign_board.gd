@@ -20,11 +20,11 @@ const MAP_TEXTURES = {
 var map_state = "anomaly"
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(960,544) if mode == "route" else (Vector2(820,680) if mode == "location" and journey != null and journey.visit.data.place == "gate" else Vector2(600,360))
+	if mode == "location" and journey != null:
+		location_background = ExplorationSkin.texture(CampusLocationSkin.path(journey.stop().get("background",""),"anomaly"))
+		if location_background != null: texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	custom_minimum_size = Vector2(960,544) if mode == "route" else (Vector2(820,680) if location_background != null else Vector2(600,360))
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER if mode == "route" else Control.SIZE_EXPAND_FILL
-	if mode == "location" and journey != null and journey.visit.data.place == "gate":
-		location_background = ExplorationSkin.texture(CampusLocationSkin.path("south_gate", "anomaly"))
-		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	resized.connect(_layout)
 	_build()
 
@@ -120,7 +120,7 @@ func _draw() -> void:
 				draw_rect(shelf,Color("A7BDC5"))
 				for book in range(6): draw_line(shelf.position+Vector2(9+book*12,5),shelf.position+Vector2(9+book*12,40),Color("E6F0F4"),3)
 		elif location_background == null: _site(journey.visit.data.place)
-		_label(Vector2(20,30),"阅览室 · 场景示意" if library else ("南门 · 异常态" if location_background != null else journey.Regions.PLACES[journey.visit.data.place]+" · 场景示意"),Color.WHITE if location_background != null else INK)
+		_label(Vector2(20,30),"阅览室 · 场景示意" if library else (journey.title(journey.visit.data.place)+(" · 异常态" if location_background != null else " · 场景示意")),Color.WHITE if location_background != null else INK)
 		var desk = Rect2(size*Vector2(0.42,0.38),size*Vector2(0.22,0.16))
 		if library:
 			draw_rect(desk,Color("CFBDA2"))

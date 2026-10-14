@@ -6,9 +6,9 @@ const PlaceScenes = preload("res://game/run/place_scenes.gd")
 var data: Dictionary = {}
 var visit = Visit.new()
 
-func begin(region: String, level: int, definition: Resource = null) -> bool:
+func begin(region: String, level: int, definition: Resource = null, usage: String = "region") -> bool:
 	if definition != null and (not definition is CampusRegionFlow or definition.id != region or not definition.validate().is_empty()): return false
-	var flow: Dictionary = Regions.flow_for(region) if definition == null else definition.snapshot()
+	var flow: Dictionary = Regions.Catalog.snapshot(region,usage) if definition == null else definition.snapshot()
 	if flow.is_empty(): return false
 	data = {"schema":2,"id":Crypto.new().generate_random_bytes(16).hex_encode(),
 		"region":region,"level":level,"flow":flow,"map":flow.layers.duplicate(true),"step":0,
@@ -131,6 +131,7 @@ func restore(source: Variant) -> bool:
 	data.schema = 2
 	data.flow.schema = 1
 	data.flow.revision = int(data.flow.revision)
+	if data.flow.has("map_contract"): data.flow.map_contract = int(data.flow.map_contract)
 	for place in data.flow.stops.values():
 		for scene in place.get("scenes",[]): scene.floor = int(scene.floor)
 	data.step = int(data.step)

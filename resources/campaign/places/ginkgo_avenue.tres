@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/campus_route_place.gd" id="s"]
+[resource]
+resource_name = "银杏大道"
+script = ExtResource("s")
+id = "ginkgo_avenue"
+display_name = "银杏大道"
+landmark = "ginkgo_avenue"
+offset = Vector2(0, 0)
+background_id = "west_lake_entrance"
+library_interior = false

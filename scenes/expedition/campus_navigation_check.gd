@@ -96,6 +96,7 @@ func _ready() -> void:
 	get_window().mode = Window.MODE_WINDOWED
 	var probe_flow := Regions.flow_for("region_b").duplicate(true)
 	var probe_geometry = preload("res://game/run/expanded_campus_geometry.gd").new()
+	probe_flow.stops.end_b.place_id = "basic_laboratory_building"
 	probe_flow.stops.end_b.landmark = "pinxue"
 	probe_flow.stops.end_b.offset = [0, -175]
 	expect(Presentation.point("region_b", "end_b", probe_geometry, probe_flow) == Vector2(925,740), "saved legacy placeholder uses corrected live point")
@@ -121,7 +122,7 @@ func _ready() -> void:
 			var region: String = preview.campaign_region_for_route(index)
 			var flow := Regions.flow_for(region)
 			var nodes: Array = preview.route_nodes.nodes
-			expect(nodes.size() == (6 if index == 2 else 5), "region expands every geographic route place")
+			expect(nodes.size() == preview.board.layout.ROUTES[index].places.size(), "region expands every geographic route place")
 			expect(not preview.targets.visible and preview.selected_node == -1, "region selection precedes place selection")
 			for i in range(nodes.size()):
 				await click(preview.route_nodes.buttons[i], Vector2(90,50))
@@ -130,10 +131,11 @@ func _ready() -> void:
 				expect(preview.picture.texture.resource_path == Presentation.background(region, nodes[i].stop, "anomaly", flow), "selected photo uses the canonical place")
 				fits(preview.route_nodes.buttons[i], "route place")
 			if index == 1:
-				expect(nodes.back().point == Vector2(925,740), "laboratory uses user supplied editor coordinate")
-			if index == 2:
-				expect(nodes[4].title == "成电会堂" and nodes[5].title == "商业街", "compound stop has separate geographic nodes")
-				expect(nodes[4].point == preview.board.layout.PLACES.hall.point and nodes[5].point == preview.board.layout.PLACES.shopping.point, "split nodes use actual map landmarks")
+				expect(nodes.back().point == preview.board.layout.PLACES.main.point, "main-building terminal uses editor coordinate")
+			if index == 0:
+				expect(nodes[0].title == "成电会堂" and nodes[1].title == "商业街", "compound stop has separate geographic nodes")
+				expect(nodes[0].point == preview.board.layout.PLACES.hall.point and nodes[1].point == preview.board.layout.PLACES.shopping.point, "split nodes use actual map landmarks")
+			expect(not visible_text_contains(preview,"南门"),"formal route has no South Gate node or stale instructional text")
 			await capture("region-%d" % index, resolution)
 			fits(preview.select_button, "map primary action")
 		for state in ["day", "night", "anomaly"]:
@@ -176,7 +178,7 @@ func _ready() -> void:
 		game._campaign_action("strategy:library:region:keep")
 		await settle()
 		var picker = game.campaign_panel.station_picker
-		expect(picker != null and picker.destination_buttons.size() == 1, "start uses the real first station")
+		expect(picker != null and picker.destination_buttons.size() == 2, "initial compound stop exposes two places but one station")
 		await click(picker.travel_button)
 		expect(game.journey.visit.data.place == "gate", "travel uses the canonical enter action")
 		expect(game.campaign_panel.station_picker == null and game.campaign_panel.action_button("enter:0") == null, "old navigation controls leave the tree")
@@ -217,21 +219,27 @@ func _ready() -> void:
 		await click(picker.base_button)
 		expect(game.campaign_panel.station_picker == null and game.campaign_panel.action_button("enter:0") == null, "return clears route controls")
 	# Compound destination fixture: two map places still enter the same final stop.
-	game._begin_region("region_c", "region", "keep")
-	game.journey.data.step = 3
-	game.journey.data.visited = ["gate", "court", "walk"]
+	game._begin_region("library", "region", "keep")
+	game.journey.data.step = 0
+	game.journey.data.visited = []
 	game.campaign_panel.route(game.journey, false)
 	await settle()
 	var final_picker = game.campaign_panel.station_picker
-	expect(final_picker.destination_buttons.size() == 2, "compound final stop has two physical selectors")
+	expect(final_picker.destination_buttons.size() == 2, "compound initial stop has two physical selectors")
 	var final_before := JSON.stringify(game.journey.snapshot())
 	for i in range(2):
 		await click(final_picker.destination_buttons[i], Vector2(90,50))
-		expect(final_picker.travel_button.get_meta("action_id") == "enter:0" and not final_picker.travel_button.disabled, "both components use original final enter action")
+		expect(final_picker.travel_button.get_meta("action_id") == "enter:0" and not final_picker.travel_button.disabled, "both components use original initial enter action")
 		expect(final_picker.detail_title.text == ["成电会堂", "商业街"][i], "compound component keeps its own geographic name")
 	expect(JSON.stringify(game.journey.snapshot()) == final_before, "compound inspection preserves the narrative journey")
 	await capture("compound-next-station", Vector2i(1280,720))
 	await click(final_picker.travel_button)
-	expect(game.journey.visit.data.place == "end_c", "compound travel enters original story stop")
+	expect(game.journey.visit.data.place == "gate", "compound travel enters original story stop")
 	print("CAMPUS_NAVIGATION_CHECK checks=%d failures=%d" % [checks, failures])
 	get_tree().quit(0 if failures == 0 else 1)
+
+func visible_text_contains(root: Node, value: String) -> bool:
+	if root is Label and root.is_visible_in_tree() and value in root.text: return true
+	for child in root.get_children():
+		if visible_text_contains(child,value): return true
+	return false

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CampusRegionFlow" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="CampusRegionFlow" load_steps=14 format=3]
 [ext_resource type="Script" path="res://game/content/campus_region_flow.gd" id="flow"]
 [ext_resource type="Script" path="res://game/content/campus_route_stage.gd" id="stage"]
 [ext_resource type="Script" path="res://game/content/campus_route_stop.gd" id="stop"]
@@ -6,27 +6,25 @@
 [ext_resource type="Resource" path="res://resources/campaign/stops/region_b/hall.tres" id="hall"]
 [ext_resource type="Resource" path="res://resources/campaign/stops/region_b/walk.tres" id="walk"]
 [ext_resource type="Resource" path="res://resources/campaign/stops/region_b/court.tres" id="court"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/region_b/lake.tres" id="lake"]
 [ext_resource type="Resource" path="res://resources/campaign/stops/region_b/end_b.tres" id="end_b"]
 [sub_resource type="Resource" id="stage_0"]
-resource_name = "南门"
 script = ExtResource("stage")
 choices = Array[ExtResource("stop")]([ExtResource("gate")])
 [sub_resource type="Resource" id="stage_1"]
-resource_name = "学子食堂 / 银桦食堂区"
 script = ExtResource("stage")
 choices = Array[ExtResource("stop")]([ExtResource("hall"), ExtResource("walk")])
 [sub_resource type="Resource" id="stage_2"]
-resource_name = "学生活动中心"
 script = ExtResource("stage")
-choices = Array[ExtResource("stop")]([ExtResource("court")])
+choices = Array[ExtResource("stop")]([ExtResource("court"), ExtResource("lake")])
 [sub_resource type="Resource" id="stage_3"]
-resource_name = "基础实验大楼"
 script = ExtResource("stage")
 choices = Array[ExtResource("stop")]([ExtResource("end_b")])
 [resource]
-resource_name = "第二终端区域"
+resource_name = "主楼线"
 script = ExtResource("flow")
 id = "region_b"
-display_name = "第二终端区域"
-revision = 1
+display_name = "主楼线"
+revision = 2
+usage = "region"
 stages = Array[ExtResource("stage")]([SubResource("stage_0"), SubResource("stage_1"), SubResource("stage_2"), SubResource("stage_3")])

@@ -27,8 +27,10 @@ static func background(region: String, place: String, state: String = "anomaly",
 
 static func point(region: String, place: String, geometry, flow: Dictionary = {}) -> Vector2:
 	var entry := binding(region,place,flow)
-	if not entry.is_empty() and LEGACY_MAP_ANCHORS.has(str(entry[0])):
-		var old: Array = LEGACY_MAP_ANCHORS[str(entry[0])]
+	var config: Dictionary = flow if not flow.is_empty() else Catalog.snapshot(region)
+	var place_id: String = config.get("stops",{}).get(place,{}).get("place_id","")
+	if not entry.is_empty() and LEGACY_MAP_ANCHORS.has(place_id):
+		var old: Array = LEGACY_MAP_ANCHORS[place_id]
 		# Correct only the exact old placeholder; authored landmark/offset changes remain valid.
 		if entry[2] == old[0] and entry[3] == old[1] and geometry.PLACES.has(old[2]):
 			return geometry.PLACES[old[2]].point
@@ -41,10 +43,19 @@ static func map_nodes(region: String, geometry, flow: Dictionary) -> Array[Dicti
 		for choice in range(flow.layers[layer].size()):
 			var stop: String = flow.layers[layer][choice]
 			var entry := binding(region, stop, flow)
-			var components: Array = ["hall", "shopping"] if str(entry[0]) == "chengdian_auditorium_commercial_street" else []
+			var stop_config: Dictionary = flow.stops[stop]
+			var components: Array = stop_config.get("map_landmarks",["hall", "shopping"] if stop_config.get("place_id") == "chengdian_auditorium_commercial_street" else [])
 			if components.is_empty():
-				result.append({"stop":stop, "layer":layer, "choice":choice, "title":title(region, stop, flow), "point":point(region, stop, geometry, flow)})
+				result.append({"stop":stop, "layer":layer, "choice":choice, "title":title(region, stop, flow), "landmark":entry[2], "point":point(region, stop, geometry, flow)})
 			else:
 				for component in components:
-					result.append({"stop":stop, "layer":layer, "choice":choice, "title":geometry.PLACES[component].title, "point":geometry.PLACES[component].point})
+					result.append({"stop":stop, "layer":layer, "choice":choice, "title":geometry.PLACES[component].title, "landmark":component, "point":geometry.PLACES[component].point})
 	return result
+
+static func component_description(stop: String, geometry, flow: Dictionary) -> String:
+	var components: Array = flow.get("stops",{}).get(stop,{}).get("map_landmarks",[])
+	if components.size() < 2: return ""
+	var names: Array[String] = []
+	for component in components:
+		if geometry.PLACES.has(component): names.append(geometry.PLACES[component].title)
+	return "本次站点包含"+"与".join(names)+"。"

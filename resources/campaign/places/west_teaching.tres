@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/campus_route_place.gd" id="s"]
+[resource]
+resource_name = "西侧教学区"
+script = ExtResource("s")
+id = "west_teaching"
+display_name = "西侧教学区"
+landmark = "west"
+offset = Vector2(0, 0)
+background_id = "pinxue_atrium"
+library_interior = false

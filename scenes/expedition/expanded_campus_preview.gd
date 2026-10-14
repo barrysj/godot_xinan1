@@ -54,7 +54,7 @@ func _ready() -> void:
 	targets.graphical = false
 	for index in range(board.layout.ROUTES.size()):
 		var region := campaign_region_for_route(index)
-		targets.points.append(board.layout.PLACES[["west", "north", "stadium"][index]].point)
+		targets.points.append(board.layout.ROUTES[index].path[0])
 		targets.titles.append(Regions.flow_for(region).title)
 	add_child(targets)
 	route_buttons = targets.buttons
@@ -162,10 +162,10 @@ func _refresh() -> void:
 	empty_hint.visible = selected_node < 0
 	detail.visible = selected_node >= 0
 	shell.heading.text = "选择探索区域" if shown_route < 0 else Regions.flow_for(campaign_region_for_route(shown_route)).title
-	shell.subtitle.text = "选择区域，再点击圆形地点查看详情" if shown_route < 0 else "点击圆形地点查看详情 · 从南门开始探索"
+	shell.subtitle.text = "选择区域，再点击圆形地点查看详情" if shown_route < 0 else "点击圆形地点查看详情 · 从第一站开始探索"
 	shell.rail_title.text = "探索区域" if shown_route < 0 else "地点详情"
 	if shown_route >= 0:
-		empty_hint.text = "路线已展开。点击任意圆形地点查看详情；开始探索后从南门出发。"
+		empty_hint.text = "路线已展开。点击任意圆形地点查看详情；开始探索后从第一站出发。"
 	else: empty_hint.text = "先选择地图上的区域，展开该路线的全部地点。"
 	var detail_key := "%s:%s:%s" % [shown_route, selected_node, board.map_state]
 	if detail.visible and detail_key != last_detail_key:
@@ -191,8 +191,9 @@ func _update_detail() -> void:
 	picture_caption.text = "地点预览 · " + ("日间" if state == "daily" else "异常")
 	detail_title.text = node.title
 	status.text = "第 %d / %d 站" % [node.layer+1, flow.layers.size()]
-	detail_text.text = "探索从南门开始，沿路线逐站推进。"
-	if node.stop == "end_c": detail_text.text += "\n本次站点包含成电会堂与商业街。"
+	detail_text.text = "探索从第一站开始，沿路线逐站推进。"
+	var components := Presentation.component_description(node.stop,board.layout,flow)
+	if not components.is_empty(): detail_text.text += "\n"+components
 	if completed_regions.has(region): detail_text.text += "\n终端已接入，可再次探索。"
 
 func _confirm_route() -> void:

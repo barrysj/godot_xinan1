@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/campus_route_place.gd" id="s"]
+[resource]
+resource_name = "球场区"
+script = ExtResource("s")
+id = "campus_courts"
+display_name = "球场区"
+landmark = "courts"
+offset = Vector2(0, 0)
+background_id = "sports_field"
+library_interior = false

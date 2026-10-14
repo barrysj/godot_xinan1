@@ -7,9 +7,14 @@ const Rules = preload("res://game/run/campus_flow_rules.gd")
 @export_range(1, 100000, 1) var revision: int = 1
 ## 数组顺序就是站次，最后一站为终点；1～12 站，每站 1～4 个候选。
 @export var stages: Array[CampusRouteStage] = []
+@export_enum("region", "prologue", "finale") var usage: String = "region"
 
 func snapshot() -> Dictionary:
-	var result := {"schema":1, "region":id, "title":display_name, "revision":revision, "layers":[], "stops":{}}
+	var result := {"schema":1, "region":id, "title":display_name, "revision":revision, "layers":[], "stops":{}, "usage":usage, "map_contract":1}
+	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/run/expanded_campus_layout.json"))
+	if usage == "region":
+		for route in layout.routes:
+			if route.campaign_region == id: result.title = route.title
 	for stage in stages:
 		var layer: Array = []
 		if stage == null: return {}
@@ -20,7 +25,13 @@ func snapshot() -> Dictionary:
 			result.stops[stop.id] = {"title":stop.place.display_name, "place_id":stop.place.id,
 				"background":stop.place.background_id, "landmark":stop.place.landmark,
 				"offset":[stop.place.offset.x, stop.place.offset.y], "library_interior":stop.place.library_interior,
-				"hotspot_template":stop.hotspot_template, "encounter_id":stop.encounter.id, "power":stop.power}
+				"map_landmarks":Array(stop.place.map_landmarks), "hotspot_template":stop.hotspot_template, "encounter_id":stop.encounter.id, "power":stop.power}
+			if usage == "region":
+				var landmarks: Array = stop.place.map_landmarks if not stop.place.map_landmarks.is_empty() else [stop.place.landmark]
+				var names: Array[String] = []
+				for landmark in landmarks:
+					if layout.places.has(landmark): names.append(layout.places[landmark].title)
+				if not names.is_empty(): result.stops[stop.id].title = "＋".join(names)
 			var scenes: Array = []
 			for scene in stop.place.scenes:
 				scenes.append(scene.snapshot() if scene != null else {})

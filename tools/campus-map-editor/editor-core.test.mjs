@@ -41,3 +41,9 @@ test("editable light boundary is separate and validated", () => {
   candidate.light_boundary.outside_brightness.day = .82;
   assert.deepEqual(validate(candidate), []);
 });
+
+test("each campaign region has a unique editor selection", () => {
+  const candidate = structuredClone(layout);
+  candidate.routes[1].campaign_region = candidate.routes[0].campaign_region;
+  assert.ok(validate(candidate).some(error => error.includes("只能对应一个地图选区")));
+});

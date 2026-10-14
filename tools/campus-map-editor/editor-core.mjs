@@ -77,6 +77,7 @@ export function validate(layout) {
     if (!pair(place?.point, layout.size)) errors.push(`地点 ${id} 坐标越界`);
   }
   const ids = new Set();
+  const campaignRegions = new Set();
   for (const route of layout.routes) {
     if (!route || typeof route !== "object") { errors.push("路线数据无效"); continue; }
     if (!route?.id || ids.has(route.id)) errors.push("路线 ID 缺失或重复");
@@ -90,6 +91,8 @@ export function validate(layout) {
     if (Array.isArray(route.area) && route.area.length >= 3 && route.area.every(point => pair(point, layout.size)) && polygonSelfIntersects(route.area)) errors.push(`路线 ${route.id} 的区域边界自交`);
     if (!/^[0-9a-f]{6}$/i.test(route.color || "")) errors.push(`路线 ${route.id} 的颜色无效`);
     if (!["library", "region_b", "region_c"].includes(route.campaign_region)) errors.push(`路线 ${route.id} 的战役区域无效`);
+    if (campaignRegions.has(route.campaign_region)) errors.push(`战役区域 ${route.campaign_region} 只能对应一个地图选区`);
+    campaignRegions.add(route.campaign_region);
   }
   return errors;
 }

@@ -3,7 +3,7 @@
 [ext_resource type="Resource" path="res://resources/campaign/places/library_front.tres" id="place"]
 [ext_resource type="Resource" path="res://resources/content/encounters/final.tres" id="encounter"]
 [resource]
-resource_name = "图书馆 · library"
+resource_name = "library_front · library"
 script = ExtResource("s")
 id = "library"
 place = ExtResource("place")

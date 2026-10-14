@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="CampusRouteStop" load_steps=4 format=3]
 [ext_resource type="Script" path="res://game/content/campus_route_stop.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/campaign/places/south_gate.tres" id="place"]
+[ext_resource type="Resource" path="res://resources/campaign/places/chengdian_auditorium_commercial_street.tres" id="place"]
 [ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounter"]
 [resource]
-resource_name = "南门 · gate"
+resource_name = "chengdian_auditorium_commercial_street · gate"
 script = ExtResource("s")
 id = "gate"
 place = ExtResource("place")

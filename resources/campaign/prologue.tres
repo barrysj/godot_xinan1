@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CampusRegionFlow" load_steps=6 format=3]
+[ext_resource type="Script" path="res://game/content/campus_region_flow.gd" id="flow"]
+[ext_resource type="Script" path="res://game/content/campus_route_stage.gd" id="stage"]
+[ext_resource type="Script" path="res://game/content/campus_route_stop.gd" id="stop"]
+[ext_resource type="Resource" path="res://resources/campaign/stops/tutorial/gate.tres" id="gate"]
+[sub_resource type="Resource" id="stage_0"]
+script = ExtResource("stage")
+choices = Array[ExtResource("stop")]([ExtResource("gate")])
+[resource]
+resource_name = "南门教学"
+script = ExtResource("flow")
+id = "library"
+display_name = "南门教学"
+revision = 2
+usage = "prologue"
+stages = Array[ExtResource("stage")]([SubResource("stage_0")])

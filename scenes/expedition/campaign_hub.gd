@@ -242,7 +242,7 @@ func _begin_region(region: String, mode: String = "region", starting_strategy: S
 	if progress.load_blocked or (mode == "region" and not progress.campaign.routes_acquired): return
 	if mode == "finale" and (progress.campaign.terminals.size() != 3 or progress.campaign.restored): return
 	var next_journey = Journey.new()
-	if not next_journey.begin(region,progress.campaign.terminals.size()):
+	if not next_journey.begin(region,progress.campaign.terminals.size(),null,mode):
 		campaign_panel.text("区域配置无效，请先在 Godot 校验并保存。")
 		return
 	campaign_mode = mode
@@ -773,7 +773,9 @@ func _finale_operation() -> void:
 		_ending()
 	else:
 		journey.data.finale_phase = stage
-		journey.visit.begin("gate",3,progress.campaign.memories,stage)
+		var core_stop: String = journey.data.map[0][0]
+		journey.visit.begin(core_stop,3,progress.campaign.memories,stage,journey.stop(core_stop).hotspot_template)
+		journey.visit.data.scene_id = Journey.PlaceScenes.entries(journey.stop(core_stop))[0].id
 		journey.data.screen = "visit"
 		if _save_campaign(): _show_journey()
 

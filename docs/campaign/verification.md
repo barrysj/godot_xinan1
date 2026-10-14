@@ -71,3 +71,23 @@ Node命令：node --test tools/campus-map-editor/editor-core.test.mjs tools/camp
 2026-10-13，实际main主工程E:/Documents/works/godot_xinan1、基线32cd09d。直接启动原expedition.tscn稳定复现scenes外部成员解析失败与scene.svg／passage.svg无资源加载器；Godot仍退出0，日志判错返回1。主工程缺少CampusPlaceScene全局类型缓存与两张SVG的导入记录。仅在该工程运行headless编辑器--import后，同一启动路径通过，未改玩法、类型字段或源素材；原生Compatibility三尺寸place_scenes_check.tscn -- --capture通过218／0，涵盖SVG通道、场景切换、小地图和返回当前地图导览。
 
 截图在目标工程.godot/art-workflow/place-scenes/，日志为导入／启动／地点GUI；不入Git。执行方式及日志判错见[合并后本地导入](../development/verification.md#检出合并后的本地导入)。根证书、旧Kenney直接读图及编辑器退出EditorSettings告警仍为已有边界，最终运行无Script／Parse／依赖编译错误；未以本轮重新宣称真人或发布验收。
+
+
+## 地图路线一致性
+
+2026-10-15，基线 `7146bb5` 加当前修复；先复现9项／6失败，随后核验编辑器数据、真实区域快照、节点表现和原保存／主线。统一入口：
+
+```powershell
+pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -EnginePath '<Godot console.exe>'
+pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -Capture -EnginePath '<Godot GUI.exe>'
+```
+
+| 检查 | 结果与覆盖 |
+| --- | --- |
+| `campus_map_sync_check.tscn` | 347／0；三区地标集合／坐标／标题、南门用途、背景复用与地点身份；已知旧模板全部站次的route／visit／battle／report／reward，构筑／当前访问／完成进度不变，JSON幂等、旧教学／终局、自定义流程不覆盖 |
+| `campus_flow_preview.tscn -- --flow-preview-check` | 120／0；原生资源、非法配置、五／12站边界、冻结快照与原控制器预览 |
+| `expedition.tscn -- --campaign-flow-check --order=012` | 149／0；真实教学、三区守卫及奖励／保存、三阶段终局与回基地 |
+| `campus_navigation_check.tscn -- --capture` | 555／0；1920×1080、2560×1440、1920×1200、1280×720，真实鼠标／键盘／缩放拖动、全部地标、当前／未来地点、会堂商业街共享一站、无残留南门文案，截图已查看并在聊天展示 |
+| 编辑器 `editor-core.test.mjs`／`server.test.mjs` | 隔离8877端口13／0；新增区域唯一映射、原文件读写、并发拒绝、备份和错误提示。服务只用于检查，结束后关闭 |
+
+源码布局 SHA-256 仍为 `826e443c1b89ffe32f3147a87e4f848d8dac1b5da48a88fcdfe6010c95f037ee`，未修改地标、边界、拐点、亮区或三态底图。功能与有限旧配置修正的边界见 [CORE-02](core-02.md)；不要求重置永久档，不代表新地点独立美术已制作、真人平衡或其他平台验收。截图仍在忽略的 `.godot/art-workflow/navigation-ui/`。

@@ -121,7 +121,8 @@ func _show_detail(index: int, animate := true) -> void:
 		detail_text.text = "后续地点 · 第 %d 站\n完成当前站点后，沿路线前往。" % [node.layer+1]
 	else:
 		detail_text.text = "已走过 · 第 %d 站" % [node.layer+1] if journey.data.visited.has(node.stop) else "未选择的分支 · 第 %d 站" % [node.layer+1]
-	if node.stop == "end_c": detail_text.text += "\n本次站点包含成电会堂与商业街。"
+	var components := Presentation.component_description(node.stop,board.layout,journey.data.flow)
+	if not components.is_empty(): detail_text.text += "\n"+components
 	shell.set_state(board.map_state)
 	if animate and last_preview != index: NavSkin.reveal(detail)
 	last_preview = index

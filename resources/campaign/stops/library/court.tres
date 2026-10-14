@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="CampusRouteStop" load_steps=4 format=3]
 [ext_resource type="Script" path="res://game/content/campus_route_stop.gd" id="s"]
-[ext_resource type="Resource" path="res://resources/campaign/places/pinxue_courtyard.tres" id="place"]
+[ext_resource type="Resource" path="res://resources/campaign/places/west_teaching.tres" id="place"]
 [ext_resource type="Resource" path="res://resources/content/encounters/patrol.tres" id="encounter"]
 [resource]
-resource_name = "品学楼庭院 · court"
+resource_name = "西侧教学区 · court"
 script = ExtResource("s")
 id = "court"
 place = ExtResource("place")
