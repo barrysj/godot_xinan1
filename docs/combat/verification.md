@@ -57,3 +57,9 @@
 | `scenes/battle_demo/presentation_check.tscn`、`scenes/expedition/screen_cleanup_check.tscn`，console | 表现时钟PASS／0失败，原战报→领奖→地点清理52／0 |
 
 界面可滚动显示较长程序和同批退场记录，旧报告缺失指标显示未记录；不推断胜负因果。没有改变原伤害／技能规则。仅本地 Windows 源码和桌面图形运行验收，不代表最新发布包、Web、手机或实体手柄通过。
+
+### 派遣分支与main兼容复验（2026-10-14）
+
+合并基线：派遣分支7db24ce + main 7146bb5。沿用本页PowerShell7测试命令，battle-report.test.ps1 -Capture：工程预检9/0、统计39/0、主线54/0、试玩55/0；battle-tuning.test.ps1 -Capture：修改器70/0、整备71/0、试玩结束36/0、关闭模式各2/0。新增真实复苏、二次倒下、累计存活与首次退场分离、道具护盾归属及JSON契约断言。广播素材朝向与presentation检查均PASS，保留绘制备用立绘和main素材朝向约定。
+
+party_progression_check.tscn -- --capture为111/0，两条路线实战覆盖2、3、4、4人队伍；详细报告人数与原CampaignCheckpoint恢复一致，实际两人战报截图.godot/party-report-analysis.png已展示。主线和试玩战报三桌面尺寸由上述脚本截图。未进行平台打包或真人平衡验收。

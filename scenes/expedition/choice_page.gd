@@ -210,7 +210,7 @@ func present(model: Dictionary) -> void:
 		if option.get("icon") != null:
 			var icon := TextureRect.new()
 			icon.texture = option.icon
-			icon.custom_minimum_size = Vector2(24,24)
+			icon.custom_minimum_size = Vector2.ONE*float(option.get("icon_size",24))
 			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -250,6 +250,8 @@ func present(model: Dictionary) -> void:
 	footer.add_child(saved)
 	var status := _label(model.get("status","选择后会保存进度。"),footer,"caption")
 	status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if not model.get("footer_action","").is_empty():
+		_button(model.get("footer_label","刷新"),model.footer_action,footer,model.get("footer_enabled",true),true)
 	show()
 	_layout()
 	right.modulate.a = 0.72

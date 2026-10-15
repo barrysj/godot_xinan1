@@ -140,14 +140,18 @@ func _deployment_changed() -> void:
 	_build_units()
 
 func _start() -> void:
-	if formation.count(-1) != 2:
-		_note("请先部署四位同学，再开始战斗。")
+	var deployed: Array = formation.filter(func(role): return role != -1)
+	if formation.size() != 6 or deployed.size() != _deployment_limit() or not deployed.all(func(role): return _deployment_roster().has(role) and deployed.count(role) == 1):
+		_note("请先部署 %d 位同学，再开始战斗。" % _deployment_limit())
 		return
 	pending_slot = -1
 	_build_units()
 	phase = "battle"
 	logs.clear()
 	_note("开战！自动移动索敌，进入射程后攻击。")
+
+func _deployment_limit() -> int:
+	return 4
 
 func _process(delta: float) -> void:
 	if paused: return

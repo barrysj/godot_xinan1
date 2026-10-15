@@ -1,0 +1,34 @@
+schema_version: 3
+object:
+  id: "preparation_items"
+  display_name: "出发准备与战斗道具"
+  type: "ui"
+  subtype: "item_icons"
+variants:
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/ui/preparation/asset_001"
+    files:
+      supply: "supply.png"
+      converter: "converter.png"
+      shield: "shield.png"
+      revive: "revive.png"
+      source_notes: "generation.md"
+    metadata:
+      source_tool: "image_gen"
+      quality_gate: "PASS_WITH_NOTES"
+      implementation_note: "用户 session 自主制作接入授权；透明原图，准备页和原战斗栏同源。无逐图人工批准。"
+integration:
+  root: "assets/art/ui/preparation/asset_001"
+  files:
+    supply: "supply.png"
+    converter: "converter.png"
+    shield: "shield.png"
+    revive: "revive.png"
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owner: "scenes/ui/preparation_art.gd"
+  evidence: "docs/progression/meta-01.md"

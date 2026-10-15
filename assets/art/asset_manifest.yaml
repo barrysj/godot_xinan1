@@ -1,5 +1,8 @@
 schema_version: 3
 objects:
+  preparation_items: "manifests/preparation_items.yaml"
+  dispatch_staff: "manifests/dispatch_staff.yaml"
+  dispatch_board: "manifests/dispatch_board.yaml"
   place_scenes: "manifests/place_scenes.yaml"
   event_choice_ui: "manifests/event_choice_ui.yaml"
   battlefield_redesign: "manifests/battlefield_redesign.yaml"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=9 format=3]
+[gd_resource type="Resource" load_steps=11 format=3]
 [ext_resource type="Script" path="res://game/content/code_rules.gd" id="rules"]
 [ext_resource type="Script" path="res://game/content/code_program_def.gd" id="program"]
 [ext_resource type="Script" path="res://game/content/code_item_def.gd" id="item"]
@@ -41,6 +41,22 @@ description = "将2块同色代码转成另一类型的2块。"
 effect = "convert"
 amount = 2
 starting_count = 1
+[sub_resource type="Resource" id="shield"]
+script = ExtResource("item")
+id = "shield"
+display_name = "应急护盾"
+description = "为一名存活队员提供120点护盾，持续8秒；实际吸收可产生权限代码。"
+effect = "shield"
+amount = 120
+starting_count = 0
+[sub_resource type="Resource" id="revive"]
+script = ExtResource("item")
+id = "revive"
+display_name = "复苏装置"
+description = "战斗进行中，令一名倒下的队员以50%生命归队；全队倒下后不可使用。"
+effect = "revive"
+amount = 50
+starting_count = 0
 [resource]
 script = ExtResource("rules")
 types = {
@@ -50,4 +66,4 @@ types = {
 "purple":{"name":"权限","symbol":"#","color":Color(0.76,0.53,1,1)}
 }
 programs = Array[Resource]([SubResource("disconnect"),SubResource("redirect"),SubResource("repair")])
-items = Array[Resource]([SubResource("supply"),SubResource("converter")])
+items = Array[Resource]([SubResource("supply"),SubResource("converter"),SubResource("shield"),SubResource("revive")])

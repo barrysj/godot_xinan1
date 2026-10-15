@@ -17,7 +17,7 @@ func full_build():
 		var owner: String = {"lens":"striker","backup":"inventor","training":"analyst"}.get(definition.id,"")
 		expect(build.apply_combat_reward(entry,owner),"complete legal growth fixture "+definition.id)
 	for role in build.roster: build.training[role] = 1 if role == 6 else 2
-	build.code_supplies = {"supply":3,"converter":3}
+	build.code_supplies = {"supply":3,"converter":3,"shield":0,"revive":0}
 	return build
 
 func _ready() -> void:
@@ -55,7 +55,7 @@ func _ready() -> void:
 	expect(not Run.Rewards.for_build(fresh).any(func(entry): return entry.operation == "item"),"legacy growth offers preserve old content")
 	var build = full_build()
 	expect(Run.Rewards.for_build(build).is_empty(),"complete growth and full stocks exhaust only legal content")
-	build.code_supplies = {"supply":2,"converter":2}
+	build.code_supplies = {"supply":2,"converter":2,"shield":0,"revive":0}
 	rng.seed = 19
 	var offers: Array = build.draw_rewards(rng,false)
 	expect(offers.size() == 2 and offers.map(func(entry): return entry.id).has("code_supply") and offers.map(func(entry): return entry.id).has("code_converter"),"depleted pool presents two distinct usable consumables")
@@ -90,7 +90,7 @@ func _ready() -> void:
 	game._begin_region("library","prologue")
 	game._guard()
 	game.run = full_build()
-	game.run.code_supplies = {"supply":2,"converter":2}
+	game.run.code_supplies = {"supply":2,"converter":2,"shield":0,"revive":0}
 	game.journey.data.erase("offers")
 	game._victory()
 	expect(game.journey.data.offers.size() == 2 and not game.journey.data.rewards_exhausted,"actual campaign displays only two consumable choices")
@@ -103,7 +103,7 @@ func _ready() -> void:
 	var original_stock: Dictionary = game.run.code_supplies.duplicate()
 	game._campaign_action("reward:0")
 	expect(game.run.code_supplies == original_stock,"same campaign reward cannot be taken twice")
-	game.run.code_supplies = {"supply":3,"converter":3}
+	game.run.code_supplies = {"supply":3,"converter":3,"shield":0,"revive":0}
 	game.journey.visit.data.reward_taken = false
 	game.journey.data.erase("offers")
 	game.journey.data.erase("rewards_exhausted")

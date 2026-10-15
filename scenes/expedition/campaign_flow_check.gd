@@ -12,8 +12,11 @@ func verify(ok: bool, label: String) -> void:
 		push_error("CAMPAIGN_FLOW: "+label)
 
 func fight(hub, choose: bool = true) -> void:
+	if hub._needs_recruit():
+		var candidate: String = "striker" if hub.run.roster.size() == 2 else "archer"
+		hub._campaign_action("join:"+candidate)
 	hub._guard()
-	hub.formation = [0,-1,3,2,1,-1]
+	if not hub.run.expedition_party: hub.formation = [0,-1,3,2,1,-1]
 	hub._build_units()
 	hub._start()
 	verify(hub.phase == "battle","battle starts")
@@ -25,7 +28,15 @@ func fight(hub, choose: bool = true) -> void:
 	for tick in range(8000):
 		if hub.screen == "report": break
 		hub._process(0.05)
+		if hub.screen == "battle" and hub.run.expedition_party:
+			var sim = hub.simulation
+			var core: String = hub.run.code_programs[0]
+			if sim.program_error(core).is_empty(): sim.cast_program(core)
+			elif sim.program_error("repair").is_empty() and sim.program_targets("repair").any(func(actor): return actor.hp < actor.max_hp*0.4): sim.cast_program("repair")
 	verify(hub.screen == "report" and hub.result_won,"simulation victory")
+	if not hub.result_won:
+		print("CAMPAIGN_FAILED region=",hub.journey.data.region," step=",hub.journey.data.step," roster=",hub.run.roster," seconds=",hub.elapsed)
+		return
 	var saved_report = JSON.stringify(hub.report)
 	hub._continue_run()
 	verify(hub.screen == "report" and JSON.stringify(hub.report) == saved_report,"report restored")
@@ -101,7 +112,9 @@ func run_checks(hub) -> void:
 	fight(hub)
 	hub._campaign_action("leave")
 	verify(hub.progress.campaign.prologue_done,"prologue settled")
-	hub._campaign_action("tutorial")
+	verify(hub.progress.execute_commission("departure","archivist"),"tutorial resource transaction")
+	hub.progress.acknowledge_dispatch_result(hub.progress.pending_dispatch_result.id)
+	hub._home()
 	verify(hub.progress.campaign.routes_acquired,"tutorial settled")
 	var saved_before_map = JSON.stringify(hub.progress.active_run)
 	var map_button: Button
@@ -143,6 +156,7 @@ func run_checks(hub) -> void:
 		map_selector._confirm_route()
 		verify(hub.campaign_panel.action_button("strategy:region_c:region:keep") != null,"original map leads to starting build selection")
 		hub._campaign_action("strategy:region_c:region:keep")
+		hub._campaign_action("depart")
 		verify(hub.campaign_mode == "region" and hub.journey.data.region == "region_c", "map selection enters existing campaign flow")
 		verify(hub.campaign_panel.visible, "campaign panel returns after selecting map route")
 		await hub.get_tree().process_frame
@@ -174,7 +188,7 @@ func run_checks(hub) -> void:
 				return
 			hub._campaign_action("leave")
 		verify(hub.progress.campaign.terminals.has(region),"terminal earned")
-	verify(hub.progress.campaign.characters.has("inventor"),"character permanent")
+	verify(not hub.progress.campaign.characters.has("inventor"),"story encounter cannot bypass dispatch unlock")
 	verify(hub.progress.dispatch_unlocked("library") and hub.progress.dispatch_unlocked("gym"),"terminal dispatch unlocks")
 	hub._begin_region("library","finale")
 	for stage in range(3):

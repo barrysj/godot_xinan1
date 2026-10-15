@@ -9,7 +9,7 @@
 
 ## 实现与契约
 
-`game/meta/campus_progress.gd`为profile v4；`game/run/campaign_checkpoint.gd`外壳schema1，CampaignJourney内部schema2；ShortRun构筑schema8，growth_rules独立为1或2。旧profile仍有迁移；旧Journey活动探索明确不兼容，需要已有重开入口，不自动删除永久档案。旧ShortRun构筑口径保留，版本2有训练／装备上限校验。
+`game/meta/campus_progress.gd`为profile v5；`game/run/campaign_checkpoint.gd`外壳schema1，CampaignJourney内部schema2；ShortRun构筑schema10，growth_rules独立为1或2。旧profile仍有迁移；旧Journey活动探索明确不兼容，需要已有重开入口，不自动删除永久档案。旧ShortRun构筑口径保留，版本2有训练／装备上限校验。
 
 Journey在新局冻结区域站次、地点显示／偏移、敌阵ID和强度，不冻结人物／敌人Resource或地图地标。半场恢复从战前重开，道具支付随原检查点恢复。临时伙伴阵位先验证再与区域收益共用提交；奖励分槽计数、道具库存、合法空池与多轮事件沿原格式校验。
 
@@ -18,3 +18,7 @@ Journey在新局冻结区域站次、地点显示／偏移、敌阵ID和强度�
 ## 验证与边界
 
 2026-10-09、`10fb33b`＋流程配置：真实JSON往返、坏定义／旧schema拒绝、保存后资源编辑不改活动局，专项120／0、GUI154／0；双队伍GUI151／0。2026-10-10原完整战役149／0。命令见[战役验证](../campaign/verification.md)。旧最高成长压力仍待验；未模拟断电、磁盘满或多进程并发。
+
+## 派遣与队伍扩展（2026-10-14，待统筹）
+
+Profile5保存永久委托与未读成果；旧数值升级退款并清空，迁移后保存不重复退款。ShortRun9记录两人出发标志和冻结人物池，schema10增加冻结派遣物品／buff与奖励刷新已用状态；旧构筑不会凭空得到这些效果。会合、刷新、派遣在保存失败时恢复原状态。功能专项与JSON往返证据见META-01、META-02和CORE-02；未新增平行存档系统，也未宣称断电与并发验证。

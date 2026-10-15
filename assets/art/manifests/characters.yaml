@@ -6,3 +6,4 @@ objects:
   inventor: "characters/inventor.yaml"
   healer: "characters/healer.yaml"
   archer_alt: "characters/archer_alt.yaml"
+  analyst: "characters/analyst.yaml"

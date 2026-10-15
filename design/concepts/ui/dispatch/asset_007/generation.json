@@ -1,0 +1,11 @@
+{
+  "tool": "image_gen",
+  "date": "2026-10-15",
+  "referenced_image_paths": [
+    "assets/art/ui/dispatch/asset_006/staff_slot.png"
+  ],
+  "transparent_background": true,
+  "output": "assets/art/ui/dispatch/asset_007/staff_slot.png",
+  "approval": "review",
+  "integration": "authorized_active"
+}

@@ -1,5 +1,6 @@
 extends Button
 const Burst = preload("res://scenes/battle_demo/hack_burst.gd")
+const ItemArt = preload("res://scenes/ui/preparation_art.gd")
 var action_id := ""
 var tint := Color("76e5cb")
 var available := false
@@ -39,13 +40,9 @@ func _draw() -> void:
 	if available:
 		draw_rect(Rect2(Vector2(2,2),size-Vector2(4,4)),Color(tint,0.15))
 		draw_rect(Rect2(Vector2(1,1),size-Vector2(2,2)),tint,false,2)
-	if action_id in ["supply","converter"]:
-		draw_rect(Rect2(center-Vector2(13,12),Vector2(26,24)),color,false,2)
-		draw_line(center-Vector2(8,0),center+Vector2(8,0),color,3)
-		if action_id == "supply": draw_line(center-Vector2(0,8),center+Vector2(0,8),color,3)
-		else:
-			draw_line(center+Vector2(8,0),center+Vector2(3,-5),color,2)
-			draw_line(center-Vector2(8,0),center-Vector2(3,-5),color,2)
+	if ItemArt.ICONS.has(action_id):
+		var extent := minf(size.x-8,size.y-4)
+		draw_texture_rect(ItemArt.ICONS[action_id],Rect2(center-Vector2.ONE*extent/2,Vector2.ONE*extent),false,Color.WHITE if available else Color(0.6,0.6,0.6))
 	else:
 		draw_set_transform(Vector2(size.x-30,center.y) if program_card else center+Vector2(22,0),0,Vector2.ONE*0.5)
 		Burst.glyph(self,Vector2.ZERO,color,action_id,0.0)

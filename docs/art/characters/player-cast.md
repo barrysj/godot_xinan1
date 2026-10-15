@@ -15,6 +15,7 @@
 | 守护者 | `concept_001`（approved）、`asset_002`（approved） | [Manifest](../../../assets/art/manifests/characters/guard.yaml) |
 | 应援者 | `healer_split_keyboard_long_sleeve_concept_006`（approved）、`asset_002`（approved） | [Manifest](../../../assets/art/manifests/characters/healer.yaml) |
 | 远射手 | `archer_pistol_short_sleeve_concept_006`（approved）、`asset_002`（approved） | [Manifest](../../../assets/art/manifests/characters/archer.yaml) |
+| 分析员 | "asset_001"（review，session自主授权接入；单张立绘配原程序演出） | [Manifest](../../../assets/art/manifests/characters/analyst.yaml) |
 | 远射手替换外观 | `asset_001`（approved） | [Manifest](../../../assets/art/manifests/characters/archer_alt.yaml) |
 
 版本明细、原始来源和实际接入路径由 Manifest 与保留源包维护，不在此复制逐文件清单。当前选定版本可能仍为 review；目录移动与文档清理不改变批准状态。验证入口见[美术验证](../verification.md)。

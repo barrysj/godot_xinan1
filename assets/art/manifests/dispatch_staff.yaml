@@ -1,0 +1,32 @@
+schema_version: 3
+object:
+  id: "dispatch_staff"
+  display_name: "派遣后勤人员"
+  type: "ui"
+  subtype: "portrait"
+variants:
+  asset_002:
+    stage: "asset"
+    version: "002"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/ui/dispatch/asset_002"
+    files:
+      archivist: "archivist.png"
+      liaison: "liaison.png"
+      technician: "technician.png"
+      source_notes: "generation.md"
+    metadata:
+      source_tool: "image_gen"
+      quality_gate: "PASS_WITH_NOTES"
+      implementation_note: "session自主美术授权。七头身源图仅用于UI立绘和头像；不作为四头身场景角色。"
+integration:
+  root: "assets/art/ui/dispatch/asset_002"
+  files:
+    archivist: "archivist.png"
+    liaison: "liaison.png"
+    technician: "technician.png"
+  status: "authorized_active"
+  active_variant: "asset_002"
+  owner: "scenes/ui/dispatch_art.gd"
+  evidence: "docs/art/ui/dispatch-board.md"

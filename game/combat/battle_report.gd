@@ -4,6 +4,9 @@ const Codes = preload("res://game/combat/code_catalog.gd")
 const METRICS := ["damage", "healing", "received", "shield_given", "shield_gain", "absorbed", "attacks", "skills"]
 var counters := {}
 var deaths := {}
+var down_since := {}
+var downtime := {}
+var item_shield := 0.0
 var first_core := -1.0
 var program_damage := 0.0
 var program_healing := 0.0
@@ -13,6 +16,9 @@ var converted := {}
 func reset(roster: Array[Dictionary]) -> void:
 	counters.clear()
 	deaths.clear()
+	down_since.clear()
+	downtime.clear()
+	item_shield = 0.0
 	converted.clear()
 	first_core = -1.0
 	program_damage = 0
@@ -26,6 +32,9 @@ func reset(roster: Array[Dictionary]) -> void:
 func observe(event: Dictionary, program_effect: bool = false) -> void:
 	var actor: Dictionary = counters.get(event.actor_id, {})
 	var target: Dictionary = counters.get(event.target_id, {})
+	if event.kind == "revived" and down_since.has(event.target_id):
+		downtime[event.target_id] = downtime.get(event.target_id,0.0) + event.time - down_since[event.target_id]
+		down_since.erase(event.target_id)
 	if event.kind == "action_released" and not actor.is_empty():
 		var key := "skills" if event.get("action_kind", "attack") == "cast" else "attacks"
 		actor[key] += 1
@@ -39,13 +48,16 @@ func observe(event: Dictionary, program_effect: bool = false) -> void:
 				target.absorbed += maxf(0, event.get("blocked", 0.0))
 				if program_effect: program_damage += actual
 				elif not actor.is_empty(): actor.damage += actual
-				if event.get("hp", 1.0) <= 0 and not deaths.has(event.target_id): deaths[event.target_id] = event.time
+				if event.get("hp",1.0) <= 0:
+					if not deaths.has(event.target_id): deaths[event.target_id] = event.time
+					if not down_since.has(event.target_id): down_since[event.target_id] = event.time
 			"heal":
 				if program_effect: program_healing += actual
 				elif not actor.is_empty(): actor.healing += actual
 			"shield":
 				target.shield_gain += actual
-				if program_effect: program_shield += actual
+				if event.get("item_effect",false): item_shield += actual
+				elif program_effect: program_shield += actual
 				elif not actor.is_empty(): actor.shield_given += actual
 
 func snapshot(simulation, skipped: bool = false) -> Dictionary:
@@ -54,12 +66,12 @@ func snapshot(simulation, skipped: bool = false) -> Dictionary:
 		var row: Dictionary = counters[unit.id].duplicate()
 		row.merge({"id":unit.id, "name":unit.get("name", "单位"), "content_id":unit.get("content_id", ""),
 			"side":unit.side, "slot":unit.slot, "hp":maxf(0,unit.hp), "max_hp":unit.max_hp,
-			"alive_time":deaths.get(unit.id, simulation.elapsed), "defeated":deaths.has(unit.id)})
+			"alive_time":maxf(0.0,down_since.get(unit.id,simulation.elapsed)-downtime.get(unit.id,0.0)), "defeated":unit.hp <= 0, "first_defeat":deaths.get(unit.id,-1.0)})
 		rows.append(row)
 	var consumed: Dictionary = simulation.spent.duplicate()
 	for kind in converted: consumed[kind] = consumed.get(kind, 0) + converted[kind]
 	return {"version":1, "duration":simulation.elapsed, "rows":rows, "first_core":first_core,
-		"program_damage":program_damage, "program_healing":program_healing, "program_shield":program_shield, "skipped":skipped,
+		"item_shield":item_shield, "program_damage":program_damage, "program_healing":program_healing, "program_shield":program_shield, "skipped":skipped,
 		"program_uses":simulation.program_uses.duplicate(), "generated":simulation.generated.duplicate(),
 		"spent":consumed, "overflow":simulation.overflow.duplicate(), "remaining":simulation.blocks.duplicate()}
 
@@ -74,6 +86,7 @@ static func valid_snapshot(value) -> bool:
 	var duration: float = value.duration
 	if not numeric(value.get("first_core"),-1,duration): return false
 	if not value.get("skipped") is bool: return false
+	if not numeric(value.get("item_shield",0)): return false
 	for key in ["program_damage", "program_healing", "program_shield"]:
 		if not numeric(value.get(key)): return false
 	for key in ["generated", "spent", "overflow", "remaining", "program_uses"]:
@@ -100,5 +113,6 @@ static func valid_snapshot(value) -> bool:
 		for metric in ["attacks", "skills"]:
 			if row[metric] != int(row[metric]): return false
 		if not numeric(row.get("max_hp"),1) or not numeric(row.get("hp"),0,row.max_hp): return false
+		if not numeric(row.get("first_defeat",-1),-1,duration): return false
 		if not numeric(row.get("alive_time"),0,duration) or not row.get("defeated") is bool: return false
 	return true

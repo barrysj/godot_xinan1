@@ -6,6 +6,10 @@ var journey = Journey.new()
 var campaign_mode = ""
 var campaign_panel: PanelContainer
 var campaign_enabled = false
+var dispatch_board: Control
+var departure_request: Dictionary = {}
+var departure_items: Array = ["supply","converter"]
+var departure_party: Array = []
 var detail_return = "visit"
 var reset_pending = false
 var debug_enabled = false
@@ -179,6 +183,7 @@ func _home() -> void:
 	if debug_enabled: campaign_panel.text("DEBUG · 当前使用独立调试存档",18)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(dispatch_board): return
 	if debug_battle_preview and screen == "report":
 		if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.keycode == KEY_F8):
 			if event.is_action_pressed("ui_cancel"): battle_preview_results.quit_button.grab_focus()
@@ -238,9 +243,15 @@ func _new_run() -> void:
 		return
 	_home()
 
-func _begin_region(region: String, mode: String = "region", starting_strategy: String = "") -> void:
+func _begin_region(region: String, mode: String = "region", starting_strategy: String = "", supplies: Variant = null, starters: Variant = null) -> void:
 	if progress.load_blocked or (mode == "region" and not progress.campaign.routes_acquired): return
 	if mode == "finale" and (progress.campaign.terminals.size() != 3 or progress.campaign.restored): return
+	if mode == "region" and starting_strategy.is_empty(): starting_strategy = "protect"
+	var selected_items: Array = ["supply","converter"] if supplies == null else supplies
+	if mode != "prologue" and not progress.Commissions.preparation_reason(progress.commission_unlocks,selected_items).is_empty(): return
+	var starting_ids: Array = _starting_pair(starting_strategy) if starters == null else starters
+	var eligible := _eligible_characters()
+	if mode == "region" and (starting_ids.size() != 2 or starting_ids[0] == starting_ids[1] or not starting_ids.all(func(id): return eligible.has(id))): return
 	var next_journey = Journey.new()
 	if not next_journey.begin(region,progress.campaign.terminals.size(),null,mode):
 		campaign_panel.text("区域配置无效，请先在 Godot 校验并保存。")
@@ -248,10 +259,14 @@ func _begin_region(region: String, mode: String = "region", starting_strategy: S
 	campaign_mode = mode
 	journey = next_journey
 	run = RunModel.new()
-	run.permanent_hp = progress.level("fitness") * 20
-	if mode != "prologue" and progress.supply_unlocked and chosen_supply:
-		run.badge_owned = true
-		run.badge_wearer = 2
+	run.permanent_hp = 0
+	if mode != "prologue":
+		for id in progress.commission_unlocks:
+			var effect: Dictionary = progress.Commissions.find(id)
+			if effect.kind == "item" and not run.dispatch_items.has(effect.value): run.dispatch_items.append(effect.value)
+			if effect.kind == "buff" and not run.dispatch_buffs.has(effect.value): run.dispatch_buffs.append(effect.value)
+		for key in run.code_supplies: run.code_supplies[key] = 0
+		for id in selected_items: run.code_supplies[id] += 1
 	if mode != "prologue":
 		for id in progress.campaign.characters:
 			var role = Content.role_index(id)
@@ -265,6 +280,17 @@ func _begin_region(region: String, mode: String = "region", starting_strategy: S
 	elif starting_strategy == "keep":
 		var has_scanner: bool = formation.has(Content.role_index("analyst"))
 		run.code_programs = ["disconnect","repair"] if has_scanner else ["redirect","repair"]
+	if mode == "region":
+		run.expedition_party = true
+		run.eligible_characters = eligible.duplicate()
+		run.roster.clear()
+		for id in starting_ids: run.roster.append(Content.role_index(id))
+		formation = [-1,-1,-1,-1,-1,-1]
+		var starter_slots: Array = [3,0] if starting_ids[0] in ["analyst","archer","healer","inventor"] else [0,3]
+		for i in run.roster.size(): formation[starter_slots[i]] = run.roster[i]
+		for gear in run.inventory:
+			if not run.roster.has(run.inventory[gear]): run.inventory[gear] = -1
+		if starting_strategy == "keep": run.code_programs = ["disconnect","repair"] if starting_ids.has("analyst") else ["redirect","repair"]
 	equipment = run.shoe_wearer
 	phase = "prepare"
 	if mode == "prologue": journey.enter(0,progress.campaign.memories)
@@ -329,6 +355,9 @@ func _continue_run() -> void:
 func _show_journey() -> void:
 	screen = "campaign"
 	campaign_panel.show()
+	if _needs_recruit():
+		_show_recruitment()
+		return
 	if campaign_mode == "finale":
 		if progress.campaign.restored:
 			if progress.save_checkpoint({}): campaign_mode = ""
@@ -352,7 +381,7 @@ func _show_journey() -> void:
 		campaign_panel.hotspot_event(preload("res://game/run/hotspot_event.gd").page(state,progress.campaign.story_flags,context),state,context)
 	elif journey.data.screen == "reward":
 		campaign_panel.location(journey,campaign_mode == "prologue")
-		campaign_panel.rewards(journey.data.offers)
+		campaign_panel.rewards(journey.data.offers,run)
 	elif journey.data.screen == "reward_owner":
 		campaign_panel.location(journey,campaign_mode == "prologue")
 		campaign_panel.reward_owner(journey.data.pending_offer,run.roster,run)
@@ -362,6 +391,9 @@ func _show_journey() -> void:
 
 func _guard() -> void:
 	if journey.visit.data.is_empty() or journey.visit.data.guard_won: return
+	if _needs_recruit():
+		_show_recruitment()
+		return
 	var place: String = journey.visit.data.place
 	var boss: bool = (journey.data.step == journey.data.map.size()-1 and campaign_mode == "region") or campaign_mode == "finale"
 	var configured: Dictionary = journey.stop()
@@ -369,6 +401,9 @@ func _guard() -> void:
 	run.node = {"id":place,"name":journey.title(place),"kind":"boss" if boss else "battle",
 		"encounter":0 if encounter == "encounter_patrol" else 1,"encounter_id":encounter,
 		"power":float(configured.power) if campaign_mode == "region" else 1.0 if boss else 0.62}
+	if run.expedition_party:
+		# Opening pressure follows the guaranteed team size, not metagame stats.
+		run.node.power *= [0.52,0.78,1.0,1.0][mini(3,int(journey.data.step))]
 	if campaign_mode == "finale":
 		run.node.name = "核心节点 %d · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
 		run.node.power = 0.82 + 0.08 * journey.data.finale_phase
@@ -431,7 +466,7 @@ func _settle_campaign() -> void:
 			campaign_panel.show()
 			var detail := "修复资源 +7。"+("发明家已永久加入，下一次出发可在队伍中选择。" if not recruits.is_empty() else "")
 			var count: int = progress.campaign.terminals.size()
-			if first_clear: detail += "\n\n"+{1:"图书馆派遣现已开放。下一步：寻找第二台记忆终端。",2:"体育馆派遣现已开放。下一步：取回最后一台记忆终端。",3:"三台终端已齐备。下一步：返回基地，接入终端，修复核心。"}[count]
+			if first_clear: detail += "\n\n"+{1:"可以回基地用修复资源完成派遣。下一步：寻找第二台记忆终端。",2:"可以回基地解锁新的准备物品或同伴资格。下一步：取回最后一台记忆终端。",3:"三台终端已齐备。下一步：返回基地，接入终端，修复核心。"}[count]
 			else: detail += "\n\n该区域的记忆终端已经回收，本次不会重复获得终端。"
 			campaign_panel.core_recovery(journey.data.region,first_clear,progress.campaign.terminals,detail)
 	else:
@@ -455,6 +490,47 @@ func _campaign_action(id: String) -> void:
 	if id == "hub_close": return
 	if _profile_action(id): return
 	if progress.load_blocked: return
+	if id.begins_with("starter:"):
+		if screen != "departure" or departure_request.is_empty() or departure_request.mode != "region": return
+		var character_id := id.trim_prefix("starter:")
+		if not _eligible_characters().has(character_id): return
+		if departure_party.has(character_id): departure_party.erase(character_id)
+		elif departure_party.size() < 2: departure_party.append(character_id)
+		_show_departure()
+		return
+	if id.begins_with("join:"):
+		if screen != "recruit" or not _needs_recruit(): return
+		var character_id := id.trim_prefix("join:")
+		var role := Content.role_index(character_id)
+		if not run.eligible_characters.has(character_id) or run.roster.has(role): return
+		run.roster.append(role)
+		var preferred_slots: Array = [0,1,2,3,4,5] if character_id in ["guard","striker"] else [3,4,5,0,1,2]
+		for slot in preferred_slots:
+			if formation[slot] == -1:
+				formation[slot] = role
+				break
+		if _save_campaign(): _show_journey()
+		return
+	if id.begins_with("prep:"):
+		if departure_request.is_empty(): return
+		var item_id := id.trim_prefix("prep:")
+		var next := departure_items.duplicate()
+		next.append(item_id)
+		if progress.Commissions.preparation_reason(progress.commission_unlocks,next).is_empty(): departure_items = next
+		_show_departure()
+		return
+	if id.begins_with("unpack:"):
+		if departure_request.is_empty(): return
+		departure_items.erase(id.trim_prefix("unpack:"))
+		_show_departure()
+		return
+	if id == "depart":
+		if departure_request.is_empty(): return
+		var request := departure_request.duplicate()
+		if request.mode == "region" and departure_party.size() != 2: return
+		_begin_region(request.region,request.mode,request.strategy,departure_items,departure_party if request.mode == "region" else null)
+		if last_save_ok: departure_request.clear()
+		return
 	if id == "choice_menu":
 		_open_pause()
 		return
@@ -479,7 +555,12 @@ func _campaign_action(id: String) -> void:
 		var parts = id.split(":")
 		if parts.size() != 4 or parts[3] not in ["analysis","protect","keep"]: return
 		if parts[1] not in Journey.Regions.IDS or parts[2] not in ["region","prologue","finale"] or (parts[2] == "prologue" and parts[3] == "keep"): return
-		_begin_region(parts[1],parts[2],parts[3])
+		if parts[2] == "prologue": _begin_region(parts[1],parts[2],parts[3])
+		else:
+			departure_request = {"region":parts[1],"mode":parts[2],"strategy":parts[3]}
+			departure_items = ["supply","converter"]
+			departure_party = _starting_pair(parts[3])
+			_show_departure()
 	elif id == "formation:protect":
 		if screen != "campaign" or journey.data.get("screen") != "visit" or not run.code_programs.has("redirect"): return
 		var suggested: Array = run.recommended_formation("protect")
@@ -488,8 +569,7 @@ func _campaign_action(id: String) -> void:
 		run.formation = suggested.duplicate()
 		if _save_campaign(): _show_journey()
 	elif id == "tutorial":
-		if progress.complete_tutorial_dispatch(): _home()
-		else: campaign_panel.text(progress.error_message)
+		_open_dispatch_board()
 	elif id == "supply":
 		chosen_supply = not chosen_supply
 		_home()
@@ -521,6 +601,15 @@ func _campaign_action(id: String) -> void:
 			journey.data.erase("last_reward")
 			if _save_campaign(): _show_journey()
 	elif id.begins_with("spot:"): _hotspot(id.trim_prefix("spot:"))
+	elif id == "reward_refresh":
+		if screen != "campaign" or journey.data.get("screen") != "reward" or not journey.visit.data.guard_won or journey.visit.data.reward_taken: return
+		var rng := RandomNumberGenerator.new()
+		rng.seed = (journey.data.id+journey.visit.data.place+"dispatch-refresh").hash()
+		var refreshed: Array = run.refresh_rewards(rng,journey.data.offers)
+		if refreshed.is_empty(): return
+		journey.data.offers = refreshed
+		journey.data.rewards_exhausted = false
+		if _save_campaign(): _show_journey()
 	elif id == "reward_continue":
 		if journey.data.screen != "reward" or not journey.visit.data.guard_won or journey.visit.data.reward_taken or not journey.data.get("rewards_exhausted",false) or not journey.data.get("offers",[]).is_empty(): return
 		journey.visit.data.reward_taken = true
@@ -591,8 +680,7 @@ func _campaign_action(id: String) -> void:
 		campaign_panel.clear("序章 · 2026", "管理员与当前 AI 在虚拟校园原型中构建毕业生人格。大家知情参与修复；前代同源 AI 却把新开发当作 Bug 回滚。三台记忆终端将帮助我们重新解释它的任务。")
 		campaign_panel.button("返回档案","memories")
 	elif id in ["growth","dispatch"]:
-		campaign_panel.hide()
-		screen = id
+		_open_dispatch_board()
 	elif id == "menu": _request_exit("menu")
 	elif id == "map_region": _open_map_region()
 	elif id == "route_preview":
@@ -603,6 +691,66 @@ func _campaign_action(id: String) -> void:
 		preview.closed.connect(func():
 			preview.queue_free()
 			_home())
+
+func _open_dispatch_board() -> void:
+	if is_instance_valid(dispatch_board): return
+	campaign_panel.hide()
+	screen = "dispatch_board"
+	dispatch_board = preload("res://scenes/expedition/dispatch_board.gd").new()
+	dispatch_board.progress = progress
+	add_child(dispatch_board)
+	dispatch_board.closed.connect(func():
+		dispatch_board.queue_free()
+		dispatch_board = null
+		_home())
+
+func _show_departure() -> void:
+	screen = "departure"
+	campaign_panel.show()
+	var focus := get_viewport().gui_get_focus_owner()
+	var focus_id: String = focus.get_meta("action_id","") if is_instance_valid(focus) else ""
+	var used := 0
+	var items: Array = []
+	for item in progress.Commissions.PREPARATIONS:
+		used += departure_items.count(item.id)*int(item.cost)
+		var next := departure_items.duplicate()
+		next.append(item.id)
+		var reason: String = progress.Commissions.preparation_reason(progress.commission_unlocks,next)
+		items.append({"id":item.id,"name":item.name,"cost":item.cost,"unlocked":progress.Commissions.has_preparation(progress.commission_unlocks,item),"enabled":reason.is_empty(),"reason":reason,"description":RunModel.CodeCatalog.item(item.id).description})
+	campaign_panel.preparation({"select_party":departure_request.mode == "region","characters":_eligible_characters(),"selected_party":departure_party,
+		"selected_items":departure_items,"remaining":progress.Commissions.PREPARATION_POINTS-used,"points":progress.Commissions.PREPARATION_POINTS,"slots":progress.Commissions.PREPARATION_SLOTS,"items":items,"focus_id":focus_id,
+		"can_depart":progress.Commissions.preparation_reason(progress.commission_unlocks,departure_items).is_empty() and (departure_request.mode != "region" or departure_party.size() == 2)})
+
+func _starting_pair(strategy: String) -> Array:
+	if strategy == "analysis": return ["analyst","striker"]
+	if strategy == "keep":
+		var previous: Array = progress.campaign.formation.filter(func(id): return not id.is_empty() and _eligible_characters().has(id))
+		if previous.size() >= 2: return previous.slice(0,2)
+	return ["guard","healer"]
+
+func _eligible_characters() -> Array:
+	var eligible: Array = progress.Campaign.BASE_CHARACTERS.duplicate()
+	for id in progress.campaign.characters:
+		if Content.role_index(id) >= 0 and not eligible.has(id): eligible.append(id)
+	return eligible
+
+func _needs_recruit() -> bool:
+	return campaign_mode == "region" and run.expedition_party and not journey.visit.data.is_empty() and not journey.visit.data.guard_won and run.roster.size() < mini(4,int(journey.data.step)+2)
+
+func _show_recruitment() -> void:
+	screen = "recruit"
+	campaign_panel.show()
+	campaign_panel.location(journey,false)
+	var options: Array = []
+	for id in run.eligible_characters:
+		var role := Content.role_index(id)
+		if run.roster.has(role): continue
+		var person = Content.character(role)
+		options.append({"id":"join:"+id,"title":person.display_name,"label":"邀请","icon":person.portrait,"icon_size":58,
+			"description":person.description,"hint":"加入本次探索 · 可在战前调整站位"})
+	campaign_panel.choice_page.present({"tag":"途中事件 · 同伴会合","title":"选择一位同行的同学","description":"在%s遇到了同伴。邀请一人后继续前进，队伍将扩充到%d人。" % [journey.title(journey.visit.data.place),run.roster.size()+1],
+		"picture":"res://assets/art/ui/dispatch/asset_001/campus.png","caption":journey.title(journey.visit.data.place)+" · 集合地点","body_label":"会合记录","options_label":"可邀请的同伴",
+		"compact":true,"options":options,"status":"当前队伍 %d / 4 · 选择后自动保存" % run.roster.size(),"close_id":"base","close_label":"返回基地"})
 
 func _open_map_region() -> void:
 	if not progress.campaign.routes_acquired: return
@@ -629,6 +777,7 @@ func _request_campaign_start(region: String, mode: String) -> void:
 	else: campaign_panel.starting_strategy(region,mode,mode != "prologue")
 
 func _ensure_starting_partner() -> void:
+	if run.expedition_party: return
 	if campaign_mode != "region" or journey.data.step != 0 or journey.visit.data.is_empty() or not run.code_programs.has("redirect") or run.roster.has(Content.role_index("inventor")): return
 	if not journey.visit.data.hotspots.any(func(spot): return spot.kind == "person"):
 		journey.visit.data.hotspots.append({"id":"person","kind":"person","character":"inventor"})
@@ -643,7 +792,7 @@ func _hotspot(id: String) -> void:
 		if spot.kind == "memory" and not progress.record_memory(id):
 			campaign_panel.text(progress.error_message)
 			return
-		if spot.kind == "person":
+		if spot.kind == "person" and not run.expedition_party:
 			if not run.roster.has(4): run.roster.append(4)
 			if not progress.campaign.characters.has("inventor") and not journey.data.temporary.has("inventor"):
 				journey.data.temporary.append("inventor")
@@ -664,6 +813,7 @@ func _event_context() -> Dictionary:
 		origin_title = presentation.title(origin.get_slice(":",0),origin.get_slice(":",1))
 	return {"place":journey.data.region+":"+journey.visit.data.place,
 		"location_title":journey.title(journey.visit.data.place),"origin":origin_title,
+		"expedition_party":run.expedition_party,"can_form_protect":not run.recommended_formation("protect").is_empty(),
 		"programs":run.code_programs,"memory":_memory_text(journey.data.get("event_spot",""))+"\n\n已保存到回忆档案。"}
 
 func _event_choice(id: String) -> void:

@@ -212,13 +212,15 @@ func _resources() -> void:
 	var death_time := INF
 	var death_names: Array[String] = []
 	for row in snapshot.rows:
-		if not row.defeated: continue
-		if row.alive_time < death_time:
-			death_time = row.alive_time
+		var first_defeat: float = row.get("first_defeat",row.alive_time if row.defeated else -1.0)
+		if first_defeat < 0: continue
+		if first_defeat < death_time:
+			death_time = first_defeat
 			death_names.clear()
-		if is_equal_approx(row.alive_time,death_time): death_names.append(("我方·" if row.side == 0 else "敌方·")+row.name+"(%d)" % [row.slot+1])
+		if is_equal_approx(first_defeat,death_time): death_names.append(("我方·" if row.side == 0 else "敌方·")+row.name+"(%d)" % [row.slot+1])
 	var death := "无退场" if death_names.is_empty() else "%.1f 秒 %s" % [death_time,"、".join(death_names)]
 	milestones.text = "程序施放 %d 次\n首次核心 %s\n首个退场 %s\n%s\n程序伤害 %.0f · 治疗 %.0f\n程序供盾 %.0f" % [uses,first,death," / ".join(programs) if uses else "本场未施放程序",snapshot.program_damage,snapshot.program_healing,snapshot.program_shield]
+	if snapshot.has("item_shield"): milestones.text += "\n道具供盾 %.0f" % snapshot.item_shield
 	resource_grid.tooltip_text = "生成包含溢出；消耗包含程序支付和道具转换。到达上限后未入库的代码计入溢出。"
 
 func _grid_label(label: Label) -> void:

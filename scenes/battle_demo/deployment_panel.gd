@@ -174,7 +174,7 @@ func can_place(slot: int) -> bool:
 	if mode == Mode.SWAP:
 		return game.formation.has(selected_role) and game.formation[slot] != selected_role
 	if game.formation[slot] >= 0: return not game.formation.has(selected_role)
-	return game.formation.has(selected_role) or 6 - game.formation.count(-1) < LIMIT
+	return game.formation.has(selected_role) or 6 - game.formation.count(-1) < game._deployment_limit()
 
 func slot_at(point: Vector2) -> int:
 	for slot in range(6):
@@ -232,7 +232,7 @@ func commit() -> void:
 	game.formation[candidate_slot] = selected_role
 	game._deployment_changed()
 	cancel()
-	game._note("已部署 %d / 4 位同学。" % (6 - game.formation.count(-1)))
+	game._note("已部署 %d / %d 位同学。" % [6 - game.formation.count(-1),game._deployment_limit()])
 	refresh()
 
 func withdraw() -> void:

@@ -22,6 +22,15 @@ static func stock() -> Dictionary:
 		if entry is ItemDefinition: result[entry.id] = entry.starting_count
 	return result
 
+static func migrate_stock(value: Variant) -> Dictionary:
+	if not value is Dictionary: return {}
+	var result: Dictionary = value.duplicate()
+	# Old two-item saves gain empty slots, never free new consumables.
+	if result.size() == 2 and result.has("supply") and result.has("converter"):
+		result.shield = 0
+		result.revive = 0
+	return result if valid_stock(result) else {}
+
 static func cost_text(cost: Dictionary) -> String:
 	var parts: Array[String] = []
 	for id in cost:
@@ -71,12 +80,13 @@ static func validate(rules = RULES) -> Array[String]:
 			if not rules.types.has(kind) or not (amount is int or amount is float) or not is_finite(amount) or amount != int(amount) or amount < 1 or amount > rules.cache_cap: errors.append("技能配方非法")
 	if not valid_loadout(rules.default_loadout, rules): errors.append("默认须携带两种不同技能")
 	ids.clear()
-	if rules.items.size() != 2: errors.append("当前道具栏要求两个道具槽")
+	if rules.items.is_empty(): errors.append("道具列表不能为空")
 	for entry in rules.items:
 		if not entry is ItemDefinition: errors.append("空或错误类型的道具"); continue
 		if entry.id.is_empty() or ids.has(entry.id) or entry.display_name.is_empty(): errors.append("道具ID或名称非法")
 		ids[entry.id] = true
-		if not entry.effect in ["generate", "convert"] or entry.amount <= 0 or entry.amount > rules.cache_cap or entry.starting_count < 0 or entry.starting_count > STOCK_CAP: errors.append("道具配置非法")
+		var maximum: int = 144 if entry.effect == "shield" else 100 if entry.effect == "revive" else rules.cache_cap
+		if not entry.effect in ["generate", "convert", "shield", "revive"] or entry.amount <= 0 or entry.amount > maximum or entry.starting_count < 0 or entry.starting_count > STOCK_CAP: errors.append("道具配置非法")
 	return errors
 
 static func migrate_loadout(value) -> Array:

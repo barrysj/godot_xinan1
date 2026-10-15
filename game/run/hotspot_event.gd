@@ -77,11 +77,14 @@ static func page(state: Dictionary, flags: Dictionary, context: Dictionary) -> D
 	var detail: String = context.get("memory","") if line_id == "$memory" else definitions.lines[line_id]
 	var translated := String(TranslationServer.translate(line_id))
 	if translated != line_id: detail = translated
+	if line_id == "person.intro" and context.get("expedition_party",false):
+		detail = "发明家：我正在帮忙整理校园里的线索。\n\n在基地完成联络派遣后，我会加入出发与途中会合的候选名单。这次交谈只交流线索，不会改变队伍。"
 	detail = detail.replace("{origin}",context.get("origin","之前的地点"))
 	var options: Array = []
 	for source in node.choices:
 		var choice: Dictionary = source.duplicate(true)
 		var blocked := reason(choice,flags,context.get("programs",[]))
+		if choice.get("command") == "formation:protect" and not context.get("can_form_protect",true): blocked = "当前队员尚不齐备；可在整备中自行调整站位。"
 		choice.enabled = blocked.is_empty()
 		choice.hint = blocked
 		options.append(choice)
@@ -93,6 +96,7 @@ static func choose(state: Dictionary, id: String, flags: Dictionary, context: Di
 	for choice in node.choices:
 		if choice.id != id: continue
 		if not reason(choice,flags,context.get("programs",[])).is_empty(): return {}
+		if choice.get("command") == "formation:protect" and not context.get("can_form_protect",true): return {}
 		var next_state: Dictionary = state.duplicate(true)
 		var next_flags: Dictionary = flags.duplicate(true)
 		next_state.history.append(state.node)

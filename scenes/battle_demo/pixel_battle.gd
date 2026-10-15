@@ -467,18 +467,20 @@ func _draw_fallback_pawn(canvas: CanvasItem, u: Dictionary, at: Vector2, factor:
 	var alive: bool = u.hp > 0
 	var animated_texture: Texture2D = u.animation.texture()
 	var pose: Dictionary = u.presentation.pose(u, animated_texture != null)
+	var painted_texture: Texture2D = animated_texture
+	if painted_texture == null and u.battle_animation != null: painted_texture = u.battle_animation.fallback_texture
 	var p: Vector2 = at + pose.offset * factor / 4.0
 	var canvas_origin: Vector2 = origin if canvas == self else origin - (canvas as Node2D).position
 	var world = Transform2D(0, Vector2.ONE * scale_factor, 0, canvas_origin)
 	var stretch: Vector2 = pose.stretch
-	if animated_texture != null and u.battle_animation.should_flip(u.presentation.facing_right):
+	if painted_texture != null and u.battle_animation.should_flip(u.presentation.facing_right):
 		stretch.x *= -1
 	var local = Transform2D(pose.rotation, stretch, 0, p)
 	canvas.draw_set_transform_matrix(world * local)
-	if animated_texture != null:
+	if painted_texture != null:
 		var dimensions: Vector2 = u.battle_animation.display_size * factor / 4.0
 		var rect = Rect2(-dimensions * u.battle_animation.anchor, dimensions)
-		canvas.draw_texture_rect(animated_texture, rect, false, pose.tint)
+		canvas.draw_texture_rect(painted_texture, rect, false, pose.tint)
 	else:
 		canvas.draw_texture_rect(u.portrait, Rect2(-Vector2(8, 14) * factor, Vector2(16, 16) * factor), false, pose.tint)
 	canvas.draw_set_transform_matrix(world)
@@ -624,7 +626,7 @@ func _draw() -> void:
 	_text(Vector2(238, 66), "悬停角色简览，点击详情与装备。", Color("b2baa0"), 12)
 	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else ("战斗收尾" if simulation.closing else "自走棋战斗"))))
 	_center(Vector2(790, 53), state_text, GOLD, 20)
-	_text(Vector2(972, 53), ("部署 %d / 4" % (6 - formation.count(-1))) if phase == "prepare" else ("%02d:%02d / %s×" % [int(elapsed) / 60, int(elapsed) % 60, str(speed)]), PAPER, 17)
+	_text(Vector2(972, 53), ("部署 %d / %d" % [6 - formation.count(-1),_deployment_limit()]) if phase == "prepare" else ("%02d:%02d / %s×" % [int(elapsed) / 60, int(elapsed) % 60, str(speed)]), PAPER, 17)
 	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
 	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
@@ -663,7 +665,7 @@ func _draw() -> void:
 		_pixel_panel(BATTLE_BANNER_RECT, Color("413b4b"))
 		_center(BATTLE_BANNER_RECT.get_center() + Vector2(0,7), banner, GOLD, 21)
 	if get("screen") == null: _pixel_button(3, "切换难度" if not demo_options.difficulty.is_empty() else "切换敌阵", false, phase == "prepare")
-	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or formation.count(-1) == 2)
+	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or 6-formation.count(-1) == _deployment_limit())
 	_pixel_button(4, "返回整备")
 	if phase != "prepare":
 		_pixel_panel(Rect2(36, 620, 344, 83), Color("202027"))

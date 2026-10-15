@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CampusManifest" load_steps=72 format=3]
+[gd_resource type="Resource" script_class="CampusManifest" load_steps=73 format=3]
 [ext_resource type="Script" path="res://game/content/content_manifest.gd" id="1"]
 [ext_resource type="Script" path="res://game/content/equipment_def.gd" id="2"]
 [ext_resource type="Resource" path="res://resources/content/equipment/shoe.tres" id="shoe"]
@@ -70,6 +70,7 @@
 [ext_resource type="Resource" path="res://resources/content/skills/enemy_colossus.tres" id="skills_enemy_colossus"]
 [ext_resource type="Resource" path="res://resources/content/rewards/code_supply.tres" id="reward_code_supply"]
 [ext_resource type="Resource" path="res://resources/content/rewards/code_converter.tres" id="reward_code_converter"]
+[ext_resource type="Resource" path="res://resources/content/rewards/code_shield.tres" id="reward_code_shield"]
 [resource]
 script = ExtResource("1")
 equipment = Array[ExtResource("2")]([ExtResource("shoe"), ExtResource("badge"), ExtResource("ribbon")])
@@ -77,7 +78,7 @@ characters = Array[ExtResource("t_characters")]([ExtResource("characters_guard")
 enemies = Array[ExtResource("t_enemies")]([ExtResource("enemies_paper_guard"), ExtResource("enemies_desk"), ExtResource("enemies_radio"), ExtResource("enemies_pages"), ExtResource("enemies_board"), ExtResource("enemies_chalk"), ExtResource("enemies_colossus"), ExtResource("enemies_return_stamp"), ExtResource("enemies_great_volume"), ExtResource("enemies_cyber_librarian")])
 skills = Array[ExtResource("t_skills")]([ExtResource("skills_guard"), ExtResource("skills_archer"), ExtResource("skills_healer"), ExtResource("skills_striker"), ExtResource("skills_inventor"), ExtResource("skills_analysis"), ExtResource("skills_morning"), ExtResource("skills_enemy_paper_guard"), ExtResource("skills_enemy_desk"), ExtResource("skills_enemy_radio"), ExtResource("skills_enemy_pages"), ExtResource("skills_enemy_board"), ExtResource("skills_enemy_chalk"), ExtResource("skills_enemy_colossus")])
 encounters = Array[ExtResource("t_encounters")]([ExtResource("encounters_patrol"), ExtResource("encounters_classroom"), ExtResource("encounters_final")])
-rewards = Array[ExtResource("t_rewards")]([ExtResource("rewards_badge"), ExtResource("rewards_ribbon"), ExtResource("rewards_recruit"), ExtResource("rewards_recruit_morning"), ExtResource("rewards_guard_training"), ExtResource("rewards_archer_training"), ExtResource("rewards_healer_training"), ExtResource("rewards_striker_training"), ExtResource("rewards_inventor_training"), ExtResource("reward_code_supply"), ExtResource("reward_code_converter")])
+rewards = Array[ExtResource("t_rewards")]([ExtResource("rewards_badge"), ExtResource("rewards_ribbon"), ExtResource("rewards_recruit"), ExtResource("rewards_recruit_morning"), ExtResource("rewards_guard_training"), ExtResource("rewards_archer_training"), ExtResource("rewards_healer_training"), ExtResource("rewards_striker_training"), ExtResource("rewards_inventor_training"), ExtResource("reward_code_supply"), ExtResource("reward_code_converter"), ExtResource("reward_code_shield")])
 reward_pools = Array[ExtResource("t_reward_pools")]([ExtResource("reward_pools_campus")])
 events = Array[ExtResource("t_events")]([ExtResource("events_library_event"), ExtResource("events_supply_event"), ExtResource("events_morning_event")])
 locations = Array[ExtResource("t_locations")]([ExtResource("locations_gate"), ExtResource("locations_library"), ExtResource("locations_court"), ExtResource("locations_hall"), ExtResource("locations_lab"), ExtResource("locations_supply"), ExtResource("locations_classroom"), ExtResource("locations_boss"), ExtResource("locations_reading")])

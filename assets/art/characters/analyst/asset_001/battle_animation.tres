@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BattleAnimationSet" load_steps=3 format=3]
+[ext_resource type="Script" path="res://game/content/battle_animation_set.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/analyst/asset_001/ready.png" id="ready"]
+[resource]
+script = ExtResource("script")
+fallback_texture = ExtResource("ready")
+display_size = Vector2(174.33, 152.49)
+anchor = Vector2(0.52, 0.905)
+flip_with_facing = true

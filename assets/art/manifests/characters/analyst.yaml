@@ -1,0 +1,31 @@
+schema_version: 3
+object:
+  id: "analyst"
+  display_name: "分析员"
+  type: "character"
+  subtype: "battle"
+variants:
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/characters/analyst/asset_001"
+    files:
+      ready: "ready.png"
+      reference: "reference-guard.png"
+      animation: "battle_animation.tres"
+      source_notes: "generation.md"
+    metadata:
+      source_tool: "image_gen"
+      quality_gate: "PASS_WITH_NOTES"
+      implementation_note: "session自主美术授权。单张绘制立绘沿用原程序演出，不是完整逐帧动作集。"
+integration:
+  root: "assets/art/characters/analyst/asset_001"
+  files:
+    ready: "ready.png"
+    animation: "battle_animation.tres"
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owner: "resources/content/characters/analyst.tres"
+  evidence: "docs/art/characters/analyst.md"

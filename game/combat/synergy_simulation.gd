@@ -151,7 +151,7 @@ func _apply_proc(binding: Dictionary, owner: Dictionary, context: Dictionary) ->
 func _apply_shield(actor: Dictionary, target: Dictionary, amount: float, source: String, duration: float, label: String) -> void:
 	var actual := grant_shield(target, amount, source, duration)
 	if actual > 0:
-		_emit("impact", actor, target, -1, {"effect":"shield", "actual":actual, "special":true, "label":label, "hp":target.hp, "shield":target.shield})
+		_emit("impact", actor, target, -1, {"effect":"shield", "actual":actual, "item_effect":source == "preparation", "special":true, "label":label, "hp":target.hp, "shield":target.shield})
 
 func _expire_speed_modifiers() -> void:
 	var changed := {}

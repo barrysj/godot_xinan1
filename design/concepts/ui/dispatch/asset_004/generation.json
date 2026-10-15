@@ -1,0 +1,25 @@
+{
+  "tool": "image_gen",
+  "transparent_background": false,
+  "model": "tool default; not exposed",
+  "seed": "not exposed",
+  "steps": [
+    {
+      "prompt": "Create a NEW production game terrain map of central Chengdu in a 16:9 landscape canvas, north up, strictly flat top-down. Reference 1 is ONLY a geographical reference identifying the true nested road shapes and their offset centers. Reference 2 is ONLY a location/geographical cross-check; IGNORE its red hand-drawn open route entirely. Reference 3 is ONLY the game's airy ivory/sage painted cartographic STYLE, NOT its inaccurate road geometry. Draw exactly FOUR prominent continuous CLOSED ROAD LOOPS corresponding to Chengdu FIRST RING, SECOND RING, THIRD RING, and outer CHENGDU RING EXPRESSWAY G4202. Copy the relative shapes and offset nesting from reference 1: the first/second are compact around the city center south of the outer loop's center, third is irregular with a northwest shoulder, G4202 is much larger with broad relatively flat northern section and irregular south/southeast bends. EXCLUDE the reference's innermost river loop, 2.5 ring and dashed planned 3.5 ring. Extend pale terrain left/right to make 16:9 WITHOUT stretching the geographic shapes. Outer expressway occupies roughly x=.28.. .86 and y=.07.. .93; reserve terrain just outside its northwest flank near x=.27,y=.25 for the future Qingshuihe campus marker. Do NOT paint a campus there: only neutral terrain. Four roads must be easy to count and visually road-like: asphalt warm slate-gray center, narrow ivory edge lines and clear pale dashed lane center markings, expressway distinctly widest with muted burnt-orange outer edging and small restrained interchange ramps, third ring ochre edging, second ring cool gray edging, first ring pale terracotta edging. NO BLUE ROADS: blue reserved exclusively for slender natural waterways. Natural waterways follow the Chengdu reference in understated light blue, never encircle the city like an extra ring road. Fine low-contrast local streets, faint flat urban parcel footprints, soft green park areas. No recognizable buildings, no universities, no shopping miniatures, no destination illustrations, no 3D structures, no map pins, NO text, labels, numbers, road shields, compass, logo or watermark. Native UI will overlay all road names and destinations. Highest priority: true four-ring hierarchy, readable G4202, geographically coherent north-up relationship, then painted game style.",
+      "references": [
+        "design/concepts/ui/dispatch/asset_004/source/rings-reference.jpg",
+        "design/concepts/ui/dispatch/asset_004/source/real-map.jpg",
+        "assets/art/ui/dispatch/asset_003/city.png"
+      ],
+      "output": "design/concepts/ui/dispatch/asset_004/source/four-ring-input.png"
+    },
+    {
+      "prompt": "Make one targeted correction to this game terrain map: REMOVE the tiny innermost terracotta/rust-colored closed road loop at the very center, around normalized x0.48..0.58 y0.48..0.62. It is an unwanted FIFTH loop. Seamlessly replace that tiny loop with ordinary faint local streets and flat neutral city parcel texture. Keep the four larger nested rings EXACTLY intact: smallest dark-gray ring around x0.45..0.63 y0.43..0.68 is First Ring, next dark-gray ring around x0.40..0.69 y0.35..0.76 is Second Ring, gold ring is Third Ring, outermost broad orange-edged asphalt ring is G4202 Chengdu Ring Expressway. Do not add any ring or substitute a river loop. Preserve every other pixel relationship, overall layout, river course, road textures, green areas and aspect ratio. Four prominent CLOSED ring roads total after edit. No text, labels, landmarks, icons or buildings.",
+      "references": [
+        "design/concepts/ui/dispatch/asset_004/source/four-ring-input.png"
+      ],
+      "output": "assets/art/ui/dispatch/asset_004/city.png"
+    }
+  ],
+  "path_base": "project root"
+}

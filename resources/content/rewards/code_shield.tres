@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CampusReward" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/content/reward_def.gd" id="s"]
+[resource]
+script = ExtResource("s")
+id = "code_shield"
+display_name = "应急护盾"
+description = "本局应急护盾库存 +1；战斗中给一位存活队员提供120点护盾，持续8秒。每场最多使用一次。"
+operation = "item"
+code_item_id = "shield"
+amount = 1

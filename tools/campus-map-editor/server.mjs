@@ -1,20 +1,25 @@
 import http from "node:http";
-import { readFile, writeFile, mkdir, copyFile, rename, rm } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, rename, rm, access } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validate } from "./editor-core.mjs";
+import { validateDispatch } from "./dispatch-core.mjs";
 
 const editorDirectory = dirname(fileURLToPath(import.meta.url));
 const projectRoot = process.env.NODE_ENV === "test" && process.env.CAMPUS_MAP_EDITOR_ROOT
   ? resolve(process.env.CAMPUS_MAP_EDITOR_ROOT) : resolve(editorDirectory, "../..");
 const layoutPath = resolve(projectRoot, "game/run/expanded_campus_layout.json");
+const dispatchPath = resolve(projectRoot, "game/meta/dispatch_map.json");
 const backupDirectory = resolve(projectRoot, ".godot/campus-map-editor-backups");
 const portFlag = process.argv.indexOf("--port");
 const port = Number(portFlag >= 0 ? process.argv[portFlag + 1] : process.env.CAMPUS_MAP_EDITOR_PORT ?? 8767);
 const appId = "cyber-pop-campus-map-editor-v1";
 const resources = {
   "/": [resolve(editorDirectory, "index.html"), "text/html; charset=utf-8"],
+  "/dispatch": [resolve(editorDirectory, "dispatch.html"), "text/html; charset=utf-8"],
+  "/dispatch-editor.mjs": [resolve(editorDirectory, "dispatch-editor.mjs"), "text/javascript; charset=utf-8"],
+  "/dispatch-core.mjs": [resolve(editorDirectory, "dispatch-core.mjs"), "text/javascript; charset=utf-8"],
   "/flow-guide": [resolve(editorDirectory, "flow-guide.html"), "text/html; charset=utf-8"],
   "/editor.css": [resolve(editorDirectory, "editor.css"), "text/css; charset=utf-8"],
   "/editor.mjs": [resolve(editorDirectory, "editor.mjs"), "text/javascript; charset=utf-8"],
@@ -27,8 +32,15 @@ const sendJson = (response, status, data) => {
   response.end(JSON.stringify(data));
 };
 
-async function saveLayout(request, response) {
-  const current = await readFile(layoutPath);
+const saves = new Map();
+async function saveLayout(request, response, destination = layoutPath, validator = validate) {
+  const previous = saves.get(destination) ?? Promise.resolve();
+  const current = previous.catch(() => {}).then(() => writeLayout(request, response, destination, validator));
+  saves.set(destination, current);
+  try { await current; } finally { if (saves.get(destination) === current) saves.delete(destination); }
+}
+async function writeLayout(request, response, destination, validator) {
+  const current = await readFile(destination);
   if (request.headers["if-match"] !== etag(current)) return sendJson(response, 409, { error: "地图文件已被其他程序修改；请先导出当前编辑，再刷新页面核对" });
   let chunks = [], length = 0;
   for await (const chunk of request) {
@@ -39,16 +51,20 @@ async function saveLayout(request, response) {
   let parsed;
   try { parsed = JSON.parse(Buffer.concat(chunks).toString("utf8")); }
   catch { return sendJson(response, 400, { error: "JSON 格式无效" }); }
-  const errors = validate(parsed);
+  const errors = validator(parsed, JSON.parse(current));
   if (errors.length) return sendJson(response, 400, { error: errors.join("；") });
+  if (destination === dispatchPath) {
+    try { for (const map of Object.values(parsed.maps)) await access(resolve(projectRoot, map.texture.slice(6))); }
+    catch { return sendJson(response, 400, { error: "底图文件不存在或不可读" }); }
+  }
   const content = Buffer.from(JSON.stringify(parsed, null, 2) + "\n");
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   await mkdir(backupDirectory, { recursive: true });
-  await copyFile(layoutPath, resolve(backupDirectory, `layout-${timestamp}.json`));
-  const temporary = layoutPath + ".editor-tmp";
+  await copyFile(destination, resolve(backupDirectory, `${destination === dispatchPath ? "dispatch" : "layout"}-${timestamp}.json`));
+  const temporary = destination + ".editor-tmp";
   try {
     await writeFile(temporary, content);
-    await rename(temporary, layoutPath);
+    await rename(temporary, destination);
   } finally { await rm(temporary, { force: true }); }
   response.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ETag: etag(content) });
   response.end(JSON.stringify({ ok: true }));
@@ -59,6 +75,22 @@ const server = http.createServer(async (request, response) => {
     const url = new URL(request.url, "http://127.0.0.1");
     if (request.method === "GET" && url.pathname === "/api/health") {
       return sendJson(response, 200, { app: appId, process_id: process.pid, project_root: projectRoot });
+    }
+    if (request.method === "GET" && url.pathname === "/api/dispatch") {
+      const bytes = await readFile(dispatchPath);
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ETag: etag(bytes) });
+      return response.end(bytes);
+    }
+    if (request.method === "POST" && url.pathname === "/api/dispatch") return await saveLayout(request, response, dispatchPath, validateDispatch);
+    if (request.method === "GET" && url.pathname === "/api/dispatch-image") {
+      const mapId = url.searchParams.get("map");
+      if (!["campus", "city"].includes(mapId)) return sendJson(response, 400, {error:"未知地图"});
+      const data = JSON.parse(await readFile(dispatchPath, "utf8"));
+      const texture = data.maps?.[mapId]?.texture || "";
+      if (!/^res:\/\/assets\/art\/[a-zA-Z0-9_/-]+\.png$/.test(texture)) return sendJson(response, 400, {error:"底图路径无效"});
+      const image = await readFile(resolve(projectRoot, texture.slice(6)));
+      response.writeHead(200, {"Content-Type":"image/png", "Cache-Control":"no-store"});
+      return response.end(image);
     }
     if (request.method === "GET" && url.pathname === "/api/layout") {
       const bytes = await readFile(layoutPath);

@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "maps": {
+    "campus": {
+      "texture": "res://assets/art/ui/dispatch/asset_005/campus.png"
+    },
+    "city": {
+      "texture": "res://assets/art/ui/dispatch/asset_004/city.png",
+      "labels": []
+    }
+  },
+  "places": [
+    {
+      "id": "library",
+      "name": "图书馆",
+      "point": [
+        0.46,
+        0.5393333333333333
+      ],
+      "outside": false
+    },
+    {
+      "id": "gym",
+      "name": "体育馆",
+      "point": [
+        0.445,
+        0.848
+      ],
+      "outside": false
+    },
+    {
+      "id": "qingshuihe",
+      "name": "清水河校区",
+      "point": [
+        0.247,
+        0.2
+      ],
+      "outside": true
+    },
+    {
+      "id": "shahe",
+      "name": "电子科大沙河校区",
+      "point": [
+        0.615,
+        0.39
+      ],
+      "outside": true
+    },
+    {
+      "id": "chunxi",
+      "name": "春熙路",
+      "point": [
+        0.558,
+        0.54
+      ],
+      "outside": true
+    }
+  ],
+  "commissions": [
+    {
+      "id": "departure",
+      "name": "出发准备",
+      "location": "library",
+      "cost": 0,
+      "requires": "",
+      "kind": "feature",
+      "value": "preparation",
+      "description": "整理行动清单，开放出发准备。每次新探索可用准备点数挑选携带物品。",
+      "tutorial": true
+    },
+    {
+      "id": "shield_kit",
+      "name": "护盾器材",
+      "location": "gym",
+      "cost": 3,
+      "requires": "departure",
+      "kind": "preparation",
+      "value": "shield",
+      "description": "准备池加入应急护盾，战斗中为选定队员提供护盾。"
+    },
+    {
+      "id": "revive_kit",
+      "name": "复苏装置",
+      "location": "shahe",
+      "cost": 4,
+      "requires": "departure",
+      "kind": "preparation",
+      "value": "revive",
+      "description": "准备池加入复苏装置，战斗尚未结束时可救起一名倒下的队员。"
+    },
+    {
+      "id": "inventor_contact",
+      "name": "发明社联络",
+      "location": "shahe",
+      "cost": 4,
+      "requires": "departure",
+      "kind": "character",
+      "value": "inventor",
+      "description": "发明家加入出发候选与途中招募候选。"
+    },
+    {
+      "id": "field_supplies",
+      "name": "物资交换",
+      "location": "chunxi",
+      "cost": 3,
+      "requires": "departure",
+      "kind": "item",
+      "value": "shield",
+      "description": "探索战利品中可出现应急护盾。"
+    },
+    {
+      "id": "second_opinion",
+      "name": "情报互助",
+      "location": "library",
+      "cost": 4,
+      "requires": "departure",
+      "kind": "buff",
+      "value": "reward_refresh",
+      "description": "每次探索可重新查看一次战利品候选。"
+    }
+  ]
+}

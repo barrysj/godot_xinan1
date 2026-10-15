@@ -278,6 +278,13 @@ func item_error(id: String, destination: String, source: String = "") -> String:
 	if entry == null or items.get(id, 0) <= 0: return "道具已用尽"
 	if item_uses.has(id): return "本场已使用"
 	if elapsed + EPSILON < item_ready: return "道具冷却 %.1f 秒" % (item_ready - elapsed)
+	if entry.effect in ["shield","revive"]:
+		if not destination.is_valid_int(): return "请选择队员"
+		var target := unit(int(destination))
+		if target.is_empty() or target.side != 0: return "请选择我方队员"
+		if entry.effect == "revive": return "队员尚未倒下" if target.hp > 0 else ""
+		if target.hp <= 0: return "需要存活队员"
+		return "护盾已满" if target.shield >= SHIELD_CAP else ""
 	if not blocks.has(destination): return "请选择目标代码类型"
 	if blocks[destination] + entry.amount > Codes.RULES.cache_cap: return "目标缓存空间不足，不会消耗道具"
 	if entry.effect == "convert":
@@ -295,7 +302,20 @@ func use_item(id: String, destination: String, source: String = "") -> bool:
 	items[id] -= 1
 	item_uses[id] = true
 	item_ready = elapsed + Codes.RULES.item_cooldown
-	_gain(_living(0)[0], destination, entry.amount, entry.display_name, entry.display_name)
+	var actor: Dictionary = _living(0)[0]
+	if entry.effect == "shield":
+		_apply_shield(actor,unit(int(destination)),float(entry.amount),"preparation",8.0,entry.display_name)
+	elif entry.effect == "revive":
+		var target := unit(int(destination))
+		target.hp = maxf(1.0,target.max_hp * entry.amount / 100.0)
+		target.action = {}
+		target.pending_cast = {}
+		target.timer = target.interval
+		target.shield_layers = []
+		_sync_shields(target)
+		_emit("revived",actor,target,-1,{"hp":target.hp})
+	else:
+		_gain(actor, destination, entry.amount, entry.display_name, entry.display_name)
 	_note("道具消耗 · " + entry.display_name)
 	return true
 
@@ -307,7 +327,8 @@ func configure_combat(programs: Array, supplies: Dictionary, maintenance_interva
 	blocks = {}
 	for kind in Codes.RULES.types: blocks[kind] = 0
 	loadout = programs.duplicate() if Codes.valid_loadout(programs) else Array(Codes.RULES.default_loadout).duplicate()
-	items = supplies.duplicate() if Codes.valid_stock(supplies) else Codes.stock()
+	var migrated_stock := Codes.migrate_stock(supplies)
+	items = migrated_stock if not migrated_stock.is_empty() else Codes.stock()
 	attack_counts.clear()
 	credited_actions.clear()
 	pending_pulse = ""

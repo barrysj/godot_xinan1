@@ -86,6 +86,14 @@ func clear(title: String, detail: String) -> void:
 	text(title,32)
 	text(detail,21)
 
+func preparation(model: Dictionary) -> void:
+	_show_home_page()
+	_clear_column()
+	var page := preload("res://scenes/expedition/preparation_page.gd").new()
+	page.model = model
+	page.action.connect(func(id: String): action.emit(id))
+	home_root.add_child(page)
+
 func _show_standard_page() -> void:
 	_clear_station_picker()
 	choice_page.dismiss()
@@ -238,11 +246,26 @@ func home(progress, chosen_supply: bool) -> void:
 	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	home_root.add_child(backdrop)
+	var board_hotspot := Button.new()
+	board_hotspot.name = "DispatchWhiteboard"
+	board_hotspot.flat = true
+	board_hotspot.tooltip_text = "派遣白板"
+	board_hotspot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	board_hotspot.set_meta("action_id","dispatch")
+	board_hotspot.pressed.connect(func(): action.emit("dispatch"))
+	home_root.add_child(board_hotspot)
+	board_hotspot.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	board_hotspot.anchor_left = 0.81
+	board_hotspot.anchor_top = 0.18
+	board_hotspot.anchor_right = 0.96
+	board_hotspot.anchor_bottom = 0.43
 	var safe := MarginContainer.new()
+	safe.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	safe.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side in ["left","top","right","bottom"]: safe.add_theme_constant_override("margin_"+side,32)
 	home_root.add_child(safe)
 	var page := VBoxContainer.new()
+	page.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	safe.add_child(page)
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation",16)
@@ -263,6 +286,7 @@ func home(progress, chosen_supply: bool) -> void:
 	menu.custom_minimum_size = Vector2(100,58)
 	menu.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	var space := Control.new()
+	space.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	page.add_child(space)
 	var bottom := HBoxContainer.new()
@@ -288,7 +312,7 @@ func home(progress, chosen_supply: bool) -> void:
 	elif not progress.campaign.prologue_done:
 		button("前往校门","prologue",true,mission)
 	elif not progress.campaign.routes_acquired:
-		button("取回路线","tutorial",true,mission)
+		button("教学派遣","tutorial",true,mission)
 	elif progress.campaign.terminals.size() == 3 and not progress.campaign.restored:
 		button("接入终端","finale",true,mission)
 	else:
@@ -307,11 +331,11 @@ func home(progress, chosen_supply: bool) -> void:
 	utilities.add_theme_constant_override("separation",12)
 	bottom.add_child(utilities)
 	var grid := GridContainer.new()
-	grid.columns = 4
+	grid.columns = 3
 	grid.add_theme_constant_override("h_separation",12)
 	grid.add_theme_constant_override("v_separation",12)
 	utilities.add_child(grid)
-	for entry in [["成长","growth","growth"],["派遣","dispatch","dispatch"],["回忆","memories","memory"],["图鉴","codex","codex"]]:
+	for entry in [["派遣","dispatch","dispatch"],["回忆","memories","memory"],["图鉴","codex","codex"]]:
 		var item := _home_icon_button(entry[0],entry[1],entry[2],grid)
 		item.custom_minimum_size = Vector2(116,116)
 		_apply_home_button(item)
@@ -585,19 +609,19 @@ func starting_strategy(region: String, mode: String, allow_keep: bool) -> void:
 	var pursuit = _detail_box(cards)
 	text("漏洞追击",26,pursuit)
 	text("分析员扫描 → 同伴验证 → 数据代码 → 追踪破解。",21,pursuit)
-	text("守护者、冲刺手、分析员、远射手。配备追踪破解与热修复，适合集中击破。",20,pursuit)
+	text("分析员与冲刺手两人出发，途中再邀请两位同伴。配备追踪破解与热修复，适合集中击破。" if mode == "region" else "守护者、冲刺手、分析员、远射手。配备追踪破解与热修复，适合集中击破。",20,pursuit)
 	button("追踪队伍","strategy:"+region+":"+mode+":analysis",true,pursuit)
 	var shield = _detail_box(cards)
 	text("护盾反冲",26,shield)
 	text("普通护盾吸收 → 权限代码 → 反冲护盾 → 破盾爆炸。",21,shield)
-	text("守护者、冲刺手、应援者搭配发明家；未加入时由远射手替补。配备反冲护盾与热修复，正式区域第一站可交谈补齐供盾。",20,shield)
+	text("守护者与应援者两人出发，途中再邀请两位同伴。配备反冲护盾与热修复；发明家需先通过派遣联络。" if mode == "region" else "守护者、冲刺手、应援者搭配已解锁的发明家；未解锁时由远射手替补。配备反冲护盾与热修复。",20,shield)
 	button("护盾队伍","strategy:"+region+":"+mode+":protect",true,shield)
 	if allow_keep:
-		text("也可沿用上次阵位。程序按已有扫描者选择追踪，其他编队使用反冲，热修复保留。",18)
+		text("沿用队伍会先选上次编队的前两位，可在准备页改选。程序按是否携带分析员选择追踪或反冲，并保留热修复。" if mode == "region" else "也可沿用上次四人阵位。程序按已有扫描者选择追踪或反冲，并保留热修复。",18)
 		button("沿用队伍","strategy:"+region+":"+mode+":keep")
 	button("返回基地","base")
 
-func rewards(offers: Array) -> void:
+func rewards(offers: Array, run = null) -> void:
 	var options: Array = []
 	var db = preload("res://game/content/content_db.gd")
 	for i in range(offers.size()):
@@ -605,6 +629,7 @@ func rewards(offers: Array) -> void:
 		var texture: Texture2D
 		if offer.operation == "gear": texture = db.gear(offer.target).icon
 		elif offer.operation == "train": texture = db.character(db.role_index(offer.target)).portrait
+		elif offer.operation == "item": texture = preload("res://scenes/ui/preparation_art.gd").ICONS.get(offer.target)
 		var hint := "选择强化对象" if offer.operation == "combat" and preload("res://game/run/reward_catalog.gd").combat_needs_owner(offer.target) else "后续战斗生效" if offer.operation == "combat" else "存入背包 · 整备时装备" if offer.operation == "gear" else "补充库存 · 战斗时使用" if offer.operation == "item" else "对应同学 · 立即生效"
 		if offer.has("offer_slot"): hint = {"chain":"链路强化","general":"通用强化","alternative":"构筑变化"}[offer.offer_slot]+" · "+hint
 		options.append({"id":"reward:"+str(i),"label":"选取","title":offer.title,"description":offer.description,"hint":hint,"icon":texture,"outcomes":ChoiceOutcomes.reward(offer)})
@@ -612,7 +637,9 @@ func rewards(offers: Array) -> void:
 	choice_page.present({"tag":"战斗胜利 · 战利品","title":"选择一份战利品" if not offers.is_empty() else "整备完成",
 		"description":"选择一份奖励；领取后返回当前地点。" if not offers.is_empty() else "可以继续探索。",
 		"picture":choice_page.PICTURES.reward,"caption":"校园补给 · 本局收益","options":options,
-		"body_label":"领取说明","options_label":"候选奖励","compact":true,"status":"奖励候选已保存 · 续玩不会重抽","close_id":"choice_menu","close_label":"菜单"})
+		"body_label":"领取说明","options_label":"候选奖励","compact":true,"status":"奖励候选已保存 · 续玩不会重抽" if run == null or not run.dispatch_buffs.has("reward_refresh") else "情报互助 · 本局刷新已用完" if run.reward_refresh_used else "情报互助 · 本局可刷新一次，不消耗修复资源",
+		"footer_action":"reward_refresh" if run != null and run.dispatch_buffs.has("reward_refresh") else "","footer_label":"刷新候选","footer_enabled":run != null and run.can_refresh_rewards(offers),
+		"close_id":"choice_menu","close_label":"菜单"})
 
 func reward_owner(offer: Dictionary, roster: Array, run) -> void:
 	var options: Array = []

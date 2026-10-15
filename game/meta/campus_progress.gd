@@ -2,6 +2,9 @@ extends RefCounted
 ## Atomic profile: meta progress, current expedition and dispatch jobs commit together.
 const Catalog = preload("res://game/meta/meta_catalog.gd")
 const Campaign = preload("res://game/meta/campaign_state.gd")
+const Commissions = preload("res://game/meta/dispatch_catalog.gd")
+var commission_unlocks: Array = []
+var pending_dispatch_result: Dictionary = {}
 var campaign: Dictionary = Campaign.fresh()
 var points = 0
 var completions = 0
@@ -35,11 +38,13 @@ func restart_profile() -> bool:
 	return false
 
 func to_dict() -> Dictionary:
-	return {"version":4, "campaign":campaign.duplicate(true), "points":points, "completions":completions, "supply_unlocked":supply_unlocked,
+	return {"version":5, "commission_unlocks":commission_unlocks.duplicate(), "pending_dispatch_result":pending_dispatch_result.duplicate(true), "campaign":campaign.duplicate(true), "points":points, "completions":completions, "supply_unlocked":supply_unlocked,
 		"upgrades":upgrades.duplicate(true), "active_run":active_run.duplicate(true),
 		"dispatches":dispatches.duplicate(true), "last_settled_run":last_settled_run}
 
 func _apply(data: Dictionary) -> void:
+	commission_unlocks = data.get("commission_unlocks", []).duplicate()
+	pending_dispatch_result = data.get("pending_dispatch_result", {}).duplicate(true)
 	campaign = data.get("campaign", Campaign.fresh()).duplicate(true)
 	if not campaign.has("story_flags"): campaign.story_flags = {}
 	campaign.schema = int(campaign.schema)
@@ -62,8 +67,21 @@ func read_save() -> bool:
 	if parser.parse(file.get_as_text()) != OK: return _invalid_save()
 	var data = parser.data
 	if not data is Dictionary: return _invalid_save()
-	if data.get("version",0) != 1 and data.get("version",0) != 2 and data.get("version",0) != 3 and data.get("version",0) != 4: return _invalid_save()
-	if data.version == 4 and not Campaign.valid(data.get("campaign")): return _invalid_save()
+	if not (data.get("version") is int or data.get("version") is float): return _invalid_save()
+	if int(data.version) != data.version or not int(data.version) in [1, 2, 3, 4, 5]: return _invalid_save()
+	if data.version >= 4 and not Campaign.valid(data.get("campaign")): return _invalid_save()
+	if data.version >= 5:
+		if not data.get("commission_unlocks") is Array or not data.get("pending_dispatch_result") is Dictionary: return _invalid_save()
+		var seen_unlocks: Array = []
+		for id in data.commission_unlocks:
+			if not id is String or Commissions.find(id).is_empty() or seen_unlocks.has(id): return _invalid_save()
+			seen_unlocks.append(id)
+		var result: Dictionary = data.pending_dispatch_result
+		if not result.is_empty():
+			if not result.get("id") is String or not result.get("commission") in seen_unlocks: return _invalid_save()
+			if not result.get("staff_ids") is Array or result.staff_ids.size() != 1: return _invalid_save()
+			if Catalog.find(Catalog.STAFF, str(result.staff_ids[0])).is_empty(): return _invalid_save()
+			if not result.get("location") is String or str(result.location).is_empty(): return _invalid_save()
 	if not data.get("upgrades",{}) is Dictionary or not data.get("active_run",{}) is Dictionary or not data.get("dispatches",[]) is Array: return _invalid_save()
 	for key in ["points","completions"]:
 		if not (data.get(key,0) is int or data.get(key,0) is float): return _invalid_save()
@@ -90,9 +108,61 @@ func read_save() -> bool:
 		job.erase("staff")
 		ids.append(job.id)
 	_apply(data)
+	if int(data.version) < 5: _migrate_commissions()
 	load_blocked = false
 	error_message = ""
 	return true
+
+func _migrate_commissions() -> void:
+	# Migration only changes the loaded snapshot. The next atomic save writes v5;
+	# a failed write leaves the original file intact and never double-refunds it.
+	for id in ["fitness", "dispatch", "gym", "staffing", "supply"]:
+		var legacy := Catalog.find(Catalog.UNLOCKS, id)
+		for index in level(id): points += int(legacy.costs[index])
+		upgrades.erase(id)
+	supply_unlocked = false
+	for job in dispatches: points += int(job.reward)
+	dispatches.clear()
+	if campaign.routes_acquired: commission_unlocks.append("departure")
+
+func commission_reason(id: String, staff_id: String) -> String:
+	if load_blocked: return "存档无法读取"
+	var task := Commissions.find(id)
+	if task.is_empty(): return "委托不存在"
+	if not task.get("enabled", true): return "委托已停用"
+	if not campaign.prologue_done: return "请先完成序章"
+	if not pending_dispatch_result.is_empty(): return "请先查看上次成果"
+	if commission_unlocks.has(id): return "委托已完成"
+	if not task.requires.is_empty() and not commission_unlocks.has(task.requires): return "请先完成出发准备"
+	if Catalog.find(Catalog.STAFF, staff_id).is_empty(): return "请选择派遣人员"
+	if points < int(task.cost): return "修复资源不足"
+	return ""
+
+func execute_commission(id: String, staff_id: String) -> bool:
+	error_message = commission_reason(id, staff_id)
+	if not error_message.is_empty(): return false
+	var before := to_dict()
+	var task := Commissions.find(id)
+	points -= int(task.cost)
+	commission_unlocks.append(id)
+	if id == "departure": campaign.routes_acquired = true
+	if task.kind == "character" and not campaign.characters.has(task.value):
+		campaign.characters.append(task.value)
+	pending_dispatch_result = {"id":Crypto.new().generate_random_bytes(16).hex_encode(),
+		"commission":id, "location":task.location, "staff_ids":[staff_id]}
+	return _commit(before)
+
+func acknowledge_dispatch_result(id: String) -> bool:
+	if pending_dispatch_result.get("id", "") != id or id.is_empty(): return false
+	var before := to_dict()
+	pending_dispatch_result.clear()
+	return _commit(before)
+
+func has_dispatch_effect(kind: String, value: String) -> bool:
+	for id in commission_unlocks:
+		var task := Commissions.find(id)
+		if task.get("kind") == kind and task.get("value") == value: return true
+	return false
 
 func _invalid_save() -> bool:
 	load_blocked = true
@@ -140,9 +210,10 @@ func complete_prologue() -> bool:
 
 func complete_tutorial_dispatch() -> bool:
 	if not campaign.prologue_done: return false
-	if campaign.routes_acquired: return not load_blocked
+	if campaign.routes_acquired and commission_unlocks.has("departure"): return not load_blocked
 	var before = to_dict()
 	campaign.routes_acquired = true
+	if not commission_unlocks.has("departure"): commission_unlocks.append("departure")
 	return _commit(before)
 
 func record_memory(id: String) -> bool:

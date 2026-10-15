@@ -1,0 +1,12 @@
+{
+  "tool": "image_gen",
+  "date": "2026-10-15",
+  "prompt": "Create one single empty crew assignment slot icon for a campus RPG dispatch UI. Use the supplied icon atlas ONLY as visual style reference: polished hand-painted anime inventory illustration, ivory enamel, dark teal outlines, cyan details and tiny warm brass accents. The output must be ONE square rounded identity-card socket viewed straight on, containing a simple anonymous pale teal head-and-shoulders silhouette and a prominent small cyan plus badge at lower right, unmistakably an EMPTY available personnel slot, not an actual character. Compact, readable at 72 pixels. No names, letters, numbers, scenery, people faces, multiple icons, dangling straps or decoration. Generous transparent padding, the complete frame visible, truly transparent alpha background. Restrained soft shading, clean silhouette, not flat programmer line art. Square canvas.",
+  "referenced_image_paths": [
+    "assets/art/ui/dispatch/asset_005/icons.png"
+  ],
+  "transparent_background": true,
+  "output": "assets/art/ui/dispatch/asset_006/staff_slot.png",
+  "approval": "review",
+  "integration": "authorized_active"
+}

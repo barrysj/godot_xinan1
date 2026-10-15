@@ -17,6 +17,11 @@ var visited: Array[String] = []
 var node: Dictionary = {}
 var roster: Array[int] = [0, 1, 2, 3, Content.role_index("analyst")]
 var formation: Array = [0, -1, 3, 2, 1, -1]
+var expedition_party := false
+var eligible_characters: Array = []
+var dispatch_items: Array = []
+var dispatch_buffs: Array = []
+var reward_refresh_used := false
 const Content = preload("res://game/content/content_db.gd")
 var inventory: Dictionary = {"shoe": 0}
 var shoe_wearer: int:
@@ -188,6 +193,23 @@ func roll_rewards() -> void:
 		reward_ids.append(pool[i].id)
 		reward_snapshots.append(pool[i].duplicate(true))
 
+func can_refresh_rewards(current: Array) -> bool:
+	if not dispatch_buffs.has("reward_refresh") or reward_refresh_used: return false
+	var ids: Array = current.map(func(entry): return entry.id)
+	return Rewards.for_build(self).any(func(entry): return entry.operation != "recruit" and not ids.has(entry.id) and (entry.operation != "combat" or Rewards.find_combat(entry.target).minimum_offer <= reward_offer_count))
+
+func refresh_rewards(rng: RandomNumberGenerator, current: Array) -> Array:
+	if not can_refresh_rewards(current): return []
+	var ids: Array = current.map(func(entry): return entry.id)
+	var offers: Array = Rewards.draw_for_build(self,rng,reward_offer_count,false,"campus_rewards",ids)
+	if offers.is_empty(): return []
+	# Keep existing choices only when there are not enough unseen legal alternatives.
+	for entry in current:
+		if offers.size() >= 3: break
+		offers.append(entry.duplicate(true))
+	reward_refresh_used = true
+	return offers
+
 func _legacy_dict() -> Dictionary:
 	var saved_training = {}
 	for role in training: saved_training[str(role)] = int(training[role])
@@ -203,7 +225,12 @@ var code_supplies: Dictionary = CodeCatalog.stock()
 
 func to_dict() -> Dictionary:
 	var data = _legacy_dict()
-	data.schema = 8
+	data.schema = 10
+	data.dispatch_items = dispatch_items.duplicate()
+	data.dispatch_buffs = dispatch_buffs.duplicate()
+	data.reward_refresh_used = reward_refresh_used
+	data.expedition_party = expedition_party
+	data.eligible_characters = eligible_characters.duplicate()
 	data.growth_rules = growth_rules
 	data.reward_offer_count = reward_offer_count
 	data.candidate_recruit_shown = candidate_recruit_shown
@@ -244,6 +271,27 @@ func to_dict() -> Dictionary:
 func restore(data: Dictionary) -> bool:
 	var candidate = get_script().new()
 	candidate.growth_rules = 1
+	if data.get("schema") == 10:
+		if not data.get("dispatch_items") is Array or not data.get("dispatch_buffs") is Array or not data.get("reward_refresh_used") is bool: return false
+		for id in data.dispatch_items:
+			if not id is String or CodeCatalog.item(id) == null or candidate.dispatch_items.has(id): return false
+			candidate.dispatch_items.append(id)
+		for id in data.dispatch_buffs:
+			if id != "reward_refresh" or candidate.dispatch_buffs.has(id): return false
+			candidate.dispatch_buffs.append(id)
+		candidate.reward_refresh_used = data.reward_refresh_used
+		if candidate.reward_refresh_used and not candidate.dispatch_buffs.has("reward_refresh"): return false
+		data = data.duplicate(true)
+		data.schema = 9
+	if data.get("schema") == 9:
+		if not data.get("expedition_party") is bool or not data.get("eligible_characters") is Array: return false
+		candidate.expedition_party = data.expedition_party
+		for id in data.eligible_characters:
+			if not id is String or Content.role_index(id) < 0 or candidate.eligible_characters.has(id): return false
+			candidate.eligible_characters.append(id)
+		if candidate.expedition_party and candidate.eligible_characters.size() < 4: return false
+		data = data.duplicate(true)
+		data.schema = 8
 	if data.get("schema") == 8:
 		var version = data.get("growth_rules")
 		if not (version is int or version is float) or not is_finite(version) or int(version) != version or int(version) not in [1,2]: return false
@@ -256,10 +304,11 @@ func restore(data: Dictionary) -> bool:
 		candidate.rewards_exhausted = data.get("rewards_exhausted",false)
 	if data.get("schema") == 6 or data.get("schema") == 7 or data.get("schema") == 8:
 		var migrated := CodeCatalog.migrate_loadout(data.get("code_programs"))
-		if migrated.is_empty() or not CodeCatalog.valid_stock(data.get("code_supplies")): return false
+		var restored_stock := CodeCatalog.migrate_stock(data.get("code_supplies"))
+		if migrated.is_empty() or restored_stock.is_empty(): return false
 		candidate.code_programs = migrated
 		candidate.code_supplies.clear()
-		for item_id in data.code_supplies: candidate.code_supplies[item_id] = int(data.code_supplies[item_id])
+		for item_id in restored_stock: candidate.code_supplies[item_id] = int(restored_stock[item_id])
 		if data.get("schema") == 7 or data.get("schema") == 8:
 			if not data.get("combat_rewards") is Array or not data.get("pending_reward_offer", {}) is Dictionary: return false
 			for reward in data.combat_rewards:
@@ -392,8 +441,13 @@ func _restore_legacy(data: Dictionary, frozen: Array = []) -> bool:
 		var role = int(value)
 		if role < 0 or role >= Content.characters().size() or restored_roster.has(role): return false
 		restored_roster.append(role)
-	for role in range(4):
-		if not restored_roster.has(role): return false
+	if expedition_party:
+		if restored_roster.size() < 2 or restored_roster.size() > 4: return false
+		for role in restored_roster:
+			if not eligible_characters.has(Content.role_id(role)): return false
+	else:
+		for role in range(4):
+			if not restored_roster.has(role): return false
 	if data.formation.size() != 6: return false
 	var restored_formation: Array = []
 	var active: Array[int] = []
@@ -531,6 +585,8 @@ func complete_node() -> bool:
 	return true
 
 func apply_reward(entry: Dictionary, owner_id: String = "") -> bool:
+	if expedition_party and entry.get("operation") == "recruit": return false
+	if entry.get("operation") == "item" and entry.get("target") not in ["supply","converter"] and not dispatch_items.has(entry.get("target")): return false
 	if entry.get("operation") == "combat": return apply_combat_reward(entry,owner_id)
 	if not Rewards.valid_snapshot(entry) or not Rewards.allowed(entry,roster,inventory,training,code_supplies): return false
 	if entry.operation == "train" and not can_train(Content.role_index(entry.target),int(entry.amount)): return false

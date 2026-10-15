@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-15",
+  "tool": "image_gen",
+  "campus": {
+    "prompt": "Edit reference 1 into a polished illustrated campus dispatch map. Reference 1 is the EXACT GEOMETRIC MASTER: preserve its framing, orientation, wide 32:15 aspect ratio, every building footprint position, road alignment, lake shoreline and campus boundary. Do NOT redesign the campus or shift any landmark. Reference 2 is a real top-down geographic cross-check ONLY, not a framing template; ignore its text and pins. Draw the SAME electronic science university Qingshuihe campus in refined light watercolor-and-gouache game-map style: warm ivory building roofs with restrained teal-blue roof details, sage vegetation, soft cyan lakes, crisp but delicate paths and small tree crowns. Keep strict near-top-down orthographic projection and the exact original image coverage. The central polygonal library immediately east of the small western lake must stay at normalized x=.46,y=.54. The southern pair of round gymnasium roofs and large stadium must stay along y=.85. Northern dense dormitory blocks stay at the top/right, teaching courtyards at center-left and upper center, two distinct lakes stay in their existing relative locations. Clear shape fidelity more important than embellishment. Buildings should be flat map illustrations with only subtle short shadows, no tall isometric towers. Match recognizable silhouettes from the master, especially the polygonal library, two round gyms, south oval stadium, eastern court grids, triangular south academic courtyards, and diagonal west canal. Add subtle warm foliage and roof detail while retaining all geometry. Outer sparse land stays pale and low contrast. NO words, labels, numerals, pins, invented landmark miniatures, UI, border, compass, symbols, or extra water bodies. Continuous painted full canvas, opaque. Produce one cohesive final game background; DO NOT paste the reference screenshots or their text.",
+    "inputs": [
+      "assets/art/campus_map/expanded_neutral/day.png",
+      "design/references/m1-campus-map/images/top-down.png"
+    ],
+    "output": "campus.png",
+    "transparent_background": false
+  },
+  "icons": {
+    "prompt": "A production 2 by 2 GAME UI ICON ATLAS with exactly FOUR separate icons on a truly transparent background, square canvas. Each icon fits fully inside its equal square quadrant with generous 15 percent inset; centers at (25%,25%), (75%,25%), (25%,75%), (75%,75%). No dividers, no shadows crossing quadrants, no labels, letters, numbers or text. Style: clean hand-painted anime campus RPG inventory icons, ivory enamel and teal-blue equipment, restrained warm amber highlights, crisp dark-teal silhouettes, dimensional but legible at 48 pixels, not pixel art and not flat line icons. Top left: a small supply crate of glowing cyan repair circuit modules, visibly repair resources. Top right: a cream clipboard with a folded green campus map, a small brass key and an approval check symbol, visibly permanent preparation-feature unlock. Bottom left: a pair of ivory teal walkie-talkies with soft cyan signal ripples, visibly information cooperation buff. Bottom right: a small group of three distinct friendly student bust silhouettes on a teal ID badge with an amber joining star, visibly recruit eligibility. Four visually coherent highly readable inventory illustrations, no decorative scenery or UI panels. Preserve genuine transparent alpha around all icons.",
+    "output": "icons.png",
+    "transparent_background": true
+  },
+  "status": "review; session authorized integration"
+}

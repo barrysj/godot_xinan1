@@ -5,6 +5,8 @@ const ProjectileStyle = preload("res://game/content/battle_projectile_style.gd")
 const CastVfxStyle = preload("res://game/content/battle_cast_vfx_style.gd")
 
 @export var frames: SpriteFrames
+## Optional painted stand-in; existing procedural poses remain active until clips exist.
+@export var fallback_texture: Texture2D
 ## Optional rigid/mesh presentation. States it declines fall back to SpriteFrames.
 @export var presentation_scene: PackedScene
 @export var animation_library: AnimationLibrary

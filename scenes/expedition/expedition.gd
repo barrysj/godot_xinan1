@@ -140,6 +140,9 @@ func _ally_unit(role: int, slot: int) -> Dictionary:
 func _deployment_roster() -> Array:
 	return run.roster if run != null else super._deployment_roster()
 
+func _deployment_limit() -> int:
+	return mini(4,run.roster.size()) if run != null and run.expedition_party else 4
+
 func _deployment_changed() -> void:
 	super._deployment_changed()
 	_sync_team()
@@ -285,8 +288,8 @@ func _draw() -> void:
 			_pixel_panel(Rect2(24, 574, 1218, 38), Color("202027"))
 			var guide = "拖动卡片到我方空格，或依次点卡片与空格。"
 			var deployed = 6 - formation.count(-1)
-			if deployed > 0 and deployed < 4: guide = "已部署 %d / 4：继续选择卡片和我方空格。" % deployed
-			elif deployed == 4: guide = "已沿用上场阵位：可拖动调整，或点击「开战」。" if run.stage > 0 else "四人已就绪：可调整站位，或点击「开战」。"
+			if deployed > 0 and deployed < _deployment_limit(): guide = "已部署 %d / %d：继续选择卡片和我方空格。" % [deployed,_deployment_limit()]
+			elif deployed == _deployment_limit(): guide = "队伍已就绪：可调整站位，或点击「开战」。"
 			_center(Vector2(633, 600), _preparation_hint(guide), PAPER, 16)
 		return
 	scale_factor = minf(size.x / 1280.0, size.y / 720.0)

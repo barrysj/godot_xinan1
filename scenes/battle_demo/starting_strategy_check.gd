@@ -43,30 +43,23 @@ func _ready() -> void:
 		await take_first_reward(game)
 		game._campaign_action("leave")
 		expect(game.progress.campaign.prologue_done,"chosen starter finishes original prologue "+chain)
-		game._campaign_action("tutorial")
+		expect(game.progress.execute_commission("departure","archivist"),"tutorial unlock transaction")
+		game.progress.acknowledge_dispatch_result(game.progress.pending_dispatch_result.id)
 		before = game.progress.to_dict()
 		expect(not game.progress.settle_region("invalid-duplicate-"+chain,"library",["inventor"],7,["guard","guard","","archer","healer",""]) and game.progress.to_dict() == before,"invalid settlement formation cannot partially unlock "+chain)
 		expect(not game.progress.settle_region("invalid-locked-"+chain,"library",[],7,["striker","guard","","inventor","healer",""]) and game.progress.to_dict() == before,"locked settlement owner rejected without mutation "+chain)
 		game._request_campaign_start("library","region")
 		await choose(game,"strategy:library:region:"+chain)
+		await choose(game,"depart")
 		expect(game.campaign_mode == "region" and game.journey.visit.data.is_empty(),"actual region choice begins new original journey "+chain)
 		if failures > 0: break
 		for stage in range(4):
 			game._campaign_action("enter:0")
-			if chain == "protect" and stage == 0:
-				expect(game.journey.visit.data.hotspots.any(func(spot): return spot.kind == "person"),"first shield location guarantees existing person hotspot")
-				expect(not game.run.roster.has(4) and not game.progress.campaign.characters.has("inventor"),"opening hotspot does not grant or permanently unlock")
-				game._campaign_action("spot:person")
-				expect(game.run.roster.has(4) and game.journey.data.temporary == ["inventor"] and not game.progress.campaign.characters.has("inventor"),"actual conversation recruits temporarily through original event")
-				if "--capture" in OS.get_cmdline_user_args(): await capture(game,"partner")
-				await choose(game,"event:person:intro:shield")
-				await choose(game,"event:person:shield:formation")
-				expect(game.formation == game.run.recommended_formation("protect") and not game.progress.campaign.characters.has("inventor"),"explicit reference formation fills shield core without permanent unlock")
-				frozen = game.progress.active_run.duplicate(true)
-				game._continue_run()
-				expect(game.formation == game.run.recommended_formation("protect") and game.journey.data.temporary == ["inventor"],"temporary full shield formation survives original checkpoint")
-			if chain == "analysis" and stage == 0:
-				expect(not game.journey.visit.data.hotspots.any(func(spot): return spot.kind == "person"),"pursuit does not inject unrelated starter recruit")
+			if stage in [1,2]:
+				var recruit: String = (["guard","archer"] if chain == "analysis" else ["striker","archer"])[stage-1]
+				expect(game.screen == "recruit","guaranteed recruitment before next battle")
+				await choose(game,"join:"+recruit)
+			expect(game.run.roster.size() == mini(4,stage+2),"actual starting flow grows two to four")
 			expect(Run.Rewards.active_chains(game.run).has(chain),"original expedition has active chosen chain "+chain+str(stage))
 			await fight(game,chain,str(stage),true)
 			if failures > 0: break
@@ -76,7 +69,7 @@ func _ready() -> void:
 		if failures > 0: break
 		expect(game.progress.campaign.terminals.has("library"),"four real location battles settle original region "+chain)
 		if chain == "protect":
-			expect(game.progress.campaign.characters.has("inventor"),"only successful region permanently unlocks invited inventor")
+			expect(not game.progress.campaign.characters.has("inventor"),"region does not bypass dispatch character unlock")
 			expect(game.progress.campaign.formation == game.formation.map(func(role): return "" if role == -1 else Run.Content.role_id(role)),"successful region saves now-permanent full reference formation")
 		else:
 			expect(game.progress.campaign.formation.has("analyst") and not game.progress.campaign.characters.has("inventor"),"base scanner formation persists without fake story unlock")
@@ -118,11 +111,14 @@ func fight(game, chain: String, stage: String, require_core: bool) -> void:
 	var core: String = "disconnect" if chain == "analysis" else "redirect"
 	var first_core := -1.0
 	var warning_captured := false
+	var warning_intercepted := false
 	for tick in range(1600):
 		if game.screen == "report": break
 		game.code_panel.pointer = Vector2(-10000,-10000)
 		game._process(0.05)
 		var sim = game.simulation
+		for event in pressure_events:
+			if event.kind == "enemy_warning" and sim.elapsed <= float(event.fire_at) and sim.units.any(func(actor): return actor.id == event.actor_id and actor.hp <= 0): warning_intercepted = true
 		if game.screen != "battle": break
 		if stage == "2" and not warning_captured and not sim.warnings.is_empty():
 			warning_captured = true
@@ -143,7 +139,7 @@ func fight(game, chain: String, stage: String, require_core: bool) -> void:
 	game.presentation_cue.disconnect(track)
 	if stage == "2":
 		expect(pressure_events.any(func(event): return event.kind == "enemy_warning"),"classroom exposes actual warning "+chain)
-		expect(pressure_events.any(func(event): return event.kind == "enemy_release"),"classroom completes actual row attack "+chain)
+		expect(pressure_events.any(func(event): return event.kind == "enemy_release") or warning_intercepted,"classroom releases row attack or dies before its deadline "+chain)
 	expect(game.screen == "report" and game.result_won,"real original battle wins without item or code injection "+chain+stage)
 	expect(not require_core or first_core >= 0,"main region naturally activates selected core "+chain+stage)
 	expect(game.simulation.items.supply == 1 and game.simulation.items.converter == 1,"starter test does not use code items "+chain+stage)

@@ -122,6 +122,7 @@ func _ready() -> void:
 	items.add_theme_constant_override("separation",8)
 	canvas.add_child(items)
 	item_details = Control.new()
+	item_details.z_index = 40
 	item_details.position = Vector2(76,206)
 	item_details.mouse_filter = MOUSE_FILTER_IGNORE
 	canvas.add_child(item_details)
@@ -143,9 +144,15 @@ func _ready() -> void:
 			controls.source_preview = Chip.new()
 			card.add_child(controls.source_preview)
 			controls.source = _picker(card)
-		controls.destination_preview = Chip.new()
-		card.add_child(controls.destination_preview)
-		controls.destination = _picker(card)
+		if entry.effect in ["shield","revive"]:
+			controls.destination = OptionButton.new()
+			controls.destination.custom_minimum_size.y = 36
+			controls.destination.add_theme_font_size_override("font_size",14)
+			card.add_child(controls.destination)
+		else:
+			controls.destination_preview = Chip.new()
+			card.add_child(controls.destination_preview)
+			controls.destination = _picker(card)
 		if entry.effect == "convert": controls.destination.select(1)
 		controls.state = _label(card,"",11)
 		var use_button := Button.new()
@@ -444,7 +451,10 @@ func _select_item(id: String) -> void:
 		item_controls[item_id].card.visible = item_id == selected_item
 		item_controls[item_id].icon.button_pressed = item_id == selected_item
 	_update_hud()
-	if not selected_item.is_empty(): item_controls[selected_item].destination.get_child(0).grab_focus()
+	if not selected_item.is_empty():
+		var destination_control: Control = item_controls[selected_item].destination
+		if destination_control is OptionButton: destination_control.grab_focus()
+		else: destination_control.get_child(0).grab_focus()
 
 func hover_paused() -> bool:
 	if not is_visible_in_tree() or game.phase != "battle" or game.get("screen") not in [null,"battle"]: return false
@@ -516,12 +526,20 @@ func _update_hud() -> void:
 		preview_release.disabled = not preview_error.is_empty() or game.paused
 	for id in item_controls:
 		var controls: Dictionary = item_controls[id]
-		var destination: String = Codes.RULES.types.keys()[controls.destination.selected]
+		if Codes.item(id).effect in ["shield","revive"]:
+			var targets: Array = sim.units.filter(func(u): return u.side == 0 and ((u.hp <= 0) if id == "revive" else (u.hp > 0)))
+			var old: int = controls.destination.get_selected_id()
+			controls.destination.clear()
+			for target in targets:
+				controls.destination.add_item(target.name,target.id)
+				if target.id == old: controls.destination.select(controls.destination.item_count-1)
+		var destination := _item_destination(id)
 		var source: String = Codes.RULES.types.keys()[controls.source.selected] if controls.has("source") else ""
 		var error: String = sim.item_error(id,destination,source)
 		if controls.has("source_preview"):
 			controls.source_preview.configure(source, 2, sim.blocks.get(source,0) >= 2, "−")
-		controls.destination_preview.configure(destination, Codes.item(id).amount, sim.blocks.get(destination,0) + Codes.item(id).amount <= Codes.RULES.cache_cap, "+")
+		if controls.has("destination_preview"):
+			controls.destination_preview.configure(destination, Codes.item(id).amount, sim.blocks.get(destination,0) + Codes.item(id).amount <= Codes.RULES.cache_cap, "+")
 		controls.button.disabled = not error.is_empty() or game.paused
 		controls.state.text = "就绪" if error.is_empty() else error
 		controls.icon.available = sim.items.get(id,0) > 0
@@ -547,12 +565,18 @@ func _cast_code(id: String) -> void:
 func _use_code_item(id: String) -> void:
 	if not running or game.paused or selected_item != id: return
 	var controls: Dictionary = item_controls[id]
-	var destination: String = Codes.RULES.types.keys()[controls.destination.selected]
+	var destination := _item_destination(id)
 	var source: String = Codes.RULES.types.keys()[controls.source.selected] if controls.has("source") else ""
 	if sim.use_item(id,destination,source):
 		_consume_pending()
 		_select_item("")
 	_update_hud()
+
+func _item_destination(id: String) -> String:
+	var picker = item_controls[id].destination
+	if Codes.item(id).effect in ["shield","revive"]:
+		return str(picker.get_selected_id()) if picker.item_count > 0 else ""
+	return str(Codes.RULES.types.keys()[picker.selected])
 func feedback_frozen() -> bool:
 	return game.paused or hover_paused()
 

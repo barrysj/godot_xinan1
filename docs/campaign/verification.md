@@ -91,3 +91,9 @@ pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -Capt
 | 编辑器 `editor-core.test.mjs`／`server.test.mjs` | 隔离8877端口13／0；新增区域唯一映射、原文件读写、并发拒绝、备份和错误提示。服务只用于检查，结束后关闭 |
 
 源码布局 SHA-256 仍为 `826e443c1b89ffe32f3147a87e4f848d8dac1b5da48a88fcdfe6010c95f037ee`，未修改地标、边界、拐点、亮区或三态底图。编辑器与路线编辑仍分离，本次为数据校正与一致性校验；不支持旧探索迁移，不自动重置永久档。功能边界见 [CORE-02](core-02.md)；不代表新地点独立美术已制作、真人平衡或其他平台验收。截图仍在忽略的 `.godot/art-workflow/navigation-ui/`。
+
+## 两人队伍与必定会合
+
+2026-10-14，基线3d9a29f＋两人队伍改动：`Godot 4.7.2 --headless --path . --quit-after 1000 res://scenes/expedition/party_progression_check.tscn`为97／0；GUI移除headless，加`--rendering-method gl_compatibility`及`-- --capture`，97／0。隔离档均在.godot下。两条推荐队各实际打完四站，人数2/3/4/4；断点、招募保存失败、重复动作、冻结资格、非法阵位和终局四人均验证。自动策略为核心可用即施放、低血修复、首项合法奖励，不是随机胜率或真人平衡结论。实际截图按party-departure、party-meeting、party-formation前缀保存在.godot。会合／准备美术包装尚待同任务后续阶段。
+
+原主线回归同期已随规则更新测试入口：`expedition.tscn -- --campaign-flow-check`为150／0，涵盖序章、教学交易、三区域四站与三阶段终局；`starting_strategy_check.tscn`为142／0，涵盖两条起始链真实按钮、程序首发、教室预警释放或在截止前被击败取消、奖励与存档。新普通探索不会再使用旧默认双核心程序夹具，未指定策略的内部新局入口采用护盾推荐。推荐招募站位按近战前排、远程／支援后排选择空格，玩家仍能修改。

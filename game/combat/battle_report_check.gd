@@ -110,6 +110,27 @@ func _ready() -> void:
 	for entry in pursuit.report_stats.counters.values(): after += entry.damage
 	verify(after > before and is_equal_approx(pursuit.report_stats.program_damage+after-before,hp_before-victim.hp),"direct pursuit and already queued unit followup retain their actual independent attribution")
 	verify(pursuit.report_stats.counters[pursuer.id].healing == 0,"program commands do not create unit healing")
+	var rescue = Fixture.build()
+	var rescued: Dictionary = rescue._living(0)[1]
+	var attacker: Dictionary = rescue._living(1)[0]
+	rescue.elapsed = 2.0
+	hit(rescue,attacker,rescued,10000)
+	rescue.elapsed = 4.0
+	rescue.items.revive = 1
+	verify(rescue.use_item("revive",str(rescued.id)),"actual preparation item revives fallen teammate")
+	rescue.elapsed = 8.0
+	var revived_report: Dictionary = rescue.report_stats.snapshot(rescue)
+	verify(not row(revived_report,rescued.id).defeated and row(revived_report,rescued.id).alive_time == 6.0 and row(revived_report,rescued.id).first_defeat == 2.0,"revival preserves first defeat but counts subsequent living time")
+	rescue.items.shield = 1
+	var original_supply: float = rescue.report_stats.counters[rescue._living(0)[0].id].shield_given
+	verify(rescue.use_item("shield",str(rescued.id)),"actual preparation shield is available")
+	verify(rescue.report_stats.item_shield == 120 and rescue.report_stats.counters[rescue._living(0)[0].id].shield_given == original_supply,"item shield is not falsely attributed to the first teammate")
+	rescue.elapsed = 9.0
+	hit(rescue,attacker,rescued,10000)
+	rescue.elapsed = 10.0
+	var fallen_report: Dictionary = rescue.report_stats.snapshot(rescue)
+	verify(row(fallen_report,rescued.id).defeated and row(fallen_report,rescued.id).alive_time == 7.0,"second defeat stops accumulated living time")
+	verify(Report.valid_snapshot(JSON.parse_string(JSON.stringify(fallen_report))),"revival report survives original JSON contract")
 	verify(Report.valid_snapshot({}),"absent legacy extension remains compatible")
 	var independent := snapshot.duplicate(true)
 	sim.generated.clear()

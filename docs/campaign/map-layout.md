@@ -64,3 +64,7 @@
 南门只在 `resources/campaign/prologue.tres` 的教学入口使用，既有地图可保留南门地标但不加入正式区域。终局使用独立 `finale.tres` 的图书馆核心。不要根据内部历史站点 ID `gate` 或背景图片判断地点，真实身份来自 Place Id／Landmark；同背景可由不同地点复用。
 
 `campus_flow_rules.gd` 在真实资源校验及启动预检中核对区域的全部地标、缺失／跨区引用和南门用途；编辑器也拒绝区域重复映射。更新地标坐标／名称会同步显示，改变关联成员仍须同步配置 Godot 站点。专项命令与边界见 [CORE-02](core-02.md) 和 [验证页](verification.md#地图路线一致性)。本轮保留负责人地图 JSON 原字节，未生成底图或环境图。
+
+## 派遣地图入口
+
+顶部“派遣地图”打开同一服务下的 /dispatch，编辑校内／成都的地点和委托。它复用本工具服务和保存设施，独立读取game/meta/dispatch_map.json，不使用1800×1500探索布局坐标，也不改变区域路线。具体操作与存档约束见[派遣地图](../progression/dispatch-map.md#地点与委托编辑)。

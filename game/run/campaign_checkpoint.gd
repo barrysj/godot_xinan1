@@ -13,6 +13,11 @@ static func decode(source: Dictionary) -> Dictionary:
 		if not (phase is int or phase is float) or int(phase) != phase or phase < 0 or phase > 2: return {}
 		journey.data.finale_phase = int(phase)
 	if not source.get("build") is Dictionary or not build.restore(source.build): return {}
+	if build.expedition_party:
+		if source.mode != "region": return {}
+		var expected: int = mini(4,int(journey.data.step)+2)
+		if build.roster.size() > expected: return {}
+		if not journey.visit.data.is_empty() and journey.data.screen in ["battle","report","reward","reward_owner"] and build.roster.size() != expected: return {}
 	return {"journey":journey,"build":build,"mode":source.mode}
 
 static func pack(journey, build, mode: String) -> Dictionary:

@@ -37,8 +37,13 @@ static func eligible(_badge_owned: bool, roster: Array, inventory: Dictionary = 
 static func for_build(build, pool_id: String = "campus_rewards") -> Array:
 	var pool := eligible(build.badge_owned,build.roster,build.inventory,pool_id,build.training,build.combat_rewards,build.code_programs,build.code_supplies if build.growth_rules >= 2 else null)
 	if build.growth_rules < 2: return pool
+	for definition in DB.MANIFEST.rewards:
+		if definition.operation != "item" or not build.dispatch_items.has(definition.code_item_id): continue
+		var entry: Dictionary = definition.snapshot()
+		if allowed(entry,build.roster,build.inventory,build.training,build.code_supplies) and not pool.any(func(existing): return existing.id == entry.id): pool.append(entry)
 	var result: Array = []
 	for entry in pool:
+		if build.expedition_party and entry.operation == "recruit": continue
 		if entry.operation == "train":
 			if not build.can_train(DB.role_index(entry.target),int(entry.amount)): continue
 			entry.description = "本局生命 +10%、攻击 +8%。每人最多两份，集中训练计入；按基础属性相加。"
@@ -138,8 +143,8 @@ static func _add_pick(remaining: Array, candidates: Array, rng: RandomNumberGene
 	frozen.offer_slot = slot
 	offers.append(frozen)
 
-static func draw_for_build(build, rng: RandomNumberGenerator, offer_number: int, allow_recruits: bool = true, pool_id: String = "campus_rewards") -> Array:
-	var pool: Array = for_build(build,pool_id).filter(func(entry): return (allow_recruits or entry.operation != "recruit") and (entry.operation != "combat" or find_combat(entry.target).minimum_offer <= offer_number))
+static func draw_for_build(build, rng: RandomNumberGenerator, offer_number: int, allow_recruits: bool = true, pool_id: String = "campus_rewards", excluded_ids: Array = []) -> Array:
+	var pool: Array = for_build(build,pool_id).filter(func(entry): return not excluded_ids.has(entry.id) and (allow_recruits or entry.operation != "recruit") and (entry.operation != "combat" or find_combat(entry.target).minimum_offer <= offer_number))
 	if pool.filter(func(entry): return not fallback_only(entry)).size() >= 3: pool = pool.filter(func(entry): return not fallback_only(entry))
 	var offers: Array = []
 	var chains: Array[String] = active_chains(build).filter(func(chain): return pool.any(func(entry): return entry_chain(entry) == chain))
