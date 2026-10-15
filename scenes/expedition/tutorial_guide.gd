@@ -84,6 +84,13 @@ func present(rect: Rect2, id: String, title: String, body: String) -> void:
 		elif rect.position.x-width-80 > 0 and rect.get_center().x > size.x*0.65:
 			x = rect.position.x-width-64
 			y = clampf(rect.get_center().y-card.size.y/2,180,size.y-card.size.y-16)
+	# Keep the program effect and target picker readable during confirmation.
+	if id == "hack_release":
+		var preview: Control = game.code_panel.program_preview
+		var bounds := preview.get_global_rect()
+		if bounds.end.x+width+48 < size.x:
+			x = bounds.end.x+32
+			y = clampf(rect.get_center().y-card.size.y/2,16,size.y-card.size.y-16)
 	card.position = Vector2(x,y)
 	show()
 

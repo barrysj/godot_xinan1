@@ -101,6 +101,8 @@ func _ready() -> void:
 	click_control(guide.target)
 	await frame()
 	expect(guide.step_id == "hack_release","program click requests confirmation")
+	await shot("release")
+	expect(not guide.card.get_global_rect().intersects(game.code_panel.program_preview.get_global_rect()),"guide leaves program details visible")
 	click_control(guide.target)
 	await frame(); await frame()
 	expect(not game.simulation.program_uses.is_empty() and not guide.hold,"real hack releases tutorial hold")

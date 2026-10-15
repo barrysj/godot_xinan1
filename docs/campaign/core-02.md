@@ -75,3 +75,5 @@
 验证：Godot 4.7.2 标准版，PowerShell7，`--path . --rendering-method gl_compatibility --log-file .godot/tutorial-analysis-verified.log res://scenes/expedition/tutorial_check.tscn` 追踪60项／0失败；同入口 `-- --protect` 护盾59项／0失败（路径分支导致计数不同）。覆盖真实鼠标点击、实际物品消耗／积码／破解、完整胜利及派遣交易、首条路线出发、完成标记重载、再次暂停恢复与跳过释放。实机截图 `.godot/tutorial-{hotspot,formation,item,hack,dispatch,route}.png`。原 `expedition.tscn -- --campaign-flow-check` 150／0，`battle_feedback_check.tscn` 69／0。Web验证随发布档案登记；真人上手、手机真机与实体手柄未验收。
 
 待统筹：新玩家上手具备明确点击目标与操作停顿；总览和Roadmap保留原统筹快照。
+
+2026-10-16 补充：实际 Web 鼠标操作走通序章至首个派遣、校园路线出发；破解确认指引移到详情右侧，原生教学回归 61/0，新增说明面板避让断言。基线 31b672f。
