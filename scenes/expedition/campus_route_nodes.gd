@@ -15,7 +15,7 @@ func _ready() -> void:
 	for node in nodes:
 		points.append(node.point)
 		titles.append(node.title)
-		thumbnails.append(load(Presentation.background(region, node.stop, "daily" if board.map_state == "day" else "anomaly", flow)))
+		thumbnails.append(load(Presentation.thumbnail(region, node.stop, "daily" if board.map_state == "day" else "anomaly", flow)))
 		numbers.append(str(node.layer+1))
 	for first in nodes:
 		for next in nodes:
@@ -30,7 +30,7 @@ func sync() -> void:
 	if nodes.is_empty() or texture_state == board.map_state: return
 	texture_state = board.map_state
 	for i in range(nodes.size()):
-		buttons[i].set_thumbnail(load(Presentation.background(region, nodes[i].stop, "daily" if board.map_state == "day" else "anomaly", flow)))
+		buttons[i].set_thumbnail(load(Presentation.thumbnail(region, nodes[i].stop, "daily" if board.map_state == "day" else "anomaly", flow)))
 
 func _position_buttons() -> void:
 	super._position_buttons()

@@ -1,5 +1,6 @@
 schema_version: 3
 objects:
+  map_thumbnails: "manifests/map_thumbnails.yaml"
   preparation_items: "manifests/preparation_items.yaml"
   dispatch_staff: "manifests/dispatch_staff.yaml"
   dispatch_board: "manifests/dispatch_board.yaml"

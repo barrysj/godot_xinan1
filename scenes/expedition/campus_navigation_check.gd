@@ -93,6 +93,7 @@ func _ready() -> void:
 	await settle()
 	game.set_process(false)
 	game.progress.campaign.routes_acquired = true
+	game.progress.commission_unlocks.append("departure")
 	get_window().mode = Window.MODE_WINDOWED
 	var probe_flow := Regions.flow_for("region_b").duplicate(true)
 	var probe_geometry = preload("res://game/run/expanded_campus_geometry.gd").new()
@@ -119,6 +120,7 @@ func _ready() -> void:
 			preview._back()
 			await settle_map(preview.board)
 			await click(preview.route_buttons[index])
+			await settle_map(preview.board)
 			var region: String = preview.campaign_region_for_route(index)
 			var flow := Regions.flow_for(region)
 			var nodes: Array = preview.route_nodes.nodes
@@ -176,6 +178,7 @@ func _ready() -> void:
 		expect(game.campaign_panel.action_button("strategy:library:region:keep") != null, "one confirmation reaches the original starting strategy")
 		expect(game.progress.active_run.is_empty(), "strategy still precedes starting the journey")
 		game._campaign_action("strategy:library:region:keep")
+		game._campaign_action("depart")
 		await settle()
 		var picker = game.campaign_panel.station_picker
 		expect(picker != null and picker.destination_buttons.size() == 2, "initial compound stop exposes two places but one station")

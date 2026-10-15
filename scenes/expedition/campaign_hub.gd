@@ -180,6 +180,8 @@ func _home() -> void:
 	screen = "base"
 	campaign_panel.show()
 	campaign_panel.home(progress,chosen_supply)
+	if progress.campaign.routes_acquired:
+		preload("res://scenes/expedition/expanded_campus_map.gd").warm_texture("day" if progress.campaign.restored else "anomaly")
 	if debug_enabled: campaign_panel.text("DEBUG · 当前使用独立调试存档",18)
 
 func _input(event: InputEvent) -> void:

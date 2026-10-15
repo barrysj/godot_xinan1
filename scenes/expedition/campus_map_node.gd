@@ -7,7 +7,6 @@ var state := "day"
 var name_label: Label
 var badge: Label
 var photo: TextureRect
-var _thumbnails: Dictionary = {}
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(180, 136)
@@ -53,15 +52,7 @@ func _ready() -> void:
 func set_thumbnail(source: Texture2D) -> void:
 	thumbnail = source
 	if photo == null or source == null: return
-	var key := source.resource_path
-	if not _thumbnails.has(key):
-		var original := source.get_image()
-		var side := mini(original.get_width(), original.get_height())
-		var crop := original.get_region(Rect2i((original.get_width()-side)/2, (original.get_height()-side)/2, side, side))
-		crop.resize(128, 128, Image.INTERPOLATE_LANCZOS)
-		crop.generate_mipmaps()
-		_thumbnails[key] = ImageTexture.create_from_image(crop)
-	photo.texture = _thumbnails[key]
+	photo.texture = source
 
 func set_navigation_state(value: String) -> void:
 	state = value

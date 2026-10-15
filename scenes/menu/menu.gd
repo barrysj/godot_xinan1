@@ -76,6 +76,9 @@ func _open_codex() -> void:
 
 
 func _ready():
+	if "--map-loading-check" in OS.get_cmdline_user_args():
+		get_tree().change_scene_to_file.call_deferred("res://scenes/expedition/campus_map_loading_check.tscn")
+		return
 	get_window().title = $MarginContainer/Control/CenterContainer/Title.text
 	if "--web-background-check" in OS.get_cmdline_user_args():
 		var check = load("res://tools/web_background_check.gd").new()

@@ -15,6 +15,10 @@ static func background(region: String, place: String, state: String = "anomaly",
 	var entry := binding(region,place,flow)
 	return LocationSkin.path(str(entry[0]),state) if not entry.is_empty() else ""
 
+static func thumbnail(region: String, place: String, state: String, flow: Dictionary) -> String:
+	var entry := binding(region, place, flow)
+	return "res://assets/art/map_thumbnails/%s/%s.png" % [entry[0], state] if not entry.is_empty() else ""
+
 static func point(region: String, place: String, geometry, flow: Dictionary = {}) -> Vector2:
 	var entry := binding(region,place,flow)
 	if entry.is_empty() or not geometry.PLACES.has(entry[2]): return Vector2.ZERO

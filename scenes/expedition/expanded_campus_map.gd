@@ -31,7 +31,8 @@ const ZOOM_STEP = 1.25
 const VIEW_RESPONSE = 18.0
 const DRAG_RESPONSE = 32.0
 var map_state = "day"
-var texture_cache: Dictionary = {}
+static var texture_cache: Dictionary = {}
+static var pending_textures: Dictionary = {}
 var selected_route = -1
 var hovered_route = -1
 var hover_overrides_selection = true
@@ -52,6 +53,37 @@ var displayed_offset = Vector2.ZERO
 var last_drag = Vector2.ZERO
 var drag_distance = 0.0
 var dragging = false
+var loading_label: Label
+static var failed_textures: Dictionary = {}
+
+static func warm_texture(state: String) -> void:
+	if texture_cache.has(state) or pending_textures.has(state) or failed_textures.has(state): return
+	var path := PlatformAssetPaths.resolve(TEXTURES[state])
+	if ResourceLoader.load_threaded_request(path, "Texture2D") == OK:
+		pending_textures[state] = path
+	else:
+		failed_textures[state] = true
+
+func _update_texture() -> void:
+	loading_label.visible = not texture_cache.has(map_state)
+	loading_label.text = "地图暂不可用" if failed_textures.has(map_state) else "地图加载中…"
+	if texture_cache.has(map_state):
+		if surface.texture != texture_cache[map_state]:
+			surface.texture = texture_cache[map_state]
+			queue_redraw()
+		return
+	warm_texture(map_state)
+	if not pending_textures.has(map_state): return
+	var path: String = pending_textures[map_state]
+	var status := ResourceLoader.load_threaded_get_status(path)
+	if status == ResourceLoader.THREAD_LOAD_LOADED:
+		texture_cache[map_state] = ResourceLoader.load_threaded_get(path)
+		pending_textures.erase(map_state)
+		surface.texture = texture_cache[map_state]
+		queue_redraw()
+	elif status == ResourceLoader.THREAD_LOAD_FAILED:
+		failed_textures[map_state] = true
+		pending_textures.erase(map_state)
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -79,6 +111,15 @@ func _ready() -> void:
 	add_child(overlay)
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.draw.connect(_draw_overlay)
+	loading_label = Label.new()
+	loading_label.text = "地图加载中…"
+	loading_label.mouse_filter = MOUSE_FILTER_IGNORE
+	loading_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	loading_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	loading_label.add_theme_font_override("font", font)
+	loading_label.add_theme_font_size_override("font_size", 24)
+	add_child(loading_label)
+	loading_label.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 
 func fit_rect() -> Rect2:
 	var factor = minf(size.x / layout.SIZE.x, size.y / layout.SIZE.y)
@@ -93,6 +134,7 @@ func view_is_moving() -> bool:
 	return displayed_zoom != zoom or displayed_offset != map_offset
 
 func _process(delta: float) -> void:
+	_update_texture()
 	if not view_is_moving(): return
 	_advance_view(delta)
 	queue_redraw()
@@ -259,9 +301,6 @@ func _draw() -> void:
 	var active = active_route()
 	draw_rect(Rect2(Vector2.ZERO, size), BACKDROPS[map_state][1 if active >= 0 else 0])
 	if surface == null: return
-	if not texture_cache.has(map_state):
-		texture_cache[map_state] = load(PlatformAssetPaths.resolve(TEXTURES[map_state]))
-	surface.texture = texture_cache[map_state]
 	surface.position = map_rect().position + ATLAS_ORIGIN * map_rect().size / layout.SIZE
 	surface.size = ATLAS_SIZE * map_rect().size / layout.SIZE
 	focus_material.set_shader_parameter("focused", active >= 0 and route_area_focus)

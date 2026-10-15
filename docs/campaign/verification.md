@@ -97,3 +97,15 @@ pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -Capt
 2026-10-14，基线3d9a29f＋两人队伍改动：`Godot 4.7.2 --headless --path . --quit-after 1000 res://scenes/expedition/party_progression_check.tscn`为97／0；GUI移除headless，加`--rendering-method gl_compatibility`及`-- --capture`，97／0。隔离档均在.godot下。两条推荐队各实际打完四站，人数2/3/4/4；断点、招募保存失败、重复动作、冻结资格、非法阵位和终局四人均验证。自动策略为核心可用即施放、低血修复、首项合法奖励，不是随机胜率或真人平衡结论。实际截图按party-departure、party-meeting、party-formation前缀保存在.godot。会合／准备美术包装尚待同任务后续阶段。
 
 原主线回归同期已随规则更新测试入口：`expedition.tscn -- --campaign-flow-check`为150／0，涵盖序章、教学交易、三区域四站与三阶段终局；`starting_strategy_check.tscn`为142／0，涵盖两条起始链真实按钮、程序首发、教室预警释放或在截止前被击败取消、奖励与存档。新普通探索不会再使用旧默认双核心程序夹具，未指定策略的内部新局入口采用护盾推荐。推荐招募站位按近战前排、远程／支援后排选择空格，玩家仍能修改。
+
+## 地图加载与 Web 图书馆
+
+2026-10-16，main 基线 `c7184c6` 加本次修复，Godot 4.7.2／Compatibility。入口 `res://scenes/expedition/campus_map_loading_check.tscn`（桌面加 `-- --capture`）；Web 使用标准版 `--export-release Web builds/web/index.html`，本地测试 HTML 的 Godot args 设置为 `["--","--map-loading-check"]`，可加 `--map-loading-hold` 保留实机画面。测试使用独立 profile，不读写玩家档。公共命令参数见开发验证文档。
+
+- 桌面专项67／0，本地 release Web 专项67／0：真实区域按钮、128×128节点、放大中间状态、持续选区亮区、悬停不替换选择、详情原图、原基地打开地图、图书馆六个地理节点、原 Journey 的四个室内／馆前场景及平台纹理加载。
+- 原 `campus_navigation_check.tscn -- --capture`：555／0，1920×1080、2560×1440、1920×1200、1280×720；鼠标、键盘、平移、滚轮、区域与地点选择、原出发确认和返回。`place_scenes_check.tscn` 无头94／0；`campus_flow_preview.tscn -- --flow-preview-check` 无头120／0。旧测试夹具补上出发准备解锁与确认；地点跳到末站的夹具补足队员，流程专测隔离中途招募，未改生产规则。
+- 同机桌面点击区域同步耗时由1237～1785ms降到74～97ms；Web旧包其他两线为477／654ms，图书馆因引用已排除的原PNG而校验失败，新包三线为42～56ms。基地已预读情况下打开地图处理耗时桌面94ms、Web44ms，均低于250ms专项预算。
+- 独立场景的首次初始化仍包含脚本／资源依赖初始化（桌面约3～4秒、Web约4～5秒），不能把基地操作耗时当成游戏冷启动或联网下载时间。预读和缓存减少地图点击阻塞，不缩减整个Web包。
+- 24张缩略图由 `tools/build_map_thumbnails.gd -- --check` 逐字节验证；源裁切与旧运行时一致。日志与截图位于 `.godot/art-workflow/map-performance/`，四尺寸导航截图仍在 `.godot/art-workflow/navigation-ui/`，均不入Git；实际图片已查看并在聊天展示。
+
+已知边界：本地浏览器验收，不代表线上 Pages 已更新、手机真机或全战斗验收。旧系统证书、Kenney原图读取与退出时对象泄漏告警仍在；生成器脚本模式有旧GGT空场景告警，须同时核对 `MAP_THUMBNAILS checked=24`。最终地图专项无Script／Parse错误。保持原美术批准状态，衍生图登记不作为人工批准。

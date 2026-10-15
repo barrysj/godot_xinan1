@@ -1,10 +1,6 @@
-[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=15 format=3]
+[gd_resource type="Resource" script_class="CampusRoutePlace" load_steps=11 format=3]
 [ext_resource type="Script" path="res://game/content/campus_route_place.gd" id="s"]
 [ext_resource type="Script" path="res://game/content/campus_place_scene.gd" id="scene"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/m1_library/anomaly/atrium-down.png" id="bg_atrium"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/m1_library/anomaly/shelf-to-atrium.png" id="bg_shelves"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/m1_library/anomaly/window-corridor.png" id="bg_corridor"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/m1_campus_locations/library_front/anomaly.png" id="bg_entrance"]
 
 [ext_resource type="PackedScene" path="res://resources/campaign/layouts/library/atrium.tscn" id="layout_atrium"]
 [ext_resource type="PackedScene" path="res://resources/campaign/layouts/library/shelves.tscn" id="layout_shelves"]
@@ -14,7 +10,7 @@
 script = ExtResource("scene")
 id = "atrium"
 display_name = "中庭"
-background = ExtResource("bg_atrium")
+background_path = "res://assets/art/backgrounds/m1_library/anomaly/atrium-down.png"
 layout = ExtResource("layout_atrium")
 map_position = Vector2(0.18, 0.20)
 floor = 2
@@ -23,7 +19,7 @@ floor = 2
 script = ExtResource("scene")
 id = "shelves"
 display_name = "书架区"
-background = ExtResource("bg_shelves")
+background_path = "res://assets/art/backgrounds/m1_library/anomaly/shelf-to-atrium.png"
 layout = ExtResource("layout_shelves")
 map_position = Vector2(0.18, 0.82)
 floor = 1
@@ -32,7 +28,7 @@ floor = 1
 script = ExtResource("scene")
 id = "corridor"
 display_name = "窗边走廊"
-background = ExtResource("bg_corridor")
+background_path = "res://assets/art/backgrounds/m1_library/anomaly/window-corridor.png"
 layout = ExtResource("layout_corridor")
 map_position = Vector2(0.82, 0.20)
 floor = 2
@@ -41,7 +37,7 @@ floor = 2
 script = ExtResource("scene")
 id = "entrance"
 display_name = "馆前广场"
-background = ExtResource("bg_entrance")
+background_path = "res://assets/art/backgrounds/m1_campus_locations/library_front/anomaly.png"
 layout = ExtResource("layout_entrance")
 map_position = Vector2(0.82, 0.82)
 floor = 0

@@ -1,14 +1,19 @@
 @tool
 extends Node2D
 ## Native 2D authoring canvas. Direct Marker2D children use 1920 x 1080 coordinates.
-@export var background: Texture2D:
+@export_file("*.png", "*.webp", "*.svg") var background_path: String = "":
 	set(value):
-		background = value
+		background_path = value
+		_preview_texture = null
 		queue_redraw()
 const CANVAS := Vector2(1920,1080)
+var _preview_texture: Texture2D
 
 func _draw() -> void:
 	if not Engine.is_editor_hint(): return
+	if _preview_texture == null and not background_path.is_empty():
+		_preview_texture = load(background_path) as Texture2D
+	var background := _preview_texture
 	if background != null:
 		var source := background.get_size()
 		var scale_factor := maxf(CANVAS.x/source.x,CANVAS.y/source.y)

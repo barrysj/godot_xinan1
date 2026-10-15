@@ -34,6 +34,10 @@ func capture(label: String) -> void:
 
 func library_fixture() -> void:
 	game._begin_region("library")
+	# This fixture isolates scene navigation from the newer mid-route recruitment UI.
+	for id in ["archer", "analyst"]:
+		var role: int = game.Content.role_index(id)
+		if not game.run.roster.has(role): game.run.roster.append(role)
 	game.journey.data.step = 3
 	game.journey.data.visited = ["gate","walk","hall"]
 	expect(game.journey.enter(0,[]),"enter library via original journey")
@@ -100,6 +104,7 @@ func _ready() -> void:
 	await settle()
 	game.set_process(false)
 	game.progress.campaign.routes_acquired = true
+	game.progress.commission_unlocks.append("departure")
 	get_window().mode = Window.MODE_WINDOWED
 	var resolutions := [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)] if "--capture" in OS.get_cmdline_user_args() else [Vector2i(1920,1080)]
 	for resolution in resolutions:

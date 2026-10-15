@@ -58,7 +58,7 @@ static func validate(value: Variant) -> Array[String]:
 			errors.append("场景需引用 assets 内已有纹理")
 		else:
 			var resolved := PlatformPaths.resolve(background)
-			if not ResourceLoader.exists(resolved,"Texture2D") or not load(resolved) is Texture2D: errors.append("场景需引用 assets 内已有纹理")
+			if not ResourceLoader.exists(resolved,"Texture2D"): errors.append("场景需引用 assets 内已有纹理")
 		var floor_index: Variant = scene.get("floor")
 		if not (floor_index is int or floor_index is float) or not is_finite(float(floor_index)) or int(floor_index) != floor_index or floor_index < -3 or floor_index > 12: errors.append("场景楼层需为 -3～12 的整数")
 		var point: Variant = scene.get("position")

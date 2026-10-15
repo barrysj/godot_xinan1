@@ -112,11 +112,14 @@ func run(ui: Control) -> void:
 	await settle(ui)
 	game.set_process(false)
 	game.progress.campaign.routes_acquired = true
+	game.progress.commission_unlocks.append("departure")
 	var before_invalid: Dictionary = game.progress.to_dict().duplicate(true)
 	game._begin_region("missing")
 	expect(game.progress.to_dict() == before_invalid and game.campaign_mode.is_empty(),"invalid region cannot replace current state or checkpoint")
 	expect(has_text(game.campaign_panel,"区域配置无效"),"main controller explains invalid configuration")
 	game._begin_region("library")
+	# Authored encounter traversal is independent of mid-route recruitment.
+	game.run.expedition_party = false
 	flow = fixture()
 	expect(game.journey.begin("library",2,flow),"main controller uses configured journey")
 	game._show_journey()

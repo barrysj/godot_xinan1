@@ -125,7 +125,7 @@ func _build_nodes(index: int) -> void:
 	built_region = index
 	selected_node = -1
 	board.spatial_navigation_only = index >= 0
-	board.route_area_focus = index < 0
+	board.route_area_focus = true
 	if index < 0: return
 	route_nodes = RouteNodes.new()
 	route_nodes.board = board
@@ -136,6 +136,7 @@ func _build_nodes(index: int) -> void:
 	route_nodes.occluders.append_array(targets.occluders)
 	route_nodes.picked.connect(_choose_node)
 	route_nodes.sync()
+	board.focus_route(index)
 	route_nodes.buttons[0].grab_focus.call_deferred()
 
 func _choose_node(index: int) -> void:

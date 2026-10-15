@@ -1,0 +1,75 @@
+schema_version: 3
+object:
+  id: map_thumbnails
+  display_name: 校园地图节点缩略图
+  type: background
+  subtype: runtime_derivatives
+variants:
+  runtime_001:
+    stage: asset
+    version: "001"
+    selection: selected
+    approval: pending
+    root: assets/art/map_thumbnails
+    files:
+      basic_laboratory_building_anomaly: basic_laboratory_building/anomaly.png
+      basic_laboratory_building_daily: basic_laboratory_building/daily.png
+      chengdian_auditorium_commercial_street_anomaly: chengdian_auditorium_commercial_street/anomaly.png
+      chengdian_auditorium_commercial_street_daily: chengdian_auditorium_commercial_street/daily.png
+      library_front_anomaly: library_front/anomaly.png
+      library_front_daily: library_front/daily.png
+      pinxue_atrium_anomaly: pinxue_atrium/anomaly.png
+      pinxue_atrium_daily: pinxue_atrium/daily.png
+      pinxue_courtyard_anomaly: pinxue_courtyard/anomaly.png
+      pinxue_courtyard_daily: pinxue_courtyard/daily.png
+      south_gate_anomaly: south_gate/anomaly.png
+      south_gate_daily: south_gate/daily.png
+      sports_field_anomaly: sports_field/anomaly.png
+      sports_field_daily: sports_field/daily.png
+      student_activity_center_anomaly: student_activity_center/anomaly.png
+      student_activity_center_daily: student_activity_center/daily.png
+      west_lake_center_anomaly: west_lake_center/anomaly.png
+      west_lake_center_daily: west_lake_center/daily.png
+      west_lake_entrance_anomaly: west_lake_entrance/anomaly.png
+      west_lake_entrance_daily: west_lake_entrance/daily.png
+      xuezi_cafeteria_anomaly: xuezi_cafeteria/anomaly.png
+      xuezi_cafeteria_daily: xuezi_cafeteria/daily.png
+      yinhua_halal_cafeterias_anomaly: yinhua_halal_cafeterias/anomaly.png
+      yinhua_halal_cafeterias_daily: yinhua_halal_cafeterias/daily.png
+    metadata:
+      resolution: [128, 128]
+      transparent: false
+      generator: tools/build_map_thumbnails.gd
+      processing: center_square_lanczos_matches_previous_runtime_crop
+      source: assets/art/backgrounds/m1_campus_locations
+integration:
+  status: authorized_active
+  active_variant: runtime_001
+  root: assets/art/map_thumbnails
+  files:
+    basic_laboratory_building_anomaly: basic_laboratory_building/anomaly.png
+    basic_laboratory_building_daily: basic_laboratory_building/daily.png
+    chengdian_auditorium_commercial_street_anomaly: chengdian_auditorium_commercial_street/anomaly.png
+    chengdian_auditorium_commercial_street_daily: chengdian_auditorium_commercial_street/daily.png
+    library_front_anomaly: library_front/anomaly.png
+    library_front_daily: library_front/daily.png
+    pinxue_atrium_anomaly: pinxue_atrium/anomaly.png
+    pinxue_atrium_daily: pinxue_atrium/daily.png
+    pinxue_courtyard_anomaly: pinxue_courtyard/anomaly.png
+    pinxue_courtyard_daily: pinxue_courtyard/daily.png
+    south_gate_anomaly: south_gate/anomaly.png
+    south_gate_daily: south_gate/daily.png
+    sports_field_anomaly: sports_field/anomaly.png
+    sports_field_daily: sports_field/daily.png
+    student_activity_center_anomaly: student_activity_center/anomaly.png
+    student_activity_center_daily: student_activity_center/daily.png
+    west_lake_center_anomaly: west_lake_center/anomaly.png
+    west_lake_center_daily: west_lake_center/daily.png
+    west_lake_entrance_anomaly: west_lake_entrance/anomaly.png
+    west_lake_entrance_daily: west_lake_entrance/daily.png
+    xuezi_cafeteria_anomaly: xuezi_cafeteria/anomaly.png
+    xuezi_cafeteria_daily: xuezi_cafeteria/daily.png
+    yinhua_halal_cafeterias_anomaly: yinhua_halal_cafeterias/anomaly.png
+    yinhua_halal_cafeterias_daily: yinhua_halal_cafeterias/daily.png
+  evidence: docs/campaign/map-layout.md
+  visual_review: pending
