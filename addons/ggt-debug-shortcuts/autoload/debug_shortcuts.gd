@@ -33,10 +33,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			else:
 				get_tree().reload_current_scene()
 		elif event.is_action_pressed("ggt_debug_speedup_game"):
-			Engine.time_scale = 2 # if your gameplay changes timescale, then you probably want to create a time scale manager script to avoid issues
+			Engine.time_scale = preload("res://game/visual/game_tempo.gd").BASE_SCALE * 2
 			%Label.text = "Time scale 2x"
 		elif event.is_action_released("ggt_debug_speedup_game"):
-			Engine.time_scale = 1
+			Engine.time_scale = preload("res://game/visual/game_tempo.gd").BASE_SCALE
 			%Label.text = ""
 
 
@@ -50,3 +50,4 @@ func frame_advance():
 		get_tree().paused = true
 		_advancing_frame = false
 		%Label.text = "paused - stepped %d frames" % stepped_frames
+
