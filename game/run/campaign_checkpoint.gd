@@ -8,7 +8,6 @@ static func decode(source: Dictionary) -> Dictionary:
 	var journey = Journey.new()
 	var build = Build.new()
 	if not journey.restore(source.get("journey")): return {}
-	preload("res://game/run/campus_flow_catalog.gd").refresh_legacy_journey(journey,source.mode)
 	if source.mode == "finale":
 		var phase = journey.data.get("finale_phase")
 		if not (phase is int or phase is float) or int(phase) != phase or phase < 0 or phase > 2: return {}

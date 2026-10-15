@@ -43,36 +43,9 @@ func _ready() -> void:
 	print("MAP_ROUTE_SYNC_CHECK %d checks / %d failures" % [checks,failures])
 	get_tree().quit(1 if failures else 0)
 
-func legacy(region: String) -> Dictionary:
-	var flow := Catalog.snapshot(region).duplicate(true)
-	flow.erase("map_contract")
-	flow.erase("usage")
-	flow.revision = 1
-	flow.title = {"library":"图书馆区域","region_b":"第二终端区域","region_c":"第三终端区域"}[region]
-	flow.layers = {"library":[["gate"],["walk","court"],["hall"],["library"]],
-		"region_b":[["gate"],["hall","walk"],["court"],["end_b"]],
-		"region_c":[["gate"],["court","hall"],["walk"],["end_c"]]}[region]
-	var identities := {"library":{"gate":"south_gate","walk":"west_lake_entrance","court":"pinxue_courtyard","hall":"pinxue_atrium","library":"library_front"},
-		"region_b":{"gate":"south_gate","hall":"xuezi_cafeteria","walk":"yinhua_halal_cafeterias","court":"student_activity_center","end_b":"basic_laboratory_building"},
-		"region_c":{"gate":"south_gate","court":"sports_field","hall":"student_activity_center","walk":"west_lake_center","end_c":"chengdian_auditorium_commercial_street"}}
-	var stops := {}
-	for id in identities[region]:
-		var place = load("res://resources/campaign/places/%s.tres" % identities[region][id])
-		var row: Dictionary = flow.stops[id].duplicate(true)
-		row.merge({"title":place.display_name,"place_id":place.id,"landmark":place.landmark,
-			"offset":[place.offset.x,place.offset.y],"background":place.background_id,"library_interior":place.library_interior},true)
-		row.erase("map_landmarks")
-		row.scenes = []
-		for scene in place.scenes: row.scenes.append(scene.snapshot())
-		stops[id] = row
-	flow.stops = stops
-	return flow
-
-func old_journey(region: String, stage: int) -> RefCounted:
+func current_journey(region: String, stage: int) -> RefCounted:
 	var journey := Journey.new()
 	journey.begin(region,2)
-	journey.data.flow = legacy(region)
-	journey.data.map = journey.data.flow.layers.duplicate(true)
 	for step in stage:
 		journey.enter(0,[])
 		journey.visit.data.guard_won = true
@@ -84,7 +57,7 @@ func check_saved_routes() -> void:
 	for region in Catalog.PATHS:
 		for stage in 4:
 			for phase in ["route","visit","battle","report","reward"]:
-				var journey = old_journey(region,stage)
+				var journey = current_journey(region,stage)
 				if phase != "route": journey.enter(0,[])
 				journey.data.screen = phase
 				if phase == "report":
@@ -103,28 +76,36 @@ func check_saved_routes() -> void:
 				var baseline := Run.new()
 				baseline.restore(json_snapshot.build)
 				var decoded := Save.decode(json_snapshot)
-				expect(not decoded.is_empty(),"legacy region phase restores: %s/%s/%s" % [region,stage,phase])
+				expect(not decoded.is_empty(),"current region phase restores: %s/%s/%s" % [region,stage,phase])
 				if decoded.is_empty(): continue
-				expect(decoded.journey.data.flow.get("map_contract",0) == 1 and decoded.journey.data.flow.title == Catalog.snapshot(region).title,"old route receives current map binding")
-				expect(decoded.journey.data.step == stage and decoded.journey.data.visited == before_visited and decoded.journey.visit.data == before_visit,"migration preserves exact visit and completed station state")
-				expect(json_equal(decoded.build.to_dict(),baseline.to_dict()),"migration preserves original build, equipment and supplies")
+				expect(json_equal(decoded.journey.data.flow,journey.data.flow),"loading retains the exact saved route definition")
+				expect(decoded.journey.data.step == stage and decoded.journey.data.visited == before_visited and decoded.journey.visit.data == before_visit,"loading retains exact visit and completed station state")
+				expect(json_equal(decoded.build.to_dict(),baseline.to_dict()),"loading retains original build, equipment and supplies")
 				var second := Save.decode(JSON.parse_string(JSON.stringify(Save.pack(decoded.journey,decoded.build,"region"))))
-				expect(not second.is_empty() and json_equal(second.journey.snapshot(),decoded.journey.snapshot()),"migration is idempotent through the existing JSON codec")
-		var custom = old_journey(region,1)
+				expect(not second.is_empty() and json_equal(second.journey.snapshot(),decoded.journey.snapshot()),"current checkpoint round trip is stable through the existing JSON codec")
+		var custom = current_journey(region,1)
 		custom.data.flow.revision = 3
 		var original: Dictionary = custom.snapshot()
 		var decoded := Save.decode(Save.pack(custom,Run.new(),"region"))
 		expect(not decoded.is_empty() and decoded.journey.snapshot() == original,"custom frozen flow is not overwritten")
 	for usage in ["prologue","finale"]:
-		var journey = old_journey("library",0)
+		var journey := Journey.new()
+		journey.begin("library",2,null,usage)
 		journey.enter(0,[])
 		if usage == "finale": journey.data.finale_phase = 1
 		var decoded := Save.decode(Save.pack(journey,Run.new(),usage))
-		expect(not decoded.is_empty() and decoded.journey.data.map.size() == 1,"old special flow restores as its own single place")
+		expect(not decoded.is_empty() and decoded.journey.data.map.size() == 1,"current special flow restores as its own single place")
 		if decoded.is_empty(): continue
-		expect(decoded.journey.stop().place_id == ("south_gate" if usage == "prologue" else "library_front"),"South Gate is isolated to tutorial, including resumed games")
+		expect(decoded.journey.stop().place_id == ("south_gate" if usage == "prologue" else "library_front"),"South Gate is isolated to tutorial")
 		var second := Save.decode(JSON.parse_string(JSON.stringify(Save.pack(decoded.journey,decoded.build,usage))))
 		expect(not second.is_empty(),"special flow remains a valid saved checkpoint")
+	var unsupported := Journey.new()
+	unsupported.begin("library",2)
+	var unsupported_save := Save.pack(unsupported,Run.new(),"region")
+	unsupported_save.journey.flow.erase("map_contract")
+	var untouched := unsupported_save.duplicate(true)
+	expect(Save.decode(unsupported_save).is_empty(),"unsupported route format is rejected without migration")
+	expect(unsupported_save == untouched,"rejected checkpoint is never rewritten")
 	var wrong := Catalog.snapshot("library").duplicate(true)
 	wrong.stops.library.landmark = "north"
 	wrong.stops.library.map_landmarks = []

@@ -23,8 +23,8 @@ static func validate_snapshot(value: Variant, region: String) -> Array[String]:
 	var errors: Array[String] = []
 	if not value is Dictionary: return ["流程快照格式无效"]
 	if value.get("schema") != 1 or value.get("region") != region or region not in REGIONS: return ["区域 ID 或流程版本无效"]
-	if value.has("map_contract") and value.map_contract != 1: errors.append("地图配置契约无效")
-	if value.has("usage") and value.usage not in ["region","prologue","finale"]: errors.append("流程用途无效")
+	if value.get("map_contract") != 1: errors.append("地图配置契约无效")
+	if value.get("usage") not in ["region","prologue","finale"]: errors.append("流程用途无效")
 	if not value.get("title") is String or value.title.strip_edges().is_empty(): errors.append("区域名称为空")
 	if not _integer(value.get("revision"),1,100000): errors.append("修订号无效")
 	if not value.get("layers") is Array or value.layers.is_empty() or value.layers.size() > 12: return ["流程需配置 1～12 站"]
@@ -74,32 +74,29 @@ static func validate_snapshot(value: Variant, region: String) -> Array[String]:
 			var power: Variant = stop.get("power")
 			if not (power is float or power is int) or not is_finite(float(power)) or power < 0.1 or power > 3: errors.append(id+"：战斗强度需为 0.1～3")
 	if used.size() != value.stops.size(): errors.append("存在未被站次引用的站点")
-	# Old frozen journeys omit this marker. Fresh authored flows must match the editor.
-	if value.get("map_contract",0) == 1:
-		var usage: String = str(value.get("usage","region"))
-		if usage not in ["region","prologue","finale"]: errors.append("流程用途无效")
-		var mapped := {}
-		for stop in value.stops.values():
-			if not stop is Dictionary: continue
-			if usage != "prologue" and stop.get("place_id") == "south_gate": errors.append("南门仅用于教学，不得加入正式路线或终局")
-			var components: Variant = stop.get("map_landmarks",[])
-			if not components is Array or components.size() > 4:
-				errors.append("地图地标组件无效")
-				continue
-			var ids: Array = [stop.get("landmark","")] if components.is_empty() else components
-			for landmark in ids:
-				if not landmark is String or not landmarks.has(landmark): errors.append("地图地标组件不存在："+str(landmark))
-				mapped[landmark] = true
-		if usage == "region":
-			var expected := {}
-			var matching := 0
-			for route in layout.get("routes",[]):
-				if route.campaign_region != region: continue
-				matching += 1
-				for landmark in route.places: expected[landmark] = true
-			if matching != 1: errors.append("地图编辑器需为每个战役区域配置唯一选区")
-			for landmark in mapped:
-				if not expected.has(landmark): errors.append("探索地点不属于地图选区："+str(landmark))
-			for landmark in expected:
-				if not mapped.has(landmark): errors.append("关联地标缺少探索站点："+str(landmark))
+	var usage: String = str(value.get("usage",""))
+	var mapped := {}
+	for stop in value.stops.values():
+		if not stop is Dictionary: continue
+		if usage != "prologue" and stop.get("place_id") == "south_gate": errors.append("南门仅用于教学，不得加入正式路线或终局")
+		var components: Variant = stop.get("map_landmarks",[])
+		if not components is Array or components.size() > 4:
+			errors.append("地图地标组件无效")
+			continue
+		var ids: Array = [stop.get("landmark","")] if components.is_empty() else components
+		for landmark in ids:
+			if not landmark is String or not landmarks.has(landmark): errors.append("地图地标组件不存在："+str(landmark))
+			mapped[landmark] = true
+	if usage == "region":
+		var expected := {}
+		var matching := 0
+		for route in layout.get("routes",[]):
+			if route.campaign_region != region: continue
+			matching += 1
+			for landmark in route.places: expected[landmark] = true
+		if matching != 1: errors.append("地图编辑器需为每个战役区域配置唯一选区")
+		for landmark in mapped:
+			if not expected.has(landmark): errors.append("探索地点不属于地图选区："+str(landmark))
+		for landmark in expected:
+			if not mapped.has(landmark): errors.append("关联地标缺少探索站点："+str(landmark))
 	return errors

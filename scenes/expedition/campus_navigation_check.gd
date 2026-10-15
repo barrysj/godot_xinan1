@@ -99,7 +99,7 @@ func _ready() -> void:
 	probe_flow.stops.end_b.place_id = "basic_laboratory_building"
 	probe_flow.stops.end_b.landmark = "pinxue"
 	probe_flow.stops.end_b.offset = [0, -175]
-	expect(Presentation.point("region_b", "end_b", probe_geometry, probe_flow) == Vector2(925,740), "saved legacy placeholder uses corrected live point")
+	expect(Presentation.point("region_b", "end_b", probe_geometry, probe_flow) == probe_geometry.PLACES.pinxue.point+Vector2(0,-175), "authored anchor and offset determine the position without correction")
 	probe_flow.stops.end_b.offset = [20, 30]
 	expect(Presentation.point("region_b", "end_b", probe_geometry, probe_flow) == probe_geometry.PLACES.pinxue.point+Vector2(20,30), "custom authored offset remains effective")
 	var resolutions := [Vector2i(1920,1080), Vector2i(2560,1440), Vector2i(1920,1200), Vector2i(1280,720)]

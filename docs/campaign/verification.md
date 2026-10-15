@@ -75,7 +75,7 @@ Node命令：node --test tools/campus-map-editor/editor-core.test.mjs tools/camp
 
 ## 地图路线一致性
 
-2026-10-15，基线 `7146bb5` 加当前修复；先复现9项／6失败，随后核验编辑器数据、真实区域快照、节点表现和原保存／主线。统一入口：
+2026-10-15，基线 `742de3d` 加当前修正；核验编辑器数据、真实区域快照、节点表现和原保存／主线，并按负责人要求移除旧模板迁移与旧坐标纠偏。统一入口：
 
 ```powershell
 pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -EnginePath '<Godot console.exe>'
@@ -84,10 +84,10 @@ pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -Capt
 
 | 检查 | 结果与覆盖 |
 | --- | --- |
-| `campus_map_sync_check.tscn` | 347／0；三区地标集合／坐标／标题、南门用途、背景复用与地点身份；已知旧模板全部站次的route／visit／battle／report／reward，构筑／当前访问／完成进度不变，JSON幂等、旧教学／终局、自定义流程不覆盖 |
+| `campus_map_sync_check.tscn` | 349／0；三区地标集合／坐标／标题、南门用途、背景复用与地点身份；当前格式全部站次的 route／visit／battle／report／reward 保留流程、构筑、访问及完成进度，JSON 往返稳定，教学／终局隔离；旧格式拒绝且不改写源数据 |
 | `campus_flow_preview.tscn -- --flow-preview-check` | 120／0；原生资源、非法配置、五／12站边界、冻结快照与原控制器预览 |
 | `expedition.tscn -- --campaign-flow-check --order=012` | 149／0；真实教学、三区守卫及奖励／保存、三阶段终局与回基地 |
 | `campus_navigation_check.tscn -- --capture` | 555／0；1920×1080、2560×1440、1920×1200、1280×720，真实鼠标／键盘／缩放拖动、全部地标、当前／未来地点、会堂商业街共享一站、无残留南门文案，截图已查看并在聊天展示 |
 | 编辑器 `editor-core.test.mjs`／`server.test.mjs` | 隔离8877端口13／0；新增区域唯一映射、原文件读写、并发拒绝、备份和错误提示。服务只用于检查，结束后关闭 |
 
-源码布局 SHA-256 仍为 `826e443c1b89ffe32f3147a87e4f848d8dac1b5da48a88fcdfe6010c95f037ee`，未修改地标、边界、拐点、亮区或三态底图。功能与有限旧配置修正的边界见 [CORE-02](core-02.md)；不要求重置永久档，不代表新地点独立美术已制作、真人平衡或其他平台验收。截图仍在忽略的 `.godot/art-workflow/navigation-ui/`。
+源码布局 SHA-256 仍为 `826e443c1b89ffe32f3147a87e4f848d8dac1b5da48a88fcdfe6010c95f037ee`，未修改地标、边界、拐点、亮区或三态底图。编辑器与路线编辑仍分离，本次为数据校正与一致性校验；不支持旧探索迁移，不自动重置永久档。功能边界见 [CORE-02](core-02.md)；不代表新地点独立美术已制作、真人平衡或其他平台验收。截图仍在忽略的 `.godot/art-workflow/navigation-ui/`。
