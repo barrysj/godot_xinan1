@@ -16,11 +16,17 @@
 - 固定 Godot **4.7.2 标准版**。当前项目使用 GDScript；Mono 编辑器会拒绝 Web 导出。
 - CI 从 Godot 官方发布下载引擎与模板并验证 SHA-512，只安装 Web 单线程模板，随后缓存。
 - 使用 Compatibility 渲染器、单线程 Web 导出、默认相对资源路径；PWA 未启用。
-- 中文字体随游戏打包：Google Fonts Noto Sans SC，许可证见 `assets/fonts/OFL.txt`。
+- 中文字体随游戏打包：共用 Theme 使用思源黑体（Source Han Sans SC），许可证见 `assets/fonts/SourceHanSans-LICENSE.txt`。
 - Web 预设保持全部正式运行资源，但排除 `design/*` 概念与评审资料、校园地点和主菜单的原始 4K PNG，以及全图的原始 5400×4500 PNG；Web 使用两组 1920×1080 WebP 背景与一组三态 1800×1500 PNG 全图。非 Web 导出使用原图并排除 Web 衍生图。`assets/art/holo_cards` 必须保留，供图鉴动态发现。基地、图书馆和记忆终端使用导入纹理，不依赖导出包中的原 PNG 字节。
 - 本地构建和 Actions 上传前均检查整站体积，达到 900 MB 就失败，以留出 Pages 1 GB 限额余量。
 - 上传 `builds/web` 为官方 Pages artifact，再通过 `actions/deploy-pages` 发布。
 - `builds` 和 `.godot` 不提交。首次 CI 下载完整模板较大，后续命中缓存会更快。
+
+## Web 中文字体规则
+
+- 所有中文显示链路必须使用随游戏打包的中文字体。共用 Theme 的 `default_font` 使用该字体；新建独立 Theme 时也须设置可覆盖中文的默认字体，不能依赖 Windows 等系统的字体回退。
+- 必须核对实际显示控件所解析的字体，覆盖动态子控件、物品／破解说明、代码栏、悬停提示和下拉菜单。仅在父控件调用 `add_theme_font_override("font", ...)` 不能作为子控件已正确继承字体的证据；自绘文字和富文本也须检查各自实际使用的字体。
+- 修改字体、Theme 或上述文字显示链路后，先检查实际文案的字形覆盖，测试时关闭系统字体回退，再用实际导出的 Web 包检查中文并截图。桌面显示正常或字体文件已被打包，均不能代替 Web 显示验收。现有缺字检查入口和执行命令见[Web 战斗中文字体验证](../ui/verification.md#web-战斗中文字体)。
 
 ## 平台素材规格映射
 

@@ -36,3 +36,21 @@ node --test tools/campus-map-editor/editor-core.test.mjs
 
 
 2026-10-15地图数据校正及校验，基线742de3d：三区各六个地理节点与编辑器关联地标、名称和坐标一致，教学南门不再进入正式路线；旧固定出发／复合地点文案改读真实配置，内部gate和背景类型不决定地点。原四尺寸真实交互检查555／0，图已展示；当前格式存读档、旧格式拒绝、完整原战役及入口见[战役验证](../campaign/verification.md#地图路线一致性)。两个编辑入口仍分离，本次为一次数据对齐；旧坐标不纠偏。同站多地标交互仍复用原组件，资产批准状态不变；部分新对应的地点暂复用已有环境背景。
+
+## Web 战斗中文字体
+
+2026-10-16，基线 `c7184c6`＋本次修复，分支 `codex/fix-web-battle-fonts`，Godot 4.7.2 标准版、PowerShell 7。共用 Theme 默认改用随包的 `SourceHanSansSC-Medium.otf`，使战斗物品、破解预览、代码栏和下拉菜单不再依赖桌面系统字体回退。
+
+在项目根执行，`$godot` 指向 `.godot/web-tools/engine/Godot_v4.7.2-stable_win64_console.exe`：
+
+```powershell
+& $godot --headless --path . --quit-after 500 --log-file .godot/art-workflow/battle-font-check/font.log res://scenes/battle_demo/battle_font_check.tscn
+& $godot --path . --rendering-method gl_compatibility --quit-after 3000 --log-file .godot/art-workflow/battle-font-check/feedback.log res://scenes/battle_demo/battle_feedback_check.tscn -- --capture
+pwsh.exe -File ./build-web.ps1
+```
+
+字体检查实例化原 Campaign 战斗，读取真实物品／程序说明、四类代码、按钮、下拉菜单和人物详情的实际解析字体，关闭测试字体的系统回退后逐字检查。旧字体112项中89项缺字；修复后112／0。原战斗反馈图形专项81／0，覆盖1920×1080、2560×1440和1920×1200的详情、键盘／鼠标操作与暂停。
+
+本地 release Web 导出成功，正式 `/web/` 菜单→基地→继续探索→原战斗流程人工检查1280×720浏览器画面：四类代码名称、追踪破解／反冲护盾和代码补给说明正常，物品实际消耗成功；本次正式页面无脚本错误。浏览器截图保留在 `.godot/art-workflow/battle-font-check/web-after-program.jpg` 和 `web-after-item.jpg`，不入Git。Web release模板禁用场景路径覆写，浏览器验证使用正式入口；独立字体检查场景仅通过原生命令启动。
+
+此证据仅覆盖本地桌面浏览器的文字与上述交互；线上Pages、手机真机与全流程平台验收仍沿用既有边界。
