@@ -145,7 +145,7 @@ func _process(_delta: float) -> void:
 	canvas.scale = Vector2.ONE * factor
 	canvas.position = (size - Vector2(1280, 720) * factor) / 2
 	if not pinned and not bag.visible and not (panel.visible and Rect2(panel.position, panel.size).has_point(pointer)):
-		observed = pick(pointer)
+		observed = {} if _code_hud_owns_pointer(canvas.get_global_transform()*pointer) else pick(pointer)
 	if is_instance_valid(game.deployment) and game.deployment.dragging:
 		close_info()
 	if pinned:
@@ -219,6 +219,9 @@ func _input(event: InputEvent) -> void:
 		return
 	if not (event is InputEventMouseMotion or event is InputEventMouseButton): return
 	pointer = canvas.get_global_transform().affine_inverse() * event.position
+	if _code_hud_owns_pointer(event.position):
+		if not pinned: close_info()
+		return
 	if bag.visible:
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and not Rect2(bag.position, bag.size).has_point(pointer):
 			close_bag()
@@ -284,3 +287,7 @@ func exchange() -> void:
 func close_bag() -> void:
 	if bag != null: bag.hide()
 	if shade != null: shade.hide()
+
+
+func _code_hud_owns_pointer(at: Vector2) -> bool:
+	return is_instance_valid(game.code_panel) and game.code_panel.owns_pointer(at)

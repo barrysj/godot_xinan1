@@ -600,3 +600,13 @@ func _update_absorption_cycle() -> void:
 	if ratio >= 0 and code_fx.reduced_motion: ratio = 1.0
 	bank_labels.purple.cycle_ratio = ratio
 	bank_labels.purple.queue_redraw()
+
+
+func owns_pointer(at: Vector2) -> bool:
+	if not is_visible_in_tree() or not running: return false
+	if _pointer_on_program_area(at): return true
+	for controls in item_controls.values():
+		for key in ["icon","card"]:
+			var control: Control = controls[key]
+			if control.is_visible_in_tree() and control.get_global_rect().has_point(at): return true
+	return false

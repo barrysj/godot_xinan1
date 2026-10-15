@@ -403,6 +403,7 @@ func _refresh() -> void:
 		price.tooltip_text = "修复资源消耗"
 		var reason: String = progress.commission_reason(task.id,selected_staff)
 		var action := _button(footer,"已完成" if done else "派遣",func(): execute(task.id))
+		action.set_meta("action_id","commission:"+task.id)
 		action.icon = _symbol(1)
 		action.expand_icon = true
 		action.add_theme_constant_override("icon_max_width",26)
@@ -578,3 +579,4 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		if not busy and not is_instance_valid(result_layer): closed.emit()
+

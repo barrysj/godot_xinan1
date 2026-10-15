@@ -63,3 +63,15 @@
 2026-10-14，基线3d9a29f后改动：新普通探索只拥有所选两人，第二、第三节点进入时各选择一名出发时已解锁、尚未入队的同伴。人数2→3→4→4，未选同伴不能进入下一场战斗；序章和终局保持四人。派遣角色资格同时用于出发和会合候选，下次新局生效。旧活动探索保留原规则，新ShortRun schema9复用原检查点，失败写入回滚，非本局角色不能部署开战。人物交谈不再给新局隐式加人。
 
 入口：原campaign_hub、ShortRun、campaign_checkpoint、deployment_panel；权威数值与具体规则见combat/rules.md。party_progression_check.tscn无头和1920×1080 GUI均97项／0失败，真实模拟两条推荐队各完成四站，同时覆盖候选冻结、坏档、重复选择、保存失败回滚、待选会合续玩与四人终局。截图.godot/party-departure-*.png、party-meeting-*.png、party-formation-*.png；命令见战役验证页。此阶段界面为功能接入版，后续美术包装仍在任务内。
+
+## 可操作教学指引（2026-10-16，待统筹）
+
+基线 `fb4febe` 加本次修改。已实装原主线按钮高亮、呼吸边框与箭头，入口 `scenes/expedition/tutorial_guide.gd`，由原 `campaign_hub.gd` 更新。覆盖南门热点／详情／阅读返回、守卫挑战、卡片选择与阵位、开战、手动暂停／恢复、四档速度、补给类型与使用、自然积码与破解确认、战报领奖／归属／出口、基地教学派遣、人员／免费出发准备委托／成果、校园地图选路和首次出发。提示卡放在目标旁边，保留真实按钮和原输入；支持点击与原拖拽编队，不增设平行教学战斗。
+
+战斗操作步骤暂缓模拟，积码阶段放行原模拟；核心程序可用时暂缓并提示确认，成功破解后放行。代码来源和费用仍来自原战斗规则，不额外发币或改变敌方数值。补给引导根据队伍选择数据／权限类型；玩家另选类型时，积码超过10秒且热修复可用可教学热修复。可以跳过本次引导，菜单暂停与教学暂缓分离。战前重试重新提示，存档恢复按实际访问状态继续；首次区域出发将 `tutorial_route_selected` 写入原 campaign.story_flags，与检查点同事务提交。已有终端或完成标记的档不重复基地引导；不增加存档schema。
+
+真实点击发现状态／人物详情可能抢走前景物品面板的输入，现由 code_panel.owns_pointer 明确前景区域，battle_inspector 与 unit_status_layer 避让。
+
+验证：Godot 4.7.2 标准版，PowerShell7，`--path . --rendering-method gl_compatibility --log-file .godot/tutorial-analysis-verified.log res://scenes/expedition/tutorial_check.tscn` 追踪60项／0失败；同入口 `-- --protect` 护盾59项／0失败（路径分支导致计数不同）。覆盖真实鼠标点击、实际物品消耗／积码／破解、完整胜利及派遣交易、首条路线出发、完成标记重载、再次暂停恢复与跳过释放。实机截图 `.godot/tutorial-{hotspot,formation,item,hack,dispatch,route}.png`。原 `expedition.tscn -- --campaign-flow-check` 150／0，`battle_feedback_check.tscn` 69／0。Web验证随发布档案登记；真人上手、手机真机与实体手柄未验收。
+
+待统筹：新玩家上手具备明确点击目标与操作停顿；总览和Roadmap保留原统筹快照。

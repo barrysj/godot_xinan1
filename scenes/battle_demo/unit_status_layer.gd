@@ -59,7 +59,13 @@ func hover_paused() -> bool:
 
 func _input(event: InputEvent) -> void:
 	if not active(): return
-	if event is InputEventMouse: pointer = event.position
+	if event is InputEventMouse:
+		pointer = event.position
+		if is_instance_valid(game.code_panel) and game.code_panel.owns_pointer(pointer):
+			hovered_id = -1
+			pinned_id = -1
+			detail.hide()
+			return
 	if event.is_action_pressed("ui_cancel") and (pinned_id >= 0 or hovered_id >= 0):
 		pinned_id = -1
 		pointer = Vector2(-10000,-10000)
@@ -192,6 +198,7 @@ func _process(delta: float) -> void:
 		if u.side == 1:
 			intents[u.id] = Rect2(game.origin+_bubble_position(u)*game.scale_factor,Vector2(32,36)*game.scale_factor)
 		if hit_rects[u.id].has_point(pointer) or (intents.has(u.id) and intents[u.id].has_point(pointer)): hovered_id = u.id
+	if is_instance_valid(game.code_panel) and game.code_panel.owns_pointer(pointer): hovered_id = -1
 	if pinned_id >= 0 and not hit_rects.has(pinned_id): pinned_id = -1
 	_visual_update(delta)
 	_update_detail()

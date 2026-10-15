@@ -2,6 +2,7 @@ extends "res://scenes/expedition/meta_hub.gd"
 ## M1 flow adapter; old random runs retain the existing hub path.
 const Journey = preload("res://game/run/campaign_journey.gd")
 const CampaignSave = preload("res://game/run/campaign_checkpoint.gd")
+var tutorial_guide: Control
 var journey = Journey.new()
 var campaign_mode = ""
 var campaign_panel: PanelContainer
@@ -50,6 +51,13 @@ func _ready() -> void:
 	add_child(campaign_panel)
 	move_child(pause_overlay,get_child_count()-1)
 	campaign_panel.action.connect(_campaign_action)
+	tutorial_guide = preload("res://scenes/expedition/tutorial_guide.gd").new()
+	tutorial_guide.game = self
+	add_child(tutorial_guide)
+	# Focused regression harnesses drive simulation without tutorial input.
+	var test_scene := get_tree().current_scene.scene_file_path if get_tree().current_scene != null else ""
+	if (test_scene.contains("_check") or OS.get_cmdline_user_args().has("--campaign-flow-check")) and not test_scene.contains("tutorial_check"):
+		tutorial_guide.skipped = true
 	_home()
 	if "--library-environment-preview" in OS.get_cmdline_user_args() or "--library-environment-preview-capture" in OS.get_cmdline_user_args():
 		_show_library_environment_preview()
@@ -299,7 +307,9 @@ func _begin_region(region: String, mode: String = "region", starting_strategy: S
 	if mode == "finale":
 		journey.data.finale_phase = progress.campaign.finale_stage
 		journey.enter(0,progress.campaign.memories)
-	if _save_campaign(): _show_journey()
+	var flags: Dictionary = progress.campaign.story_flags.duplicate(true)
+	if mode == "region": flags["tutorial_route_selected"] = true
+	if _save_campaign(flags): _show_journey()
 
 func _save_campaign(story_flags: Variant = null) -> bool:
 	if campaign_mode.is_empty(): return true
@@ -936,3 +946,12 @@ func _ending() -> void:
 	campaign_panel.show()
 	campaign_panel.clear("校园 · 日常恢复", "三处区域已经稳定，校园重新接受管理员与毕业生人格共同创造的日常。\n前代重新理解了指令，成为只读记录者；它无法修改或回滚所观察的世界，只能追加记录日志。\n\n记录进程继续运行。很久以后，它依然没有停止。")
 	campaign_panel.button("返回校园","base")
+
+func _process(delta: float) -> void:
+	if is_instance_valid(tutorial_guide):
+		tutorial_guide.update()
+		if tutorial_guide.hold and screen == "battle":
+			queue_redraw()
+			return
+	super._process(delta)
+
