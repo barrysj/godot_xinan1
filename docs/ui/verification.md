@@ -54,3 +54,7 @@ pwsh.exe -File ./build-web.ps1
 本地 release Web 导出成功，正式 `/web/` 菜单→基地→继续探索→原战斗流程人工检查1280×720浏览器画面：四类代码名称、追踪破解／反冲护盾和代码补给说明正常，物品实际消耗成功；本次正式页面无脚本错误。浏览器截图保留在 `.godot/art-workflow/battle-font-check/web-after-program.jpg` 和 `web-after-item.jpg`，不入Git。Web release模板禁用场景路径覆写，浏览器验证使用正式入口；独立字体检查场景仅通过原生命令启动。
 
 此证据仅覆盖本地桌面浏览器的文字与上述交互；线上Pages、手机真机与全流程平台验收仍沿用既有边界。
+
+### 2026-10-16 单字体复测
+
+`battle_font_check.tscn` 扩展至事件页 FontVariation 与教学标签，关闭 FontFile 及 FontVariation 基础字库的系统回退，115 项／0 失败。正式 Web 包仅保留思源字体，实际菜单、事件奖励页、教学卡、物品说明、破解目标与派遣／地图中文字形正常。发布包范围、截图与命令见 RELEASE-01 的单字体瘦身记录。

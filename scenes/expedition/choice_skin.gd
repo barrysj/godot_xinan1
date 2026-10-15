@@ -36,8 +36,9 @@ static func font(role: String) -> Font:
 	if type_rules.is_empty(): type_rules = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/typography.json"))
 	var token: String = "display" if role == "title" else "heading" if role in ["section","option","button","outcome"] else "mono" if role == "kicker" else "body" if role in ["body","option_description"] else "caption"
 	var variant := FontVariation.new()
-	variant.base_font = preload("res://assets/fonts/NotoSansSC.ttf")
-	variant.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"):type_rules.roles[token].weight}
+	variant.base_font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
+	# Static Medium face: preserve title hierarchy with modest synthetic emboldening.
+	variant.variation_embolden = maxf(0.0,(float(type_rules.roles[token].weight)-500.0)/300.0)
 	fonts[role] = variant
 	return variant
 

@@ -17,6 +17,7 @@ func check_text(control, text: String, label: String, key := "font") -> void:
 	if not fonts.has(original.get_instance_id()):
 		var copy: Font = original.duplicate(true)
 		if copy is FontFile: copy.allow_system_fallback = false
+		if copy is FontVariation and copy.base_font is FontFile: copy.base_font.allow_system_fallback = false
 		fonts[original.get_instance_id()] = copy
 	var font: Font = fonts[original.get_instance_id()]
 	var missing := ""
@@ -51,6 +52,12 @@ func _ready() -> void:
 	game.run.roster.assign([0, 1, 2, 3])
 	game._build_units()
 	game._start()
+	var choice_label := Label.new()
+	choice_label.add_theme_font_override("font", preload("res://scenes/expedition/choice_skin.gd").font("body"))
+	add_child(choice_label)
+	check_text(choice_label, "校园运行记录选择路线出发准备派遣破解验证护盾权限追踪", "choice theme")
+	check_controls(game.tutorial_guide)
+	check_text(game.tutorial_guide.description, "操作指引探索热点排列阵型积攒代码使用物品暂停调整速度解锁派遣校园路线", "tutorial")
 	var panel = game.code_panel
 	panel._process(0)
 	panel.set_process(false)

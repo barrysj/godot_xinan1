@@ -54,3 +54,7 @@ builds/**/*
 # Godot-generated import descriptors and script ID sidecars are local.
 *.import
 *.uid
+
+# Web-only texture compression is a reproducible release setting.
+!assets/art/web_backgrounds/**/*.import
+!assets/art/web_campus_map/**/*.import

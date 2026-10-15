@@ -55,3 +55,10 @@ func _check(source: String, failures: Array[String], expected_prefix: String = "
 		failures.append("platform case: " + source)
 	if PlatformAssetPaths.resolve(source) != source:
 		failures.append("native selection: " + source)
+
+	var config := ConfigFile.new()
+	if config.load(web+".import") != OK or config.get_value("params","compress/mode",-1) != 1 or not is_equal_approx(float(config.get_value("params","compress/lossy_quality",0)),0.9):
+		failures.append("web texture must use Lossy quality 0.9: " + web)
+	var texture := load(web) as Texture2D
+	if texture == null or texture.get_image() == null:
+		failures.append("cannot decode imported web texture: " + web)

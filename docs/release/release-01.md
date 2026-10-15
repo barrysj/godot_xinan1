@@ -39,3 +39,13 @@ Web 预设保留 `all_resources`，排除 `design/*` 及校园地点、主菜单
 ## 平台规格适配（已汇总（2026-10-10））
 
 2026-09-30：运行时平台路径统一由 [platform_asset_paths.gd](../../game/visual/platform_asset_paths.gd) 选择，主菜单、校园地点和全图只传原始路径；当前登记 Web 两组 1080p WebP 及全图一组 1800×1500 PNG，其余平台保持原图。Web 背景生成器只生产前两组；全图使用已留存的三态低清图。各平台导出预设负责排除不需要的版本。此层只解决按平台选文件，不处理屏幕尺寸动态分档。Android 与 iOS 新规格须另备资产、配置导出预设并做设备验收。
+
+## 单字体与 Web 纹理瘦身（2026-10-16，待统筹）
+
+基线 `31b672f`；保持正式主线入口与平台映射。事件页／过场统一思源，排除 Web 内 Noto 与 Open Sans；33 张 Web 专用背景／地图导入使用高质量有损压缩。实现与后续资源接入契约见 [发布规则](web-publishing.md#单字体与纹理压缩2026-10-16)。
+
+本地优化前现有 PCK 为 247,684,692 字节；优化后 167,165,192 字节（约 167.2 MB），减少约 80.5 MB（32.5%）；整站约 197.4 MiB。统计包含全部运行资源，不是压缩下载体积。检查命令：`pwsh.exe -File build-web.ps1`、`py -3 tools/web_package_check.py builds/web/index.pck`、Godot `--headless --path . res://tools/platform_asset_check.tscn`。纹理 33/0；PCK 审计仅一个思源字体。
+
+正式 release 包在本地 HTTP、1280×720 桌面浏览器实际点击完成：菜单→热点读取→编队→暂停／恢复／调速→代码补给→积码／破解→胜利领奖→基地→首个免费派遣解锁→校园地图→图书馆路线出发。中文、角色、背景、地图均显示，控制台无 error/warn。截图 `.godot/web-tutorial-dispatch.jpg`、`.godot/web-tutorial-route.jpg`。未触发线上 Pages，也不以桌面浏览器替代手机真机验收。该变更影响发布包和共用字体，待统筹汇总。
+
+最终包刷新后正确恢复图书馆路线第 1/4 站，已完成教学不再重复出现。最终构建基线 `49b0f47` 加本节单字体／纹理改动。
