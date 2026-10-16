@@ -175,6 +175,9 @@ func _ready() -> void:
 	expect(guide.step_id == "resume_extra","manual pause during items remains recoverable")
 	game.paused = false
 	guide.update()
+	game.code_panel._select_item("supply")
+	guide.update()
+	await frame()
 	# A human press spans multiple frames; the card must not hide between them.
 	var skip_at: Vector2 = guide.skip_button.get_global_rect().get_center()
 	var press := InputEventMouseButton.new()
@@ -187,7 +190,8 @@ func _ready() -> void:
 	release.pressed = false
 	get_viewport().push_input(release,true)
 	await frame()
-	expect(guide.skipped,"real skip click survives a process frame")
-	expect(not guide.hold and not guide.visible,"skip releases tutorial hold without changing player pause")
+	expect(not guide.skipped and guide.battle_step == 4,"next click advances current step only")
+	expect(guide.visible and guide.step_id != "item" and not game.paused,"later guidance remains visible after next")
+	expect(game.code_panel.selected_item.is_empty(),"next closes skipped item so inspection pause cannot stall battle")
 	print("TUTORIAL_CHECK checks=",checks," failures=",failures)
 	get_tree().quit(0 if failures == 0 else 1)

@@ -4,4 +4,4 @@
 script = ExtResource("s")
 id = "analysis"
 display_name = "漏洞研究"
-description = "两人成型：队友验证漏洞追加80%攻击追击并生成数据；共享4秒验证冷却。"
+description = "2人激活。队友普攻验证漏洞时，追加验证者80%攻击的追击，并获得1块数据。每4秒触发一次。"

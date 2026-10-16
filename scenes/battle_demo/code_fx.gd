@@ -113,7 +113,7 @@ func _draw_chain_states() -> void:
 		var color := Color("ffb85c") if exposed else Color("67d7ff")
 		var at := _battle_point(unit.position)
 		draw_arc(at + Vector2(0,12), 34, 0, TAU, 28, color, 3 if exposed else 2, true)
-		draw_string(FONT, at-Vector2(32,80), "暴露" if exposed else "已确认" if confirmed else "待验证", HORIZONTAL_ALIGNMENT_CENTER, 64, 16, color)
+		draw_string(FONT, at-Vector2(32,80), "暴露" if exposed else "漏洞已验证" if confirmed else "待验证", HORIZONTAL_ALIGNMENT_CENTER, 64, 16, color)
 	for actor_id in sim.warnings:
 		var warning: Dictionary = sim.warnings[actor_id]
 		var actor: Dictionary = sim.unit(actor_id)

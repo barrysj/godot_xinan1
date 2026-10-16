@@ -4,4 +4,4 @@
 script = ExtResource("s")
 id = "protect"
 display_name = "容错工程"
-description = "两人成型：开场前线两人各20盾；累计吸收80伤害产权限并恢复受伤友军8生命。"
+description = "2人激活。开场为前线两名同学各提供20护盾，持续5秒。护盾吸收伤害、产出权限时，为生命比例最低的受伤同学恢复8生命。"

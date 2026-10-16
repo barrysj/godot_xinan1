@@ -218,7 +218,7 @@ func program_error(id: String, target_id: int = -1, payment: Dictionary = {}) ->
 	if program.per_battle_limit > 0 and program_uses.get(id, 0) >= program.per_battle_limit: return "本场次数已用尽"
 	if program.effect in ["pursuit", "repair"]:
 		var targets := program_targets(id)
-		if targets.is_empty(): return "需要已确认敌人" if program.effect == "pursuit" else "没有受伤友军"
+		if targets.is_empty(): return "需要先由另一名队友普攻验证目标的漏洞（验证后8秒内可用）" if program.effect == "pursuit" else "没有受伤友军"
 		if target_id >= 0 and not targets.any(func(u): return u.id == target_id): return "目标已失效"
 	var cost: Dictionary = payment_for(id) if payment.is_empty() else payment
 	if program.any_cost <= 0 and cost != program.cost: return "配方不匹配"
@@ -608,7 +608,7 @@ func intent_for(actor_id: int) -> Dictionary:
 				"guard": intent.target_description = "自身及两格内一名最低生命比例友方"; intent.target_id = -1
 				"inventor": intent.target_description = "两名最低生命比例友方（释放时选定）"; intent.target_id = -1
 				"healer": intent.target_description = "最低生命比例受伤友方；无人受伤时为最低生命比例友方加盾"; intent.target_id = -1
-				"archer": intent.target_description = "射程内优先已确认或暴露的后排敌方（释放时选定）"; intent.target_id = -1
+				"archer": intent.target_description = "射程内优先漏洞已验证或暴露的后排敌方（释放时选定）"; intent.target_id = -1
 		if intent.kind == "cast" and actor.side == 1 and _enemy_rule(actor) in ["radio", "board", "colossus"]:
 			var rule := _enemy_rule(actor)
 			intent.target_id = -1

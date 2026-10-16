@@ -36,11 +36,29 @@ func _ready() -> void:
 	expect(game.phase == "battle","original battle started")
 	game.set_process(false)
 	await frame()
+	game.paused = true
+	await frame()
+	click(game.code_panel.program_controls.disconnect.button.get_global_rect().get_center())
+	await frame()
+	expect(game.code_panel.program_preview.visible,"paused program actual click opens description")
+	expect(game.code_panel.preview_release.disabled,"paused program cannot spend resources")
+	game.code_panel._hide_program_preview()
+	click(game.code_panel.item_controls.supply.icon.get_global_rect().get_center())
+	await frame()
+	expect(game.code_panel.selected_item == "supply","paused item actual click opens description")
+	expect(game.code_panel.item_controls.supply.button.disabled,"paused item cannot spend resources")
+	game.code_panel._select_item("")
+	expect(not glossary.TERMS.has("已确认"),"confirmed is not a glossary term")
 	game.code_panel._show_program_preview("disconnect",true)
 	await frame()
 	var rich = game.code_panel.preview_effect
 	expect(rich.get_theme_font("normal_font").resource_path.contains("SourceHan"),"bundled Chinese font")
+	await frame()
+	await frame()
 	var bounds: Rect2 = rich.get_global_rect()
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/paused-preview.png")
 	var bundled = rich.get_theme_font("normal_font")
 	bundled.allow_system_fallback = false
 	var missing := ""
@@ -90,5 +108,74 @@ func _ready() -> void:
 		game.code_panel.program_preview.hide()
 		await frame()
 		expect(not rich.pinned and rich.tooltip_panel == null,"hiding source closes explanation")
+	game.code_panel._hide_program_preview()
+	await frame()
+	expect(game.code_panel.bond_rows.size() == 2,"multiple team bonds have separate rows")
+	for row in game.code_panel.bond_rows.values():
+		expect(row.plain_copy.contains("2/2") and row.modulate.a == 1.0,"mixed roster activates each listed bond")
+	var bond = game.code_panel.bond_rows.analysis
+	await inspect_link(bond,"漏洞研究")
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/bonds-team.png")
+	bond.close_term()
+	var unit = game.units.filter(func(u): return u.side == 0)[0]
+	var at: Vector2 = game.origin+(game._unit_center(unit)+Vector2(0,-35))*game.scale_factor
+	var hover := InputEventMouseMotion.new()
+	hover.position = at
+	hover.global_position = at
+	get_viewport().warp_mouse(at)
+	get_viewport().push_input(hover,true)
+	await frame()
+	expect(game.inspector.panel.visible and not game.inspector.pinned and game.inspector.bond_tags.visible,"hover summary includes character tags")
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/bonds-character-hover.png")
+	click(at)
+	await frame()
+	expect(game.inspector.pinned and game.inspector.bond_tags.visible,"character click reveals tags inside information panel")
+	var label = game.inspector.bond_tags
+	await inspect_link(label,preload("res://game/content/glossary.gd").unit_tags(unit))
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/bonds-unit.png")
+	label.close_term()
+	game.inspector.close_info()
+	game._open_team_panel()
+	await frame()
+	var team = game.team_panel
+	expect(team.bond_tags.plain_copy.contains("羁绊"),"team character header includes bond tags")
+	await inspect_link(team.bond_tags,team.bond_tags.plain_copy.trim_prefix("羁绊 · "))
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://.godot/bonds-character-info.png")
+	team.bond_tags.close_term()
+	team.close_panel()
+	await frame()
+	var active_before = game.simulation.tag_ids.duplicate()
+	game.units[0].hp = 0
+	await frame()
+	expect(game.simulation.tag_ids == active_before,"retirement does not deactivate locked bonds")
 	print("GLOSSARY_CHECK checks=",checks," failures=",failures)
 	get_tree().quit(0 if failures == 0 else 1)
+
+func inspect_link(rich, expected: String) -> void:
+	await frame()
+	var bounds: Rect2 = rich.get_global_rect()
+	var found := false
+	for x in range(int(bounds.position.x+4),int(bounds.end.x),6):
+		var at := Vector2(x,bounds.position.y+10)
+		var move := InputEventMouseMotion.new()
+		move.position = at
+		move.global_position = at
+		get_viewport().warp_mouse(at)
+		get_viewport().push_input(move,true)
+		await frame()
+		if rich.active_term == expected:
+			click(at)
+			await frame()
+			found = rich.pinned
+			break
+	expect(found,"actual hover and click explain "+expected)
+	await frame()
+	expect(rich.pinned,"explanation survives subsequent UI updates")

@@ -7,6 +7,7 @@ var selected_role = 0
 var tab = 0
 var details: RichTextLabel
 var stats: Label
+var bond_tags: RichTextLabel
 var title: Label
 var roster_box: VBoxContainer
 var actions: HBoxContainer
@@ -52,6 +53,10 @@ func _ready() -> void:
 	panel_at(Rect2(332,128,906,148))
 	title = label_at("",Vector2(448,151),29,INK)
 	stats = label_at("",Vector2(448,205),18,MUTED)
+	bond_tags = preload("res://scenes/ui/glossary_text.gd").make("",17)
+	bond_tags.position = Vector2(790,160)
+	bond_tags.size = Vector2(420,32)
+	content.add_child(bond_tags)
 	portrait = TextureRect.new()
 	portrait.position = Vector2(354,158)
 	portrait.size = Vector2(72,72)
@@ -144,6 +149,8 @@ func refresh() -> void:
 		box_button(roster_box,game.ROLES[role]+(" · 上阵" if game.formation.has(role) else " · 候补"),select_role.bind(role))
 		roster_box.get_child(roster_box.get_child_count()-1).modulate = ACCENT if role == selected_role else Color.WHITE
 	title.text = game.ROLES[selected_role]
+	var definition_tags = preload("res://game/combat/combat_content_catalog.gd").character(game.Content.character(selected_role).id)
+	bond_tags.set_copy("羁绊 · "+preload("res://game/content/glossary.gd").unit_tags({"tags":definition_tags.tags}) if definition_tags != null else "")
 	portrait.texture = game.Content.character(selected_role).portrait
 	var unit = {}
 	for candidate in game.units:

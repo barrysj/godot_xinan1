@@ -30,6 +30,10 @@ var items: VBoxContainer
 var item_details: Control
 var selected_item := ""
 var summary: Label
+var bond_panel: PanelContainer
+var bond_list: VBoxContainer
+var bond_rows := {}
+var bond_key := ""
 var selectors: Array[OptionButton] = []
 var selection_box: HBoxContainer
 var loadout_key := ""
@@ -77,6 +81,23 @@ func _ready() -> void:
 	summary.size = Vector2(548,18)
 	summary.clip_text = true
 	summary.add_theme_font_size_override("font_size",11)
+	bond_panel = PanelContainer.new()
+	bond_panel.position = Vector2(1050,156)
+	bond_panel.custom_minimum_size.x = 174
+	var bond_style := StyleBoxFlat.new()
+	bond_style.bg_color = Color("14232e",0.83)
+	bond_style.set_content_margin_all(7)
+	bond_style.set_corner_radius_all(4)
+	bond_panel.add_theme_stylebox_override("panel",bond_style)
+	canvas.add_child(bond_panel)
+	bond_list = VBoxContainer.new()
+	bond_list.add_theme_constant_override("separation",3)
+	bond_panel.add_child(bond_list)
+	for definition in preload("res://game/combat/combat_content_catalog.gd").MANIFEST.synergies:
+		var entry = preload("res://scenes/ui/glossary_text.gd").make("",12)
+		entry.custom_minimum_size.x = 160
+		bond_list.add_child(entry)
+		bond_rows[definition.id] = entry
 	warning_row = HBoxContainer.new()
 	canvas.add_child(warning_row)
 	warning_row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
@@ -349,6 +370,7 @@ func _process(_delta: float) -> void:
 		hud_dirty = true
 	if battle_started and not program_controls.is_empty():
 		program_controls.values()[0].button.grab_focus()
+	_update_bonds()
 	_update_absorption_cycle()
 	_sync_program_preview()
 	# Discrete simulation events refresh immediately; only countdowns need a 10 Hz clock.
@@ -356,7 +378,7 @@ func _process(_delta: float) -> void:
 		_update_hud()
 
 func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or not running or game.paused: return
+	if not is_visible_in_tree() or not running: return
 	if event.is_action_pressed("ui_cancel") and (program_preview.visible or not selected_item.is_empty()):
 		if program_preview.visible: _hide_program_preview()
 		if not selected_item.is_empty(): _select_item("")
@@ -371,7 +393,7 @@ func _input(event: InputEvent) -> void:
 			var selected: Dictionary = item_controls[selected_item]
 			if not selected.card.get_global_rect().has_point(pointer) and not selected.icon.get_global_rect().has_point(pointer): _select_item("")
 	elif event is InputEventScreenTouch and event.pressed:
-		if not running or game.paused: return
+		if not running: return
 		var at: Vector2 = event.position
 		if program_preview.visible and preview_release.get_global_rect().has_point(at):
 			_cast_code(preview_program_id)
@@ -391,7 +413,7 @@ func _pointer_on_program_area(at: Vector2) -> bool:
 	return false
 
 func _show_program_preview(id: String, pin: bool) -> void:
-	if not running or game.paused or not program_controls.has(id): return
+	if not running or not program_controls.has(id): return
 	if not selected_item.is_empty(): _select_item("")
 	preview_program_id = id
 	preview_pinned = pin
@@ -448,7 +470,7 @@ func _position_program_preview() -> void:
 	program_preview.position = Vector2(clampf(x,30,1230-program_preview.size.x),maxf(128,programs.position.y-preview_height+1))
 
 func _select_item(id: String) -> void:
-	if not id.is_empty() and (not running or game.paused): return
+	if not id.is_empty() and not running: return
 	if not id.is_empty(): _hide_program_preview()
 	var previous := selected_item
 	selected_item = "" if id == selected_item else id
@@ -467,6 +489,9 @@ func _select_item(id: String) -> void:
 func hover_paused() -> bool:
 	if is_instance_valid(preview_effect) and preview_effect.pinned: return true
 	if not is_visible_in_tree() or game.phase != "battle" or game.get("screen") not in [null,"battle"]: return false
+	if bond_panel.get_global_rect().has_point(pointer): return true
+	for entry in bond_rows.values():
+		if entry.pinned: return true
 	if is_instance_valid(game.battle_status_layer) and game.battle_status_layer.hover_paused(): return true
 	if (preview_pinned and program_preview.visible) or not selected_item.is_empty(): return true
 	for controls in program_controls.values():
@@ -497,7 +522,7 @@ func _update_hud() -> void:
 	for id in program_controls:
 		var controls: Dictionary = program_controls[id]
 		var error: String = sim.program_error(id)
-		controls.button.disabled = game.paused
+		controls.button.disabled = false
 		controls.button.set_readiness(error.is_empty(), code_fx.reduced_motion)
 		var resources: Dictionary = sim.payment_for(id)
 		var missing: bool = false
@@ -533,6 +558,7 @@ func _update_hud() -> void:
 		var preview_error: String = sim.program_error(preview_program_id, _selected_target(), payment)
 		preview_state.text = "选择目标后确认释放" if preview_error.is_empty() and preview_target.visible else "确认后消耗所示代码" if preview_error.is_empty() else preview_error
 		preview_release.disabled = not preview_error.is_empty() or game.paused
+		if game.paused: preview_state.text = "暂停中可查看，继续战斗后释放"
 	for id in item_controls:
 		var controls: Dictionary = item_controls[id]
 		if Codes.item(id).effect in ["shield","revive"]:
@@ -550,12 +576,26 @@ func _update_hud() -> void:
 		if controls.has("destination_preview"):
 			controls.destination_preview.configure(destination, Codes.item(id).amount, sim.blocks.get(destination,0) + Codes.item(id).amount <= Codes.RULES.cache_cap, "+")
 		controls.button.disabled = not error.is_empty() or game.paused
-		controls.state.text = "就绪" if error.is_empty() else error
+		controls.state.text = "暂停中可查看，继续战斗后使用" if game.paused else "就绪" if error.is_empty() else error
 		controls.icon.available = sim.items.get(id,0) > 0
 		controls.icon.remaining = sim.items.get(id,0)
 		controls.icon.tooltip_text = Codes.item(id).display_name+" · 点击查看"
 		controls.icon.queue_redraw()
-	summary.text = (("操作暂停  ·  " if preview_pinned or not selected_item.is_empty() else "悬停暂停  ·  ") if hover_paused() and not game.paused else "")+"羁绊："+("、".join(sim.tags) if not sim.tags.is_empty() else "未激活")+"  ·  "+sim.system_status()
+	summary.text = (("操作暂停  ·  " if preview_pinned or not selected_item.is_empty() else "悬停暂停  ·  ") if hover_paused() and not game.paused else "")+sim.system_status()
+
+func _update_bonds() -> void:
+	var counts := {}
+	for unit in sim.units:
+		if unit.side != 0: continue
+		for tag in unit.get("tags",[]): counts[tag] = counts.get(tag,0)+1
+	var key := str(counts)+str(sim.tag_ids)
+	if key == bond_key: return
+	bond_key = key
+	for definition in preload("res://game/combat/combat_content_catalog.gd").MANIFEST.synergies:
+		var count: int = counts.get(definition.id,0)
+		var activated: bool = sim.tag_ids.has(definition.id)
+		bond_rows[definition.id].set_copy("%s  %d/%d" % [definition.display_name,count,definition.required_count])
+		bond_rows[definition.id].modulate.a = 1.0 if activated else 0.48
 
 func code_origin(event: Dictionary) -> Vector2:
 	return game.origin+(game._project(event.from)-Vector2(0,35))*game.scale_factor
@@ -613,6 +653,7 @@ func _update_absorption_cycle() -> void:
 
 func owns_pointer(at: Vector2) -> bool:
 	if not is_visible_in_tree() or not running: return false
+	if bond_panel.is_visible_in_tree() and bond_panel.get_global_rect().has_point(at): return true
 	if _pointer_on_program_area(at): return true
 	for controls in item_controls.values():
 		for key in ["icon","card"]:

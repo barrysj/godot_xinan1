@@ -6,7 +6,7 @@
 script = ExtResource("program")
 id = "disconnect"
 display_name = "追踪破解"
-description = "消耗3数据和1指令，对已确认敌人造成45伤害并暴露5秒；各友军首次命中追加一次追击。"
+description = "消耗3数据和1指令，对漏洞已被队友验证的敌人造成45伤害并暴露5秒；各友军首次命中追加一次追击。"
 cost = {"blue":3,"red":1}
 effect = "pursuit"
 [sub_resource type="Resource" id="redirect"]

@@ -6,6 +6,7 @@ var canvas: Control
 var panel: PanelContainer
 var heading: Label
 var summary: Label
+var bond_tags: RichTextLabel
 var description: Label
 var gear_row: HBoxContainer
 var gear_button: Button
@@ -53,6 +54,9 @@ func _ready() -> void:
 	top.add_child(close)
 	summary = _label("", 17)
 	column.add_child(summary)
+	bond_tags = preload("res://scenes/ui/glossary_text.gd").make("",16,true)
+	bond_tags.custom_minimum_size.x = 228
+	column.add_child(bond_tags)
 	description = _label("", 16)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.custom_minimum_size.x = 228
@@ -133,7 +137,7 @@ func _button(title: String, callback: Callable) -> Button:
 func active() -> bool:
 	var context = game.get("battle_context")
 	if is_instance_valid(context) and context.busy(): return false
-	return not game.paused and not game.leaving and not is_instance_valid(game.get("team_panel")) and not is_instance_valid(game.get("codex_panel")) and game.get("preview_elapsed") == null and (game.get("screen") == null or game.get("screen") == "battle")
+	return not (is_instance_valid(game.get("pause_overlay")) and game.get("pause_overlay").visible) and not game.leaving and not is_instance_valid(game.get("team_panel")) and not is_instance_valid(game.get("codex_panel")) and game.get("preview_elapsed") == null and (game.get("screen") == null or game.get("screen") == "battle")
 
 func _process(_delta: float) -> void:
 	visible = active()
@@ -185,6 +189,9 @@ func refresh() -> void:
 	if observed.is_empty(): return
 	heading.text = observed.name
 	summary.text = "生命 %d / %d\n攻击 %d   护盾 %d" % [maxi(0, observed.hp), observed.max_hp, observed.atk, observed.shield]
+	var tags := preload("res://game/content/glossary.gd").unit_tags(observed)
+	bond_tags.visible = not tags.is_empty()
+	bond_tags.set_copy("羁绊 · "+tags)
 	description.visible = pinned
 	description.text = "%s · 每 %d 次出手\n%s\n间隔 %.2fs · 射程 %.1f 格" % [observed.skill.display_name, observed.skill.attacks_to_trigger, observed.skill.description, observed.interval, observed.attack_range]
 	gear_row.visible = pinned and observed.side == 0
@@ -212,6 +219,7 @@ func blocks_event(event: InputEvent) -> bool:
 
 func _input(event: InputEvent) -> void:
 	if not active(): return
+	if bond_tags.pinned and event.is_action_pressed("ui_cancel"): return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and (pinned or bag.visible):
 		if bag.visible: close_bag()
 		else: close_info()

@@ -5,6 +5,8 @@ var target_rect := Rect2()
 var step_id := ""
 var hold := false
 var skipped := false
+var dismissed_steps := {}
+var formation_dismissed := false
 var battle_step := 0
 var initial_formation: Array = []
 var battle_ref
@@ -46,10 +48,26 @@ func _ready() -> void:
 	box.add_child(description)
 	var skip := Button.new()
 	skip_button = skip
-	skip.text = "跳过指引"
+	skip.text = "下一步"
 	skip.size_flags_horizontal = SIZE_SHRINK_END
-	skip.pressed.connect(func(): skipped = true; hold = false; hide())
+	skip.pressed.connect(_next_step)
 	box.add_child(skip)
+
+func _next_step() -> void:
+	dismissed_steps[step_id] = true
+	match step_id:
+		"formation", "formation_slot": formation_dismissed = true
+		"pause", "resume": battle_step = 2
+		"speed": battle_step = 3
+		"item", "item_type", "item_use":
+			battle_step = 4
+			if not game.code_panel.selected_item.is_empty(): game.code_panel._select_item("")
+		"hack", "hack_release":
+			battle_step = 5
+			game.code_panel._hide_program_preview()
+	hold = false
+	hide()
+	update()
 
 func _process(delta: float) -> void:
 	clock += delta
@@ -64,6 +82,9 @@ func logical(rect: Rect2, id: String, title: String, body: String) -> void:
 	present(Rect2(game.origin+rect.position*game.scale_factor,rect.size*game.scale_factor),id,title,body)
 
 func present(rect: Rect2, id: String, title: String, body: String) -> void:
+	if dismissed_steps.has(id):
+		hold = false
+		return
 	if rect.size.x < 1 or rect.size.y < 1: return
 	presented = true
 	target_rect = rect.grow(7)
@@ -226,10 +247,12 @@ func battle() -> void:
 		battle_ref = sim
 		battle_step = 0
 		initial_formation.clear()
+		formation_dismissed = false
+		dismissed_steps.clear()
 	if game.phase == "prepare":
 		battle_step = 0
 		if initial_formation.is_empty(): initial_formation = game.formation.duplicate()
-		if initial_formation == game.formation or 6-game.formation.count(-1) != game._deployment_limit():
+		if not formation_dismissed and (initial_formation == game.formation or 6-game.formation.count(-1) != game._deployment_limit()):
 			if game.deployment.selected_role >= 0 and game.deployment.mode in [1,3]:
 				var slot: int = game.formation.find(-1)
 				if slot < 0: slot = (game.formation.find(game.deployment.selected_role)+1)%6
