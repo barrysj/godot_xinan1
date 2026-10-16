@@ -109,3 +109,10 @@ pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -Capt
 - 24张缩略图由 `tools/art/build_map_thumbnails.gd -- --check` 逐字节验证；源裁切与旧运行时一致。日志与截图位于 `.godot/art-workflow/map-performance/`，四尺寸导航截图仍在 `.godot/art-workflow/navigation-ui/`，均不入Git；实际图片已查看并在聊天展示。
 
 已知边界：本地浏览器验收，不代表线上 Pages 已更新、手机真机或全战斗验收。旧系统证书、Kenney原图读取与退出时对象泄漏告警仍在；生成器脚本模式有旧GGT空场景告警，须同时核对 `MAP_THUMBNAILS checked=24`。最终地图专项无Script／Parse错误。保持原美术批准状态，衍生图登记不作为人工批准。
+
+### 教学聚焦与布局适配（2026-10-16）
+
+基线9b48092a。Godot4.7.2原生执行`--path . scenes/expedition/tutorial_check.tscn -- --demo-animations=formal --demo-size=1920x1080`，83/0；内部核验1920×1080、2560×1440、1920×1200的暂停高亮、说明框避让、目标镂空和直线箭头。流程还覆盖速度、物品、自然积码、破解、完整胜利、派遣与首条路线。护盾同命令加`--protect`，直线调整前79/0；截图`.godot/tutorial-{pause,speed,item,hack,release,dispatch,route}.png`。测试通过warp_mouse同步真实指针，避免操作系统移动事件覆盖合成悬停／跨帧点击。标准Web导出在直线调整前成功，本轮未作浏览器动态教学验收。
+
+出发选人：`--path . scenes/expedition/party_progression_check.tscn -- --capture --demo-size=1920x1080`，122/0；日志`.godot/departure-selection.log`，截图`.godot/party-departure-analysis.png`／`party-departure-protect.png`。新增真实头像点击取消、姓名区域点击恢复、整卡button_pressed状态检查；继续验证两条路线四场战斗、解锁冻结、会合与存档拒绝。未改字体资源；本轮未单独做Web选人交互验收。
+暖白教学卡：同教学命令加--protect，82/0，日志.godot/tutorial-warm.log，实际截图tutorial-release.png已展示。浅色正文复用GlossaryText.dark_ink，未替换字体文件。

@@ -141,8 +141,8 @@ func draw_formation() -> void:
 		if role == selected_role: highlight(tile)
 		formation_buttons.append(tile)
 		if role >= 0: caption(visual,game.ROLES[role],at+Vector2(20,102),15,MUTED)
-	caption(visual,"点选头像格",Vector2(535,37),24,INK)
-	caption(visual,"查看同学 · 选择替换",Vector2(535,78),19,ACCENT)
+	caption(visual,"选择同学",Vector2(535,37),24,INK)
+	caption(visual,"查看同学 · 选择替换" if editable else "属性 · 技能 · 羁绊",Vector2(535,78),19,ACCENT)
 	caption(visual,"上阵 %d / 4" % (6 - game.formation.count(-1)),Vector2(535,135),22)
 	caption(visual,"点击空格可移动上阵同学" if editable else "战斗中阵容锁定",Vector2(535,185),17,MUTED)
 

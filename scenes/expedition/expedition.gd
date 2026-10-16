@@ -284,8 +284,7 @@ func _draw() -> void:
 		return
 	if screen == "battle":
 		super._draw()
-		_pixel_panel(Rect2(230, 25, 530, 48), Color("202027"))
-		_text(Vector2(244, 54), "%d / 5  ·  %s" % [run.stage + 1, run.node.name], PAPER, 23)
+		if get("campaign_mode") in [null,""]: _text(Vector2(140,46),"%d / 5 · %s" % [run.stage+1,run.node.name],PAPER,14)
 		if phase == "prepare":
 			_pixel_panel(Rect2(24, 574, 1218, 38), Color("202027"))
 			var guide = "拖动卡片到我方空格，或依次点卡片与空格。"
@@ -494,7 +493,7 @@ func _gui_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
 		return
 	var p: Vector2 = (event.position - origin) / scale_factor
-	if Rect2(1148, 28, 78, 36).has_point(p):
+	if screen != "battle" and Rect2(1148, 28, 78, 36).has_point(p):
 		_open_pause()
 		accept_event()
 		return

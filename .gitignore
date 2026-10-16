@@ -57,3 +57,6 @@ builds/**/*
 # Web-only texture compression is a reproducible release setting.
 !assets/art/web_backgrounds/**/*.import
 !assets/art/web_campus_map/**/*.import
+
+# Battle action atlas: retain deterministic runtime size limit.
+!assets/art/ui/battle_actions/**/*.import

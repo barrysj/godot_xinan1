@@ -58,7 +58,7 @@ func _ready() -> void:
 	var bounds: Rect2 = rich.get_global_rect()
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://.godot/paused-preview.png")
+		get_viewport().get_texture().get_image().save_png("user://paused-preview.png" if OS.has_feature("web") else "res://.godot/paused-preview.png")
 	var bundled = rich.get_theme_font("normal_font")
 	bundled.allow_system_fallback = false
 	var missing := ""
@@ -111,8 +111,10 @@ func _ready() -> void:
 	game.code_panel._hide_program_preview()
 	await frame()
 	expect(game.code_panel.bond_rows.size() == 2,"multiple team bonds have separate rows")
-	for row in game.code_panel.bond_rows.values():
-		expect(row.plain_copy.contains("2/2") and row.modulate.a == 1.0,"mixed roster activates each listed bond")
+	for id in game.code_panel.bond_rows:
+		var row = game.code_panel.bond_rows[id]
+		expect(game.code_panel.bond_counts[id].text == "2/2" and row.modulate.a == 1.0,"mixed roster activates each listed bond")
+		expect(game.code_panel.bond_members[id].get_child_count() == 2,"Both counted bond members have portraits")
 	var bond = game.code_panel.bond_rows.analysis
 	await inspect_link(bond,"漏洞研究")
 	if DisplayServer.get_name() != "headless":
@@ -144,7 +146,7 @@ func _ready() -> void:
 	game._open_team_panel()
 	await frame()
 	var team = game.team_panel
-	expect(team.bond_tags.plain_copy.contains("羁绊"),"team character header includes bond tags")
+	expect(not team.bond_tags.plain_copy.contains("羁绊") and not team.bond_tags.plain_copy.is_empty(),"Bond field heading is separate from clickable values")
 	await inspect_link(team.bond_tags,team.bond_tags.plain_copy.trim_prefix("羁绊 · "))
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw

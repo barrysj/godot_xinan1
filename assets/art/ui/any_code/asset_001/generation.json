@@ -1,0 +1,14 @@
+{
+  "tool": "image_gen.imagegen",
+  "transparent_background": true,
+  "prompt": "Create one tiny game HUD icon asset: a single bold white infinity symbol (horizontal figure eight) centered on transparent background, clean flat white solid ribbon, equal smooth loops, subtle cyan edge only if needed, no text, no frame, no other elements, no shadows. Symbol occupies 85 percent width, very legible at 24x24 pixel. Cyber campus tactical RPG resource payment icon meaning any code. Save output image into E:/Documents/works/godot_xinan1/.godot/art-workflow/any-code/icon.png if local output supported.",
+  "model": "not exposed",
+  "seed": "not exposed",
+  "status": "review",
+  "crop": [
+    20,
+    340,
+    1220,
+    600
+  ]
+}

@@ -25,6 +25,7 @@ func click_control(control: Control) -> void:
 	if not is_instance_valid(control): return
 	click(control.get_global_rect().get_center())
 func click(at: Vector2) -> void:
+	get_viewport().warp_mouse(at)
 	for pressed in [true,false]:
 		var event := InputEventMouseButton.new()
 		event.position = at
@@ -66,9 +67,25 @@ func _ready() -> void:
 	click(guide.target_rect.get_center())
 	await frame()
 	expect(guide.step_id == "start","real deployment change enables start guidance")
+	expect(guide.target == game.deployment.start_button and guide.target.is_visible_in_tree(),"Start points at visible native button")
+	expect(not game.code_panel.dock.visible,"Combat dock is hidden during deployment")
+	expect(not game.code_panel.selection_box.get_global_rect().intersects(game.deployment.hand.get_global_rect()),"Loadout selectors never overlap character cards")
+	await shot("start")
 	click(guide.target_rect.get_center())
 	await frame()
 	expect(game.phase == "battle" and guide.hold,"first battle is held for controls")
+	for dimensions in [Vector2i(1920,1080),Vector2i(2560,1440),Vector2i(1920,1200)]:
+		get_window().size = dimensions
+		await frame(); await frame()
+		var actual: Rect2 = guide._control_bounds(game.code_panel.pause_control)
+		expect(guide.target_rect.grow(-7).is_equal_approx(actual),"Pause highlight follows actual control after resize")
+		expect(not Rect2(guide.card.position,guide.card.size).intersects(guide.target_rect),"Guide never covers pause target")
+		expect(guide.focus_regions[0].encloses(actual),"Dimmer leaves actual target clear")
+		expect(Rect2(guide.card.position,guide.card.size).grow(1).has_point(guide.connector[0]),"Arrow starts at instruction card")
+		expect(guide.connector.size() == 2,"Guide uses one straight arrow without elbows")
+	await shot("pause")
+	get_window().size = Vector2i(1920,1080)
+	await frame(); await frame()
 	var before: float = game.elapsed
 	game._process(1)
 	expect(game.elapsed == before,"tutorial hold freezes simulation")
@@ -78,6 +95,8 @@ func _ready() -> void:
 	click(guide.target_rect.get_center())
 	await frame(); await frame()
 	expect(not game.paused and guide.step_id == "speed","resume leads to speed")
+	expect(guide.target_rect.grow(-7).is_equal_approx(guide._control_bounds(game.code_panel.speed_up)),"Speed highlight follows actual control")
+	await shot("speed")
 	click(guide.target_rect.get_center())
 	await frame(); await frame()
 	expect(guide.step_id == "item" and game.speed != 1,"speed changed through real input")
@@ -87,11 +106,13 @@ func _ready() -> void:
 	click_control(guide.target)
 	await frame()
 	expect(guide.step_id == "item_use","code selection leads to use")
+	expect(not guide.card.get_global_rect().intersects(game.code_panel.item_controls.supply.card.get_global_rect()),"Guide leaves item effect visible")
 	await shot("item")
 	click_control(guide.target)
 	await frame(); await frame()
 	expect(game.simulation.item_uses.has("supply"),"real item consumed")
-	game.code_panel.pointer = Vector2(-1000,-1000)
+	move_clear()
+	await frame()
 	for tick in range(1600):
 		game._process(0.05)
 		if guide.step_id == "hack": break
@@ -100,6 +121,7 @@ func _ready() -> void:
 	await shot("hack")
 	var hover := InputEventMouseMotion.new()
 	hover.position = guide.target.get_global_rect().get_center()
+	get_viewport().warp_mouse(hover.position)
 	get_viewport().push_input(hover,true)
 	await frame()
 	expect(game.code_panel.program_preview.visible,"hover opens effect preview")
@@ -108,12 +130,14 @@ func _ready() -> void:
 	click_control(guide.target)
 	await frame()
 	expect(guide.step_id == "hack_release","program click requests confirmation")
+	expect(guide.focus_regions.size() == 2 and guide.focus_regions[1].encloses(guide._control_bounds(game.code_panel.program_preview)),"Hack effect remains bright with release target")
 	await shot("release")
 	expect(not guide.card.get_global_rect().intersects(game.code_panel.program_preview.get_global_rect()),"guide leaves program details visible")
 	click_control(guide.target)
 	await frame(); await frame()
 	expect(not game.simulation.program_uses.is_empty() and not guide.hold,"real hack releases tutorial hold")
-	game.code_panel.pointer = Vector2(-1000,-1000)
+	move_clear()
+	await frame()
 	for tick in range(6000):
 		game._process(0.05)
 		if game.screen == "report": break
@@ -159,6 +183,19 @@ func _ready() -> void:
 	click_control(guide.target)
 	await frame()
 	await action("strategy:")
+	for step in ["prep_points","prep_slots","prep_locked"]:
+		expect(guide.step_id == step,"Departure explains "+step)
+		await shot(step)
+		click_control(guide.skip_button)
+		await frame()
+	expect(guide.step_id == "prep_carry","Departure points at available carry button")
+	click_control(guide.target)
+	await frame()
+	expect(guide.step_id == "prep_unpack" and not game.departure_items.is_empty(),"Carried item leads to refund and slot explanation")
+	await shot("prep-carried")
+	click_control(guide.skip_button)
+	await frame()
+	expect(guide.step_id == "depart","Item guide ends at departure")
 	await action("depart")
 	expect(game.campaign_mode == "region" and game.progress.campaign.story_flags.get("tutorial_route_selected",false),"first route starts and guide completion saved")
 	expect(not guide.visible,"guide does not repeat in regular region")
@@ -180,6 +217,7 @@ func _ready() -> void:
 	await frame()
 	# A human press spans multiple frames; the card must not hide between them.
 	var skip_at: Vector2 = guide.skip_button.get_global_rect().get_center()
+	get_viewport().warp_mouse(skip_at)
 	var press := InputEventMouseButton.new()
 	press.position = skip_at
 	press.button_index = MOUSE_BUTTON_LEFT
@@ -195,3 +233,10 @@ func _ready() -> void:
 	expect(game.code_panel.selected_item.is_empty(),"next closes skipped item so inspection pause cannot stall battle")
 	print("TUTORIAL_CHECK checks=",checks," failures=",failures)
 	get_tree().quit(0 if failures == 0 else 1)
+
+func move_clear() -> void:
+	var event := InputEventMouseMotion.new()
+	event.position = Vector2(10,10)
+	get_viewport().warp_mouse(event.position)
+	event.global_position = event.position
+	get_viewport().push_input(event,true)

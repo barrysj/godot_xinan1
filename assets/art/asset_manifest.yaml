@@ -39,3 +39,5 @@ objects:
   m1_web_backgrounds: "manifests/m1_web_backgrounds.yaml"
   characters: "manifests/characters.yaml"
   battle_status_components: "manifests/battle_status_components.yaml"
+  battle_actions: "manifests/battle_actions.yaml"
+  any_code: "manifests/any_code.yaml"

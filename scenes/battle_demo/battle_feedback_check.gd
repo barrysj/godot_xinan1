@@ -31,6 +31,8 @@ func _ready() -> void:
 	game.progress.path = "res://.godot/battle-feedback-%d.json" % Time.get_ticks_usec()
 	add_child(game)
 	await get_tree().process_frame
+	game.tutorial_guide.skipped = true
+	game.tutorial_guide.hide()
 	game.storage_ready = false
 	game.set_process(false)
 	game._begin_region("library","prologue")
@@ -57,8 +59,10 @@ func _ready() -> void:
 		get_window().size = size
 		await get_tree().process_frame
 		panel._process(0)
+		await capture("layout")
 		button.grab_focus()
 		key(KEY_ENTER)
+		await get_tree().process_frame
 		await get_tree().process_frame
 		verify(panel.program_preview.visible and panel.preview_pinned,"Keyboard opens program detail")
 		verify(panel.preview_release.has_focus(),"Focus moves to available release button")
@@ -68,6 +72,9 @@ func _ready() -> void:
 		verify(game.simulation.elapsed == before,"Keyboard detail freezes combat")
 		verify(panel.get_viewport_rect().encloses(panel.program_preview.get_global_rect()),"Program detail fits viewport")
 		verify(panel.program_preview.size.x <= 300,"Program detail remains compact")
+		verify(panel.dock.position.y >= 608,"Persistent action dock stays below battlefield")
+		verify(panel.pause_control.get_global_rect().end.y <= panel.speed_control.get_global_rect().position.y,"Playback controls stack without overlap")
+		verify(panel.dock.get_global_rect().encloses(panel.speed_control.get_global_rect()),"Playback controls stay inside dock")
 		await capture("keyboard")
 		key(KEY_ESCAPE)
 		await get_tree().process_frame
@@ -102,10 +109,16 @@ func _ready() -> void:
 	# A keyboard-only hover pause must refresh even with a frozen simulation clock.
 	panel.pointer = panel.item_controls.converter.icon.get_global_rect().get_center()
 	panel._process(0)
-	verify(panel.summary.text.contains("悬停暂停"),"Hover label updates without advancing the simulation")
-	panel.pointer = Vector2(-10000,-10000)
+	verify(panel.summary.text.contains("查看中"),"Hover label updates without advancing the simulation")
+	var move := InputEventMouseMotion.new()
+	move.position = Vector2(10,10)
+	move.global_position = move.position
+	get_viewport().warp_mouse(move.position)
+	get_viewport().push_input(move,true)
+	await get_tree().process_frame
 	panel._process(0)
 	verify(not panel.summary.text.contains("暂停"),"Hover exit removes pause label immediately")
+	await capture("overview")
 	game.paused = true
 	key(KEY_ESCAPE)
 	verify(not panel.program_preview.visible,"Manual pause cannot reopen a program")
@@ -119,6 +132,9 @@ func _ready() -> void:
 		game.run.node.power = 1.0
 		game._start()
 		panel._process(0)
+		get_viewport().warp_mouse(Vector2(10,10))
+		get_viewport().push_input(move,true)
+		await get_tree().process_frame
 		panel.pointer = Vector2(-10000,-10000)
 		var release_ids: Array[int] = []
 		var record_release := func(event: Dictionary):
@@ -135,21 +151,20 @@ func _ready() -> void:
 				warned = true
 				if not warning_captured and game.simulation.elapsed >= 10.0:
 					panel.warning_row.hide()
-					var before_hud: Vector2 = game._battle_log_at()
 					panel._update_hud()
-					verify(before_hud == game._battle_log_at(),"Log layout follows real warnings before the child HUD refresh")
+					verify(panel.get_viewport_rect().encloses(panel.warning_row.get_global_rect()),"Enemy warning stays within viewport")
 					await capture(encounter+"-warning")
 					warning_captured = true
 					panel._process(0)
-					verify(panel.warning_row.visible and panel.warning_text.text.contains("秒"),"Warning countdown stays in the dedicated footer")
-					var log_at: Vector2 = game.origin + game._battle_log_at()*game.scale_factor
-					var log_bounds := Rect2(log_at-Vector2(0,game.font.get_ascent(15)*game.scale_factor),Vector2(300,game.font.get_height(15))*game.scale_factor)
-					verify(not log_bounds.intersects(panel.warning_text.get_global_rect()),"Enemy warning and real battle log occupy separate lines")
-					verify(log_bounds.end.y <= game.origin.y+703*game.scale_factor,"Battle log stays inside the footer")
+					verify(panel.warning_row.visible and panel.warning_text.text.contains("秒"),"Warning countdown remains visible above the battlefield")
+					verify(not panel.programs.get_global_rect().intersects(panel.items.get_global_rect()),"Programs and items do not overlap")
+					verify(panel.bank_labels.values().all(func(chip): return not chip.get_global_rect().intersects(panel.programs.get_global_rect())),"Resource row clears action cards")
+					verify(panel.get_viewport_rect().encloses(panel.items.get_global_rect()),"All item controls fit viewport")
 					var banner_bounds := Rect2(game.origin+game.BATTLE_BANNER_RECT.position*game.scale_factor,game.BATTLE_BANNER_RECT.size*game.scale_factor)
 					verify(panel.bank_labels.values().all(func(chip): return not banner_bounds.intersects(chip.get_global_rect())),"Skill banner clears all code inventory cards")
 			if not release_ids.is_empty():
 				released = true
+				verify(not panel.activity.announcements.is_empty(),"Special enemy release has central announcement")
 				var actor = game.simulation.unit(release_ids[0])
 				verify(actor.animation.state == &"cast","Timed release drives existing cast in "+encounter)
 				if not release_captured:

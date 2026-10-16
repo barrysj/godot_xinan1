@@ -66,11 +66,12 @@ func _ready() -> void:
 	picture.size_flags_vertical = SIZE_EXPAND_FILL
 	picture.mouse_filter = MOUSE_FILTER_IGNORE
 	left.add_child(picture)
-	_label(left,"可用点数  %d / %d" % [model.remaining,model.points],23)
+	_label(left,"可用点数  %d / %d" % [model.remaining,model.points],23).set_meta("guide_id","prep_points")
 	_label(left,"携带格子  %d / %d" % [model.selected_items.size(),model.slots],18)
 	var slots := HBoxContainer.new()
 	slots.add_theme_constant_override("separation",8)
 	left.add_child(slots)
+	slots.set_meta("guide_id","prep_slots")
 	for i in model.slots:
 		var slot := PanelContainer.new()
 		slot.custom_minimum_size = Vector2(94,94)
@@ -98,9 +99,35 @@ func _ready() -> void:
 		for id in model.characters:
 			var person = Content.character(Content.role_index(id))
 			var selected: bool = model.selected_party.has(id)
+			var choose := Button.new()
+			choose.set_meta("action_id","starter:"+id)
+			choose.toggle_mode = true
+			choose.button_pressed = selected
+			choose.disabled = not selected and model.selected_party.size() >= 2
+			choose.custom_minimum_size = Vector2(90,104)
+			choose.size_flags_horizontal = SIZE_EXPAND_FILL
+			choose.tooltip_text = person.description+"\n"+("已带上，再点一次取消。" if selected else "队伍已满，先取消一名队员。" if choose.disabled else "点击带上此同学。")
+			for state in ["normal","hover","pressed","hover_pressed","disabled","focus"]:
+				var skin := StyleBoxFlat.new()
+				skin.set_corner_radius_all(8)
+				skin.bg_color = Color("d9eee4") if selected else Color("f2f0e4")
+				skin.border_color = Color("258777") if selected else Color("bac3b9")
+				skin.set_border_width_all(2 if selected else 1)
+				if state in ["hover","hover_pressed"]: skin.bg_color = skin.bg_color.lightened(0.08)
+				if state == "focus":
+					skin.bg_color = Color.TRANSPARENT
+					skin.border_color = Color("314f61")
+					skin.set_border_width_all(2)
+				choose.add_theme_stylebox_override(state,skin)
+			choose.pressed.connect(func(): action.emit("starter:"+id))
+			people.add_child(choose)
 			var card := VBoxContainer.new()
-			card.size_flags_horizontal = SIZE_EXPAND_FILL
-			people.add_child(card)
+			card.mouse_filter = MOUSE_FILTER_IGNORE
+			card.add_theme_constant_override("separation",2)
+			choose.add_child(card)
+			card.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+			card.offset_top = 6
+			card.offset_bottom = -6
 			var portrait := TextureRect.new()
 			portrait.texture = person.portrait
 			portrait.custom_minimum_size = Vector2(72,48)
@@ -108,10 +135,12 @@ func _ready() -> void:
 			portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			portrait.mouse_filter = MOUSE_FILTER_IGNORE
 			card.add_child(portrait)
-			var choose := _button(card,person.display_name,"starter:"+id,selected or model.selected_party.size() < 2)
-			choose.toggle_mode = true
-			choose.button_pressed = selected
-			choose.tooltip_text = person.description+"\n"+("已选，点击取消。" if selected else "先取消一名已选队员。" if model.selected_party.size() == 2 else "选择此同学出发。")
+			var name_label := _label(card,person.display_name,17)
+			name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			var status := _label(card,"已带上" if selected else "未携带",12)
+			status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			status.add_theme_color_override("font_color",Color("217968") if selected else Color("768079"))
+
 		_label(right,"第二、第三节点各邀请一位同伴。",15)
 	else: _label(right,"终局行动 · 沿用四人编队",22)
 	var grid := GridContainer.new()
@@ -126,6 +155,7 @@ func _ready() -> void:
 		panel.size_flags_vertical = SIZE_EXPAND_FILL
 		panel.add_theme_stylebox_override("panel",ChoiceSkin.texture_style(ChoiceSkin.ASSETS.card if item.unlocked else ChoiceSkin.ASSETS.card_disabled,16,12))
 		grid.add_child(panel)
+		if not item.unlocked: panel.set_meta("guide_id","prep_locked")
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation",6)
 		panel.add_child(box)
@@ -151,7 +181,7 @@ func _ready() -> void:
 	var focus_id: String = model.get("focus_id","")
 	if not focus_id.is_empty():
 		for button in find_children("*","Button",true,false):
-			if button.get_meta("action_id","") == focus_id and not button.disabled: button.grab_focus.call_deferred(); break
+			if button.get_meta("action_id","") == focus_id and not button.disabled: _restore_focus.call_deferred(button); break
 
 func _layout() -> void:
 	if sheet == null: return
@@ -181,3 +211,6 @@ func _button(parent: Node, title: String, id: String, enabled: bool = true) -> B
 	button.pressed.connect(func(): action.emit(id))
 	parent.add_child(button)
 	return button
+
+func _restore_focus(button: Button) -> void:
+	if is_inside_tree() and is_instance_valid(button) and button.is_inside_tree(): button.grab_focus()

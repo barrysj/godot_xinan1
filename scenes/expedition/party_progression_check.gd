@@ -27,6 +27,18 @@ func _ready() -> void:
 		game._campaign_action("strategy:library:region:"+chain)
 		expect(game.screen == "departure","preparation shown "+chain)
 		var selected: Array = game.departure_party.duplicate()
+		await get_tree().process_frame
+		var starter: Button = game.tutorial_guide.action(game.campaign_panel,"starter:"+selected[0])
+		expect(starter.button_pressed,"Selected departure card is highlighted")
+		await click_card(starter,true)
+		expect(not game.departure_party.has(selected[0]),"Portrait click removes selected character")
+		starter = game.tutorial_guide.action(game.campaign_panel,"starter:"+selected[0])
+		expect(not starter.button_pressed,"Removed character loses selection highlight")
+		await click_card(starter,false)
+		expect(game.departure_party.has(selected[0]) and game.departure_party.size() == 2,"Card click adds character back once")
+		starter = game.tutorial_guide.action(game.campaign_panel,"starter:"+selected[0])
+		expect(starter.button_pressed,"Added character restores whole-card highlight")
+		selected = game.departure_party.duplicate()
 		game._campaign_action("starter:inventor")
 		expect(game.departure_party == selected,"locked character excluded from starting pool")
 		game._campaign_action("starter:"+selected[0])
@@ -129,3 +141,16 @@ func capture(id: String) -> void:
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://.godot/"+id+".png")
+
+func click_card(button: Button, portrait: bool) -> void:
+	var bounds := button.get_global_rect()
+	var at := bounds.position+Vector2(bounds.size.x/2,bounds.size.y*(0.25 if portrait else 0.75))
+	get_viewport().warp_mouse(at)
+	for pressed in [true,false]:
+		var event := InputEventMouseButton.new()
+		event.position = at
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = pressed
+		get_viewport().push_input(event,true)
+	await get_tree().process_frame
+	await get_tree().process_frame

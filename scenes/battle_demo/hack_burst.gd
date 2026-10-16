@@ -37,8 +37,10 @@ static func draw(c: CanvasItem, game: Control, p: Dictionary, t: float, reduced:
 				glow_line(c,start,start+Vector2(-side*9,0),color,2)
 				glow_line(c,start,start+Vector2(0,12),color,2)
 		elif p.id == "redirect":
-			var shield := PackedVector2Array([at+Vector2(-23,-50),at+Vector2(23,-50),at+Vector2(20,-14),at+Vector2(0,-3),at+Vector2(-20,-14),at+Vector2(-23,-50)])
-			c.draw_polyline(shield,color,2,true)
+			var facing: Vector2 = actor.get("facing",Vector2.RIGHT)
+			var side := signf((game._project(actor.position+facing)-game._project(actor.position)).x)
+			if side == 0: side = 1.0 if actor.side == 0 else -1.0
+			glow_line(c,at+Vector2(side*42,-64),at+Vector2(side*49,-18),color,2)
 		else:
 			var plus := at+Vector2(0,-58-(0 if reduced else t*18))
 			glow_line(c,plus-Vector2(7,0),plus+Vector2(7,0),color,2)
@@ -47,11 +49,6 @@ static func draw(c: CanvasItem, game: Control, p: Dictionary, t: float, reduced:
 			for i in range(3):
 				var point := at+Vector2((i-1)*18,-18-t*30-i*8)
 				c.draw_rect(Rect2(point,Vector2(3,3)),Color(color,fade*.6))
-	var box := Rect2(42,628,670,62)
-	c.draw_rect(box,Color("111d30",fade*.9))
-	c.draw_line(box.position+Vector2(0,62),box.position+Vector2(670,62),color,1.5,true)
-	c.draw_string(FONT,box.position+Vector2(8,24),program.display_name,HORIZONTAL_ALIGNMENT_LEFT,670,19,color)
-	c.draw_string(FONT,box.position+Vector2(8,48),STATUS.get(p.id,""),HORIZONTAL_ALIGNMENT_LEFT,670,12,Color("e7f6ff",fade))
 	c.draw_set_transform(Vector2.ZERO)
 
 static func glyph(c: CanvasItem, at: Vector2, color: Color, id: String, charge: float) -> void:

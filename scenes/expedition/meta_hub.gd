@@ -293,9 +293,10 @@ func _draw() -> void:
 	else:
 		super._draw()
 	if screen == "battle":
-		draw_rect(Rect2(660,22,260,54),Color("202027"))
-		_center(Vector2(707,55),"整备" if phase == "prepare" else ("暂停" if paused else "战斗中"),GOLD,18)
-		_flow_button(Rect2(765,26,145,48),"队伍面板")
+		var team_style := _compact_button_style()
+		draw_style_box(team_style,BATTLE_TEAM_RECT)
+		_center(BATTLE_TEAM_RECT.get_center()+Vector2(0,5),"队伍",PAPER,14)
+
 	if not last_save_ok or progress.load_blocked:
 		_pixel_panel(Rect2(25,91,885,40),Color("ac6e58"))
 		_text(Vector2(40,118),checkpoint_error if not checkpoint_error.is_empty() else progress.error_message,PAPER,17)
@@ -396,11 +397,11 @@ func _gui_input(event: InputEvent) -> void:
 	if paused or leaving: return
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed): return
 	var p: Vector2 = (event.position-origin)/scale_factor
-	if screen in ["map","battle"] and Rect2(765,26,145,48).has_point(p):
+	if (screen == "map" and Rect2(765,26,145,48).has_point(p)) or (screen == "battle" and BATTLE_TEAM_RECT.has_point(p)):
 		_open_team_panel()
 		accept_event()
 		return
-	if Rect2(1148,28,78,36).has_point(p):
+	if (BATTLE_MENU_RECT if screen == "battle" else Rect2(1148,28,78,36)).has_point(p):
 		_open_pause()
 		accept_event()
 		return

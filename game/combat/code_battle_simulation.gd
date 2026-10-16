@@ -582,7 +582,7 @@ func _cast_effects(actor: Dictionary, target: Dictionary, due: Array[Dictionary]
 		for ally in _living(0):
 			var inside: bool = absf(ally.position.y - warning.center.y) <= 0.5 if rule == "board" else ally.position.distance_to(warning.center) <= 2.0
 			if inside: _event(due, actor, ally, "damage", actor.skill.effects[0].value, true)
-	_emit("enemy_release", actor, actor, actor.action.id, {"label":warning.label, "mode":rule})
+	_emit("enemy_release", actor, actor, actor.action.id, {"label":warning.label, "mode":rule, "center":warning.center})
 	# Preserve the ten-second start-to-start cadence, including delayed starts.
 	warning_next[actor.id] = elapsed + 7.0
 	warnings.erase(actor.id)

@@ -45,7 +45,7 @@ func _ready() -> void:
 		var before: float = game.elapsed
 		game._process(1)
 		verify(game.elapsed == before,"Manual pause freezes simulation time")
-		click(game,Vector2(1187,46))
+		click(game,game.BATTLE_MENU_RECT.get_center())
 		verify(game.pause_overlay.visible and game.paused,"Separate menu remains accessible while manually paused")
 		game._request_exit("menu")
 		game._open_pause()
@@ -62,13 +62,19 @@ func _ready() -> void:
 		verify(game.paused and not game.pause_overlay.visible,"Esc closes menu without resuming manual pause")
 		key(KEY_P)
 		verify(not game.paused,"P resumes manual pause")
-		click(game,Vector2(1187,46))
+		click(game,game.BATTLE_MENU_RECT.get_center())
 		game._resume_battle()
 		verify(not game.paused,"Menu opened during running playback resumes running playback")
 		game.speed = 1.0
-		for expected in [1.5,2.0,0.5,1.0]:
+		for expected in [1.5,2.0,2.0]:
 			click(game,game._action_rect(1).get_center())
-			verify(is_equal_approx(game.speed,expected),"Speed cycle includes " + str(expected))
+			verify(is_equal_approx(game.speed,expected),"Increase speed clamps at maximum " + str(expected))
+		for expected in [1.5,1.0,0.5,0.5]:
+			var down: Control = game.code_panel.speed_down
+			click(game,(down.get_global_rect().get_center()-game.origin)/game.scale_factor)
+			verify(is_equal_approx(game.speed,expected),"Decrease speed clamps at minimum " + str(expected))
+		verify(is_equal_approx(game.code_panel.speed_control.size.x,game.code_panel.pause_control.size.x),"Speed group matches pause width")
+
 		game.speed = 0.5
 		before = game.elapsed
 		game._process(1)

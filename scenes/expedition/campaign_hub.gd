@@ -915,17 +915,21 @@ func _draw() -> void:
 	super._draw()
 	if not campaign_mode.is_empty() and screen == "battle":
 		draw_set_transform(origin,0,Vector2.ONE*scale_factor)
-		_pixel_panel(Rect2(230,25,530,48),Color("202027"))
 		var heading = "序章 · 部署教学"
 		if campaign_mode == "region": heading = "%d / %d · %s" % [journey.data.step+1,journey.data.map.size(),run.node.name]
 		elif campaign_mode == "finale": heading = "终局 %d / 3 · %s" % [journey.data.finale_phase+1,OPERATIONS[journey.data.finale_phase]]
-		_text(Vector2(244,54),heading,PAPER,22)
-		if not is_instance_valid(code_panel) or not code_panel.visible: _pixel_panel(Rect2(28,96,1208,32),Color("202027"))
+		if phase == "battle":
+			var title_surface := _compact_button_style()
+			title_surface.bg_color = Color("101f2c",0.86)
+			title_surface.set_border_width_all(0)
+			var title_width := minf(370,font.get_string_size(heading,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x+28)
+			draw_style_box(title_surface,Rect2(28,16,title_width,32))
+			_text(Vector2(42,37),heading,PAPER,13)
+		else: _text(Vector2(140,46),heading,PAPER,14)
 		var goal = "目标：击败守卫，领取奖励后返回地点。青色为我方，红色为敌方。"
 		if campaign_mode == "prologue": goal = "目标：突破校门封锁。部署四名同学后开战；胜利后取回校园路线。"
 		elif campaign_mode == "finale": goal = "目标：击破核心节点，然后执行「%s」。" % OPERATIONS[journey.data.finale_phase]
 		if is_instance_valid(code_panel) and code_panel.visible: code_panel.summary.tooltip_text = goal
-		else: _text(Vector2(42,118),goal,PAPER,17)
 
 func _finale_operation() -> void:
 	if campaign_mode != "finale" or journey.data.screen != "operation" or not journey.visit.data.guard_won: return

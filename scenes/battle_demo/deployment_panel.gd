@@ -6,6 +6,7 @@ const LIMIT = 4
 enum Mode { NONE, DEPLOY, ACTIONS, SWAP }
 var mode = Mode.NONE
 var toggle_on_release = false
+var start_button: Button
 var swap_button: Button
 var swap_ghost: TextureRect
 var return_hint: Label
@@ -99,6 +100,12 @@ func _ready() -> void:
 	return_hint.position = Vector2(40, 589)
 	return_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(return_hint)
+	start_button = Button.new()
+	start_button.text = "开战"
+	start_button.position = Vector2(1036,654)
+	start_button.size = Vector2(88,34)
+	start_button.pressed.connect(game._start)
+	canvas.add_child(start_button)
 	refresh()
 
 func active() -> bool:
@@ -116,6 +123,7 @@ func refresh() -> void:
 	var factor = minf(size.x / 1280.0, size.y / 720.0)
 	canvas.scale = Vector2.ONE * factor
 	canvas.position = (size - Vector2(1280, 720) * factor) / 2
+	start_button.disabled = 6 - game.formation.count(-1) != game._deployment_limit()
 	var roster: Array = game._deployment_roster()
 	if roster != roster_snapshot:
 		roster_snapshot = roster.duplicate()

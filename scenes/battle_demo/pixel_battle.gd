@@ -1,4 +1,8 @@
 extends "res://scenes/battle_demo/battle_demo.gd"
+const BATTLE_MENU_RECT := Rect2(1188,16,64,32)
+const BATTLE_TEAM_RECT := Rect2(1112,16,64,32)
+const BATTLE_TIME_RECT := Rect2(832,16,64,32)
+
 ## View adapter for the shared combat simulation; existing art remains provisional.
 
 const PAPER = Color("fff9ee")
@@ -164,6 +168,7 @@ func _start() -> void:
 	if phase == "battle" and is_instance_valid(deployment): deployment.cancel()
 
 func _build_units() -> void:
+	if is_instance_valid(code_panel) and is_instance_valid(code_panel.activity): code_panel.activity.reset_journal()
 	if is_instance_valid(code_panel) and is_instance_valid(code_panel.code_fx): code_panel.code_fx.particles.clear()
 	_clear_battle_presentations()
 	super._build_units()
@@ -342,8 +347,7 @@ func _present_simulation_event(event: Dictionary) -> void:
 		if actor.skill.battle_effect != null and actor.skill.battle_effect.duration() > 0:
 			skill_effects.append({"resource": actor.skill.battle_effect, "actor_id": actor.id,
 				"age": 0.0, "action_id": event.action_id})
-		banner = actor.name + "  ·  " + actor.skill.display_name
-		banner_time = 1.3
+
 
 func _project(position: Vector2) -> Vector2:
 	return Board.project(position)
@@ -358,6 +362,13 @@ func _present_event(e: Dictionary) -> void:
 	var tint: Color = GOLD if e.get("special",false) else (TEAL if e.actor.side == 0 else RED)
 	if e.kind == "heal": tint = Color("a3ef98")
 	elif e.kind == "shield": tint = Color("8ad8ff")
+	# Merge only near-simultaneous results of the same type; raw log entries stay separate.
+	for recent in effects:
+		if recent.target_id == e.target.id and recent.kind == e.kind and recent.special == e.get("special",false) and recent.life > 0.53:
+			recent.value += int(e.get("actual",e.get("value",0)))
+			recent.blocked += e.get("blocked",0)
+			recent.shield_break = recent.shield_break or e.get("shield_break",false)
+			return
 	var occupied_lanes = {}
 	for fx in effects:
 		if fx.target_id == e.target.id and fx.life > 0: occupied_lanes[fx.lane] = true
@@ -373,7 +384,10 @@ func _slot_rect(side: int, slot: int) -> Rect2:
 	return Board.slot_rect(side, slot)
 
 func _action_rect(index: int) -> Rect2:
-	return [Rect2(1050, 622, 180, 46), Rect2(908, 622, 128, 46), Rect2(-500, -500, 1, 1), Rect2(1070, 565, 160, 36), Rect2(1050, 678, 180, 30)][index]
+	if phase == "battle" and is_instance_valid(code_panel) and is_instance_valid(code_panel.pause_control) and index in [0,1]:
+		var button: Control = code_panel.pause_control if index == 0 else code_panel.speed_up
+		return Rect2((button.global_position-origin)/scale_factor,button.size*code_panel.canvas.scale/scale_factor)
+	return [Rect2(1036, 654, 88, 34), Rect2(1134, 654, 92, 34), Rect2(-500, -500, 1, 1), Rect2(1070, 565, 160, 36), Rect2(-500, -500, 1, 1)][index]
 
 func _pixel_panel(rect: Rect2, fill: Color, edge: Color = DARK) -> void:
 	preload("res://scenes/ui/comic_ui.gd").card(self,rect,fill,edge)
@@ -391,7 +405,7 @@ func _campus(show_battle_marks: bool = true) -> void:
 	var wide = get("screen") == null or get("screen") == "battle"
 	if wide and battle_background != null:
 		var source = Rect2(background_crop.position * battle_background.get_size(), background_crop.size * battle_background.get_size())
-		draw_texture_rect_region(background_canvas, Rect2(24, 92, 1220, 516), source)
+		draw_texture_rect_region(background_canvas, Rect2(0, 0, 1280, 608), source)
 		return
 	if wide: draw_set_transform(origin, 0, Vector2(1.365, 1) * scale_factor)
 	_legacy_campus(false if wide else show_battle_marks)
@@ -484,12 +498,38 @@ func _draw_fallback_pawn(canvas: CanvasItem, u: Dictionary, at: Vector2, factor:
 	else:
 		canvas.draw_texture_rect(u.portrait, Rect2(-Vector2(8, 14) * factor, Vector2(16, 16) * factor), false, pose.tint)
 	canvas.draw_set_transform_matrix(world)
-	if u.side == 0 and alive:
-		canvas.draw_rect(Rect2(p + Vector2(20, -25), Vector2(10, 10)), u.badge_color)
-		if u.role == equipment: canvas.draw_texture_rect_region(dungeon, Rect2((p + Vector2(24, -3)).round(), Vector2(16,16)*1.3), Rect2(128,160,16,16))
 	if u.shield > 0 and alive:
-		var poly = PackedVector2Array([p + Vector2(-32,-52), p + Vector2(32,-52), p + Vector2(38,-34), p + Vector2(24,8), p + Vector2(0,18), p + Vector2(-24,8), p + Vector2(-38,-34), p + Vector2(-32,-52)])
-		canvas.draw_polyline(poly, Color("8dd7e7"), 3)
+		var explosive := false
+		var ordinary := false
+		for layer in u.get("shield_layers",[]):
+			if layer.amount <= 0: continue
+			if layer.source == "recoil": explosive = true
+			else: ordinary = true
+		var facing: Vector2 = u.get("facing",Vector2.RIGHT if u.side == 0 else Vector2.LEFT)
+		var direction := signf((Board.project(u.position+facing)-Board.project(u.position)).x)
+		if direction == 0: direction = 1.0 if u.side == 0 else -1.0
+		for special in ([false,true] if explosive and ordinary else [explosive]):
+			var tint := Color("c28bff") if special else Color("81dff3")
+			var pulse := 0.0
+			for impact in effects:
+				if impact.target_id == u.id and impact.blocked > 0:
+					pulse = maxf(pulse,clampf((impact.life-0.43)/0.22,0,1))
+			if is_instance_valid(code_panel) and code_panel.code_fx.reduced_motion: pulse = 0
+			var radius := 43.0 if special else 35.0
+			var curve := PackedVector2Array()
+			for i in range(25):
+				var angle := lerpf(-1.05,1.05,i/24.0)
+				curve.append(p+Vector2(direction*(12+cos(angle)*radius),-40+sin(angle)*47))
+			var fill := curve.duplicate()
+			fill.append(p+Vector2(direction*23,-40))
+			canvas.draw_colored_polygon(fill,Color(tint,0.09))
+			canvas.draw_polyline(curve,Color(tint,0.07+0.12*pulse),5,true)
+			if pulse > 0: canvas.draw_polyline(curve.slice(8,17),Color("eefaff",pulse*0.8),2.4,true)
+			if special:
+				for segment in range(4):
+					canvas.draw_polyline(curve.slice(segment*6,segment*6+5),tint,2.5,true)
+				for i in [0,12,24]: canvas.draw_circle(curve[i],1.6,Color("d9b8f0"))
+			else: canvas.draw_polyline(curve,tint,1.8,true)
 
 func _draw_unit(u: Dictionary) -> void:
 	if phase == "prepare" and u.side == 0 and is_instance_valid(deployment) and deployment.previews_unit(u.get("deployment_role",u.role)): return
@@ -601,16 +641,16 @@ func _draw_effects() -> void:
 
 func _pixel_button(index: int, text: String, active: bool = false, enabled: bool = true) -> void:
 	var rect = _action_rect(index)
-	var fill = Color("c5a66c") if active else Color("fff9ee")
-	if not enabled:
-		fill = Color("a2a18a")
-	_pixel_panel(rect, fill)
-	_center(rect.get_center() + Vector2(0, 7), text, DARK, 20 if index == 0 else 16)
+	draw_style_box(_compact_button_style(),rect)
+	_center(rect.get_center()+Vector2(0,5),text,PAPER if enabled else Color("7b8798"),14)
 
-func _battle_log_at() -> Vector2:
-	# The parent canvas can draw before its child HUD refreshes this frame.
-	var warning_visible: bool = phase == "battle" and simulation.warnings.keys().any(func(id): return simulation.unit(id).hp > 0)
-	return Vector2(52, 693 if warning_visible else 677)
+func _compact_button_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("132533",0.96)
+	style.border_color = Color("446477")
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(4)
+	return style
 
 func _draw() -> void:
 	if town == null:
@@ -619,22 +659,28 @@ func _draw() -> void:
 	origin = (size - Vector2(1280, 720) * scale_factor) / 2
 	draw_rect(Rect2(Vector2.ZERO, size), Color("253a36"))
 	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
-	_pixel_panel(Rect2(20, 16, 1220, 62), Color("202027"), Color("132c2d"))
-	_text(Vector2(40, 45), "重返校园", PAPER, 27)
-	_text(Vector2(42, 65), "RETURN TO SUMMER", Color("c0b792"), 11)
-	_text(Vector2(238, 45), demo_options.caption() if not demo_options.difficulty.is_empty() else "01 / 旧校庭院", PAPER, 20)
-	_text(Vector2(238, 66), "悬停角色简览，点击详情与装备。", Color("b2baa0"), 12)
-	var state_text = "战前整备" if phase == "prepare" else ("战斗胜利 · 全员恢复" if phase == "result" and result_won else ("重整旗鼓 · 无限重试" if phase == "result" else ("战斗暂停" if paused else ("战斗收尾" if simulation.closing else "自走棋战斗"))))
-	_center(Vector2(790, 53), state_text, GOLD, 20)
-	_text(Vector2(972, 53), ("部署 %d / %d" % [6 - formation.count(-1),_deployment_limit()]) if phase == "prepare" else ("%02d:%02d / %s×" % [int(elapsed) / 60, int(elapsed) % 60, str(speed)]), PAPER, 17)
-	_pixel_panel(Rect2(1148, 28, 78, 36), Color("fff9ee"))
-	_center(Vector2(1187, 53), "菜单", DARK, 17)
 	_campus()
+	if phase == "battle":
+		var header_surface := _compact_button_style()
+
+		draw_style_box(header_surface,BATTLE_TIME_RECT)
+	else: draw_rect(Rect2(0,0,1280,80),Color("0d1b28",0.72))
+	var state_text = "战前整备" if phase == "prepare" else ("胜利" if phase == "result" and result_won else "失败" if phase == "result" else "已暂停" if paused else "")
+	if phase == "battle" and not state_text.is_empty():
+		draw_style_box(_compact_button_style(),Rect2(416,16,80,32))
+	_text(Vector2(428,37) if phase == "battle" else Vector2(28,46),state_text,PAPER,14)
+	_text(Vector2(841,37) if phase == "battle" else Vector2(748,45),("部署 %d/%d" % [6-formation.count(-1),_deployment_limit()]) if phase == "prepare" else ("%02d:%02d" % [int(elapsed)/60,int(elapsed)%60]),PAPER,14)
+	var menu_style := _compact_button_style()
+	draw_style_box(menu_style,BATTLE_MENU_RECT)
+	_center(BATTLE_MENU_RECT.get_center()+Vector2(0,5),"菜单",PAPER,14)
+	if phase == "battle" and is_instance_valid(code_panel) and code_panel.program_preview.visible:
+		for selected_unit in code_panel.preview_recipients():
+			var target_at := _unit_center(selected_unit)+Vector2(0,14)
+			var ring := PackedVector2Array()
+			for i in range(49): ring.append(target_at+Vector2(cos(TAU*i/48)*35,sin(TAU*i/48)*11))
+			draw_polyline(ring,Color("b8e9dc"),2,true)
+			draw_line(target_at+Vector2(0,-6),target_at+Vector2(0,6),Color("b8e9dc",0.5),1,true)
 	Floor.draw_stage(self)
-	if phase == "prepare":
-		for entry in [["我后", 260], ["我前", 507], ["敌前", 753], ["敌后", 1000]]:
-			draw_rect(Rect2(Vector2(entry[1] - 28, 154), Vector2(56, 24)), Color(DARK, 0.60))
-			_center(Vector2(entry[1], 172), entry[0], PAPER, 13)
 	# Only the inspected unit shows reach, avoiding a field of overlapping rings.
 	for u in units:
 		if u.hp <= 0: continue
@@ -665,22 +711,14 @@ func _draw() -> void:
 		_pixel_panel(BATTLE_BANNER_RECT, Color("413b4b"))
 		_center(BATTLE_BANNER_RECT.get_center() + Vector2(0,7), banner, GOLD, 21)
 	if get("screen") == null: _pixel_button(3, "切换难度" if not demo_options.difficulty.is_empty() else "切换敌阵", false, phase == "prepare")
-	_pixel_button(0, "开战" if phase == "prepare" else ("继续战斗" if paused else "暂停战斗") if phase == "battle" else "重试", true, phase != "prepare" or 6-formation.count(-1) == _deployment_limit())
-	_pixel_button(4, "返回整备")
-	if phase != "prepare":
-		_pixel_panel(Rect2(36, 620, 344, 83), Color("202027"))
-		_text(Vector2(52, 646), "点击同学，再点击格子换位" if phase == "prepare" else "战场动态", GOLD, 17)
-		var message: String = logs[0] if not logs.is_empty() else "准备出发。"
-		while font.get_string_size(message, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x > 300:
-			message = message.left(message.length()-2) + "…"
-		_text(_battle_log_at(), message, PAPER, 15)
-		_pixel_button(1, "速度 %s×" % str(speed))
+	if phase == "result": _pixel_button(0, "开战" if phase == "prepare" else ("继续" if paused else "暂停") if phase == "battle" else "重试", true, phase != "prepare" or 6-formation.count(-1) == _deployment_limit())
+
 
 func _gui_input(event: InputEvent) -> void:
 	if leaving or (is_instance_valid(pause_overlay) and pause_overlay.visible): return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var action_point: Vector2 = (event.position - origin) / scale_factor
-		if Rect2(1148, 28, 78, 36).has_point(action_point):
+		if BATTLE_MENU_RECT.has_point(action_point):
 			_open_pause()
 			accept_event()
 			return
@@ -689,7 +727,7 @@ func _gui_input(event: InputEvent) -> void:
 			accept_event()
 			return
 		if phase == "battle" and _action_rect(1).has_point(action_point):
-			speed = PLAYBACK_SPEEDS[(PLAYBACK_SPEEDS.find(speed) + 1) % PLAYBACK_SPEEDS.size()]
+			code_panel._change_speed(1)
 			queue_redraw()
 			accept_event()
 			return

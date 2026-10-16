@@ -6,6 +6,17 @@ const Chip = preload("res://scenes/battle_demo/code_resource_chip.gd")
 const Icon = preload("res://scenes/battle_demo/code_action_icon.gd")
 const Picker = preload("res://scenes/battle_demo/code_type_picker.gd")
 var game
+var activity: Control
+var buff_button: Button
+var buff_details: RichTextLabel
+var dock: PanelContainer
+var playback: VBoxContainer
+var pause_control: Button
+var speed_control: HBoxContainer
+var speed_down: Button
+var speed_up: Button
+var speed_value: Label
+var item_group: VBoxContainer
 var sim
 var running := false
 var bank_labels := {}
@@ -26,13 +37,15 @@ var target_key := ""
 var payment_editing := false
 var preview_program_id := ""
 var preview_pinned := false
-var items: VBoxContainer
+var items: HBoxContainer
 var item_details: Control
 var selected_item := ""
 var summary: Label
 var bond_panel: PanelContainer
 var bond_list: VBoxContainer
 var bond_rows := {}
+var bond_counts := {}
+var bond_members := {}
 var bond_key := ""
 var selectors: Array[OptionButton] = []
 var selection_box: HBoxContainer
@@ -59,49 +72,113 @@ func _ready() -> void:
 	canvas.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	canvas.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(canvas)
-	var back := ColorRect.new()
-	back.color = Color("172332",0.96)
-	back.position = Vector2(28,80)
-	back.size = Vector2(1208,40)
-	back.mouse_filter = MOUSE_FILTER_IGNORE
-	canvas.add_child(back)
-	var bank := HBoxContainer.new()
-	bank.position = Vector2(38,84)
-	bank.add_theme_constant_override("separation",8)
-	canvas.add_child(bank)
+	dock = PanelContainer.new()
+	dock.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	dock.offset_left = 40
+	dock.offset_right = -40
+	dock.offset_top = -100
+	dock.offset_bottom = -12
+	dock.mouse_filter = MOUSE_FILTER_IGNORE
+	var dock_style := StyleBoxFlat.new()
+	dock_style.bg_color = Color("101f2c")
+	dock_style.border_color = Color("557584")
+	dock_style.set_border_width_all(1)
+	dock_style.border_width_top = 2
+	dock_style.set_corner_radius_all(8)
+	dock_style.content_margin_left = 16
+	dock_style.content_margin_right = 16
+	dock_style.content_margin_top = 6
+	dock_style.content_margin_bottom = 6
+	dock.add_theme_stylebox_override("panel",dock_style)
+	canvas.add_child(dock)
+	var dock_row := HBoxContainer.new()
+	dock_row.mouse_filter = MOUSE_FILTER_IGNORE
+	dock_row.add_theme_constant_override("separation",24)
+	dock.add_child(dock_row)
+	var stock_group := _dock_group(dock_row,"代码",Color("7eb8ec"))
+	var bank := GridContainer.new()
+	bank.columns = 2
+	bank.add_theme_constant_override("h_separation",8)
+	bank.add_theme_constant_override("v_separation",3)
+	stock_group.add_child(bank)
 	for kind in Codes.RULES.types:
 		var sockets := Sockets.new()
-		sockets.compact = true
+		sockets.slim = true
+		sockets.mouse_filter = MOUSE_FILTER_PASS
 		sockets.kind = kind
-		sockets.custom_minimum_size = Vector2(216 if kind == "purple" else 128,32)
+		sockets.custom_minimum_size = Vector2(94,26)
 		bank.add_child(sockets)
 		bank_labels[kind] = sockets
+	var hack_group := _dock_group(dock_row,"破解",Color("75e0c7"))
+	item_group = _dock_group(dock_row,"道具",Color("edc482"))
+	var gap := Control.new()
+	gap.mouse_filter = MOUSE_FILTER_IGNORE
+	gap.size_flags_horizontal = SIZE_EXPAND_FILL
+	dock_row.add_child(gap)
+	playback = VBoxContainer.new()
+	playback.add_theme_constant_override("separation",6)
+	playback.size_flags_vertical = SIZE_SHRINK_CENTER
+	dock_row.add_child(playback)
+	pause_control = _playback_button(playback,"Ⅱ",Color("6cddc2"))
+	pause_control.tooltip_text = "暂停 / 继续（P）"
+	pause_control.pressed.connect(func(): game._toggle_manual_pause())
+	speed_control = HBoxContainer.new()
+	speed_control.custom_minimum_size = Vector2(64,28)
+	speed_control.add_theme_constant_override("separation",0)
+	playback.add_child(speed_control)
+	speed_down = _speed_button("−",-1)
+	var speed_surface := PanelContainer.new()
+	speed_surface.custom_minimum_size = Vector2(28,28)
+	var speed_style := StyleBoxFlat.new()
+	speed_style.bg_color = Color("e9c183")
+	speed_surface.add_theme_stylebox_override("panel",speed_style)
+	speed_control.add_child(speed_surface)
+	speed_value = _label(speed_surface,"1.0×",11)
+	speed_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	speed_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	speed_value.add_theme_color_override("font_color",Color("10232d"))
+	speed_up = _speed_button("+",1)
+
 	summary = _label(canvas,"",12)
-	summary.position = Vector2(676,91)
-	summary.size = Vector2(548,18)
+	summary.position = Vector2(36,66)
+	summary.size = Vector2(420,18)
 	summary.clip_text = true
 	summary.add_theme_font_size_override("font_size",11)
 	bond_panel = PanelContainer.new()
-	bond_panel.position = Vector2(1050,156)
-	bond_panel.custom_minimum_size.x = 174
+	bond_panel.position = Vector2(908,58)
+	bond_panel.z_index = 20
+	bond_panel.custom_minimum_size = Vector2(116,40)
 	var bond_style := StyleBoxFlat.new()
-	bond_style.bg_color = Color("14232e",0.83)
-	bond_style.set_content_margin_all(7)
+	bond_style.bg_color = Color("132533",0.96)
+	bond_style.set_content_margin_all(4)
+	bond_style.border_color = Color("446477")
+	bond_style.set_border_width_all(1)
 	bond_style.set_corner_radius_all(4)
 	bond_panel.add_theme_stylebox_override("panel",bond_style)
 	canvas.add_child(bond_panel)
 	bond_list = VBoxContainer.new()
-	bond_list.add_theme_constant_override("separation",3)
+	bond_list.add_theme_constant_override("separation",0)
 	bond_panel.add_child(bond_list)
 	for definition in preload("res://game/combat/combat_content_catalog.gd").MANIFEST.synergies:
-		var entry = preload("res://scenes/ui/glossary_text.gd").make("",12)
-		entry.custom_minimum_size.x = 160
-		bond_list.add_child(entry)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation",4)
+		bond_list.add_child(row)
+		var entry = preload("res://scenes/ui/glossary_text.gd").make("",11)
+		entry.custom_minimum_size.x = 72
+		row.add_child(entry)
+		var count := _label(row,"0/2",11)
+		count.custom_minimum_size.x = 28
+		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		bond_rows[definition.id] = entry
+		bond_counts[definition.id] = count
+		var members := HBoxContainer.new()
+		members.add_theme_constant_override("separation",2)
+		row.add_child(members)
+		bond_members[definition.id] = members
 	warning_row = HBoxContainer.new()
 	canvas.add_child(warning_row)
 	warning_row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	warning_row.position = Vector2(42,652)
+	warning_row.position = Vector2(28,94)
 	warning_row.size = Vector2(320,22)
 	warning_row.mouse_filter = MOUSE_FILTER_IGNORE
 	warning_text = _label(warning_row,"",12)
@@ -123,28 +200,28 @@ func _ready() -> void:
 	warning_row.add_child(warning_progress)
 	warning_progress.hide()
 	programs = HBoxContainer.new()
-	programs.position = Vector2(400,624)
-	programs.add_theme_constant_override("separation",12)
-	canvas.add_child(programs)
+	programs.add_theme_constant_override("separation",8)
+	hack_group.add_child(programs)
 	_build_program_preview()
 	selection_box = HBoxContainer.new()
-	selection_box.position = Vector2(400,637)
+	selection_box.position = Vector2(28,84)
 	selection_box.add_theme_constant_override("separation",12)
 	canvas.add_child(selection_box)
-	for slot in range(2):
+	for slot in range(Codes.MAX_LOADOUT):
 		var picker := OptionButton.new()
-		picker.add_theme_font_size_override("font_size",18)
+		picker.add_theme_font_size_override("font_size",14)
+		picker.add_item("空槽")
 		for program in Codes.RULES.programs: picker.add_item(program.display_name)
 		picker.item_selected.connect(func(index): _select_program(slot,index))
 		selection_box.add_child(picker)
 		selectors.append(picker)
-	items = VBoxContainer.new()
-	items.position = Vector2(12,206)
+	items = HBoxContainer.new()
 	items.add_theme_constant_override("separation",8)
-	canvas.add_child(items)
+	item_group.add_child(items)
+	items.size_flags_vertical = SIZE_SHRINK_CENTER
 	item_details = Control.new()
 	item_details.z_index = 40
-	item_details.position = Vector2(76,206)
+	item_details.position = Vector2(742,380)
 	item_details.mouse_filter = MOUSE_FILTER_IGNORE
 	canvas.add_child(item_details)
 	for entry in Codes.RULES.items:
@@ -153,13 +230,14 @@ func _ready() -> void:
 		icon.toggle_mode = true
 		icon.pressed.connect(func(): _select_item(entry.id))
 		items.add_child(icon)
+		icon.custom_minimum_size = Vector2(52,48)
 		var card := _card(item_details)
-		card.get_parent().custom_minimum_size.x = 182
+		card.get_parent().custom_minimum_size.x = 250
 		card.get_parent().visible = false
 		_label(card,entry.display_name,15)
 		var effect := preload("res://scenes/ui/glossary_text.gd").make(entry.description,12)
 		card.add_child(effect)
-		effect.custom_minimum_size.x = 170
+		effect.custom_minimum_size.x = 238
 		effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var controls := {"card":card.get_parent(),"icon":icon}
 		if entry.effect == "convert":
@@ -168,7 +246,7 @@ func _ready() -> void:
 			controls.source = _picker(card)
 		if entry.effect in ["shield","revive"]:
 			controls.destination = OptionButton.new()
-			controls.destination.custom_minimum_size.y = 36
+			controls.destination.custom_minimum_size.y = 30
 			controls.destination.add_theme_font_size_override("font_size",14)
 			card.add_child(controls.destination)
 		else:
@@ -179,21 +257,38 @@ func _ready() -> void:
 		controls.state = _label(card,"",11)
 		var use_button := Button.new()
 		use_button.text = "使用"
-		use_button.custom_minimum_size.y = 34
+		use_button.custom_minimum_size.y = 30
+		use_button.add_theme_font_size_override("font_size",14)
 		use_button.pressed.connect(func(): _use_code_item(entry.id))
 		card.add_child(use_button)
 		controls.button = use_button
 		item_controls[entry.id] = controls
-	var motion := CheckButton.new()
-	motion.text = "简化特效"
-	motion.add_theme_font_size_override("font_size",12)
-	motion.position = Vector2(1090,125)
-	motion.set_pressed_no_signal(GGT_GameConfig.config.get_value("game","reduced_motion",false))
-	motion.toggled.connect(func(value):
-		code_fx.reduced_motion = value
-		GGT_GameConfig.config.set_value("game","reduced_motion",value)
-		GGT_GameConfig.persist())
-	canvas.add_child(motion)
+	activity = preload("res://scenes/battle_demo/battle_activity.gd").new()
+	activity.host = self
+	canvas.add_child(activity)
+	buff_button = Button.new()
+	buff_button.position = Vector2(1036,16)
+	buff_button.custom_minimum_size = Vector2(64,32)
+	for state in ["normal","hover","pressed","focus"]:
+		buff_button.add_theme_stylebox_override(state,game._compact_button_style())
+	buff_button.add_theme_font_size_override("font_size",12)
+	buff_button.text = "增益 0"
+	canvas.add_child(buff_button)
+	buff_details = preload("res://scenes/ui/glossary_text.gd").make("",12)
+	buff_details.position = Vector2(908,64)
+	buff_details.size = Vector2(234,220)
+	buff_details.fit_content = false
+	buff_details.scroll_active = true
+	var buff_style := StyleBoxFlat.new()
+	buff_style.bg_color = Color("132533",0.96)
+	buff_style.set_content_margin_all(10)
+	buff_details.add_theme_stylebox_override("normal",buff_style)
+	buff_details.hide()
+	buff_details.z_index = 35
+	canvas.add_child(buff_details)
+	buff_button.pressed.connect(func():
+		buff_details.visible = not buff_details.visible
+		if buff_details.visible: activity.set_expanded(false))
 	code_fx = preload("res://scenes/battle_demo/code_fx.gd").new()
 	code_fx.reduced_motion = GGT_GameConfig.config.get_value("game","reduced_motion",false)
 	code_fx.host = self
@@ -230,11 +325,11 @@ func _picker(parent: Node) -> HBoxContainer:
 
 func _build_program_preview() -> void:
 	program_preview = PanelContainer.new()
-	program_preview.custom_minimum_size.x = 218
+	program_preview.custom_minimum_size.x = 280
 	program_preview.z_index = 40
 	program_preview.visible = false
 	var surface := StyleBoxFlat.new()
-	surface.bg_color = Color(0.05,0.11,0.18,0.82)
+	surface.bg_color = Color("132533",0.98)
 	surface.border_color = Color("76e5cb",0.85)
 	surface.set_border_width_all(2)
 	surface.set_corner_radius_all(6)
@@ -247,10 +342,12 @@ func _build_program_preview() -> void:
 	preview_title = _label(content,"",16)
 	preview_effect = preload("res://scenes/ui/glossary_text.gd").make("",12)
 	content.add_child(preview_effect)
-	preview_effect.custom_minimum_size.x = 196
+	preview_effect.custom_minimum_size.x = 258
 	preview_effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	preview_target = OptionButton.new()
 	preview_target.clip_text = true
+	preview_target.add_theme_font_size_override("font_size",14)
+	preview_target.custom_minimum_size.y = 30
 	preview_target.item_selected.connect(func(_index): _update_hud())
 	content.add_child(preview_target)
 	preview_payment = HBoxContainer.new()
@@ -270,9 +367,12 @@ func _build_program_preview() -> void:
 		column.add_child(spin)
 		payment_inputs[color] = spin
 	preview_state = _label(content,"",11)
+	preview_state.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	preview_state.custom_minimum_size.x = 258
 	preview_release = Button.new()
 	preview_release.text = "释放"
-	preview_release.custom_minimum_size.y = 35
+	preview_release.custom_minimum_size.y = 30
+	preview_release.add_theme_font_size_override("font_size",14)
 	for state in ["normal","hover","pressed","disabled"]:
 		var button_style := StyleBoxFlat.new()
 		button_style.bg_color = Color("248979") if state == "normal" else Color("35b59b") if state == "hover" else Color("176c60") if state == "pressed" else Color("263a45",0.75)
@@ -287,10 +387,18 @@ func _select_program(slot: int,index: int) -> void:
 	if game.phase != "prepare": return
 	var before: Array = sim.loadout.duplicate()
 	var chosen: Array = before.duplicate()
-	var id: String = Codes.RULES.programs[index].id
-	var other := chosen.find(id)
-	if other >= 0: chosen[other] = chosen[slot]
-	chosen[slot] = id
+	if index == 0:
+		if slot >= chosen.size() or chosen.size() == 1: return
+		chosen.remove_at(slot)
+	else:
+		var id: String = Codes.RULES.programs[index-1].id
+		var other := chosen.find(id)
+		if slot >= chosen.size():
+			if other >= 0: return
+			chosen.append(id)
+		else:
+			if other >= 0: chosen[other] = chosen[slot]
+			chosen[slot] = id
 	var build = game.get("run")
 	if build != null: build.code_programs = chosen.duplicate()
 	else: game.code_programs = chosen.duplicate()
@@ -304,6 +412,7 @@ func _process(_delta: float) -> void:
 	var screen = game.get("screen")
 	visible = (screen == null or screen == "battle") and game.phase in ["prepare","battle"]
 	if not visible:
+		if is_instance_valid(buff_details): buff_details.hide()
 		_hide_program_preview()
 		if not selected_item.is_empty(): _select_item("")
 		return
@@ -318,13 +427,19 @@ func _process(_delta: float) -> void:
 	var factor: float = minf(game.size.x/1280.0,game.size.y/720.0)
 	canvas.scale = Vector2.ONE*factor
 	canvas.position = (game.size-Vector2(1280,720)*factor)/2
+	dock.visible = running
+	playback.visible = running
+	pause_control.text = "▶" if game.paused else "Ⅱ"
+	_refresh_speed_controls()
 	programs.visible = running
 	items.visible = running
 	item_details.visible = running
-	selection_box.visible = not running
+	selection_box.visible = game.phase == "prepare"
 	for slot in range(selectors.size()):
+		selectors[slot].select(0)
+		if slot >= sim.loadout.size(): continue
 		for index in range(Codes.RULES.programs.size()):
-			if Codes.RULES.programs[index].id == sim.loadout[slot]: selectors[slot].select(index)
+			if Codes.RULES.programs[index].id == sim.loadout[slot]: selectors[slot].select(index+1)
 	var key: String = str(sim.loadout)
 	if key != loadout_key:
 		loadout_key = key
@@ -333,22 +448,29 @@ func _process(_delta: float) -> void:
 		for id in sim.loadout:
 			var data = Codes.program(id)
 			var card := _card(programs)
-			card.get_parent().custom_minimum_size = Vector2(224,80)
+			card.get_parent().custom_minimum_size = Vector2(138,56)
 			var button = Icon.new()
 			button.program_card = true
 			button.action_id = id
 			button.toggle_mode = true
-			button.custom_minimum_size = Vector2(214,44)
+			button.custom_minimum_size = Vector2(128,30)
 			button.pressed.connect(func(): _show_program_preview(id,true))
 			card.add_child(button)
-			button.custom_minimum_size = Vector2(214,44)
-			var name_label := _label(button,data.display_name,18)
-			name_label.position = Vector2(12,10)
+			button.custom_minimum_size = Vector2(128,30)
+			var name_label := _label(button,data.display_name,12)
+			name_label.position = Vector2(36,6)
+			name_label.size = Vector2(58,20)
+			name_label.clip_text = true
 			var cost := HBoxContainer.new()
-			cost.add_theme_constant_override("separation",8)
+			cost.add_theme_constant_override("separation",2)
 			card.add_child(cost)
 			var recipe := {}
-			if data.any_cost > 0: _label(cost, "任意%d块" % data.any_cost, 12)
+			if data.any_cost > 0:
+				var any_chip := Chip.new()
+				any_chip.configure("any",data.any_cost,true)
+				any_chip.mouse_filter = MOUSE_FILTER_PASS
+				cost.add_child(any_chip)
+				recipe["any"] = any_chip
 			for kind in data.cost:
 				var chip := Chip.new()
 				chip.configure(kind, data.cost[kind], false)
@@ -358,9 +480,17 @@ func _process(_delta: float) -> void:
 			spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			cost.add_child(spacer)
 			var state_label := _label(cost,"缺码",12)
+			state_label.hide()
 			state_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			program_controls[id] = {"card":card.get_parent(),"button":button,"recipe":recipe,"state":state_label}
+			program_controls[id] = {"card":card.get_parent(),"button":button,"recipe":recipe,"state":state_label,"name":name_label}
 			button.tooltip_text = "确认查看 · Esc关闭"
+		for slot in range(sim.loadout.size(),Codes.MAX_LOADOUT):
+			var empty := _card(programs)
+			empty.get_parent().custom_minimum_size = Vector2(138,56)
+			var hint := _label(empty,"空槽",12)
+			hint.modulate = Color("738796")
+			hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			hint.size_flags_vertical = SIZE_EXPAND_FILL
 		var buttons: Array = program_controls.values().map(func(c): return c.button)
 		for item in item_controls.values(): buttons.append(item.icon)
 		for index in buttons.size():
@@ -379,6 +509,13 @@ func _process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree() or not running: return
+	if event is InputEventMouse and _guide_owns_pointer(event.position):
+		pointer = Vector2(-10000,-10000)
+		return
+	if event.is_action_pressed("ui_cancel") and buff_details.visible:
+		buff_details.hide()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("ui_cancel") and (program_preview.visible or not selected_item.is_empty()):
 		if program_preview.visible: _hide_program_preview()
 		if not selected_item.is_empty(): _select_item("")
@@ -421,7 +558,10 @@ func _show_program_preview(id: String, pin: bool) -> void:
 	hud_dirty = true
 	var data = Codes.program(id)
 	preview_title.text = data.display_name
-	preview_effect.set_copy(data.description)
+	var effect_copy: String = data.description
+	if effect_copy.begins_with("消耗") and effect_copy.contains("，"):
+		effect_copy = effect_copy.substr(effect_copy.find("，")+1)
+	preview_effect.set_copy(effect_copy)
 	target_key = ""
 	payment_editing = false
 	var payment: Dictionary = sim.payment_for(id)
@@ -465,9 +605,10 @@ func _position_program_preview() -> void:
 	program_preview.reset_size()
 	program_preview.size.x = maxf(280,program_preview.get_combined_minimum_size().x)
 	var card: Control = program_controls[preview_program_id].card
-	var x: float = programs.position.x + card.position.x
+	var anchor: Vector2 = canvas.get_global_transform().affine_inverse()*card.global_position
+	var x: float = anchor.x
 	var preview_height := maxf(program_preview.size.y,program_preview.get_combined_minimum_size().y)
-	program_preview.position = Vector2(clampf(x,30,1230-program_preview.size.x),maxf(128,programs.position.y-preview_height+1))
+	program_preview.position = Vector2(clampf(x,30,1230-program_preview.size.x),maxf(128,anchor.y-preview_height-4))
 
 func _select_item(id: String) -> void:
 	if not id.is_empty() and not running: return
@@ -487,6 +628,7 @@ func _select_item(id: String) -> void:
 		else: destination_control.get_child(0).grab_focus()
 
 func hover_paused() -> bool:
+	if is_visible_in_tree() and ((is_instance_valid(activity) and activity.expanded) or (is_instance_valid(buff_details) and buff_details.visible)): return true
 	if is_instance_valid(preview_effect) and preview_effect.pinned: return true
 	if not is_visible_in_tree() or game.phase != "battle" or game.get("screen") not in [null,"battle"]: return false
 	if bond_panel.get_global_rect().has_point(pointer): return true
@@ -531,11 +673,16 @@ func _update_hud() -> void:
 			paid_total += resources[kind]
 			if sim.blocks.get(kind,0) < resources[kind]: missing = true
 		if Codes.program(id).any_cost > paid_total: missing = true
-		controls.state.text = "确认释放" if preview_pinned and preview_program_id == id and error.is_empty() else "可释放" if error.is_empty() else "缺码" if missing else "冷却中" if error.contains("冷却") else "次数用尽" if error.contains("次数") else "待目标"
+		controls.state.text = "" if error.is_empty() else "缺码" if missing else "冷却中" if error.contains("冷却") else "次数用尽" if error.contains("次数") else "待目标"
+		controls.button.state_code = "ready" if error.is_empty() else "cooldown" if error.contains("冷却") else "spent" if error.contains("次数") else "missing" if missing else "target"
+		controls.name.modulate = Color.WHITE if error.is_empty() else Color("89949f")
+		controls.button.cooldown_duration = maxf(Codes.program(id).cooldown,Codes.RULES.shared_cooldown)
+		controls.button.cooldown_left = maxf(0,maxf(sim.ready_at,sim.program_ready.get(id,0.0))-sim.elapsed)
 		controls.state.modulate = Color("76e5cb") if error.is_empty() else Color("ffbf66") if missing else Color("b6c6d3")
 		controls.button.tooltip_text = "点击确认释放" if error.is_empty() else error
 		for kind in controls.recipe:
-			controls.recipe[kind].configure(kind, Codes.program(id).cost[kind], sim.blocks.get(kind,0) >= Codes.program(id).cost[kind])
+			controls.recipe[kind].stock = paid_total if kind == "any" else int(sim.blocks.get(kind,0))
+			controls.recipe[kind].configure("any",Codes.program(id).any_cost,not missing) if kind == "any" else controls.recipe[kind].configure(kind, Codes.program(id).cost[kind], sim.blocks.get(kind,0) >= Codes.program(id).cost[kind])
 	if not preview_program_id.is_empty():
 		var data = Codes.program(preview_program_id)
 		var targets: Array[Dictionary] = sim.program_targets(preview_program_id)
@@ -549,6 +696,8 @@ func _update_hud() -> void:
 				preview_target.add_item("%s · %d生命 / %d盾" % [u.name, int(u.hp), int(u.shield)], u.id)
 				if u.id == old_id: default_index = preview_target.item_count - 1
 			if preview_target.item_count > 0: preview_target.select(default_index)
+			preview_target.disabled = targets.is_empty()
+			if targets.is_empty(): preview_target.text = "暂无目标"
 			target_key = key
 		for index in targets.size():
 			var u: Dictionary = targets[index]
@@ -556,9 +705,10 @@ func _update_hud() -> void:
 		preview_payment.visible = data.any_cost > 0
 		var payment: Dictionary = _selected_payment() if data.any_cost > 0 else {}
 		var preview_error: String = sim.program_error(preview_program_id, _selected_target(), payment)
-		preview_state.text = "选择目标后确认释放" if preview_error.is_empty() and preview_target.visible else "确认后消耗所示代码" if preview_error.is_empty() else preview_error
+		preview_state.text = preview_error
 		preview_release.disabled = not preview_error.is_empty() or game.paused
-		if game.paused: preview_state.text = "暂停中可查看，继续战斗后释放"
+		if game.paused: preview_state.text = "继续战斗后可释放"
+		preview_state.visible = not preview_state.text.is_empty()
 	for id in item_controls:
 		var controls: Dictionary = item_controls[id]
 		if Codes.item(id).effect in ["shield","revive"]:
@@ -581,21 +731,43 @@ func _update_hud() -> void:
 		controls.icon.remaining = sim.items.get(id,0)
 		controls.icon.tooltip_text = Codes.item(id).display_name+" · 点击查看"
 		controls.icon.queue_redraw()
-	summary.text = (("操作暂停  ·  " if preview_pinned or not selected_item.is_empty() else "悬停暂停  ·  ") if hover_paused() and not game.paused else "")+sim.system_status()
+	summary.text = "查看中 · 战斗暂停" if hover_paused() and not game.paused else ""
 
 func _update_bonds() -> void:
 	var counts := {}
 	for unit in sim.units:
 		if unit.side != 0: continue
 		for tag in unit.get("tags",[]): counts[tag] = counts.get(tag,0)+1
-	var key := str(counts)+str(sim.tag_ids)
+	var key := str(counts)+str(sim.tag_ids)+str(sim.upgrades)+str(game.formation)
 	if key == bond_key: return
 	bond_key = key
 	for definition in preload("res://game/combat/combat_content_catalog.gd").MANIFEST.synergies:
 		var count: int = counts.get(definition.id,0)
 		var activated: bool = sim.tag_ids.has(definition.id)
-		bond_rows[definition.id].set_copy("%s  %d/%d" % [definition.display_name,count,definition.required_count])
+		bond_rows[definition.id].set_copy(definition.display_name)
+		var members: HBoxContainer = bond_members[definition.id]
+		for child in members.get_children(): child.free()
+		for unit in sim.units:
+			if unit.side != 0 or not unit.get("tags",[]).has(definition.id): continue
+			var portrait := TextureRect.new()
+			portrait.texture = unit.portrait
+			portrait.custom_minimum_size = Vector2(22,22)
+			portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			portrait.tooltip_text = unit.name
+			members.add_child(portrait)
+		bond_counts[definition.id].text = "%d/%d" % [count,definition.required_count]
+		bond_counts[definition.id].modulate.a = 1.0 if activated else 0.48
 		bond_rows[definition.id].modulate.a = 1.0 if activated else 0.48
+
+	var descriptions: Array[String] = []
+	for id in sim.upgrades:
+		var reward = preload("res://game/combat/combat_content_catalog.gd").reward(id)
+		if reward != null and reward.category in ["羁绊","程序"]:
+			descriptions.append(reward.display_name+"\n"+reward.description)
+	buff_button.text = "增益 %d" % descriptions.size()
+	buff_button.visible = not descriptions.is_empty()
+	buff_details.set_copy("\n\n".join(descriptions) if not descriptions.is_empty() else "暂无队伍常驻增益")
 
 func code_origin(event: Dictionary) -> Vector2:
 	return game.origin+(game._project(event.from)-Vector2(0,35))*game.scale_factor
@@ -604,6 +776,7 @@ func consume(event: Dictionary) -> void:
 	if event.get("kind","") == "code_generated" and event.get("actual",0) > 0 and bank_labels.has(event.get("code_type","")):
 		bank_labels[event.code_type].celebrate()
 	if is_instance_valid(code_fx): code_fx.consume(event)
+	if is_instance_valid(activity): activity.consume(event)
 func _consume_pending() -> void:
 	for event in sim.drain_events(): game._present_simulation_event(event)
 func _cast_code(id: String) -> void:
@@ -651,7 +824,14 @@ func _update_absorption_cycle() -> void:
 	bank_labels.purple.queue_redraw()
 
 
+func _guide_owns_pointer(at: Vector2) -> bool:
+	var guide = game.get("tutorial_guide")
+	return is_instance_valid(guide) and guide.is_visible_in_tree() and guide.card.get_global_rect().has_point(at)
+
 func owns_pointer(at: Vector2) -> bool:
+	if is_visible_in_tree() and is_instance_valid(activity) and activity.owns_pointer(at): return true
+	if is_visible_in_tree() and is_instance_valid(buff_button) and (buff_button.get_global_rect().has_point(at) or (buff_details.visible and buff_details.get_global_rect().has_point(at))): return true
+	if _guide_owns_pointer(at): return true
 	if not is_visible_in_tree() or not running: return false
 	if bond_panel.is_visible_in_tree() and bond_panel.get_global_rect().has_point(at): return true
 	if _pointer_on_program_area(at): return true
@@ -660,3 +840,63 @@ func owns_pointer(at: Vector2) -> bool:
 			var control: Control = controls[key]
 			if control.is_visible_in_tree() and control.get_global_rect().has_point(at): return true
 	return false
+
+func _dock_group(parent: HBoxContainer, title: String, tint: Color) -> VBoxContainer:
+	var group := VBoxContainer.new()
+	group.mouse_filter = MOUSE_FILTER_IGNORE
+	group.add_theme_constant_override("separation",3)
+	parent.add_child(group)
+	var label := _label(group,title,10)
+	label.modulate = tint
+	return group
+
+func _playback_button(parent: Control, title: String, tint: Color) -> Button:
+	var button := Button.new()
+	button.text = title
+	button.custom_minimum_size = Vector2(64,28)
+	button.add_theme_font_size_override("font_size",15)
+	button.add_theme_color_override("font_color",Color("10232d"))
+	button.add_theme_color_override("font_hover_color",Color("10232d"))
+	for state in ["normal","hover","pressed"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = tint if state == "normal" else tint.lightened(0.16) if state == "hover" else tint.darkened(0.16)
+		style.set_corner_radius_all(5)
+		button.add_theme_stylebox_override(state,style)
+	parent.add_child(button)
+	return button
+
+func preview_recipients() -> Array[Dictionary]:
+	if not program_preview.visible or preview_program_id.is_empty(): return []
+	var definition = Codes.program(preview_program_id)
+	if definition.effect == "recoil": return sim.program_targets(preview_program_id)
+	var selected: Dictionary = sim.unit(_selected_target())
+	if selected.is_empty() or selected.hp <= 0: return []
+	return [selected]
+
+func _speed_button(caption: String, direction: int) -> Button:
+	var button := _playback_button(speed_control,caption,Color("e9c183"))
+	button.custom_minimum_size = Vector2(18,28)
+	button.add_theme_font_size_override("font_size",13)
+	button.tooltip_text = "减慢速度" if direction < 0 else "加快速度"
+	for state in ["normal","hover","pressed","disabled"]:
+		var skin := button.get_theme_stylebox("normal" if state == "disabled" else state).duplicate() as StyleBoxFlat
+		skin.corner_radius_top_right = 0 if direction < 0 else 5
+		skin.corner_radius_bottom_right = 0 if direction < 0 else 5
+		skin.corner_radius_top_left = 5 if direction < 0 else 0
+		skin.corner_radius_bottom_left = 5 if direction < 0 else 0
+		if state == "disabled": skin.bg_color = Color("b4a282")
+		button.add_theme_stylebox_override(state,skin)
+	button.pressed.connect(func(): _change_speed(direction))
+	return button
+
+func _change_speed(direction: int) -> void:
+	var index: int = game.PLAYBACK_SPEEDS.find(game.speed)
+	game.speed = game.PLAYBACK_SPEEDS[clampi(index+direction,0,game.PLAYBACK_SPEEDS.size()-1)]
+	_refresh_speed_controls()
+	game.queue_redraw()
+
+func _refresh_speed_controls() -> void:
+	speed_value.text = "%.1f×" % game.speed
+	var index: int = game.PLAYBACK_SPEEDS.find(game.speed)
+	speed_down.disabled = index <= 0
+	speed_up.disabled = index >= game.PLAYBACK_SPEEDS.size()-1

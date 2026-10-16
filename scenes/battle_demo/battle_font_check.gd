@@ -65,9 +65,12 @@ func _ready() -> void:
 		game.simulation.loadout = [program.id, "repair" if program.id != "repair" else "disconnect"]
 		panel._process(0)
 		panel._show_program_preview(program.id, true)
-		verify(panel.preview_effect.text == program.description, "original program description " + program.id)
+		verify(program.description.ends_with(panel.preview_effect.plain_copy) and not panel.preview_effect.plain_copy.is_empty(), "source effect retained without duplicate cost " + program.id)
 		check_text(panel.preview_effect, program.description, "program " + program.id)
 		check_controls(panel.program_preview)
+	check_text(panel,"就绪缺码无目标用尽0123456789./", "hack status captions")
+	check_controls(panel.playback)
+	check_text(panel.pause_control,"Ⅱ▶", "pause and resume symbols")
 	for item in Codes.RULES.items:
 		panel._select_item(item.id)
 		check_controls(panel.item_controls[item.id].card)

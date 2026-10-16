@@ -7,6 +7,7 @@ var hold := false
 var skipped := false
 var dismissed_steps := {}
 var formation_dismissed := false
+var departure_item_count := -1
 var battle_step := 0
 var initial_formation: Array = []
 var battle_ref
@@ -18,6 +19,8 @@ var target: Control
 var investigated := false
 var presented := false
 var skip_button: Button
+var focus_regions: Array[Rect2] = []
+var connector := PackedVector2Array()
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
@@ -26,10 +29,11 @@ func _ready() -> void:
 	theme = preload("res://resources/theme/theme-main.tres")
 	card = PanelContainer.new()
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("142b38",0.97)
-	style.border_color = Color("78f1d2")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(12)
+	style.bg_color = Color("f5edda")
+	style.border_color = Color("c69d54")
+	style.set_border_width_all(1)
+	style.border_width_left = 5
+	style.set_corner_radius_all(8)
 	for side in ["left","right","top","bottom"]: style.set("content_margin_"+side,18)
 	card.add_theme_stylebox_override("panel",style)
 	card.mouse_filter = MOUSE_FILTER_STOP
@@ -40,9 +44,9 @@ func _ready() -> void:
 	card.add_child(box)
 	heading = Label.new()
 	heading.add_theme_font_size_override("font_size",24)
-	heading.add_theme_color_override("font_color",Color("78f1d2"))
+	heading.add_theme_color_override("font_color",Color("76501f"))
 	box.add_child(heading)
-	description = preload("res://scenes/ui/glossary_text.gd").make("",20)
+	description = preload("res://scenes/ui/glossary_text.gd").make("",20,true)
 	description.add_theme_font_size_override("font_size",20)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(description)
@@ -50,12 +54,26 @@ func _ready() -> void:
 	skip_button = skip
 	skip.text = "下一步"
 	skip.size_flags_horizontal = SIZE_SHRINK_END
+	for state in ["normal","hover","pressed","focus"]:
+		var button_style := StyleBoxFlat.new()
+		button_style.bg_color = Color("e2c990") if state == "normal" else Color("d7b66f")
+		button_style.set_corner_radius_all(5)
+		button_style.set_content_margin_all(7)
+		if state == "focus":
+			button_style.bg_color = Color.TRANSPARENT
+			button_style.border_color = Color("76501f")
+			button_style.set_border_width_all(2)
+		skip.add_theme_stylebox_override(state,button_style)
+	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		skip.add_theme_color_override(state,Color("46351e"))
 	skip.pressed.connect(_next_step)
 	box.add_child(skip)
+	hide()
 
 func _next_step() -> void:
 	dismissed_steps[step_id] = true
 	match step_id:
+		"prep_unpack": dismissed_steps["prep_carry"] = true
 		"formation", "formation_slot": formation_dismissed = true
 		"pause", "resume": battle_step = 2
 		"speed": battle_step = 3
@@ -76,10 +94,13 @@ func _process(delta: float) -> void:
 func point(control: Control, id: String, title: String, body: String) -> void:
 	if not is_instance_valid(control) or not control.is_visible_in_tree(): return
 	target = control
-	present(control.get_global_transform_with_canvas()*Rect2(Vector2.ZERO,control.size),id,title,body)
+	present(_control_bounds(control),id,title,body)
+
+func _control_bounds(control: Control) -> Rect2:
+	return get_global_transform_with_canvas().affine_inverse()*control.get_global_transform_with_canvas()*Rect2(Vector2.ZERO,control.size)
 
 func logical(rect: Rect2, id: String, title: String, body: String) -> void:
-	present(Rect2(game.origin+rect.position*game.scale_factor,rect.size*game.scale_factor),id,title,body)
+	present(get_global_transform_with_canvas().affine_inverse()*game.get_global_transform_with_canvas()*Rect2(game.origin+rect.position*game.scale_factor,rect.size*game.scale_factor),id,title,body)
 
 func present(rect: Rect2, id: String, title: String, body: String) -> void:
 	if dismissed_steps.has(id):
@@ -112,25 +133,47 @@ func present(rect: Rect2, id: String, title: String, body: String) -> void:
 	# Keep the program effect and target picker readable during confirmation.
 	if id == "hack_release":
 		var preview: Control = game.code_panel.program_preview
-		var bounds := preview.get_global_rect()
+		var bounds := _control_bounds(preview)
 		if bounds.end.x+width+48 < size.x:
 			x = bounds.end.x+32
 			y = clampf(rect.get_center().y-card.size.y/2,16,size.y-card.size.y-16)
 	card.position = _readable_position(Vector2(x,y))
+	focus_regions.assign([target_rect.grow(3)])
+	var details: Control = game.code_panel.program_preview
+	if details.is_visible_in_tree() and id in ["hack", "hack_release"]:
+		focus_regions.append(_control_bounds(details))
+	if id in ["item_type","item_use"]:
+		focus_regions.append(_control_bounds(game.code_panel.item_controls.supply.card))
+	_update_connector()
+	queue_redraw()
 	show()
 
 func _readable_position(preferred: Vector2) -> Vector2:
 	var protected: Array[Rect2] = [target_rect.grow(12)]
 	var preview: Control = game.code_panel.program_preview
-	if preview.is_visible_in_tree(): protected.append(preview.get_global_rect().grow(12))
+	if preview.is_visible_in_tree(): protected.append(_control_bounds(preview).grow(12))
 	if is_instance_valid(game.campaign_panel.exploration_popup) and game.campaign_panel.exploration_popup.visible:
-		protected.append(game.campaign_panel.exploration_popup.get_global_rect().grow(12))
+		protected.append(_control_bounds(game.campaign_panel.exploration_popup).grow(12))
 	# Protect visible prose and actions, including dynamically created dispatch UI.
 	for node in game.find_children("*", "Control", true, false):
 		if is_ancestor_of(node) or not node.is_visible_in_tree(): continue
+		if game.screen == "battle": continue
 		if node is Label or node is RichTextLabel or node is BaseButton:
-			protected.append(node.get_global_rect().grow(8))
-	var candidates: Array[Vector2] = [preferred]
+			protected.append(_control_bounds(node).grow(8))
+	var gap := 36.0
+	var detail_bounds := Rect2()
+	if preview.is_visible_in_tree(): detail_bounds = _control_bounds(preview)
+	if step_id in ["item_type","item_use"]:
+		detail_bounds = _control_bounds(game.code_panel.item_controls.supply.card)
+		protected.append(detail_bounds.grow(12))
+	var candidates: Array[Vector2] = [
+		Vector2(target_rect.get_center().x-card.size.x/2,target_rect.position.y-card.size.y-gap),
+		Vector2(target_rect.get_center().x-card.size.x/2,target_rect.end.y+gap),
+		Vector2(target_rect.position.x-card.size.x-gap,target_rect.get_center().y-card.size.y/2),
+		Vector2(target_rect.end.x+gap,target_rect.get_center().y-card.size.y/2),preferred]
+	if detail_bounds.has_area():
+		candidates.push_front(Vector2(detail_bounds.end.x+gap,target_rect.get_center().y-card.size.y/2))
+		candidates.push_front(Vector2(detail_bounds.position.x-card.size.x-gap,target_rect.get_center().y-card.size.y/2))
 	for column in [0.0,0.25,0.5,0.75,1.0]:
 		for row in [0.0,0.25,0.5,0.75,1.0]:
 			candidates.append(Vector2(16+(size.x-card.size.x-32)*column,16+(size.y-card.size.y-32)*row))
@@ -139,7 +182,9 @@ func _readable_position(preferred: Vector2) -> Vector2:
 	for candidate in candidates:
 		candidate = candidate.clamp(Vector2(16,16),(size-card.size-Vector2(16,16)).max(Vector2(16,16)))
 		var bounds := Rect2(candidate,card.size)
-		var score := candidate.distance_squared_to(preferred)*0.001
+		var score := bounds.get_center().distance_squared_to(target_rect.get_center())*0.01
+		if detail_bounds.has_area() and bounds.end.x > detail_bounds.position.x-12 and bounds.position.x < detail_bounds.end.x+12:
+			score += 1000000
 		for blocked in protected:
 			var overlap := bounds.intersection(blocked)
 			if overlap.has_area(): score += overlap.get_area()*100
@@ -212,6 +257,25 @@ func _resolve_step() -> void:
 		point(strategy,"first_strategy","选择队伍","选择本次探索的队伍方向，接着进入出发准备。")
 		return
 	if game.screen == "departure":
+		for entry in [
+			["prep_points","准备点数","携带物品需要花费准备点数；卡片上的数字是单件花费。点数不足时无法继续携带。点击下一步查看格子。"],
+			["prep_slots","携带格子","每件物品占一个格子；重复携带也分别占格。点数和空格都足够，才能带上。点击下一步查看解锁条件。"],
+			["prep_locked","未解锁物品","灰色卡片尚未解锁，不能携带。先在基地完成对应派遣，之后便能在这里选择。点击下一步试选物品。"]]:
+			if dismissed_steps.has(entry[0]): continue
+			for control in panel.find_children("*","Control",true,false):
+				if control.is_visible_in_tree() and control.get_meta("guide_id","") == entry[0]:
+					point(control,entry[0],entry[1],entry[2]); return
+		if departure_item_count < 0: departure_item_count = game.departure_items.size()
+		if game.departure_items.size() > departure_item_count: dismissed_steps["prep_carry"] = true
+		var packed := action(panel,"unpack:")
+		if not dismissed_steps.has("prep_carry"):
+			var carry := action(panel,"prep:")
+			if carry != null:
+				point(carry,"prep_carry","携带物品","点击携带：左侧点数减少，物品进入一个空格。不想携带也可以点下一步。")
+				return
+		if packed != null and not dismissed_steps.has("prep_unpack"):
+			point(packed,"prep_unpack","调整物品","已携带的物品显示在左侧。点击放回会恢复点数并腾出格子，可重新选择；保留当前选择请点下一步。")
+			return
 		point(action(panel,"depart"),"depart","开始探索","选好两名同学与携带物品，点击出发，开始这条路线。")
 		return
 	point(action(panel,"map_region"),"campus","打开校园地图","出发准备已解锁！点击探索，打开校园地图选择第一条路线。")
@@ -260,25 +324,25 @@ func battle() -> void:
 			else:
 				point(game.deployment.cards.values()[0],"formation","排列阵型","点击角色卡，再点击我方格子换位；也可以直接拖动卡片。近战适合前排，远程与支援适合后排。")
 		else:
-			logical(game._action_rect(0),"start","开始战斗","阵型已调整。部署满四人后点击开战，同学会自动移动和攻击。")
+			point(game.deployment.start_button,"start","开始战斗","阵型已调整。部署满四人后点击开战，同学会自动移动和攻击。")
 		return
 	if game.phase != "battle": return
 	if battle_step >= 2 and game.paused:
 		hold = true
-		logical(game._action_rect(0),"resume_extra","恢复战斗","当前是手动暂停。点击继续战斗，再完成当前教学操作。")
+		point(hud.pause_control,"resume_extra","恢复战斗","当前是手动暂停。点击继续战斗，再完成当前教学操作。")
 		return
 	if battle_step == 0:
 		hold = true
 		if game.paused: battle_step = 1
-		logical(game._action_rect(0),"pause","暂停战斗","点击暂停，给自己一点思考时间。P 也可以切换暂停；Esc 打开菜单。")
+		point(hud.pause_control,"pause","暂停战斗","点击暂停，给自己一点思考时间。P 也可以切换暂停；Esc 打开菜单。")
 	elif battle_step == 1:
 		hold = true
 		if not game.paused: battle_step = 2
-		logical(game._action_rect(0),"resume","继续战斗","再次点击恢复战斗。教学操作期间会暂缓推进，不必着急。")
+		point(hud.pause_control,"resume","继续战斗","再次点击恢复战斗。教学操作期间会暂缓推进，不必着急。")
 	elif battle_step == 2:
 		hold = true
 		if not is_equal_approx(game.speed,1.0): battle_step = 3
-		logical(game._action_rect(1),"speed","调整速度","点击速度切换 0.5 / 1 / 1.5 / 2 倍；随时可以再调回来。")
+		point(hud.speed_up,"speed","调整速度","点击右侧加号加速，左侧减号减速；中间显示当前倍率，范围为 0.5～2 倍。")
 	elif battle_step == 3:
 		hold = true
 		if sim.item_uses.has("supply") or sim.items.get("supply",0) == 0:
@@ -329,22 +393,44 @@ func dispatch() -> void:
 	else:
 		point(action(board,"commission:departure"),"commission","解锁出发准备","点击这份免费委托的派遣按钮，永久解锁出发准备和校园路线。")
 
+func _edge_toward(bounds: Rect2, destination: Vector2) -> Vector2:
+	var delta := destination-bounds.get_center()
+	var half := bounds.size/2
+	var divisor := maxf(absf(delta.x)/maxf(half.x,1),absf(delta.y)/maxf(half.y,1))
+	return bounds.get_center()+delta/maxf(divisor,0.001)
+
+func _update_connector() -> void:
+	var box := Rect2(card.position,card.size)
+	var start := _edge_toward(box,target_rect.get_center())
+	var end := _edge_toward(target_rect,box.get_center())
+	var direction := (end-start).normalized()
+	connector = PackedVector2Array([start,end-direction*6])
+
 func _draw() -> void:
 	if not visible: return
-	var pulse := 0.5+0.5*sin(clock*3.0)
-	draw_rect(target_rect.grow(4+pulse*3),Color(0.4,1,0.82,0.12+0.1*pulse),false,6,true)
-	draw_rect(target_rect,Color("78f1d2"),false,3,true)
-	var above := card.position.y < target_rect.position.y
-	var tip := Vector2(clampf(card.position.x+card.size.x/2,target_rect.position.x,target_rect.end.x),target_rect.position.y-10 if above else target_rect.end.y+10)
-	var direction := Vector2.DOWN if above else Vector2.UP
-	if card.position.x > target_rect.end.x:
-		direction = Vector2.LEFT
-		tip = Vector2(target_rect.end.x+10,target_rect.get_center().y)
-	elif card.position.x+card.size.x < target_rect.position.x:
-		direction = Vector2.RIGHT
-		tip = Vector2(target_rect.position.x-10,target_rect.get_center().y)
+	# Subtract transparent focus windows from the dimmer, without intercepting input.
+	var shaded: Array[Rect2] = [Rect2(Vector2.ZERO,size)]
+	for window in focus_regions:
+		var remainder: Array[Rect2] = []
+		for region in shaded:
+			var cut := region.intersection(window)
+			if not cut.has_area():
+				remainder.append(region)
+				continue
+			for piece in [Rect2(region.position,Vector2(region.size.x,cut.position.y-region.position.y)),Rect2(Vector2(region.position.x,cut.end.y),Vector2(region.size.x,region.end.y-cut.end.y)),Rect2(Vector2(region.position.x,cut.position.y),Vector2(cut.position.x-region.position.x,cut.size.y)),Rect2(Vector2(cut.end.x,cut.position.y),Vector2(region.end.x-cut.end.x,cut.size.y))]:
+				if piece.has_area(): remainder.append(piece)
+		shaded = remainder
+	for region in shaded: draw_rect(region,Color(0.015,0.025,0.04,0.64))
+	var outline := StyleBoxFlat.new()
+	outline.bg_color = Color.TRANSPARENT
+	outline.border_color = Color("ffe09a")
+	outline.set_border_width_all(3)
+	outline.set_corner_radius_all(8)
+	draw_style_box(outline,target_rect)
+	if connector.size() < 2: return
+	draw_polyline(connector,Color("111b27"),8,true)
+	draw_polyline(connector,Color("ffe09a"),3.5,true)
+	var tip := connector[-1]
+	var direction := (tip-connector[-2]).normalized()
 	var tangent := Vector2(-direction.y,direction.x)
-	var tail := tip-direction*(32+5*pulse)
-	draw_line(tail,tip,Color("fff0a6"),5,true)
-	draw_line(tip,tip-direction*12-tangent*10,Color("fff0a6"),5,true)
-	draw_line(tip,tip-direction*12+tangent*10,Color("fff0a6"),5,true)
+	draw_colored_polygon(PackedVector2Array([tip,tip-direction*14+tangent*8,tip-direction*14-tangent*8]),Color("ffe09a"))

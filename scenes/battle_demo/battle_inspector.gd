@@ -7,7 +7,16 @@ var panel: PanelContainer
 var heading: Label
 var summary: Label
 var bond_tags: RichTextLabel
-var description: Label
+var description: RichTextLabel
+var face: TextureRect
+var bond_section: VBoxContainer
+var skill_section: VBoxContainer
+var skill_name: Label
+var skill_trigger: Label
+var skill_icon: TextureRect
+var combat_stats: Label
+var attack_value: Label
+var shield_value: Label
 var gear_row: HBoxContainer
 var gear_button: Button
 var gear_name: Label
@@ -35,39 +44,73 @@ func _ready() -> void:
 	z_index = 50
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	theme = preload("res://resources/theme/theme-main.tres")
-	var colors = JSON.parse_string(FileAccess.get_file_as_string("res://data/visual/colors.json"))
-	theme_surface = Color(colors.daily.surface)
-	theme_ink = Color(colors.daily.text_primary)
-	theme_accent = Color(colors.brand.cyan)
+	theme_surface = Color("132533",0.98)
+	theme_ink = Color("eef5fa")
+	theme_accent = Color("446477")
 	canvas = Control.new()
 	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(canvas)
-	panel = _panel(Vector2(260, 0))
+	panel = _panel(Vector2(300, 0))
 	canvas.add_child(panel)
 	var column = _column(panel)
 	var top = HBoxContainer.new()
 	column.add_child(top)
-	heading = _label("", 21)
+	face = _image(top,"health",40)
+	heading = _label("", 19)
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(heading)
 	var close = _button("收起", close_info)
 	top.add_child(close)
-	summary = _label("", 17)
-	column.add_child(summary)
-	bond_tags = preload("res://scenes/ui/glossary_text.gd").make("",16,true)
-	bond_tags.custom_minimum_size.x = 228
-	column.add_child(bond_tags)
-	description = _label("", 16)
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description.custom_minimum_size.x = 228
-	column.add_child(description)
+	var stats_row := HBoxContainer.new()
+	stats_row.add_theme_constant_override("separation",12)
+	column.add_child(stats_row)
+	_image(stats_row,"health",18).tooltip_text = "生命"
+	summary = _label("",14)
+	stats_row.add_child(summary)
+	_image(stats_row,"intent_attack",18).tooltip_text = "攻击"
+	attack_value = _label("",14)
+	stats_row.add_child(attack_value)
+	_image(stats_row,"intent_shield",18).tooltip_text = "护盾"
+	shield_value = _label("",14)
+	stats_row.add_child(shield_value)
+	bond_section = VBoxContainer.new()
+	bond_section.add_theme_constant_override("separation",2)
+	column.add_child(bond_section)
+	var field := _label("羁绊",11)
+	field.modulate = Color("9aaebb")
+	bond_section.add_child(field)
+	bond_tags = preload("res://scenes/ui/glossary_text.gd").make("",14)
+	bond_tags.custom_minimum_size.x = 264
+	bond_section.add_child(bond_tags)
+	skill_section = VBoxContainer.new()
+	skill_section.add_theme_constant_override("separation",5)
+	column.add_child(skill_section)
+	skill_section.add_child(HSeparator.new())
+	var skill_row := HBoxContainer.new()
+	skill_section.add_child(skill_row)
+	skill_icon = _image(skill_row,"intent_charge",26)
+	var skill_titles := VBoxContainer.new()
+	skill_titles.add_theme_constant_override("separation",1)
+	skill_row.add_child(skill_titles)
+	skill_name = _label("",16)
+	skill_name.modulate = Color("e6ce9d")
+	skill_titles.add_child(skill_name)
+	skill_trigger = _label("",11)
+	skill_trigger.modulate = Color("9aaebb")
+	skill_titles.add_child(skill_trigger)
+	description = preload("res://scenes/ui/glossary_text.gd").make("",13)
+	description.custom_minimum_size.x = 264
+	skill_section.add_child(description)
+	combat_stats = _label("",11)
+	combat_stats.modulate = Color("9aaebb")
+	skill_section.add_child(combat_stats)
 	gear_row = HBoxContainer.new()
 	column.add_child(gear_row)
 	gear_button = Icon.new()
-	gear_button.custom_minimum_size = Vector2(58, 58)
+	gear_button.custom_minimum_size = Vector2(40, 40)
 	gear_button.pressed.connect(open_bag)
 	gear_row.add_child(gear_button)
-	gear_name = _label("", 16)
+	gear_name = _label("", 13)
 	gear_row.add_child(gear_name)
 	shade = ColorRect.new()
 	shade.color = Color(0, 0, 0, 0.4)
@@ -99,6 +142,15 @@ func _ready() -> void:
 	shade.hide()
 	panel.hide()
 
+func _image(parent: Node, id: String, extent: float) -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = preload("res://scenes/battle_demo/status_skin.gd").TEXTURES[id]
+	icon.custom_minimum_size = Vector2.ONE*extent
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	parent.add_child(icon)
+	return icon
+
 func _panel(minimum: Vector2) -> PanelContainer:
 	var result = PanelContainer.new()
 	result.custom_minimum_size = minimum
@@ -107,16 +159,16 @@ func _panel(minimum: Vector2) -> PanelContainer:
 	style.border_color = theme_accent
 	style.set_border_width_all(2)
 	style.set_corner_radius_all(6)
-	style.content_margin_left = 16
-	style.content_margin_right = 16
-	style.content_margin_top = 12
-	style.content_margin_bottom = 12
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
 	result.add_theme_stylebox_override("panel", style)
 	return result
 
 func _column(parent: Control) -> VBoxContainer:
 	var box = VBoxContainer.new()
-	box.add_theme_constant_override("separation", 9)
+	box.add_theme_constant_override("separation", 5)
 	parent.add_child(box)
 	return box
 
@@ -131,6 +183,8 @@ func _label(value: String, font_size: int) -> Label:
 func _button(title: String, callback: Callable) -> Button:
 	var result = Button.new()
 	result.text = title
+	result.add_theme_font_size_override("font_size",13)
+	result.custom_minimum_size = Vector2(48,28)
 	result.pressed.connect(callback)
 	return result
 
@@ -188,12 +242,20 @@ func refresh() -> void:
 	panel.visible = not observed.is_empty()
 	if observed.is_empty(): return
 	heading.text = observed.name
-	summary.text = "生命 %d / %d\n攻击 %d   护盾 %d" % [maxi(0, observed.hp), observed.max_hp, observed.atk, observed.shield]
+	face.texture = observed.portrait
+	summary.text = "%d / %d" % [maxi(0,observed.hp),observed.max_hp]
+	attack_value.text = "%d" % observed.atk
+	shield_value.text = "%d" % observed.shield
 	var tags := preload("res://game/content/glossary.gd").unit_tags(observed)
-	bond_tags.visible = not tags.is_empty()
-	bond_tags.set_copy("羁绊 · "+tags)
-	description.visible = pinned
-	description.text = "%s · 每 %d 次出手\n%s\n间隔 %.2fs · 射程 %.1f 格" % [observed.skill.display_name, observed.skill.attacks_to_trigger, observed.skill.description, observed.interval, observed.attack_range]
+	bond_section.visible = not tags.is_empty()
+	bond_tags.visible = bond_section.visible
+	bond_tags.set_copy(tags)
+	skill_section.visible = pinned
+	skill_name.text = observed.skill.display_name
+	skill_trigger.text = "自动技能  ·  每 %d 次普攻触发" % observed.skill.attacks_to_trigger
+	skill_icon.texture = preload("res://scenes/battle_demo/status_skin.gd").TEXTURES[preload("res://scenes/battle_demo/status_skin.gd").intent_icon(observed,{"kind":"skill"})]
+	description.set_copy(observed.skill.description)
+	combat_stats.text = "攻击间隔 %.2f 秒    射程 %.1f 格" % [observed.interval,observed.attack_range]
 	gear_row.visible = pinned and observed.side == 0
 	if gear_row.visible:
 		var id: String = game._worn_item(observed.role)
@@ -201,7 +263,7 @@ func refresh() -> void:
 		gear_button.queue_redraw()
 		gear_button.tooltip_text = "装备栏：点击查看描述和背包"
 		var item = game._gear_definition(id)
-		gear_name.text = "装备栏\n" + (item.display_name if item != null else "空槽")
+		gear_name.text = "装备\n" + (item.display_name if item != null else "空槽")
 	panel.reset_size()
 	var feet: Vector2 = game._unit_center(observed)
 	# Prefer the open central lane; clamp vertically inside the battlefield.

@@ -58,3 +58,66 @@ pwsh.exe -File ./build-web.ps1
 ### 2026-10-16 单字体复测
 
 `battle_font_check.tscn` 扩展至事件页 FontVariation 与教学标签，关闭 FontFile 及 FontVariation 基础字库的系统回退，115 项／0 失败。正式 Web 包仅保留思源字体，实际菜单、事件奖励页、教学卡、物品说明、破解目标与派遣／地图中文字形正常。发布包范围、截图与命令见 RELEASE-01 的单字体瘦身记录。
+
+### 战斗布局收敛（2026-10-16）
+
+基线05a41249＋本次布局实现。PowerShell 7运行Godot4.7.2：
+
+```powershell
+& $engine --path . res://scenes/battle_demo/battle_feedback_check.tscn -- --capture --demo-animations=formal
+& $engine --path . res://scenes/ui/glossary_check.tscn -- --demo-animations=formal --demo-size=1920x1080
+& $engine --path . res://scenes/expedition/tutorial_check.tscn -- --demo-animations=formal --demo-size=1920x1080
+```
+
+战斗85/0，覆盖1920×1080、2560×1440、1920×1200，真实键盘／鼠标释放与消耗、详情边界、底部区域不重叠、敌人预警与释放。术语30/0，覆盖暂停阅读、角色详情和羁绊链接；教学65/0，覆盖地图热点至首个解锁派遣与路线选择及“下一步”多帧点击。新布局下测试通过真实鼠标移出事件离开详情，不仅修改单个HUD内部指针。
+
+截图：.godot/feedback-keyboard-1920x1080.png、feedback-overview-1920x1200.png、bonds-unit.png。实际画面已在对话展示；测试资源数量是QA设定，不代表常态满资源。
+
+标准版 release Web 导出并通过 web_package_check.py 单字体检查。本地 layout-preview.html 仅向正式入口传入 --glossary-preview --preview，原生场景实例化原Campaign战斗，使用隔离验证存档；在1280×720浏览器查看生成图标、中文与暂停详情。未修改发布入口默认参数；不视为线上发布或手机验收。
+
+Web补充：实际点击“漏洞”显示中文解释，预览检查0失败，截图 .godot/art-workflow/battle-layout/web.png。暂停预览中动态改变浏览器视口时，观察到部分敌人立绘与状态条位置短暂不一致；本轮未改角色渲染定位，尚未定位该问题，不把此结果表述为动态缩放完整验收。
+
+### 战斗布局修订（2026-10-16，待评审）
+
+基线f8f3f90a＋修订，开发分支art/battle-layout-revision；main回退05a41249，本版未合入。沿用上节三条图形验证命令：战斗97/0，术语30/0，教学64/0；新增底栏与战场分离、播放按钮不重叠且不超出底栏的三尺寸断言。另执行 `& $engine --headless --path . res://scenes/battle_demo/battle_font_check.tscn`，禁用系统回退后113/0，含播放符号字形。破解字体断言对应去除重复消耗后的实际正文，完整源描述仍检查字形。
+
+实机截图：`.godot/feedback-layout-1920x1080.png`、`feedback-layout-2560x1440.png`、`feedback-layout-1920x1200.png`；画面已在对话展示。QA资源数量不代表正常战斗初始值。
+
+使用标准版Godot4.7.2执行 `--headless --path . --export-release Web builds/web/index.html`；Python3执行 `tools/release/web_package_check.py builds/web/index.pck`，2205文件、1字体、521纹理、167370756字节、0失败。临时layout-preview.html沿用上节显式验收参数，1280×720实际浏览器画面显示新底栏、图标、中文与暂停详情，GLOSSARY_PREVIEW_READY failures=0，无浏览器error日志。截图 `.godot/art-workflow/battle-layout-revision/web.png`。未发布线上；上节暂停时动态改变视口的角色定位问题仍未修复，不升级动态缩放或移动端验收。
+
+### 四槽与战斗信息反馈（2026-10-16，待评审）
+
+基线a3c9a4a7，分支art/battle-layout-revision，四槽功能已本地提交347a06b8，后续反馈同分支；不合入、不推送。PowerShell 7／Godot4.7.2，复用上文$engine：
+
+```powershell
+& $engine --headless --path . res://game/combat/loadout_capacity_check.tscn
+& $engine --path . res://scenes/battle_demo/battle_activity_check.tscn -- --demo-animations=formal
+& $engine --path . res://scenes/battle_demo/battle_feedback_check.tscn -- --capture --demo-animations=formal
+& $engine --headless --path . res://scenes/battle_demo/battle_font_check.tscn
+& $engine --path . res://scenes/expedition/tutorial_check.tscn -- --demo-animations=formal --demo-size=1920x1080
+& $engine --path . res://scenes/ui/glossary_check.tscn -- --demo-animations=formal --demo-size=1920x1080
+```
+
+结果分别4/0、16/0、100/0、128/0、64/0、30/0。容量专项用临时注册的第4个测试Resource验证上限，不新增正式技能；显示专项使用真实三种程序与一个空槽。真实施放反冲护盾、自然技能出手、日志超过4条保留、阅读暂停、程序冷却倒计时、缺码／无目标／可释放状态、已有协议缓冲说明、重试清空记录均有断言。三尺寸反馈另覆盖三类敌方特殊技能中央播报及释放结束，不改变模拟伤害。
+
+截图：`.godot/activity-hack-shield.png`、`activity-personal-skill.png`、`activity-journal.png`，以及feedback-layout三尺寸与feedback-*-release系列；实际画面在对话展示。源码入口为battle_activity.gd、code_panel.gd、code_action_icon.gd、code_resource_chip.gd、pixel_battle.gd、hack_burst.gd、code_fx.gd。enemy_release补充原锁定center，仅供特效定位。
+
+正式Web包单字体检查通过；浏览器1280×720实际查看白色任意代码、四槽、状态、单侧盾、中文与日志展开／收起，无error日志，GLOSSARY_PREVIEW_READY failures=0。截图`.godot/art-workflow/battle-activity/web.png`。该Web验收入口冻结模拟，不能据此宣称Web动态战斗全流程通过；技能运动由原生图形专项验证。未做线上发布、手机、实体手柄或真人平衡验收。
+
+旧`code_rules_check.tscn`另有12项失败，包含旧takeover、旧追踪移盾与双目标修复等期待；将code_catalog临时换回a3c9a4a7后仍为47项／12失败，执行后按原始字节恢复。此旧检查未计入通过数，未在本轮重写其过时玩法期待。对照日志`.godot/code-rules-original-catalog.log`。原生Kenney直接读图告警仍属既有边界。
+
+### 战斗反馈收敛（2026-10-16，待评审）
+
+基线f15a603e＋本轮修订，沿用上节Godot4.7.2命令：activity22/0、feedback三尺寸100/0、font129/0、tutorial65/0、glossary30/0。新增断言覆盖零增益隐藏、反冲实际受益目标、中央最新播报与容量、日志时间与筛选、同目标同类飘字合并；原始日志不合并。日志为`.godot/polish-{activity,feedback,font,tutorial,glossary}.log`，实机截图沿用activity系列，已在对话展示。
+
+标准版执行`--headless --path . --export-release Web builds/web/index.html`，Python3执行`tools/release/web_package_check.py builds/web/index.pck`：2218文件、1字体、522纹理、167576152字节、0失败。实际1280×720浏览器显示新顶部、四槽、中文详情；真实点击记录展开与重点／全部切换正常，空记录面板收缩，无浏览器error日志。截图`.godot/art-workflow/battle-polish/web.png`。Web验收预览冻结模拟，未宣称动态全流程通过；旧code_rules的12项失败、动态视口定位和真人可读性边界沿用上节。
+
+破解状态辨识（2026-10-16，基线074eb48e）：沿用activity／feedback／font命令，结果24/0、100/0、130/0。新增实际缺码库存与不可用名称明暗断言，字体专项覆盖自绘状态短词。原战斗截图`.godot/activity-ready-target-dock.png`、`activity-hack-shield-dock.png`、`activity-missing-dock.png`分别展示可用与无目标、施放后的个人／共享冷却、缺码；仅裁取实际帧的底栏，未合成状态或改动正式数值。全部状态均可点击阅读，暂停释放限制沿用原逻辑。用尽为预留状态样式，本轮四种实际状态截图不含次数用尽。
+Web补充：标准版正式导出成功，单字体包检查2218文件／1字体／0失败；实际1280×720浏览器核对缺码短词、费用缺口与暂停详情，未出现error日志。截图`.godot/art-workflow/hack-states/web.png`。其余动态状态由原生实机截图验证，未把冻结预览作为完整Web动态验收。
+2026-10-16，基线5ba90b5d：按负责人要求将可释放勾号替换为绿色“就绪”，不改布局／判定。原生activity24/0、禁用系统字体回退的font130/0；实机截图activity-ready-target-dock.png已更新。本次仅文本替换，未重新导出Web。
+2026-10-16，基线8a19a89d：状态底板细化，原生battle_activity_check（--demo-animations=formal）24/0，日志.godot/status-surface.log；就绪／无目标、冷却、缺码底栏实机截图已刷新。仅绘制调整，无字体／Theme资源改动，本次未重新导出Web。
+
+### 顶部收紧与左右调速（2026-10-16）
+
+基线d89dcbe4。Godot4.7.2／PowerShell7，`--path . scenes/battle_demo/playback_controls_check.tscn -- --capture --demo-animations=formal`：63/0，覆盖三尺寸实际点击、暂停菜单、上下限重复点击不循环、速度组与暂停按钮等宽。原feedback三尺寸100/0、glossary30/0、font136/0；tutorial追踪全流程83/0，教学高亮读取speed_up实际边界。命令沿用上节对应场景，日志`.godot/compact-{playback,feedback,glossary,font,tutorial}.log`。截图`.godot/playback-half-speed-1920x1080.png`及其他两尺寸，已在对话展示。羁绊名称／人数拆列后仍可实际点击术语查看说明。
+Web补充：正式导出成功，单字体包2218文件／1字体／167585736字节／0失败。实际1280×720浏览器点击右侧+从1.0到1.5，再点击左侧−回到1.0；顶部、羁绊双列和中文正常，无error日志。截图.godot/art-workflow/compact-hud/web.png。预览冻结模拟，仅声明控件显示与点击验收，完整动态教学与选人仍以原生检查为证。

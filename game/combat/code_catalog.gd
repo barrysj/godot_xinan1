@@ -1,5 +1,6 @@
 extends RefCounted
 const STOCK_CAP := 3
+const MAX_LOADOUT := 4
 const RULES = preload("res://resources/combat/code_rules.tres")
 const PEOPLE = preload("res://resources/combat/manifest.tres")
 const RulesDefinition = preload("res://game/content/code_rules.gd")
@@ -39,7 +40,12 @@ static func cost_text(cost: Dictionary) -> String:
 	return " ＋ ".join(parts)
 
 static func valid_loadout(value, rules = RULES) -> bool:
-	return value is Array and value.size() == 2 and value[0] is String and value[1] is String and value[0] != value[1] and program(value[0], rules) != null and program(value[1], rules) != null
+	if not value is Array or value.is_empty() or value.size() > MAX_LOADOUT: return false
+	var seen := {}
+	for id in value:
+		if not id is String or seen.has(id) or program(id,rules) == null: return false
+		seen[id] = true
+	return true
 
 static func valid_stock(value) -> bool:
 	if not value is Dictionary or value.size() != RULES.items.size(): return false
@@ -78,7 +84,7 @@ static func validate(rules = RULES) -> Array[String]:
 		for kind in entry.cost:
 			var amount = entry.cost[kind]
 			if not rules.types.has(kind) or not (amount is int or amount is float) or not is_finite(amount) or amount != int(amount) or amount < 1 or amount > rules.cache_cap: errors.append("技能配方非法")
-	if not valid_loadout(rules.default_loadout, rules): errors.append("默认须携带两种不同技能")
+	if not valid_loadout(rules.default_loadout, rules): errors.append("默认须携带1至4种不同技能")
 	ids.clear()
 	if rules.items.is_empty(): errors.append("道具列表不能为空")
 	for entry in rules.items:
@@ -90,9 +96,9 @@ static func validate(rules = RULES) -> Array[String]:
 	return errors
 
 static func migrate_loadout(value) -> Array:
-	if not value is Array or value.size() != 2: return []
+	if not value is Array or value.is_empty() or value.size() > MAX_LOADOUT: return []
 	var migrated: Array = value.duplicate()
 	for i in range(migrated.size()):
 		if migrated[i] == "takeover": migrated[i] = "redirect"
-	if migrated[0] == migrated[1]: migrated[1] = "repair" if migrated[0] != "repair" else "disconnect"
+	if migrated.size() == 2 and migrated[0] == migrated[1]: migrated[1] = "repair" if migrated[0] != "repair" else "disconnect"
 	return migrated if valid_loadout(migrated) else []

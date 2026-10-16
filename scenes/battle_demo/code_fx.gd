@@ -28,7 +28,7 @@ func consume(event: Dictionary) -> void:
 		for index in range(int(event.actual)):
 			_append({"kind":"drop", "type":type, "from":from, "target":target, "offset":Vector2((index-1)*24,0), "age":-index*0.07, "duration":0.4, "ui":interface_event})
 	elif kind == "enemy_release":
-		_append({"kind":"enemy_release", "at":event.from, "age":0.0, "duration":0.22, "ui":false})
+		_append({"kind":"enemy_release", "at":event.from, "center":event.get("center",event.from), "mode":event.get("mode",""), "age":0.0, "duration":0.55, "ui":false})
 	elif kind == "recoil_burst":
 		_append({"kind":"blast", "at":event.from, "radius":event.get("radius",2.0), "age":0.0, "duration":0.7, "ui":false})
 	elif kind == "chain_followup":
@@ -61,11 +61,30 @@ func _draw() -> void:
 			var ring := PackedVector2Array()
 			for i in range(33): ring.append(_battle_point(p.at+Vector2.from_angle(TAU*i/32)*float(p.radius)*(0.3+0.7*t)))
 			draw_polyline(ring,Color(0.7,0.45,1,1-t),3,true)
+			if not reduced_motion:
+				var center: Vector2 = _battle_point(p.at)-Vector2(0,28)*host.game.scale_factor
+				for i in range(8):
+					var direction := Vector2.from_angle(TAU*i/8)
+					var at: Vector2 = center+direction*(18+65*(1-pow(1-t,3)))*host.game.scale_factor
+					draw_line(at,at-direction*10*host.game.scale_factor,Color(0.88,0.7,1,1-t),2*host.game.scale_factor,true)
 		elif p.kind == "enemy_release":
 			var scale: float = host.game.scale_factor
 			var eased := 1.0 - pow(1.0-t,3)
-			var radius: float = 32.0 if reduced_motion else lerpf(24.0,52.0,eased)
-			draw_arc(_battle_point(p.at),radius*scale,0,TAU,32,Color(1,0.55,0.43,1-t),3*scale,true)
+			var tint := Color("8bdfff") if p.mode == "radio" else Color("ffa070")
+			tint.a = 1-t
+			if p.mode == "board":
+				var left := _battle_point(Vector2(0,p.center.y))
+				var right := _battle_point(Vector2(6,p.center.y))
+				draw_line(left,right,Color(tint,(1-t)*0.18),18*scale,true)
+				draw_line(left,right,tint,3*scale,true)
+			elif p.mode == "radio":
+				var radius: float = 45 if reduced_motion else lerpf(25,95,eased)
+				draw_arc(_battle_point(p.at)-Vector2(0,26)*scale,radius*scale,0,TAU,40,tint,2*scale,true)
+			else:
+				var ring := PackedVector2Array()
+				for i in range(41): ring.append(_battle_point(p.center+Vector2.from_angle(TAU*i/40)*2*(1.0 if reduced_motion else eased)))
+				draw_polyline(ring,Color(tint,(1-t)*0.12),12*scale,true)
+				draw_polyline(ring,tint,2.5*scale,true)
 		elif p.kind == "follow":
 			draw_line(_battle_point(p.from)-Vector2(0,35), _battle_point(p.to)-Vector2(0,35), Color(0.4,0.85,1,1-t), 3, true)
 		else: _draw_program(p, t)

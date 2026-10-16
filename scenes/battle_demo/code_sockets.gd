@@ -10,6 +10,7 @@ var absorbed := 0.0
 var pulse := 0.0
 var reduced_motion := false
 var compact := false
+var slim := false
 var cycle_ratio := -1.0
 
 func _init() -> void:
@@ -33,6 +34,9 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if slim:
+		_draw_slim()
+		return
 	if compact:
 		_draw_compact()
 		return
@@ -76,3 +80,17 @@ func _draw_compact() -> void:
 		draw_circle(Vector2(117,16),3,tint)
 	if pulse > 0 and not reduced_motion:
 		draw_rect(Rect2(4,4,24,24),Color(tint,pulse/0.22),false,1.5)
+
+func _draw_slim() -> void:
+	var data: Dictionary = Codes.RULES.types[kind]
+	var tint: Color = data.color
+	draw_rect(Rect2(Vector2.ZERO,size),Color("1d303f"))
+	draw_rect(Rect2(0,0,2,size.y),tint)
+	StatusArt.draw(self,"code_"+kind,Rect2(7,4,18,18),tint)
+	draw_string(get_theme_font("font"),Vector2(31,18),data.name,HORIZONTAL_ALIGNMENT_LEFT,32,11,Color("bacbd5"))
+	draw_string(get_theme_font("font"),Vector2(67,19),"%d/%d" % [count,capacity],HORIZONTAL_ALIGNMENT_LEFT,40,15,Color.WHITE)
+	if kind == "purple":
+		var ratio := cycle_ratio if cycle_ratio >= 0 else clampf(absorbed/Codes.RULES.shield_per_block,0,1)
+		draw_rect(Rect2(4,24,(size.x-8)*ratio,2),tint)
+	tooltip_text = "%s %d/%d" % [data.name,count,capacity]
+	if kind == "purple": tooltip_text += " · 吸收 %d/%d" % [int(absorbed),int(Codes.RULES.shield_per_block)]

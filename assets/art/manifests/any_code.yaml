@@ -1,0 +1,24 @@
+schema_version: 3
+object:
+  id: "any_code"
+  display_name: "任意代码图标"
+  type: "ui"
+  subtype: "resource_icon"
+variants:
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/ui/any_code/asset_001"
+    files:
+      icon: "any-code.png"
+      generation: "generation.json"
+integration:
+  root: "assets/art/ui/any_code/asset_001"
+  files:
+    icon: "any-code.png"
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owner: "scenes/battle_demo/code_resource_chip.gd"
+  evidence: "docs/ui/ui-02.md"

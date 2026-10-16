@@ -44,7 +44,7 @@ func _ready() -> void:
 	add_child(content)
 	label_at("队伍作战终端",Vector2(45,28),30,INK)
 	label_at("战前整备" if editable else "战斗快照 · 只读查看",Vector2(45,75),18,ACCENT)
-	add_button("返回探索",Vector2(1070,33),Vector2(165,50),close_panel)
+	add_button("返回战斗" if game.get("screen") == "battle" else "返回探索",Vector2(1070,33),Vector2(165,50),close_panel)
 	roster_box = VBoxContainer.new()
 	roster_box.position = Vector2(40,128)
 	roster_box.size = Vector2(264,466)
@@ -54,7 +54,8 @@ func _ready() -> void:
 	title = label_at("",Vector2(448,151),29,INK)
 	stats = label_at("",Vector2(448,205),18,MUTED)
 	bond_tags = preload("res://scenes/ui/glossary_text.gd").make("",17)
-	bond_tags.position = Vector2(790,160)
+	label_at("羁绊",Vector2(790,143),13,MUTED)
+	bond_tags.position = Vector2(790,167)
 	bond_tags.size = Vector2(420,32)
 	content.add_child(bond_tags)
 	portrait = TextureRect.new()
@@ -150,7 +151,7 @@ func refresh() -> void:
 		roster_box.get_child(roster_box.get_child_count()-1).modulate = ACCENT if role == selected_role else Color.WHITE
 	title.text = game.ROLES[selected_role]
 	var definition_tags = preload("res://game/combat/combat_content_catalog.gd").character(game.Content.character(selected_role).id)
-	bond_tags.set_copy("羁绊 · "+preload("res://game/content/glossary.gd").unit_tags({"tags":definition_tags.tags}) if definition_tags != null else "")
+	bond_tags.set_copy(preload("res://game/content/glossary.gd").unit_tags({"tags":definition_tags.tags}) if definition_tags != null else "")
 	portrait.texture = game.Content.character(selected_role).portrait
 	var unit = {}
 	for candidate in game.units:
@@ -180,7 +181,7 @@ func refresh() -> void:
 			box_button(actions,"卸下装备",equip.bind("none"),editable)
 		2:
 			details.text = game.SKILLS[selected_role]+"\n\n触发规则    每 %d 次普攻自动释放。\n" % game.Content.character(selected_role).skill.attacks_to_trigger
-			if not unit.is_empty(): details.text += "当前进度    %d / 3 次普攻    护盾 %d\n" % [int(unit.count)%3,unit.shield]
+			if not unit.is_empty(): details.text += "当前进度    %d 次普攻    护盾 %d\n" % [int(unit.count)%game.Content.character(selected_role).skill.attacks_to_trigger,unit.shield]
 			details.text += "\n当前角色的技能固定；可在战前通过换人、站位与装备调整战术。"
 
 func assign_slot(index: int) -> void:

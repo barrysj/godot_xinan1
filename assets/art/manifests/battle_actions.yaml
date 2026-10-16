@@ -1,0 +1,28 @@
+schema_version: 3
+object:
+  id: "battle_actions"
+  display_name: "战斗破解图标"
+  type: "ui"
+  subtype: "action_icons"
+variants:
+  asset_001:
+    stage: "asset"
+    version: "001"
+    selection: "selected"
+    approval: "review"
+    root: "assets/art/ui/battle_actions/asset_001"
+    files:
+      programs: "programs.png"
+      generation: "generation.md"
+    metadata:
+      source_tool: "image_gen"
+      source_size: "2172x724"
+      implementation_note: "session 自主生图接入授权；三格透明图集；导入限宽768。"
+integration:
+  root: "assets/art/ui/battle_actions/asset_001"
+  files:
+    programs: "programs.png"
+  status: "authorized_active"
+  active_variant: "asset_001"
+  owner: "scenes/battle_demo/code_action_icon.gd"
+  evidence: "docs/ui/ui-02.md"
