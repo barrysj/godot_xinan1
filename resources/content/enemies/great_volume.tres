@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/enemy_chalk.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/great_volume_boss/frames/idle.png" id="atlas"]
-[ext_resource type="Resource" path="res://assets/art/characters/great_volume_boss/battle_animation.tres" id="animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
 region = Rect2(0, 0, 640, 640)
@@ -12,7 +11,7 @@ id = "great_volume"
 display_name = "馆藏巨典"
 description = "每4次普攻追加130%攻击。"
 portrait = SubResource("portrait")
-battle_animation = ExtResource("animation")
+battle_animation_path = "res://assets/art/characters/great_volume_boss/battle_animation.tres"
 health = 320
 attack = 24
 interval = 1.6

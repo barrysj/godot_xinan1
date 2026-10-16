@@ -98,6 +98,8 @@ func _enter_node() -> void:
 		_note(run.node.name + ("：部署四人后出发。" if run.stage == 0 else "：已沿用上场阵位，可调整后出发。"))
 
 func _build_units() -> void:
+	# Base/menu startup has no battle to present. Encounters build on entry.
+	if not is_node_ready() and screen == "base": return
 	report_details = {}
 	encounter_id = run.node.get("encounter_id", "encounter_final" if run.node.get("kind") == "boss" else ("encounter_patrol" if encounter == 0 else "encounter_classroom"))
 	super._build_units()

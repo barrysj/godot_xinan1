@@ -32,7 +32,7 @@ Codex工作流中间文件统一输出到.gitignore已忽略的.godot/art-workfl
 
 模拟层是动作和伤害唯一事实源；新人物不建第二状态机。首选人形路径：原配3D模型与开源动作→3D动作／道具变化→水平镜头导向→全身日系2D转绘→固定画布序列帧→共享播放与程序特效。身份和比例服从已选2D参考，3D提供运动依据。动画包与参数见[战斗动画](../combat/animation.md)，生产脚本见[工具目录](../../tools/art/README.md)。旧混合粉笔仍保留，新角色按实际动作质量选后端。
 
-资源台日常双击tools/art/asset_manager/control/ArtManagerControl.exe，构建／兼容脚本收归同目录；只消费Manifest和预生成GIF，浏览／普通预览不生产资产。主表逐级索引对象清单，各索引路径相对自身；版本root相对项目根，文件相对root。stage／selection／approval／integration分别维护，属性和哈希由真实文件计算，不复制派生数据。字段契约见[资源台](../../tools/art/asset_manager/README.md)，验证见[本领域验证](verification.md)。
+资源台日常双击tools/ToolLauncher.exe，构建／兼容脚本收归同目录；只消费Manifest和预生成GIF，浏览／普通预览不生产资产。主表逐级索引对象清单，各索引路径相对自身；版本root相对项目根，文件相对root。stage／selection／approval／integration分别维护，属性和哈希由真实文件计算，不复制派生数据。字段契约见[资源台](../../tools/art/asset_manager/README.md)，验证见[本领域验证](verification.md)。
 
 Web衍生图、平台映射、实际文件、Manifest和导出排除一起核对，原图批准不自动扩展为平台验收。接入原玩家流程，不重建平行战斗／存档。有效试接入授权保留范围和最终状态，不把技术通过冒充批准。
 

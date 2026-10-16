@@ -106,6 +106,6 @@ pwsh.exe -NoProfile -File tools/development/tests/campus-map-sync.test.ps1 -Capt
 - 原 `campus_navigation_check.tscn -- --capture`：555／0，1920×1080、2560×1440、1920×1200、1280×720；鼠标、键盘、平移、滚轮、区域与地点选择、原出发确认和返回。`place_scenes_check.tscn` 无头94／0；`campus_flow_preview.tscn -- --flow-preview-check` 无头120／0。旧测试夹具补上出发准备解锁与确认；地点跳到末站的夹具补足队员，流程专测隔离中途招募，未改生产规则。
 - 同机桌面点击区域同步耗时由1237～1785ms降到74～97ms；Web旧包其他两线为477／654ms，图书馆因引用已排除的原PNG而校验失败，新包三线为42～56ms。基地已预读情况下打开地图处理耗时桌面94ms、Web44ms，均低于250ms专项预算。
 - 独立场景的首次初始化仍包含脚本／资源依赖初始化（桌面约3～4秒、Web约4～5秒），不能把基地操作耗时当成游戏冷启动或联网下载时间。预读和缓存减少地图点击阻塞，不缩减整个Web包。
-- 24张缩略图由 `tools/build_map_thumbnails.gd -- --check` 逐字节验证；源裁切与旧运行时一致。日志与截图位于 `.godot/art-workflow/map-performance/`，四尺寸导航截图仍在 `.godot/art-workflow/navigation-ui/`，均不入Git；实际图片已查看并在聊天展示。
+- 24张缩略图由 `tools/art/build_map_thumbnails.gd -- --check` 逐字节验证；源裁切与旧运行时一致。日志与截图位于 `.godot/art-workflow/map-performance/`，四尺寸导航截图仍在 `.godot/art-workflow/navigation-ui/`，均不入Git；实际图片已查看并在聊天展示。
 
 已知边界：本地浏览器验收，不代表线上 Pages 已更新、手机真机或全战斗验收。旧系统证书、Kenney原图读取与退出时对象泄漏告警仍在；生成器脚本模式有旧GGT空场景告警，须同时核对 `MAP_THUMBNAILS checked=24`。最终地图专项无Script／Parse错误。保持原美术批准状态，衍生图登记不作为人工批准。

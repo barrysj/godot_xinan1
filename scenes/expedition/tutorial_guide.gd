@@ -11,9 +11,11 @@ var battle_ref
 var clock := 0.0
 var card: PanelContainer
 var heading: Label
-var description: Label
+var description: RichTextLabel
 var target: Control
 var investigated := false
+var presented := false
+var skip_button: Button
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
@@ -28,7 +30,7 @@ func _ready() -> void:
 	style.set_corner_radius_all(12)
 	for side in ["left","right","top","bottom"]: style.set("content_margin_"+side,18)
 	card.add_theme_stylebox_override("panel",style)
-	card.mouse_filter = MOUSE_FILTER_IGNORE
+	card.mouse_filter = MOUSE_FILTER_STOP
 	add_child(card)
 	var box := VBoxContainer.new()
 	box.mouse_filter = MOUSE_FILTER_IGNORE
@@ -38,11 +40,12 @@ func _ready() -> void:
 	heading.add_theme_font_size_override("font_size",24)
 	heading.add_theme_color_override("font_color",Color("78f1d2"))
 	box.add_child(heading)
-	description = Label.new()
+	description = preload("res://scenes/ui/glossary_text.gd").make("",20)
 	description.add_theme_font_size_override("font_size",20)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(description)
 	var skip := Button.new()
+	skip_button = skip
 	skip.text = "跳过指引"
 	skip.size_flags_horizontal = SIZE_SHRINK_END
 	skip.pressed.connect(func(): skipped = true; hold = false; hide())
@@ -62,12 +65,13 @@ func logical(rect: Rect2, id: String, title: String, body: String) -> void:
 
 func present(rect: Rect2, id: String, title: String, body: String) -> void:
 	if rect.size.x < 1 or rect.size.y < 1: return
+	presented = true
 	target_rect = rect.grow(7)
 	if step_id != id:
 		clock = 0
 		step_id = id
 	heading.text = "操作指引 · " + title
-	description.text = body
+	description.set_copy(body)
 	var width := minf(450,size.x-32)
 	card.custom_minimum_size.x = width
 	card.size.x = width
@@ -91,8 +95,37 @@ func present(rect: Rect2, id: String, title: String, body: String) -> void:
 		if bounds.end.x+width+48 < size.x:
 			x = bounds.end.x+32
 			y = clampf(rect.get_center().y-card.size.y/2,16,size.y-card.size.y-16)
-	card.position = Vector2(x,y)
+	card.position = _readable_position(Vector2(x,y))
 	show()
+
+func _readable_position(preferred: Vector2) -> Vector2:
+	var protected: Array[Rect2] = [target_rect.grow(12)]
+	var preview: Control = game.code_panel.program_preview
+	if preview.is_visible_in_tree(): protected.append(preview.get_global_rect().grow(12))
+	if is_instance_valid(game.campaign_panel.exploration_popup) and game.campaign_panel.exploration_popup.visible:
+		protected.append(game.campaign_panel.exploration_popup.get_global_rect().grow(12))
+	# Protect visible prose and actions, including dynamically created dispatch UI.
+	for node in game.find_children("*", "Control", true, false):
+		if is_ancestor_of(node) or not node.is_visible_in_tree(): continue
+		if node is Label or node is RichTextLabel or node is BaseButton:
+			protected.append(node.get_global_rect().grow(8))
+	var candidates: Array[Vector2] = [preferred]
+	for column in [0.0,0.25,0.5,0.75,1.0]:
+		for row in [0.0,0.25,0.5,0.75,1.0]:
+			candidates.append(Vector2(16+(size.x-card.size.x-32)*column,16+(size.y-card.size.y-32)*row))
+	var best := preferred
+	var best_score := INF
+	for candidate in candidates:
+		candidate = candidate.clamp(Vector2(16,16),(size-card.size-Vector2(16,16)).max(Vector2(16,16)))
+		var bounds := Rect2(candidate,card.size)
+		var score := candidate.distance_squared_to(preferred)*0.001
+		for blocked in protected:
+			var overlap := bounds.intersection(blocked)
+			if overlap.has_area(): score += overlap.get_area()*100
+		if score < best_score:
+			best_score = score
+			best = candidate
+	return best
 
 func action(root: Node, prefix: String) -> Control:
 	if not is_instance_valid(root): return null
@@ -107,9 +140,17 @@ func caption(root: Node, text: String) -> Control:
 	return null
 
 func update() -> void:
+	presented = false
 	hold = false
 	target = null
-	hide()
+	_resolve_step()
+	if not presented: hide()
+	# z_index only changes drawing; GUI picking follows sibling order.
+	if visible and get_index() != get_parent().get_child_count()-1:
+		get_parent().move_child(self,-1)
+
+func _resolve_step() -> void:
+	if not GGT_GameConfig.config.get_value("game","tutorial_enabled",true): return
 	if skipped or game.debug_enabled or game.progress.load_blocked: return
 	if game.pause_overlay.visible or is_instance_valid(game.campaign_panel.home_overlay): return
 	if game.screen == "battle" and game.campaign_mode == "prologue":
@@ -236,7 +277,7 @@ func battle() -> void:
 			if id != "repair" and sim.program_error(id).is_empty(): ready = id; break
 		if ready.is_empty() and sim.elapsed > 10 and sim.program_error("repair").is_empty(): ready = "repair"
 		if ready.is_empty():
-			point(hud.bank_labels.purple if sim.loadout.has("redirect") else hud.bank_labels.blue,"codes","积攒代码","战斗会自动积攒代码：普攻产出指令，验证产出数据，技能产出协议，护盾吸收产出权限。把鼠标移离技能详情，让战斗继续。")
+			point(hud.bank_labels.purple if sim.loadout.has("redirect") else hud.bank_labels.blue,"codes","积攒代码","战斗会自动积攒代码：角色普攻产出对应颜色，验证可追加数据，护盾实际吸收产出权限。把鼠标移离技能详情，让战斗继续。")
 		else:
 			hold = true
 			if hud.preview_program_id == ready and hud.preview_pinned:

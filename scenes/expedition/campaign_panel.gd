@@ -933,7 +933,7 @@ func _open_library_detail(journey, index: int) -> void:
 	hint_label.add_theme_color_override("font_color",Color("b7c9d7"))
 	exploration_popup_box.add_child(hint_label)
 	var labels = {"battle":"挑战","memory":"读取","person":"交谈","system":"调查"}
-	var is_photo: bool = journey.is_library() and spot.kind == "memory" and preload("res://resources/content/library_memory.tres").photograph != null
+	var is_photo: bool = journey.is_library() and spot.kind == "memory" and load("res://resources/content/library_memory.tres").photograph != null
 	var action_id: String = "photo" if is_photo else "spot:" + spot.id
 	var primary := _exploration_button("查看" if is_photo else labels[spot.kind],action_id,not (spot.kind == "battle" and visit.guard_won),exploration_popup_box,128)
 	primary.size_flags_horizontal = Control.SIZE_SHRINK_END

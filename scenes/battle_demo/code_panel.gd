@@ -16,7 +16,7 @@ var canvas: Control
 var programs: HBoxContainer
 var program_preview: PanelContainer
 var preview_title: Label
-var preview_effect: Label
+var preview_effect: RichTextLabel
 var preview_state: Label
 var preview_release: Button
 var preview_target: OptionButton
@@ -136,7 +136,8 @@ func _ready() -> void:
 		card.get_parent().custom_minimum_size.x = 182
 		card.get_parent().visible = false
 		_label(card,entry.display_name,15)
-		var effect := _label(card,entry.description,12)
+		var effect := preload("res://scenes/ui/glossary_text.gd").make(entry.description,12)
+		card.add_child(effect)
 		effect.custom_minimum_size.x = 170
 		effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var controls := {"card":card.get_parent(),"icon":icon}
@@ -166,9 +167,14 @@ func _ready() -> void:
 	motion.text = "简化特效"
 	motion.add_theme_font_size_override("font_size",12)
 	motion.position = Vector2(1090,125)
-	motion.toggled.connect(func(value): code_fx.reduced_motion = value)
+	motion.set_pressed_no_signal(GGT_GameConfig.config.get_value("game","reduced_motion",false))
+	motion.toggled.connect(func(value):
+		code_fx.reduced_motion = value
+		GGT_GameConfig.config.set_value("game","reduced_motion",value)
+		GGT_GameConfig.persist())
 	canvas.add_child(motion)
 	code_fx = preload("res://scenes/battle_demo/code_fx.gd").new()
+	code_fx.reduced_motion = GGT_GameConfig.config.get_value("game","reduced_motion",false)
 	code_fx.host = self
 	add_child(code_fx)
 
@@ -218,7 +224,8 @@ func _build_program_preview() -> void:
 	content.add_theme_constant_override("separation",5)
 	program_preview.add_child(content)
 	preview_title = _label(content,"",16)
-	preview_effect = _label(content,"",12)
+	preview_effect = preload("res://scenes/ui/glossary_text.gd").make("",12)
+	content.add_child(preview_effect)
 	preview_effect.custom_minimum_size.x = 196
 	preview_effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	preview_target = OptionButton.new()
@@ -392,7 +399,7 @@ func _show_program_preview(id: String, pin: bool) -> void:
 	hud_dirty = true
 	var data = Codes.program(id)
 	preview_title.text = data.display_name
-	preview_effect.text = data.description
+	preview_effect.set_copy(data.description)
 	target_key = ""
 	payment_editing = false
 	var payment: Dictionary = sim.payment_for(id)
@@ -418,6 +425,7 @@ func _hide_program_preview() -> void:
 	for controls in program_controls.values(): controls.button.button_pressed = false
 
 func _sync_program_preview() -> void:
+	if preview_effect.pinned: return
 	if not running or not is_visible_in_tree(): return
 	if preview_pinned:
 		_position_program_preview()
@@ -457,6 +465,7 @@ func _select_item(id: String) -> void:
 		else: destination_control.get_child(0).grab_focus()
 
 func hover_paused() -> bool:
+	if is_instance_valid(preview_effect) and preview_effect.pinned: return true
 	if not is_visible_in_tree() or game.phase != "battle" or game.get("screen") not in [null,"battle"]: return false
 	if is_instance_valid(game.battle_status_layer) and game.battle_status_layer.hover_paused(): return true
 	if (preview_pinned and program_preview.visible) or not selected_item.is_empty(): return true

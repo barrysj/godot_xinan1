@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/archer.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/archer/frames/idle_00.png" id="atlas"]
-[ext_resource type="Resource" path="res://assets/art/characters/archer/battle_animation.tres" id="animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
 region = Rect2(675, 265, 210, 210)
@@ -12,7 +11,7 @@ id = "archer"
 display_name = "远射手"
 description = "远射手：优先射击后排，造成 2.6 倍攻击伤害。"
 portrait = SubResource("portrait")
-battle_animation = ExtResource("animation")
+battle_animation_path = "res://assets/art/characters/archer/battle_animation.tres"
 health = 205
 attack = 34
 interval = 1.5

@@ -63,6 +63,19 @@ func _ready():
     $ready = Prepare
     Expect (-not $ready.Imported -and $ready.Checks -eq 2) 'unchanged checkout still probes but skips import'
 
+    $fast = Initialize-GodotProject -ProjectPath $fixture -EnginePath $EnginePath -ForLaunch -TimeoutSeconds 60
+    Expect (-not $fast.Imported -and $fast.Checks -eq 0 -and $fast.Logs.Count -eq 0) 'warm daily launch starts no probe/import Godot process'
+    WriteSource 'readme.md' 'documentation only'
+    WriteSource 'probe.gd' ($goodProbe + "`n# daily-launch source edit`n")
+    $fast = Initialize-GodotProject -ProjectPath $fixture -EnginePath $EnginePath -ForLaunch -TimeoutSeconds 60
+    Expect (-not $fast.Imported -and $fast.Logs.Count -eq 0) 'ordinary script and documentation changes require no editor pass'
+    WriteSource 'icon.svg' '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="5" fill="red"/></svg>'
+    $fast = Initialize-GodotProject -ProjectPath $fixture -EnginePath $EnginePath -ForLaunch -TimeoutSeconds 60
+    Expect ($fast.Imported -and $fast.Checks -eq 0 -and $fast.Logs.Count -eq 1) 'changed texture imports without loading a second game'
+    $fast = Initialize-GodotProject -ProjectPath $fixture -EnginePath $EnginePath -ForLaunch -TimeoutSeconds 60
+    Expect (-not $fast.Imported -and $fast.Logs.Count -eq 0) 'post-import source key avoids repeated preparation'
+    Prepare | Out-Null
+
     # Corrupt only an ignored local import descriptor: no Git/source-key change.
     Remove-Item -LiteralPath (Join-Path $fixture 'icon.svg.import')
     $failed = $false

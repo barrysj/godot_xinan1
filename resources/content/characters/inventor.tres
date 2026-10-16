@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/inventor.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/inventor/frames/idle_00.png" id="atlas"]
-[ext_resource type="Resource" path="res://assets/art/characters/inventor/battle_animation.tres" id="animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
 region = Rect2(672, 300, 185, 185)
@@ -12,7 +11,7 @@ id = "inventor"
 display_name = "发明家"
 description = "发明家：对目标所在整排造成 72 点伤害。"
 portrait = SubResource("portrait")
-battle_animation = ExtResource("animation")
+battle_animation_path = "res://assets/art/characters/inventor/battle_animation.tres"
 health = 260
 attack = 24
 interval = 1.8

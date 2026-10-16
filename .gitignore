@@ -34,8 +34,7 @@ __pycache__/
 /api.txt
 
 # Builds/export directory
-tools/art/asset_manager/control/ArtManagerControl.exe
-tools/art/asset_manager/control/ArtManagerControl.exe.sources
+tools/ToolLauncher.exe.sources
 builds/**/*
 !builds/.gdignore
 

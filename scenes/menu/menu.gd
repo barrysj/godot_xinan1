@@ -76,12 +76,18 @@ func _open_codex() -> void:
 
 
 func _ready():
+	if "--settings-check" in OS.get_cmdline_user_args():
+		var bundled_font = load("res://assets/fonts/SourceHanSansSC-Medium.otf")
+		bundled_font.allow_system_fallback = false
+	if "--glossary-preview" in OS.get_cmdline_user_args():
+		get_tree().change_scene_to_file.call_deferred("res://scenes/ui/glossary_check.tscn")
+		return
 	if "--map-loading-check" in OS.get_cmdline_user_args():
 		get_tree().change_scene_to_file.call_deferred("res://scenes/expedition/campus_map_loading_check.tscn")
 		return
 	get_window().title = $MarginContainer/Control/CenterContainer/Title.text
 	if "--web-background-check" in OS.get_cmdline_user_args():
-		var check = load("res://tools/web_background_check.gd").new()
+		var check = load("res://tools/release/web_background_check.gd").new()
 		check.menu = self
 		get_tree().root.call_deferred("add_child", check)
 	_load_progress_state()
@@ -99,6 +105,7 @@ func _ready():
 	codex_button.focus_neighbor_top = codex_button.get_path_to(play_button)
 	codex_button.focus_neighbor_bottom = codex_button.get_path_to(settings_button)
 	settings_button.focus_neighbor_top = settings_button.get_path_to(codex_button)
+	if "--settings-preview" in OS.get_cmdline_user_args(): _on_settings_button_pressed.call_deferred()
 	# needed for gamepads to work
 	play_button.grab_focus()
 	if OS.has_feature('web'):

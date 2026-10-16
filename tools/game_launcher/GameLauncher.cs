@@ -22,6 +22,7 @@ namespace CyberPopCampus.GameLauncher
         internal Task ActiveTask;
         internal int LastExitCode = -1;
         internal bool VerifyLaunch;
+        internal bool MeasureStart;
         internal bool CaptureLaunch;
         internal bool TestMode;
         private readonly JavaScriptSerializer json = new JavaScriptSerializer();
@@ -216,6 +217,7 @@ namespace CyberPopCampus.GameLauncher
                 var args = new List<string> { "-NoProfile", "-File", backend, "-Mode", Mode, "-Action", action, "-EnginePath", engine.Text.Trim(), "-Resolution", resolution.Text };
                 if (fullscreen.Checked) args.Add("-Fullscreen");
                 if (VerifyLaunch) args.Add("-Verify");
+                if (MeasureStart) args.Add("-MeasureStart");
                 if (CaptureLaunch) args.Add("-Capture");
                 string pwsh = FindPowerShell();
                 var info = new ProcessStartInfo(pwsh) { WorkingDirectory = Root, UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true, StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8 };
@@ -295,6 +297,8 @@ namespace CyberPopCampus.GameLauncher
                 while (!File.Exists(Path.Combine(root, "project.godot"))) { var parent = Directory.GetParent(root.TrimEnd(Path.DirectorySeparatorChar)); if (parent == null) throw new Exception("请把启动器放在项目目录中。"); root = parent.FullName; }
                 using (var form = new LaunchForm(root)) {
                     string capture = Value(args, "--capture"); string test = Value(args, "--self-test"); string verify = Value(args, "--verify-launch");
+                    string measure = Value(args, "--measure-launch");
+                    if (measure != null) verify = measure;
                     if (capture == null && test == null && verify == null) { Application.Run(form); return 0; }
                     form.TestMode = true; form.Show(); Application.DoEvents();
                     if (Value(args, "--engine") != null) form.SetEngine(Value(args, "--engine"));
@@ -302,15 +306,17 @@ namespace CyberPopCampus.GameLauncher
                     if (Array.IndexOf(args, "--checks-page") >= 0) form.ShowChecks();
                     if (verify != null) {
                         if (!form.Actions.ContainsKey(verify)) throw new Exception("此启动器没有该入口：" + verify);
-                        form.VerifyLaunch = verify == "Play" || verify == "Campus" || verify == "Battle";
+                        form.MeasureStart = measure != null;
+                        form.VerifyLaunch = !form.MeasureStart && (verify == "Play" || verify == "Campus" || verify == "Battle");
                         form.CaptureLaunch = Array.IndexOf(args, "--game-capture") >= 0;
-                        if (!form.VerifyLaunch) { form.ShowChecks(); Application.DoEvents(); }
+                        if (!form.VerifyLaunch && !form.MeasureStart) { form.ShowChecks(); Application.DoEvents(); }
+                        Stopwatch launchWatch = Stopwatch.StartNew();
                         form.Actions[verify].PerformClick();
                         DateTime deadline = DateTime.UtcNow.AddMinutes(8);
                         while (form.ActiveTask != null && !form.ActiveTask.IsCompleted && DateTime.UtcNow < deadline) { Application.DoEvents(); System.Threading.Thread.Sleep(15); }
                         if (form.ActiveTask == null || !form.ActiveTask.IsCompleted) throw new Exception("启动器验证超时。");
                         Application.DoEvents();
-                        File.WriteAllText(Path.Combine(root, ".godot/game-launcher/gui-" + LaunchForm.Mode.ToLowerInvariant() + "-" + verify.ToLowerInvariant() + ".json"), new JavaScriptSerializer().Serialize(new { exit_code = form.LastExitCode, message = form.StatusText }));
+                        File.WriteAllText(Path.Combine(root, ".godot/game-launcher/gui-" + LaunchForm.Mode.ToLowerInvariant() + "-" + verify.ToLowerInvariant() + ".json"), new JavaScriptSerializer().Serialize(new { exit_code = form.LastExitCode, message = form.StatusText, elapsed_seconds = launchWatch.Elapsed.TotalSeconds }));
                         if (form.LastExitCode != 0) { if (capture != null) form.CaptureWindow(capture); form.Close(); return 1; }
                     }
                     if (capture != null) { Application.DoEvents(); form.CaptureWindow(capture); }

@@ -1,5 +1,5 @@
 """Audit the Godot 4 PCK directory without loading engine resources.
-Run: py -3 tools/web_package_check.py builds/web/index.pck
+Run: py -3 tools/release/web_package_check.py builds/web/index.pck
 """
 import argparse
 import struct

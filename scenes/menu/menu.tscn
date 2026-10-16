@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c2gocuhw2o7py"]
 
-[ext_resource type="PackedScene" uid="uid://c2jxemjmao00b" path="res://addons/ggt-core/settings/settings_menu.tscn" id="3_e0arn"]
+[ext_resource type="PackedScene" path="res://scenes/menu/settings_menu.tscn" id="3_e0arn"]
 [ext_resource type="FontFile" path="res://assets/fonts/SourceHanSansSC-Medium.otf" id="6"]
 [ext_resource type="Script" uid="uid://cvc42inud8fxx" path="res://scenes/menu/menu.gd" id="5"]
 

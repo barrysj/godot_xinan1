@@ -60,7 +60,7 @@ $godot = '.\.godot\web-tools\engine\Godot_v4.7.2-stable_win64_console.exe'
 & $godot --headless --path . --script res://tools/art/build_web_backgrounds.gd
 & $godot --headless --path . --script res://tools/art/build_web_backgrounds.gd -- --check
 & $godot --headless --editor --path . --import
-& $godot --headless --path . res://tools/platform_asset_check.tscn
+& $godot --headless --path . res://tools/release/platform_asset_check.tscn
 pwsh.exe -File .\build-web.ps1
 ```
 
@@ -109,4 +109,4 @@ Web 正式包只保留 `SourceHanSansSC-Medium.otf` 思源黑体。事件选择�
 
 仅 Web 使用的 30 张背景与三态校园全图，其 `.import` 设置使用 `compress/mode=1`（Lossy）、`compress/lossy_quality=0.9`。分辨率保持背景 1920×1080、地图 1800×1500，非 Web 原图不变。这 33 份导入描述必须随资源提交，已在 `.gitignore` 中明确例外，避免干净检出／CI 回到默认无损导入而膨胀。后续新增同组图片也须配置这两个值并提交 `.import`；`platform_asset_check.tscn` 会检查设置并实际解码全部导入纹理。源 WebP 的 0.85 编码品质与导入纹理的 0.9 压缩品质属于不同阶段，不要混淆。
 
-构建后执行 `py -3 tools/web_package_check.py builds/web/index.pck`，直接审计 PCK 目录中只有一个思源 `.fontdata` 且无另两种字体。此检查不能替代浏览器验收。图鉴使用的班级照片及预览仍保留，不按文件大小直接移除运行资源。
+构建后执行 `py -3 tools/release/web_package_check.py builds/web/index.pck`，直接审计 PCK 目录中只有一个思源 `.fontdata` 且无另两种字体。此检查不能替代浏览器验收。图鉴使用的班级照片及预览仍保留，不按文件大小直接移除运行资源。

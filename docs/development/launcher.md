@@ -20,7 +20,7 @@
 
 细分的功能／内容校验和 hooks 设置仅保留为内部自动化入口。切到“检查”页时，Enter 默认执行“一键检查”。
 
-启动前均执行[工程预检](project-health.md)。窗口通过后台进程事件显示准备、运行、成功和失败；同一工作区整个准备／游戏期间持有锁，另一个启动器不能重复启动。检查期间关闭窗口会提示等待，游戏运行时可以关闭启动器，游戏继续运行。检查和游戏退出都核对实际日志；退出码 0 仍可能失败。点击“查看日志”打开最新日志，缺少引擎等早期失败打开启动器记录。
+日常启动只检查资源导入缓存，不再执行完整战役预检；“一键检查／修复工程”保留完整[工程预检](project-health.md)。普通脚本和文档修改无需等待编辑器扫描，资源变化时显示实际导入阶段及日志。窗口通过后台进程事件显示准备、运行、成功和失败；同一工作区整个准备／游戏期间持有锁，另一个启动器不能重复启动。检查期间关闭窗口会提示等待，游戏运行时可以关闭启动器，游戏继续运行。检查和游戏退出都核对实际日志；退出码 0 仍可能失败。点击“查看日志”打开最新日志，缺少引擎等早期失败打开启动器记录。
 
 ## 实现与维护
 
@@ -35,7 +35,7 @@ pwsh.exe -NoProfile -File tools/game_launcher/build-launchers.ps1
 pwsh.exe -NoProfile -File tools/game_launcher/test-launchers.ps1 -EnginePath '<Godot console.exe>'
 ```
 
-原校园、Debug、战斗的高级 Smoke／Capture／固定难度夹具保存在 `tools/game_launcher/legacy/`；内容命令在 `tools/content/`；工程检查和 hooks 在 `tools/development/`；美术预览和工具集构建脚本在 `tools/art/`。这些不是日常用户入口。美术／地图原窗口仍是 `tools/art/asset_manager/control/ArtManagerControl.exe`，本次只修正内部脚本引用。
+原校园、Debug、战斗的高级 Smoke／Capture／固定难度夹具保存在 `tools/game_launcher/legacy/`；内容命令在 `tools/content/`；工程检查和 hooks 在 `tools/development/`；美术预览在 `tools/art/`，工具集构建脚本在 `tools/launcher/`。这些不是日常用户入口。美术／地图原窗口仍是 `tools/ToolLauncher.exe`，构建产物随仓库提交。
 
 验证结果和已知边界统一见 [DEV-01](dev-01.md)。仅覆盖 Windows 桌面，不宣布发行包、Web／手机或真人体验验收。
 

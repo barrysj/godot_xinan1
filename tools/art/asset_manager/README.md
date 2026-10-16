@@ -2,7 +2,7 @@
 
 ## 开发工具集启动
 
-日常双击 `tools/art/asset_manager/control/ArtManagerControl.exe`。维护／自动化使用同目录 `run-tool-suite-control.ps1`，缺少 EXE 或源码更新时先构建；`run-art-manager-control.ps1` 仅保留内部兼容。游戏 Debug／Release 使用独立[启动器](../../../docs/development/launcher.md)。EXE 与 C# 源码同目录，清理 .godot 不会移除它；本工具集构建产物被 Git 忽略。构建需系统 .NET Framework C# 编译器；若文件占用，关闭控制器窗口后重试。
+日常双击 `tools/ToolLauncher.exe`。源码与构建脚本在 `tools/launcher/`；维护使用其中 `run-tool-suite-control.ps1`，缺少 EXE 或源码更新时按需构建。EXE 随仓库提交，可直接使用。游戏 Debug／Release 使用独立[启动器](../../../docs/development/launcher.md)。构建需系统 .NET Framework C# 编译器；若文件占用，关闭控制器后重试。
 
 EXE 从自身目录向上查找项目，不依赖启动时的当前目录；不要单独搬到项目外。新工作树首次由维护工具构建。窗口分别管理“美术资源”和“地图编辑”，显示服务状态、PID 和运行目录，各有“启动／打开／停止”按钮。资源台默认使用 `127.0.0.1:8765`，地图编辑器默认使用 `127.0.0.1:8767`。关闭工具集窗口不会停止服务。
 
@@ -108,10 +108,10 @@ integration:
 推荐使用开发工具集：
 
 ```powershell
-pwsh.exe -NoProfile -File .\tools/art/asset_manager/control/run-tool-suite-control.ps1
+pwsh.exe -NoProfile -File .\tools/launcher/run-tool-suite-control.ps1
 ```
 
-构建脚本用 Windows 自带的 .NET Framework C# 编译器，在源码同目录生成兼容原名称的 `tools/art/asset_manager/control/ArtManagerControl.exe`。根启动脚本在缺失或源码／构建脚本内容哈希变化时自动构建，同目录 `.exe.sources` 保存签名，两者均不入库。两张工具卡独立检测、启停；停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
+构建脚本用 Windows 自带的 .NET Framework C# 编译器，在源码同目录生成兼容原名称的 `tools/ToolLauncher.exe`。根启动脚本在缺失或源码／构建脚本内容哈希变化时自动构建，同目录 `.exe.sources` 保存签名，两者均不入库。两张工具卡独立检测、启停；停止动作只接受健康接口返回的本项目进程，不会根据端口猜测或终止其他程序。
 
 也可以直接启动服务：
 

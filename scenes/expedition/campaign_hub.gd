@@ -39,6 +39,9 @@ func _ready() -> void:
 	if "--battle-report-check" in OS.get_cmdline_user_args(): progress.path = "res://.godot/battle-report-check-%d.json" % Time.get_ticks_usec()
 	if "--profile-reset-check" in OS.get_cmdline_user_args():
 		progress.path = "res://.godot/profile-reset-ui.json"
+	if "--startup-capture" in OS.get_cmdline_user_args():
+		progress.path = "res://.godot/game-launcher/timing-profile-%d.json" % Time.get_ticks_usec()
+		add_child.call_deferred(load("res://tools/development/startup_capture.gd").new())
 	theme = preload("res://resources/theme/theme-main.tres").duplicate()
 	theme.default_font = preload("res://assets/fonts/SourceHanSansSC-Medium.otf")
 	super._ready()
@@ -662,14 +665,14 @@ func _campaign_action(id: String) -> void:
 			if not _save_campaign(): return
 		_show_journey()
 	elif id == "photo":
-		var memory = preload("res://resources/content/library_memory.tres")
+		var memory = load("res://resources/content/library_memory.tres")
 		if memory.photograph != null and progress.record_memory(memory.id):
 			detail_return = "visit"
 			for spot in journey.visit.data.hotspots:
 				if spot.kind == "memory": journey.visit.view(spot.id)
 			if _save_campaign(): campaign_panel.photograph(memory)
 	elif id in ["photo_zoom","photo_fit"]:
-		campaign_panel.photograph(preload("res://resources/content/library_memory.tres"),id == "photo_zoom",detail_return)
+		campaign_panel.photograph(load("res://resources/content/library_memory.tres"),id == "photo_zoom",detail_return)
 	elif id == "settle": _settle_campaign()
 	elif id == "memories":
 		campaign_panel.clear("回忆档案","已保存的虚拟校园系统记录。随时重看，不影响主线进度。")
@@ -681,7 +684,7 @@ func _campaign_action(id: String) -> void:
 		if progress.campaign.prologue_done: campaign_panel.button("重看序章","replay_prologue")
 		campaign_panel.button("返回基地","base")
 	elif id.begins_with("memory:"):
-		var memory = preload("res://resources/content/library_memory.tres")
+		var memory = load("res://resources/content/library_memory.tres")
 		if id.trim_prefix("memory:") == memory.id and memory.photograph != null:
 			detail_return = "memories"
 			campaign_panel.photograph(memory,false,"memories")

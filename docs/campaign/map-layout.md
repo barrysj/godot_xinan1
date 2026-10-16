@@ -6,7 +6,7 @@
 
 圆形节点使用 `assets/art/map_thumbnails/<地点>/<daily|anomaly>.png` 的 128×128 小图，不在点击区域时读取完整背景、GPU 回读或裁切。处理与原运行时一致：中心正方形裁切、Lanczos 缩小，源图及批准状态不变；技术衍生图登记于 `assets/art/manifests/map_thumbnails.yaml`，不自动获得人工批准。点击地点详情才按平台加载完整背景。
 
-维护入口：Godot `--headless --path . --script res://tools/build_map_thumbnails.gd` 生成全部24张；加 `-- --check` 对照源图逐字节验证。源背景更新后重生成并重新导入。缩略图随正式资源提交，生成器由上述原图确定性重建。地点内场景与布局用 `background_path` 保存同一原图路径，原生编辑器仍显示背景；快照校验不解码纹理，进入场景时统一通过平台映射加载。
+维护入口：Godot `--headless --path . --script res://tools/art/build_map_thumbnails.gd` 生成全部24张；加 `-- --check` 对照源图逐字节验证。源背景更新后重生成并重新导入。缩略图随正式资源提交，生成器由上述原图确定性重建。地点内场景与布局用 `background_path` 保存同一原图路径，原生编辑器仍显示背景；快照校验不解码纹理，进入场景时统一通过平台映射加载。
 
 试用全图的单一数据源是 [`game/run/expanded_campus_layout.json`](../../game/run/expanded_campus_layout.json)。布局逻辑坐标为 1800×1500，左上角是 `[0,0]`，向右 x 增大，向下 y 增大；无论运行窗口如何缩放，都只改这里的源图坐标。保存后重新启动地图预览查看结果。
 
@@ -16,7 +16,7 @@
 
 ## 可视化编辑器
 
-双击 `tools/art/asset_manager/control/ArtManagerControl.exe` 打开原开发工具集，点击“地图编辑”卡的“启动”，再点“打开”。游戏 Debug／Release 使用另一套独立启动器，地图工具保持原窗口入口。
+双击 `tools/ToolLauncher.exe` 打开原开发工具集，点击“地图编辑”卡的“启动”，再点“打开”。游戏 Debug／Release 使用另一套独立启动器，地图工具保持原窗口入口。
 
 默认地址是 `http://127.0.0.1:8767/`。工具集显示实时状态、PID 和运行目录；关闭工具集窗口不会停止地图服务，完成编辑后可点“停止”。服务只监听本机 `127.0.0.1`。也可不用工具集，直接执行 `pwsh.exe -NoProfile -File .\tools\campus-map-editor\run-server.ps1`；若需另选端口，用 `-Port 8768`，但工具集只检测默认的 8767 端口。纯 Node 调试可执行 `node tools/campus-map-editor/server.mjs --port 8768`，在终端按 Ctrl+C 关闭。
 

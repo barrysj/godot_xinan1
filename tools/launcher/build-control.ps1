@@ -3,8 +3,8 @@ if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Use PowerShell 7 (pwsh.exe).
 $ErrorActionPreference = 'Stop'
 
 $sourcePath = Join-Path $PSScriptRoot 'ToolSuiteControl.cs'
-$outputDirectory = $PSScriptRoot
-$outputPath = Join-Path $outputDirectory 'ArtManagerControl.exe'
+$outputDirectory = Split-Path $PSScriptRoot -Parent
+$outputPath = Join-Path $outputDirectory 'ToolLauncher.exe'
 $frameworkRoot = Join-Path $env:WINDIR 'Microsoft.NET'
 $compiler = @(
     (Join-Path $frameworkRoot 'Framework64/v4.0.30319/csc.exe'),

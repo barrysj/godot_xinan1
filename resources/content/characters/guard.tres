@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/guard.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/guard/frames/idle_00.png" id="atlas"]
-[ext_resource type="Resource" path="res://assets/art/characters/guard/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
 region = Rect2(445, 265, 180, 180)
@@ -12,7 +11,7 @@ id = "guard"
 display_name = "守护者"
 description = "守护者：自身与相邻友军获得 48 点护盾。"
 portrait = SubResource("portrait")
-battle_animation = ExtResource("battle_animation")
+battle_animation_path = "res://assets/art/characters/guard/battle_animation.tres"
 health = 360
 attack = 22
 interval = 1.8

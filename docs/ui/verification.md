@@ -8,7 +8,7 @@
 
 ## 菜单、图鉴与暂停
 
-tools/menu_runtime_check.tscn参数-- --test-size=1920x1080（另2560x1440、1920x1200）验证六背景和恢复状态；窗口显示名取“校园异闻”，工程元数据仍保留原身份。scenes/menu/menu.tscn -- --codex-check验证暂停图鉴与恢复；闪卡集合与详情另见[美术验证](../art/verification.md)。
+tools/development/tests/menu_runtime_check.tscn参数-- --test-size=1920x1080（另2560x1440、1920x1200）验证六背景和恢复状态；窗口显示名取“校园异闻”，工程元数据仍保留原身份。scenes/menu/menu.tscn -- --codex-check验证暂停图鉴与恢复；闪卡集合与详情另见[美术验证](../art/verification.md)。
 
 三桌面尺寸实际截图有既有证据；手机、实体手柄、任意极端拥挤和当前Web仍待验证。美术接入状态见对应对象说明和Manifest，不由断言升级。
 

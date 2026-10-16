@@ -70,7 +70,7 @@ namespace CyberPopCampus.ToolSuite
 
             timer = new System.Windows.Forms.Timer();
             timer.Interval = 1500;
-            timer.Tick += delegate { RefreshAll(); };
+            timer.Tick += delegate { timer.Stop(); try { RefreshAll(); } finally { timer.Start(); } };
             Shown += delegate { RefreshAll(); timer.Start(); Activate(); };
             FormClosed += delegate { timer.Stop(); timer.Dispose(); };
         }

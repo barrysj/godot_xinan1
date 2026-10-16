@@ -8,7 +8,7 @@ Git更新源码，不更新每个checkout自己的Godot缓存。新全局脚本�
 
 ## Windows 窗口入口
 
-Debug 启动器的“检查”页只提供“一键检查”“修复工程”，无需直接运行脚本。两态游戏启动前都自动准备并检测；窗口和日志行为见[Windows 启动器](launcher.md)。hooks 设置留给内部维护命令。
+Debug 启动器的“检查”页只提供“一键检查”“修复工程”，无需直接运行脚本。两态日常启动只做资源导入缓存检查；窗口和日志行为见[Windows 启动器](launcher.md)。hooks 设置留给内部维护命令。
 
 ## 内部自动化命令
 
@@ -22,7 +22,7 @@ pwsh.exe -NoProfile -File .\tools/development/check-project.ps1 -Repair
 
 默认自动准备并检测；`-NoRepair`只检测，不刷新导入／就绪记录；`-Repair`强制重新导入并检测。`-EnginePath`选择实际引擎，`-ProjectPath`选择已有项目，`-TimeoutSeconds`调整每阶段时限。目标项目须包含本工具与原主入口。
 
-共享实现为`tools/development/project-health.ps1`。就绪记录绑定绝对checkout、引擎路径／文件版本状态、Git HEAD和已修改／新文件内容；同一Git状态下再次修改文件也能被发现。不在Git仓库内时每次准备。源码变化或缓存缺失时调用Godot的headless编辑器`--import`，等待完成；未变化时仍执行真实主入口预检，避免就绪记录掩盖缓存丢失。
+共享实现为`tools/development/project-health.ps1`。以下完整预检用于主动检查／修复，不再用于日常开始游戏。就绪记录绑定绝对checkout、引擎路径／文件版本状态、Git HEAD和已修改／新文件内容；同一Git状态下再次修改文件也能被发现。不在Git仓库内时每次准备。源码变化或缓存缺失时调用Godot的headless编辑器`--import`，等待完成；未变化时仍执行真实主入口预检，避免就绪记录掩盖缓存丢失。
 
 预检`project_startup_check.tscn`加载原Campaign、三区域Resource、菜单、SVG与地图节点，用`.godot/project-health`中的独立临时profile。只有退出0、没有致命日志、且PROJECT_HEALTH_CHECK明确完成才通过。缓存复用时预检失败，会自动重导入、再预检一次；新导入后仍失败或真正代码错误立即阻止启动。日志使用唯一名称，不能误读旧成功日志；同一checkout并发准备会拒绝重入，超时只终止本工具创建的引擎进程。
 
@@ -30,7 +30,7 @@ pwsh.exe -NoProfile -File .\tools/development/check-project.ps1 -Repair
 
 ## 启动入口接入
 
-Windows Debug／Release 启动器通过tools/game_launcher/launch-action.ps1，在启动可见游戏前调用同一预检；内部兼容夹具仍共用该模块。运行结束也检查实际日志，不以退出0代替成功。已有Debug／Release／战斗参数和存档规则不变。Debug检查还有时间上限与完成标记要求，避免失败后静默挂起或被当成通过。
+Windows Debug／Release 启动器通过tools/game_launcher/launch-action.ps1，在日常启动时调用轻量 `-ForLaunch`，检查／修复时调用完整预检；内部兼容夹具仍共用该模块。运行结束也检查实际日志，不以退出0代替成功。已有Debug／Release／战斗参数和存档规则不变。Debug检查还有时间上限与完成标记要求，避免失败后静默挂起或被当成通过。
 
 ## main更新后的自动触发
 
@@ -61,3 +61,15 @@ Hook回归入口为tools/development/tests/project-hooks.test.ps1，使用同样
 官方契约：[命令行导入](https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html)、[版本控制与缓存](https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html)、[Git hooks](https://git-scm.com/docs/githooks)。
 
 启动器扩展核验：引擎选项包括 --log-file 必须位于 -- 之前，后台 stage 已修正并由实际游戏按钮自检覆盖。Windows 桌面只过滤已复现的 root certificate store 与 Android EditorSettings 的 shutdown_adb_on_exit／android_sdk_path 退出提示；其他 EditorSettings 字段、SCRIPT ERROR 与资源错误仍判失败。新增三个分类回归防止扩大忽略范围，最新结果归 DEV-01。
+
+## 日常启动性能（2026-10-16，待统筹）
+
+`-ForLaunch` 用 `ImportFingerprint.cs` 扫描导入资源的路径／大小／修改时间、project.godot 有效行和全局脚本类型声明。普通脚本正文、文档、Git 提交变化不再触发编辑器导入；首次检出、导入资源变化或基础缓存缺失仍等待实际 `--import`，并显示阶段与日志。它不反复加载完整游戏作为预检。编译好的指纹辅助库及 `launch-ready.json` 均在忽略的 `.godot/project-health` 中。
+
+日常检查不逐个校验衍生纹理是否损坏；出现缓存错误时使用“修复工程”。完整检查继续要求进程返回成功、日志无致命错误、主流程预检有完成标记。实际游戏退出也检查日志。
+
+人物定义新增 `battle_animation_path`，首次使用战斗动画时加载并缓存，旧直接 Resource 引用仍兼容；基地启动不生成无用战斗实例，图书馆照片在打开时加载。导出仍采用 all_resources，路径资源随包携带。
+
+验证基线：31227a1 后功能分支。`tests/project-health.test.ps1` 使用用户本机 Godot 4.7.2 Mono：21 checks / 0 failures，覆盖普通源码／文档变化免导入、资源变化触发一次导入、真实故障与修复。
+
+实际原生 `CampusReleaseLauncher.exe --measure-launch Play`：从真实开始按钮回调到首帧截图并退出，连续 6.62 / 7.05 / 7.10 秒；使用独立档，截图 `.godot/game-launcher/startup-game.png`。该结果是本机已有导入缓存的日常启动，首次资源导入不包含在 10 秒目标内；未重现用户此前超过两分钟的同一次等待，不能声称已定位其全部原因。

@@ -1,6 +1,6 @@
 # 美术工具目录
 
-这些是开发工具，不是角色运行资产。日常双击 `tools/art/asset_manager/control/ArtManagerControl.exe` 打开美术／地图工具集，在资源浏览器点击动作／闪卡预览。`tools/art/run-motion-preview.ps1`、`run-holo-card.ps1` 仅作为内部后端；只有显式 `-ExportPreviews` 才生产 GIF。独立游戏启动器的说明见[Windows 启动器](../../docs/development/launcher.md)。
+这些是开发工具，不是角色运行资产。日常双击 `tools/ToolLauncher.exe` 打开美术／地图工具集，在资源浏览器点击动作／闪卡预览。`tools/art/run-motion-preview.ps1`、`run-holo-card.ps1` 仅作为内部后端；只有显式 `-ExportPreviews` 才生产 GIF。独立游戏启动器的说明见[Windows 启动器](../../docs/development/launcher.md)。
 
 | 目录 | 工具 | 用途 |
 | --- | --- | --- |
@@ -12,17 +12,17 @@
 | `archive/legacy-animation/` | `bake_presentation`、`compact_cycles` | 一次性旧代码动画迁移，保留复现用途；不是新角色制作入口，见目录内说明 |
 | `promotion/` | `promote_animation.py` | 校验批准候选、复制允许运行文件、改写正式引用；`--check` 只校验 |
 | `asset_manager/` | `catalog.py`、`server.py`、`static/` | Manifest 校验、HTTP 服务、资源台网页 |
-| `asset_manager/control/` | C# 源码、构建与启动测试 | Windows 桌面控制器；根目录入口自动补建缺失／过期缓存 |
+| `../launcher/` | C# 源码、构建与启动测试 | Windows 桌面控制器；根目录入口自动补建缺失／过期缓存 |
 | `asset_manager/tests/` | Python 测试 | 资源台及与导出、提升之间的生产边界回归 |
 | `.` | `build_web_backgrounds.gd` | 校园／菜单 WebP 衍生图生成与 `--check` 只读核验；接入步骤见[平台素材规格映射](../../docs/release/web-publishing.md#平台素材规格映射) |
 
-`.gd.uid` 是 Godot 脚本的稳定身份文件，随脚本一起移动并保留；`.tscn` 是 Godot 工具的可运行入口。缓存、临时帧和 EXE 位于 `.godot/`，不提交入库。
+`.gd.uid` 是 Godot 脚本的稳定身份文件，随脚本一起移动并保留；`.tscn` 是 Godot 工具的可运行入口。缓存与临时帧位于 `.godot/`，不提交入库；共享 ToolLauncher.exe 是随仓库提供的日常入口。
 
 ## 验证与生产入口
 
 ```powershell
 py -3 -m unittest discover -s tools/art/asset_manager/tests -v
-pwsh.exe -File tools/art/asset_manager/control/test-launcher.ps1
+pwsh.exe -File tools/launcher/test-launcher.ps1
 pwsh.exe -File tools/art/run-motion-preview.ps1 -EnsureImport -Check
 py -3 tools/art/promotion/promote_animation.py chalk_spirit --check
 ```

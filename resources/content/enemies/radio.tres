@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="CampusUnit" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="CampusUnit" load_steps=5 format=3]
 [ext_resource type="Script" path="res://game/content/unit_def.gd" id="s"]
 [ext_resource type="Resource" path="res://resources/content/skills/enemy_radio.tres" id="skill"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/radio/pose-sheet.png" id="atlas"]
-[ext_resource type="Resource" path="res://assets/art/characters/radio/battle_animation.tres" id="battle_animation"]
 [sub_resource type="AtlasTexture" id="portrait"]
 atlas = ExtResource("atlas")
 region = Rect2(0, 0, 512, 512)
@@ -12,7 +11,7 @@ id = "radio"
 display_name = "广播中继"
 description = "9秒起预警3秒，为其他敌人提供40点5秒盾；每10秒重复。"
 portrait = SubResource("portrait")
-battle_animation = ExtResource("battle_animation")
+battle_animation_path = "res://assets/art/characters/radio/battle_animation.tres"
 health = 340
 attack = 18
 interval = 1.9

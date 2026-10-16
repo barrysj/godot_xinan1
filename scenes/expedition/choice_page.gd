@@ -79,6 +79,12 @@ func _label(value: String, parent: Control, role: String = "body") -> Label:
 	parent.add_child(label)
 	return label
 
+func _glossary(value: String, parent: Control, role: String) -> RichTextLabel:
+	var label = preload("res://scenes/ui/glossary_text.gd").make(value,ChoiceSkin.TYPE_SIZES[role],true)
+	label.set_meta("type_role",role)
+	parent.add_child(label)
+	return label
+
 func _button(label: String, id: String, parent: Control, enabled: bool = true, secondary: bool = false) -> Button:
 	var button := Button.new()
 	button.text = label
@@ -193,7 +199,7 @@ func present(model: Dictionary) -> void:
 	var narrative_panel := PanelContainer.new()
 	narrative_panel.add_theme_stylebox_override("panel",ChoiceSkin.narrative_style())
 	narrative.add_child(narrative_panel)
-	_label(model.get("description",""),narrative_panel)
+	_glossary(model.get("description",""),narrative_panel,"body")
 	_add_outcomes(model.get("outcomes",[]),narrative)
 	if not model.get("options",[]).is_empty(): _label(model.get("options_label","可选行动"),reading,"section")
 	for option in model.get("options",[]):
@@ -222,8 +228,8 @@ func present(model: Dictionary) -> void:
 		button.tooltip_text = option.get("hint","")
 		var results := Outcomes.normalize(option.get("outcomes",[]))
 		if not option.get("description","").is_empty():
-			var detail := _label(option.description,box,"option_description")
-			if results.size() == 1 and results[0].kind in ["gain","loss","cost"]: detail.add_theme_color_override("font_color",ChoiceSkin.outcome_color(results[0].kind))
+			var detail := _glossary(option.description,box,"option_description")
+			if results.size() == 1 and results[0].kind in ["gain","loss","cost"]: detail.add_theme_color_override("default_color",ChoiceSkin.outcome_color(results[0].kind))
 		var notes: Control = box
 		if compact and not results.is_empty() and not option.get("hint","").is_empty():
 			notes = HBoxContainer.new()

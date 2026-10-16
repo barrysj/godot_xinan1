@@ -11,7 +11,7 @@ Web 构建与 Pages 自动发布配置。玩家价值：可分发入口。
 
 ## 实现与规则入口
 
-- 实现入口：[build-web.ps1](../../build-web.ps1)、[export_presets.cfg](../../export_presets.cfg)、[push-export.yml](../../.github/workflows/push-export.yml)、[平台素材适配层](../../game/visual/platform_asset_paths.gd)、[映射检查](../../tools/platform_asset_check.tscn)、[Web 背景生成器](../../tools/art/build_web_backgrounds.gd)、[主菜单映射](../../scenes/menu/menu.gd)、[校园地点映射](../../scenes/expedition/campus_location_skin.gd)、[三态全图映射](../../scenes/expedition/expanded_campus_map.gd)、[基地](../../scenes/expedition/campaign_panel.gd)、[图书馆](../../scenes/expedition/exploration_skin.gd)、[记忆终端纹理加载](../../scenes/expedition/memory_terminal_view.gd)
+- 实现入口：[build-web.ps1](../../build-web.ps1)、[export_presets.cfg](../../export_presets.cfg)、[push-export.yml](../../.github/workflows/push-export.yml)、[平台素材适配层](../../game/visual/platform_asset_paths.gd)、[映射检查](../../tools/release/platform_asset_check.tscn)、[Web 背景生成器](../../tools/art/build_web_backgrounds.gd)、[主菜单映射](../../scenes/menu/menu.gd)、[校园地点映射](../../scenes/expedition/campus_location_skin.gd)、[三态全图映射](../../scenes/expedition/expanded_campus_map.gd)、[基地](../../scenes/expedition/campaign_panel.gd)、[图书馆](../../scenes/expedition/exploration_skin.gd)、[记忆终端纹理加载](../../scenes/expedition/memory_terminal_view.gd)
 - 规则事实源：[发布](web-publishing.md)
 - 跨系统边界参见[集成约束](../development/integration.md)；本文件不另存规则数值或美术审批记录。
 
@@ -44,7 +44,7 @@ Web 预设保留 `all_resources`，排除 `design/*` 及校园地点、主菜单
 
 基线 `31b672f`；保持正式主线入口与平台映射。事件页／过场统一思源，排除 Web 内 Noto 与 Open Sans；33 张 Web 专用背景／地图导入使用高质量有损压缩。实现与后续资源接入契约见 [发布规则](web-publishing.md#单字体与纹理压缩2026-10-16)。
 
-本地优化前现有 PCK 为 247,684,692 字节；优化后 167,165,192 字节（约 167.2 MB），减少约 80.5 MB（32.5%）；整站约 197.4 MiB。统计包含全部运行资源，不是压缩下载体积。检查命令：`pwsh.exe -File build-web.ps1`、`py -3 tools/web_package_check.py builds/web/index.pck`、Godot `--headless --path . res://tools/platform_asset_check.tscn`。纹理 33/0；PCK 审计仅一个思源字体。
+本地优化前现有 PCK 为 247,684,692 字节；优化后 167,165,192 字节（约 167.2 MB），减少约 80.5 MB（32.5%）；整站约 197.4 MiB。统计包含全部运行资源，不是压缩下载体积。检查命令：`pwsh.exe -File build-web.ps1`、`py -3 tools/release/web_package_check.py builds/web/index.pck`、Godot `--headless --path . res://tools/release/platform_asset_check.tscn`。纹理 33/0；PCK 审计仅一个思源字体。
 
 正式 release 包在本地 HTTP、1280×720 桌面浏览器实际点击完成：菜单→热点读取→编队→暂停／恢复／调速→代码补给→积码／破解→胜利领奖→基地→首个免费派遣解锁→校园地图→图书馆路线出发。中文、角色、背景、地图均显示，控制台无 error/warn。截图 `.godot/web-tutorial-dispatch.jpg`、`.godot/web-tutorial-route.jpg`。未触发线上 Pages，也不以桌面浏览器替代手机真机验收。该变更影响发布包和共用字体，待统筹汇总。
 

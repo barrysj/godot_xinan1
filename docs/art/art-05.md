@@ -9,7 +9,7 @@
 
 ## 实现与契约
 
-[资源台README](../../tools/art/asset_manager/README.md)是字段、服务和控制器契约；日常双击tools/art/asset_manager/control/ArtManagerControl.exe，构建／兼容脚本已收归同目录。地图几何编辑归[布局](../campaign/map-layout.md)，站次和内容归[流程配置](../campaign/flow-authoring.md)。
+[资源台README](../../tools/art/asset_manager/README.md)是字段、服务和控制器契约；日常双击tools/ToolLauncher.exe，构建与测试脚本归 tools/launcher。地图几何编辑归[布局](../campaign/map-layout.md)，站次和内容归[流程配置](../campaign/flow-authoring.md)。
 
 加载入口：`tools/art/asset_manager/catalog.py`（浏览／完整校验）、`server.py`（后台任务／目录修订／详情）、`thumbnails.py`（可清除浏览缓存）、`static/`（素材库／搜索／进度／折叠工具）。不改变Manifest字段或源资产批准状态。
 
@@ -20,3 +20,9 @@
 轻量读取只确认登记文件存在，不能代替交付校验。Windows默认Python3.7不带Pillow时，当前1份WebP首图直接传原媒体，其余支持的位图使用缩略图；源文件首次解码仍有成本，后续复用缓存。未做跨平台或大规模对象压力验收。待统筹：浏览不再隐式执行完整校验，高层能力快照下次汇总应区分浏览和交付检查。
 
 不提供通用内容编辑器、审批推断、浏览即生产或跨工作树进程终止。地图服务写权限、并发保护、导出备份和触控边界见工具说明。
+
+## 工具入口归位（2026-10-16，待统筹）
+
+日常入口 `tools/ToolLauncher.exe` 随仓库提交；源码、按需构建和回归脚本归 `tools/launcher/`。tools 根目录新增职责导航，运行检查归 development/tests、发布检查归 release、缩略图生成归 art；资源与脚本引用已同步。状态轮询完成后再开启下一轮，避免慢响应占满窗口消息循环。
+
+基线 46d1b2c 后工作树：原生缺失／缓存／过期构建三项通过；实际资源台和地图编辑服务启动、打开按钮状态、停止均通过。截图 `.godot/game-launcher/tool-launcher.png`；文档检查 219 文档、938 链接、0 错误。未改变游戏规则或美术资产。

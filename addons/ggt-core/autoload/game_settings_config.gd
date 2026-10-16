@@ -4,17 +4,11 @@ extends Node
 const CONFIG_FILE_PATH = &"user://settings.cfg"
 
 var config = ConfigFile.new()
+var settings_path: String = CONFIG_FILE_PATH
 
 signal resolution_scale_changed
 
-const SUPPORTED_LOCALES = {
-	"en": "English",
-	"it": "Italiano",
-	#"ja": "日本語",
-	#"zh": "简体中文",
-	#"ar": "العربية",
-	#"ru": "Русский",
-}
+const SUPPORTED_LOCALES = {"zh_CN": "简体中文"}
 
 enum AudioBus {
 	MASTER,
@@ -25,8 +19,9 @@ enum AudioBus {
 const FPS_MAX_HARD_CAP = 400
 
 func _ready() -> void:
-	if FileAccess.file_exists(CONFIG_FILE_PATH):
-		var err = config.load(CONFIG_FILE_PATH)
+	if "--settings-check" in OS.get_cmdline_user_args(): settings_path = "user://settings-check-%d.cfg" % Time.get_ticks_usec()
+	if FileAccess.file_exists(settings_path):
+		var err = config.load(settings_path)
 		if err != OK:
 			reset()
 			return
@@ -38,12 +33,12 @@ func _ready() -> void:
 
 func reset() -> void:
 	initialize_default_file()
-	config.save(CONFIG_FILE_PATH)
+	config.save(settings_path)
 	_apply_settings()
 
 
 func persist() -> void:
-	config.save(CONFIG_FILE_PATH)
+	config.save(settings_path)
 
 
 func revert_to(cfg: ConfigFile) -> void:
@@ -56,6 +51,8 @@ func initialize_default_file() -> void:
 	config.set_value("audio", "sfx", 0.0)
 	config.set_value("audio", "music", 0.0)
 	config.set_value("gfx", "resolution_scale", 1.0)
+	config.set_value("game", "tutorial_enabled", true)
+	config.set_value("game", "reduced_motion", false)
 	config.set_value("gfx", "fps_limit", 60)
 	if not OS.has_feature('web'):
 		config.set_value("gfx", "fullscreen", true)
@@ -65,7 +62,7 @@ func initialize_default_file() -> void:
 	if os_locale in SUPPORTED_LOCALES:
 		config.set_value("game", "locale", os_locale)
 	else:
-		config.set_value("game", "locale", "en")
+		config.set_value("game", "locale", "zh_CN")
 
 
 func _apply_settings() -> void:
@@ -78,7 +75,8 @@ func _apply_settings() -> void:
 	var fps_limit: int = config.get_value("gfx", "fps_limit", 60)
 	Engine.max_fps = fps_limit if fps_limit > 0 else FPS_MAX_HARD_CAP
 
-	TranslationServer.set_locale(config.get_value("game", "locale", "en"))
+	config.set_value("game", "locale", "zh_CN")
+	TranslationServer.set_locale("zh_CN")
 
 	if not OS.has_feature('web'):
 		var window_id = get_window().get_window_id()

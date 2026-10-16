@@ -24,6 +24,22 @@ function Get-ProjectSourceKey {
     return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes(($parts -join "`n"))))
 }
 
+# Resource imports depend on source files/import options and global class registration,
+# not Git commits, documentation, or edits to ordinary scripts loaded at runtime.
+function Get-ProjectImportKey {
+    param([string]$ProjectPath, [string]$EnginePath)
+    if (-not ('CampusImportFingerprint' -as [type])) {
+        $source = Join-Path $PSScriptRoot 'ImportFingerprint.cs'
+        $signature = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+        $directory = Join-Path $ProjectPath '.godot/project-health'
+        [IO.Directory]::CreateDirectory($directory) | Out-Null
+        $assembly = Join-Path $directory "fingerprint-$signature.dll"
+        if (-not (Test-Path -LiteralPath $assembly)) { Add-Type -Path $source -OutputAssembly $assembly }
+        Add-Type -Path $assembly
+    }
+    return [CampusImportFingerprint]::Compute($ProjectPath, $EnginePath)
+}
+
 function Invoke-GodotHealthStage {
     param([string]$EnginePath, [string]$ProjectPath, [string[]]$Arguments, [string]$LogPath, [int]$TimeoutSeconds)
     $info = [Diagnostics.ProcessStartInfo]::new()
@@ -81,9 +97,12 @@ function Initialize-GodotProject {
         [Parameter(Mandatory)][string]$EnginePath,
         [switch]$Repair,
         [switch]$NoRepair,
+        [switch]$ForLaunch,
+        [scriptblock]$OnProgress,
         [ValidateRange(5, 1800)][int]$TimeoutSeconds = 300,
         [string]$ProbeScene = 'res://tools/development/project_startup_check.tscn'
     )
+    if ($ForLaunch -and ($Repair -or $NoRepair)) { throw 'ForLaunch cannot be combined with repair/check modes.' }
     if ($Repair -and $NoRepair) { throw 'Choose -Repair or -NoRepair.' }
     $ProjectPath = (Resolve-Path -LiteralPath $ProjectPath).Path.TrimEnd('\', '/')
     $EnginePath = (Resolve-Path -LiteralPath $EnginePath).Path
@@ -94,15 +113,19 @@ function Initialize-GodotProject {
     try {
         try { $lock = [IO.File]::Open((Join-Path $cache 'prepare.lock'), 'OpenOrCreate', 'ReadWrite', 'None') }
         catch { throw 'Another project preparation is running. Wait for it to finish.' }
-        $key = Get-ProjectSourceKey $ProjectPath $EnginePath
-        $stampPath = Join-Path $cache 'ready.json'
+        $key = if ($ForLaunch) { Get-ProjectImportKey $ProjectPath $EnginePath } else { Get-ProjectSourceKey $ProjectPath $EnginePath }
+        $stampPath = Join-Path $cache $(if ($ForLaunch) { 'launch-ready.json' } else { 'ready.json' })
+        if ($ForLaunch -and -not (Test-Path -LiteralPath $stampPath)) {
+            $previous = Join-Path $cache 'ready.json'
+            if (Test-Path -LiteralPath $previous) { Copy-Item -LiteralPath $previous -Destination $stampPath }
+        }
         $stamp = $null
         if (Test-Path -LiteralPath $stampPath) {
             try { $stamp = [IO.File]::ReadAllText($stampPath) | ConvertFrom-Json } catch { $stamp = $null }
         }
         $cachePresent = (Test-Path -LiteralPath (Join-Path $ProjectPath '.godot/global_script_class_cache.cfg')) -and
             (Test-Path -LiteralPath (Join-Path $ProjectPath '.godot/imported') -PathType Container)
-        $needsImport = $Repair -or -not $key -or -not $stamp -or $stamp.key -ne $key -or -not $cachePresent
+        $needsImport = $Repair -or -not $key -or -not $stamp -or $(if ($ForLaunch) { $stamp.import_key } else { $stamp.key }) -ne $key -or -not $cachePresent
         $id = [Guid]::NewGuid().ToString('N')
         $imported = $false
         $repaired = $false
@@ -112,21 +135,31 @@ function Initialize-GodotProject {
             if (-not $NoRepair -and ($needsImport -or $attempt -gt 0)) {
                 $log = Join-Path $cache "$id-import-$attempt.log"
                 $logs.Add($log)
+                if ($OnProgress) { & $OnProgress '正在导入变化的资源与脚本；首次准备可能较慢…' $log | Out-Null }
                 $result = Invoke-GodotHealthStage $EnginePath $ProjectPath @('--headless', '--editor', '--import', '--path', $ProjectPath) $log $TimeoutSeconds
                 $errors = @(Get-GodotHealthErrors $result.Text)
                 if ($result.ExitCode -ne 0 -or $errors.Count) { throw "Godot import failed. See $log`n$($errors | Select-Object -First 1)" }
                 $imported = $true
                 if ($attempt -gt 0) { $repaired = $true }
             }
+            if ($ForLaunch) {
+                # Import prepares resources/classes. A second full game instance is diagnostics,
+                # not a prerequisite for ordinary play. Preserve it in explicit Health/Repair.
+                @{ import_key = $(if ($imported) { Get-ProjectImportKey $ProjectPath $EnginePath } else { $key }); prepared_at = [DateTime]::UtcNow.ToString('o') } |
+                    ConvertTo-Json | Set-Content -LiteralPath $stampPath -Encoding utf8
+                return [pscustomobject]@{ Status = 'prepared'; Imported = $imported; Repaired = $false; Checks = 0; Logs = $logs.ToArray() }
+            }
             $log = Join-Path $cache "$id-probe-$attempt.log"
             $logs.Add($log)
+            if ($OnProgress) { & $OnProgress '正在验证主流程、地图与资源依赖…' $log | Out-Null }
             $result = Invoke-GodotHealthStage $EnginePath $ProjectPath @('--headless', '--path', $ProjectPath, '--quit-after', '300', $ProbeScene) $log $TimeoutSeconds
             $errors = @(Get-GodotHealthErrors $result.Text)
             $marker = [regex]::Match($result.Text, '(?m)^PROJECT_HEALTH_CHECK checks=([1-9]\d*) failures=0\s*$')
             if ($result.ExitCode -eq 0 -and -not $errors.Count -and $marker.Success) {
                 if (-not $NoRepair) {
-                    @{ key = $key; checked_at = [DateTime]::UtcNow.ToString('o'); probe = $ProbeScene } |
+                    @{ key = (Get-ProjectSourceKey $ProjectPath $EnginePath); import_key = (Get-ProjectImportKey $ProjectPath $EnginePath); checked_at = [DateTime]::UtcNow.ToString('o'); probe = $ProbeScene } |
                         ConvertTo-Json | Set-Content -LiteralPath $stampPath -Encoding utf8
+                    Copy-Item -LiteralPath $stampPath -Destination (Join-Path $cache 'launch-ready.json') -Force
                 }
                 return [pscustomobject]@{ Status = 'ready'; Imported = $imported; Repaired = $repaired; Checks = [int]$marker.Groups[1].Value; Logs = $logs.ToArray() }
             }

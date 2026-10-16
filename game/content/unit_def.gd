@@ -12,7 +12,13 @@ const ATTACK_ALL := ATTACK_MELEE | ATTACK_RANGED
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var portrait: Texture2D
-@export var battle_animation: BattleAnimationSet
+## Only portraits are needed outside battle. Load the animation on first use.
+@export_file("*.tres") var battle_animation_path: String = ""
+@export var battle_animation: BattleAnimationSet:
+	get:
+		if battle_animation == null and not battle_animation_path.is_empty():
+			battle_animation = load(battle_animation_path) as BattleAnimationSet
+		return battle_animation
 @export var badge_color: Color = Color("69d9bd")
 @export_group("战斗属性")
 @export_range(1, 10000) var health: int = 200

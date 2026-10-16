@@ -98,6 +98,13 @@ func _ready() -> void:
 	expect(guide.step_id == "hack","natural combat generates enough code")
 	await frame()
 	await shot("hack")
+	var hover := InputEventMouseMotion.new()
+	hover.position = guide.target.get_global_rect().get_center()
+	get_viewport().push_input(hover,true)
+	await frame()
+	expect(game.code_panel.program_preview.visible,"hover opens effect preview")
+	expect(not guide.card.get_global_rect().intersects(game.code_panel.program_preview.get_global_rect()),"guide avoids hovered program effect")
+	await shot("hack-hover")
 	click_control(guide.target)
 	await frame()
 	expect(guide.step_id == "hack_release","program click requests confirmation")
@@ -130,6 +137,7 @@ func _ready() -> void:
 	click_control(guide.target)
 	await frame()
 	expect(guide.step_id == "commission","staff selected; highlight free commission")
+	await shot("commission")
 	click_control(guide.target)
 	await frame()
 	for i in range(120):
@@ -166,8 +174,20 @@ func _ready() -> void:
 	guide.update()
 	expect(guide.step_id == "resume_extra","manual pause during items remains recoverable")
 	game.paused = false
-	guide.skipped = true
 	guide.update()
+	# A human press spans multiple frames; the card must not hide between them.
+	var skip_at: Vector2 = guide.skip_button.get_global_rect().get_center()
+	var press := InputEventMouseButton.new()
+	press.position = skip_at
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	get_viewport().push_input(press,true)
+	await frame()
+	var release := press.duplicate()
+	release.pressed = false
+	get_viewport().push_input(release,true)
+	await frame()
+	expect(guide.skipped,"real skip click survives a process frame")
 	expect(not guide.hold and not guide.visible,"skip releases tutorial hold without changing player pause")
 	print("TUTORIAL_CHECK checks=",checks," failures=",failures)
 	get_tree().quit(0 if failures == 0 else 1)

@@ -7,7 +7,8 @@ param(
     [ValidateSet('1920x1080', '2560x1440', '1920x1200')][string]$Resolution = '1920x1080',
     [switch]$Fullscreen,
     [switch]$Verify,
-    [switch]$Capture
+    [switch]$Capture,
+    [switch]$MeasureStart
 )
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
@@ -22,6 +23,7 @@ try {
     if ($Mode -eq 'Release' -and $Action -ne 'Play') { throw 'Release 仅提供正常游戏入口。' }
     if ($Verify -and $Action -notin @('Play', 'Campus', 'Battle')) { throw '验证参数只用于游戏入口。' }
     if ($Capture -and (-not $Verify -or $Action -ne 'Battle')) { throw '图形验证仅用于隔离的战斗启动检查。' }
+    if ($MeasureStart -and ($Verify -or $Action -ne 'Play')) { throw '启动计时仅用于正常游戏入口。' }
     $EnginePath = (Resolve-Path -LiteralPath $EnginePath).Path
     $cache = Join-Path $projectRoot '.godot/game-launcher'
     [IO.Directory]::CreateDirectory($cache) | Out-Null
@@ -35,8 +37,14 @@ try {
         Send-LauncherEvent 'complete' $(if ($Action -eq 'HooksOn') { '已启用 main 更新后的自动检查。' } else { '已关闭 main 自动检查。' })
         exit 0
     }
-    Send-LauncherEvent 'preparing' $(if ($Action -eq 'Repair') { '正在重新导入并验证工程…' } else { '正在检查资源与脚本…' })
-    $health = Initialize-GodotProject -ProjectPath $projectRoot -EnginePath $EnginePath -Repair:($Action -eq 'Repair')
+    Send-LauncherEvent 'preparing' $(if ($Action -eq 'Repair') { '正在重新导入并验证工程…' } else { '正在确认启动缓存…' })
+    $dailyLaunch = $Action -in @('Play', 'Campus', 'Battle', 'ContentPreview') -and -not $Verify
+    $progress = {
+        param($message, $path)
+        # Write directly: pipeline output here would pollute the health result object.
+        [Console]::WriteLine('LAUNCHER_EVENT ' + (@{kind='preparing'; message=$message; path=$path} | ConvertTo-Json -Compress))
+    }
+    $health = Initialize-GodotProject -ProjectPath $projectRoot -EnginePath $EnginePath -Repair:($Action -eq 'Repair') -ForLaunch:$dailyLaunch -OnProgress $progress
     foreach ($healthLog in $health.Logs) { Send-LauncherEvent 'log' '工程预检日志' $healthLog }
     if ($Action -in @('Health', 'Repair')) {
         Send-LauncherEvent 'complete' "工程检查通过：$($health.Checks) 项；已导入=$($health.Imported)。" $health.Logs[-1]
@@ -60,6 +68,7 @@ try {
         }
         elseif ($Fullscreen) { $arguments += '--fullscreen' }
         $arguments += @('res://scenes/expedition/expedition.tscn', '--', '--demo-animations=formal', "--demo-size=$Resolution")
+        if ($MeasureStart) { $arguments += '--startup-capture' }
         if ($Action -ne 'Play') { $arguments += '--campus-debug' }
         if ($Action -eq 'Battle') {
             $arguments += '--debug-battle'

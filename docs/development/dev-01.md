@@ -116,3 +116,8 @@ PowerShell7／Godot4.7.2：`tools/development/tests/battle-tuning.test.ps1`无�
 
 
 试玩详细战报（2026-10-13，基线5894923，待统筹）：主线与试玩共用 [COMBAT-03](../combat/combat-03.md) 的双方贡献、恢复前生命、行动次数、真实程序／代码收支和退场时刻。结束动作仍为退出／重开，键盘焦点可进入统计页签和行；保存失败恢复原可见数据。详细统计与存档验证归战斗档案，原试玩结束专项GUI增至36／0。
+
+## 日常启动提速（2026-10-16，待统筹）
+
+入口为 launch-action.ps1 的 `-ForLaunch` 与 ImportFingerprint.cs；游戏人物动画按需加载。主动检查／修复继续完整验证，日常启动仅按资源变化导入。缓存回归 21/0，真实原生 Release 启动连续 6.62、7.05、7.10 秒。测量边界与命令见[工程预检](project-health.md#日常启动性能2026-10-16待统筹)。原教学检查暴露派遣点击未响应，另归教学输入修复，不计为通过。
+`--campaign-flow-check` 主线回归：150 checks / 0 failures；未发现脚本错误，退出保留既有 ObjectDB 泄漏警告。
