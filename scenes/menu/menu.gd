@@ -79,6 +79,9 @@ func _ready():
 	if "--settings-check" in OS.get_cmdline_user_args():
 		var bundled_font = load("res://assets/fonts/SourceHanSansSC-Medium.otf")
 		bundled_font.allow_system_fallback = false
+	if "--damage-feedback-preview" in OS.get_cmdline_user_args():
+		get_tree().change_scene_to_file.call_deferred("res://scenes/battle_demo/damage_feedback_check.tscn")
+		return
 	if "--glossary-preview" in OS.get_cmdline_user_args():
 		get_tree().change_scene_to_file.call_deferred("res://scenes/ui/glossary_check.tscn")
 		return

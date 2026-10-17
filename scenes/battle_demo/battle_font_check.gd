@@ -70,6 +70,8 @@ func _ready() -> void:
 		check_controls(panel.program_preview)
 	check_text(panel,"就绪缺码无目标用尽0123456789./", "hack status captions")
 	check_controls(panel.playback)
+	check_text(panel,preload("res://scenes/battle_demo/status_skin.gd").DAMAGE_SOURCE_HINT,"damage source legend")
+	check_text(panel,preload("res://scenes/battle_demo/unit_status_layer.gd").FOLLOWUP_TEXT,"followup label")
 	check_text(panel.pause_control,"Ⅱ▶", "pause and resume symbols")
 	for item in Codes.RULES.items:
 		panel._select_item(item.id)
@@ -77,8 +79,10 @@ func _ready() -> void:
 	for kind in Codes.RULES.types:
 		check_text(panel.bank_labels[kind], Codes.RULES.types[kind].name + "全队吸收已满", "code " + kind)
 	check_controls(panel)
-	game.inspector.show_unit(game.units[0], true)
-	check_controls(game.inspector)
+	for unit in game.units:
+		game.inspector.show_unit(unit, true)
+		check_controls(game.inspector)
+		check_text(panel,unit.skill.display_name+"…","casting name")
 	# Retain the original battle for optional native visual verification.
 	panel._select_item("supply")
 	await get_tree().process_frame

@@ -33,7 +33,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	var feed = panel.activity
 	verify(panel.program_controls.size() == 3 and panel.programs.get_child_count() == 4,"Three real programs and fourth empty slot")
-	verify(panel.bond_panel.size.x < 160,"Compact synergy list")
+	verify(panel.bond_panel.size.x <= 300,"Synergy list includes its real member portraits")
 	verify(not panel.buff_button.visible,"Zero persistent buffs do not occupy an entry")
 	verify(not feed.expanded and not feed.history.visible,"Journal collapsed by default")
 	for kind in game.simulation.blocks: game.simulation.blocks[kind] = 6
@@ -59,6 +59,14 @@ func _ready() -> void:
 	verify(feed.history.text.contains("反冲护盾"),"Hack retained in journal")
 	await shot("journal")
 	feed.set_expanded(false)
+	var move := InputEventMouseMotion.new()
+	move.position = Vector2(8,180)
+	move.global_position = move.position
+	get_viewport().warp_mouse(move.position)
+	get_viewport().push_input(move,true)
+	game.inspector.close_info()
+	await get_tree().process_frame
+	verify(not panel.hover_paused(),"Leave reading regions before driving natural combat")
 	for i in range(1000):
 		game._process(game.STEP)
 		feed._process(game.STEP)

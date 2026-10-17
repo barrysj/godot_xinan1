@@ -42,6 +42,9 @@ func _ready() -> void:
 		await get_tree().process_frame
 		click(game,game._action_rect(0).get_center())
 		verify(game.paused and not game.pause_overlay.visible, "Battle pause button only freezes playback")
+		game.code_panel._update_hud()
+		verify(game.code_panel.summary.text == "已暂停","Bottom playback status reports manual pause")
+		verify(game.code_panel.dock.get_global_rect().encloses(game.code_panel.clock.get_global_rect()),"Clock stays inside bottom dock")
 		var before: float = game.elapsed
 		game._process(1)
 		verify(game.elapsed == before,"Manual pause freezes simulation time")
@@ -54,6 +57,8 @@ func _ready() -> void:
 		await capture("paused")
 		click(game,game._action_rect(0).get_center())
 		verify(not game.paused and not game.pause_overlay.visible,"Battle button resumes without menu")
+		game.code_panel._update_hud()
+		verify(game.code_panel.summary.text == "进行中","Bottom playback status returns to running")
 		key(KEY_P)
 		verify(game.paused and not game.pause_overlay.visible,"P toggles manual pause")
 		key(KEY_ESCAPE)

@@ -48,6 +48,12 @@
 - `intent_for(id)` 返回 `kind/icon/label/description/target_id/locked/remaining`；施法另有 `target_description`，界面优先展示它。自身技能保留自己的 ID；真实锁定单体保留目标 ID；群体、范围或释放时动态选人的技能返回 `target_id=-1`，不能沿用触发技能的普攻目标。广播为其他存活敌人，横排/重击为锁定区域；守护、发明、应援等按当前主线实际受益范围描述，收招阶段也不泄漏旧普攻目标。定时敌人的预警还带锁定地面 `center`。`warnings.fire_at` 来自实际施法开始，正在执行的普攻不会被强制取消或在预警中继续开始下一次普攻。
 - 普攻与独立技能具有不同 action ID，技能效果仍为 special，产码只统计真实普攻命中。敌方预警效果从同一 action 释放，范围伤害当场结算，不变成追踪弹道。
 
+### 伤害来源的表现元数据（2026-10-17，待统筹）
+
+`BattleSimulation._event` 在效果快照中分别记录 `damage_source` 与 `is_followup`，`impact` 透传给界面。类别仅有 `attack`／`skill`；独立的布尔标记表示本次是否为追加攻击，不能用触发者的当前动作推断类别。普通攻击默认attack，人物技能、破解与反冲爆炸为skill；现有验证／暴露追击显式写入skill加is_followup=true。将来追加普攻可明确保留attack标记，这一显示元数据本身不新增攻击行为。字段随投射物快照保留；旧合成事件缺少字段时界面按special／program_effect回退类别，追击默认false。结算、行动ID、产码、special语义及战报program_effect归属保持原契约，不写入存档。
+
+实现入口：battle_simulation.gd、code_battle_simulation.gd；界面及图例见[UI-02](../ui/ui-02.md)。2026-10-17，基线6d9041d3加最终修订：damage_feedback_check源专项22/0，涵盖普攻、技能、独立追击标记、真实追加队列、破解、反冲及延迟弹道，断言扣血和产码一致；cast72/0、chain37/0、pierce34/0、battle_report39/0。完整视觉证据见[界面验证](../ui/verification.md#伤害数字与来源图标)。待统筹：新增表现字段，未扩展战斗规则或平台承诺。
+
 ### 自然产码的表现事件
 
 第三次有效普攻及全队护盾吸收满阈值后，立即消耗本轮计数并排入 `pending_code_cycles`；后续命中继续累计下一轮。等待使用原模拟时钟，暂停不会推进；只有这两种阈值产出延迟，道具和既有漏洞验证/特殊触发的直接产出仍沿原即时规则。

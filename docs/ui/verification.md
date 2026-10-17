@@ -121,3 +121,45 @@ Web补充：标准版正式导出成功，单字体包检查2218文件／1字体
 
 基线d89dcbe4。Godot4.7.2／PowerShell7，`--path . scenes/battle_demo/playback_controls_check.tscn -- --capture --demo-animations=formal`：63/0，覆盖三尺寸实际点击、暂停菜单、上下限重复点击不循环、速度组与暂停按钮等宽。原feedback三尺寸100/0、glossary30/0、font136/0；tutorial追踪全流程83/0，教学高亮读取speed_up实际边界。命令沿用上节对应场景，日志`.godot/compact-{playback,feedback,glossary,font,tutorial}.log`。截图`.godot/playback-half-speed-1920x1080.png`及其他两尺寸，已在对话展示。羁绊名称／人数拆列后仍可实际点击术语查看说明。
 Web补充：正式导出成功，单字体包2218文件／1字体／167585736字节／0失败。实际1280×720浏览器点击右侧+从1.0到1.5，再点击左侧−回到1.0；顶部、羁绊双列和中文正常，无error日志。截图.godot/art-workflow/compact-hud/web.png。预览冻结模拟，仅声明控件显示与点击验收，完整动态教学与选人仍以原生检查为证。
+
+## 友敌人物卡与上半区整理
+
+2026-10-17，基线 `10bedf08`，分支 `art/battle-hud-polish`。PowerShell7／Godot4.7.2标准版，`$engine` 为 `.godot/web-tools/engine/Godot_v4.7.2-stable_win64_console.exe`：
+
+```powershell
+& $engine --path . --rendering-method gl_compatibility res://scenes/battle_demo/battle_hud_polish_check.tscn -- --capture --demo-animations=formal
+& $engine --path . --rendering-method gl_compatibility res://scenes/battle_demo/status_hud_check.tscn -- --demo-animations=formal
+& $engine --path . --rendering-method gl_compatibility res://scenes/ui/glossary_check.tscn -- --demo-animations=formal --demo-size=1920x1080
+& $engine --headless --path . res://scenes/battle_demo/battle_font_check.tscn
+```
+
+人物卡专项84/0：真实鼠标操作双方状态条、敌人意图、展开技能／装备差异、Esc、阅读暂停及退出，覆盖1920×1080、2560×1440、1920×1200、1280×720。原状态HUD111/0、术语32/0、禁系统字体回退145/0。状态夹具更新为当前2×2代码布局和标准事件快照。截图 `.godot/art-workflow/battle-hud-polish/{ally,enemy}-detail-*.png` 已实际查看并展示，不入Git。原生真实鼠标验证需有桌面输入权限；沙箱受限运行出现交互假失败，相同原码／新版在相同桌面权限下通过。既有Kenney读图警告保留，无Script／Parse错误。手机、实体手柄及本轮Web布局尚未验收。
+
+顶部排布增量（基线6044cca2）：上方专项108/0；同引擎运行 `res://scenes/battle_demo/battle_activity_check.tscn -- --demo-animations=formal` 24/0，以及 `res://scenes/battle_demo/battle_feedback_check.tscn -- --capture --demo-animations=formal` 100/0。四尺寸新增时钟／完整羁绊、预警／记录分区和日志流式排布断言；原专项继续覆盖三种敌方实际预警与释放。截图 `.godot/art-workflow/battle-hud-polish/top-journal-*.png` 已展示；底部操作区和原战斗规则保留。Web与移动端此时尚未验。
+
+最终技能名称框与整体回归（2026-10-17，基线c8f68b78＋本次实现）：`battle_hud_polish_check.tscn -- --capture --demo-animations=formal` 231/0，包含自然普通施法开始／释放、长于旧超时的敌方预警、死亡取消、读条暂停、重试与简化特效；八人同时施法使用真实模拟_start_cast入口的QA夹具，检查名称数量、相互分离、真实状态边界和顶部／底栏安全区，不代表常态八人同时施法。
+
+原活动24/0、反馈100/0、播放63/0、教学96/0、术语32/0。沿上文引擎，播放场景为 `res://scenes/battle_demo/playback_controls_check.tscn -- --capture --demo-animations=formal`，教学为 `res://scenes/expedition/tutorial_check.tscn -- --demo-animations=formal --demo-size=1920x1080`。另执行 `--headless --path . res://game/combat/cast_check.tscn` 72/0；双方动态人物卡及名称禁系统字体回退检查254/0。没有Script／Parse错误，既有Kenney读图和受限环境根证书告警不计作玩法错误。
+
+`pwsh.exe -File ./build-web.ps1`正式导出成功，`py -3 tools/release/web_package_check.py builds/web/index.pck`：2222文件、1字体、522纹理、167604852字节、0失败。临时hud-preview.html由正式index.html复制，仅显式传入既有 `--glossary-preview --preview` 参数；HTTP服务仅监听127.0.0.1。1280×720浏览器实际Esc关闭破解详情、点击敌人意图打开共享人物卡，GLOSSARY_PREVIEW_READY failures=0，error日志为空。截图 `.godot/art-workflow/battle-hud-polish/web-enemy.jpg` 已展示；未发布线上、未测手机。Web预览冻结模拟，不能将此结果升级为Web动态战斗全流程证据。
+
+四尺寸 `skill-windup-*.png`、1920×1080的 `skill-release`／`enemy-windup`／`skill-interrupted`／`simultaneous-casts` 和统一人物卡／top-journal截图均在同一忽略目录，已查看关键实机画面。普通8人样本名称分离通过；任意长内容／极端聚集仍属于最小遮挡退让，不承诺无限空间。分支只作本地提交，不合入、不推送。
+
+右下播放分组反馈修订（2026-10-17，基线43cd464c）：沿本节引擎运行playback_controls_check（--capture）72/0、battle_hud_polish_check（--capture）复测239/0；覆盖原三尺寸实际暂停、恢复、菜单、上下限和四尺寸时钟／状态属于底栏、时钟在播放按钮上方。首次连续窗口运行有8条关闭卡片断言失败，同码独立图形复测0失败；未据此修改关闭规则，保留更详细失败状态便于后续追查。截图 `.godot/playback-paused-*.png` 已查看并展示。字体与Web将随本轮剩余视觉反馈统一复验。
+
+技能框宽度与关闭稳定性（基线b4fb5ea5）：同命令运行battle_hud_polish_check，255/0。新增8个实际字宽＋图标留白断言、8个Esc后同位置鼠标移动不重开断言；定位并修复上文偶发卡片重开问题，关闭抑制保持至实际移出刚关闭单位，再次点击仍可重开。截图simultaneous-casts及skill-windup四尺寸已展示。
+
+## 伤害数字与来源图标
+
+2026-10-17，基线6d9041d3加最终两类修订，功能分支art/battle-hud-polish；负责人明确要求整包squash合入main。PowerShell7／Godot4.7.2标准版，$engine沿上节：
+
+```powershell
+& $engine --headless --path . res://scenes/battle_demo/damage_feedback_check.tscn -- --source-only
+& $engine --path . --rendering-method gl_compatibility res://scenes/battle_demo/damage_feedback_check.tscn -- --capture --demo-animations=formal
+```
+
+源专项22/0：真实普攻／技能、追加队列、追踪破解、反冲爆炸及远程弹道命中正确携带两类类别；is_followup独立于类别，新增展示字段不改变扣血、产码或战报program_effect归属。图形专项331/0，覆盖1920×1080、2560×1440、1920×1200、1280×720：仅两类后缀、两类追加均有更小的“追击！”、完整小字计入避让、当前样本避开人物头部与上下信息区、生命／吸收／治疗配色、同类同标记合并和不同标记分离、全盾吸收与血盾混合只标一次、暂停、简化特效、到期及重试清理。样本先明确移出阅读区，再固定到0.12模拟秒，避免真实鼠标位置令原生与Web采样到不同动画时点。原生截图damage-categories-*.png、damage-category-legend-1920x1080.png位于.godot/art-workflow/battle-hud-polish/，已查看并展示。两类同时受击使用原_event／_resolve入口布置QA样本，不代表自然战斗必然同时发生，也没有新增运行时玩法。
+
+图形回归battle_hud_polish_check255/0、battle_feedback_check100/0、status_hud_check111/0、battle_activity_check25/0、playback_controls_check72/0，均以--capture --demo-animations=formal运行；tutorial_check（--demo-animations=formal --demo-size=1920x1080）96/0、glossary_check同参数32/0。人物卡专项的shot辅助函数无论是否保存截图都等待实际绘制，避免未带--capture时读取旧name_bounds。禁系统字体回退battle_font_check259/0，覆盖图例和自绘追击小字。原模拟cast_check72/0、chain_check37/0、pierce_check34/0、battle_report_check39/0。最终日志为同目录categories-native-final、categories-source、categories-*，无Script／Parse错误；既有Kenney直接读图和受限环境证书告警保留。
+
+`pwsh.exe -File ./build-web.ps1`正式release导出成功；`py -3 tools/release/web_package_check.py builds/web/index.pck`为2226文件／1字体／522纹理／167624132字节／0失败。临时categories-preview.html复制最终正式index.html，仅显式传入`--damage-feedback-preview --preview`；由菜单进入同一验收场景，实例化原Campaign，使用隔离测试存档。HTTP仅监听127.0.0.1。1280×720实际浏览器DAMAGE_PREVIEW_READY checks=93 failures=0，最终重新加载后的error日志为空，开关记录正常，截图web-categories.jpg已展示。长标记补障碍物边缘候选后，原生与Web同一时点均通过头部避让断言。Web为冻结预览，只确认实际包中文字、布局、图标及记录交互；完整动态生命周期以原生证据为准，未声明动态缩放、手机或实体手柄验收。

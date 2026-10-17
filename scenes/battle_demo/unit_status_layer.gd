@@ -9,8 +9,6 @@ var intents := {}
 var hit_rects := {}
 var hovered_id := -1
 var pinned_id := -1
-var detail: PanelContainer
-var detail_text: Label
 var pulses := {}
 var anchors := {}
 var status_rects := {}
@@ -19,7 +17,16 @@ var bubble_styles := {}
 var visual_values := {}
 var cycles := {}
 var overflow_until := {}
+const DAMAGE_SECONDS := 0.95
+const DAMAGE_COLOR := Color("ff6868")
+const SHIELD_COLOR := Color("c59aff")
+const HEAL_COLOR := Color("87f2b0")
+const FOLLOWUP_TEXT := "追击！"
+const FOLLOWUP_FONT_SIZE := 14
 var damage_numbers: Array[Dictionary] = []
+var damage_bounds: Array[Rect2] = []
+var damage_source_bounds: Array[Dictionary] = []
+var followup_bounds: Array[Dictionary] = []
 var last_elapsed := -1.0
 var simulation_ref
 
@@ -32,22 +39,6 @@ func _ready() -> void:
 		bubble.set_border_width_all(1)
 		bubble.set_corner_radius_all(11)
 		bubble_styles[key] = bubble
-	detail = PanelContainer.new()
-	detail.z_index = 80
-	detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	detail.theme = preload("res://resources/theme/theme-main.tres")
-	var style: StyleBoxTexture = StatusArt.DETAIL.duplicate()
-	style.set_content_margin_all(12)
-	detail.add_theme_stylebox_override("panel",style)
-	add_child(detail)
-	detail_text = Label.new()
-	detail_text.custom_minimum_size.x = 268
-	detail_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	detail_text.add_theme_font_override("font",FONT)
-	detail_text.add_theme_font_size_override("font_size",16)
-	detail_text.add_theme_color_override("font_color",Color("f4f8fc"))
-	detail.add_child(detail_text)
-	detail.hide()
 	game.presentation_cue.connect(consume)
 	get_window().mouse_exited.connect(func(): pointer = Vector2(-10000,-10000))
 
@@ -55,26 +46,7 @@ func active() -> bool:
 	return is_instance_valid(game) and game.get("screen") in [null,"battle"] and game.phase in ["prepare","battle"]
 
 func hover_paused() -> bool:
-	return active() and game.phase == "battle" and (hovered_id >= 0 or pinned_id >= 0)
-
-func _input(event: InputEvent) -> void:
-	if not active(): return
-	if event is InputEventMouse:
-		pointer = event.position
-		if is_instance_valid(game.code_panel) and game.code_panel.owns_pointer(pointer):
-			hovered_id = -1
-			pinned_id = -1
-			detail.hide()
-			return
-	if event.is_action_pressed("ui_cancel") and (pinned_id >= 0 or hovered_id >= 0):
-		pinned_id = -1
-		pointer = Vector2(-10000,-10000)
-		get_viewport().set_input_as_handled()
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if hovered_id >= 0:
-			pinned_id = -1 if pinned_id == hovered_id else hovered_id
-			get_viewport().set_input_as_handled()
-		elif pinned_id >= 0: pinned_id = -1
+	return is_instance_valid(game.inspector) and game.inspector.hover_paused()
 
 func consume(event: Dictionary) -> void:
 	var kind: String = event.get("kind","")
@@ -83,16 +55,19 @@ func consume(event: Dictionary) -> void:
 		var blocked := float(event.get("blocked",0))
 		if lost > 0 or blocked > 0:
 			var id: int = event.get("target_id",-1)
+			var source: String = event.get("damage_source","skill" if event.get("special",false) or event.get("program_effect",false) else "attack")
+			var followup: bool = event.get("is_followup",false)
+			var special: bool = event.get("special",false)
 			var merged := false
 			for n in damage_numbers:
-				if n.id == id and n.effect == event.effect and n.age < 0.12:
+				if n.id == id and n.effect == event.effect and n.source == source and n.followup == followup and n.special == special and n.age < 0.12:
 					n.actual += lost
 					n.blocked += blocked
 					merged = true
 					break
 			if not merged:
 				var lane := damage_numbers.filter(func(n): return n.id == id).size()%3
-				damage_numbers.append({"id":id,"effect":event.effect,"actual":lost,"blocked":blocked,"age":0.0,"lane":lane,"at":game._project(event.to),"special":event.get("special",false)})
+				damage_numbers.append({"id":id,"effect":event.effect,"actual":lost,"blocked":blocked,"age":0.0,"lane":lane,"at":game._project(event.to),"special":special,"source":source,"followup":followup})
 			if damage_numbers.size() > 48: damage_numbers.pop_front()
 	if kind == "code_cycle_started" and not event.get("shared",false):
 		cycles[event.cycle_id] = event.duplicate()
@@ -108,6 +83,9 @@ func _clear_feedback() -> void:
 	cycles.clear()
 	overflow_until.clear()
 	damage_numbers.clear()
+	damage_bounds.clear()
+	damage_source_bounds.clear()
+	followup_bounds.clear()
 	pulses.clear()
 
 func _visual_update(delta: float) -> void:
@@ -122,7 +100,7 @@ func _visual_update(delta: float) -> void:
 		if state.vitals.distance_to(target)<0.1: state.vitals = target
 		state.count = move_toward(float(state.count),float(game.simulation.attack_counts.get(u.id,0)),dt*12)
 	for n in damage_numbers: n.age += dt
-	damage_numbers = damage_numbers.filter(func(n): return n.age < 0.75)
+	damage_numbers = damage_numbers.filter(func(n): return n.age < DAMAGE_SECONDS)
 
 func action_progress(timing: Dictionary) -> float:
 	if timing.waiting_target or timing.remaining <= 0: return float(timing.progress)
@@ -178,7 +156,6 @@ func _process(delta: float) -> void:
 		intents.clear()
 		hit_rects.clear()
 		pulses.clear()
-		detail.hide()
 		return
 	if simulation_ref != game.simulation or game.simulation.elapsed < last_elapsed:
 		_clear_feedback()
@@ -201,38 +178,11 @@ func _process(delta: float) -> void:
 	if is_instance_valid(game.code_panel) and game.code_panel.owns_pointer(pointer): hovered_id = -1
 	if pinned_id >= 0 and not hit_rects.has(pinned_id): pinned_id = -1
 	_visual_update(delta)
-	_update_detail()
 	if not game.paused and not hover_paused():
 		for id in pulses.keys():
 			pulses[id] -= delta
 			if pulses[id] <= 0: pulses.erase(id)
 	queue_redraw()
-
-func _update_detail() -> void:
-	var id: int = pinned_id if pinned_id >= 0 else hovered_id
-	detail.visible = id >= 0 and hit_rects.has(id)
-	if not detail.visible: return
-	var intent: Dictionary = game.simulation.intent_for(id)
-	if intent.is_empty(): detail.hide(); return
-	var u: Dictionary = game.simulation.unit(id)
-	var target: Dictionary = game.simulation.unit(int(intent.get("target_id",-1)))
-	var target_text: String = intent.get("target_description",target.get("name","范围目标" if intent.get("locked",false) else "进入射程后选定"))
-	var timing: Dictionary = game.simulation.action_timing(id)
-	var release_label := "接近目标" if timing.get("waiting_target",false) else "施法释放" if intent.kind == "cast" else "普攻释放"
-	var vitals := "生命 %d/%d · 护盾 %d" % [u.hp,u.max_hp,u.shield]
-	var progress := ""
-	if u.side == 0:
-		progress = "\n全队吸收 %d/%d" % [game.simulation.absorbed,Codes.RULES.shield_per_block] if u.get("code_type","") == "purple" else "\n普攻产码 %d/%d" % [game.simulation.attack_counts.get(id,0),Codes.RULES.attacks_per_block]
-	detail_text.text = "%s · %s\n%s%s\n%s\n目标：%s\n%s · %.1f 秒%s" % [u.name,intent.label,vitals,progress,intent.description,target_text,release_label,intent.remaining,"\n点击固定 · Esc 收起" if pinned_id < 0 else "\n已固定 · Esc 收起"]
-	if u.side == 0 and pinned_id < 0:
-		detail_text.text = "%s\n%s%s\n%s · %.1f 秒\n点击详情 · Esc 收起" % [u.name,vitals,progress,"施法："+intent.label if intent.kind == "cast" else release_label,intent.remaining]
-	detail.scale = Vector2.ONE*game.scale_factor
-	detail.reset_size()
-	var rect: Rect2 = intents.get(id,hit_rects[id])
-	var dims: Vector2 = detail.get_combined_minimum_size()*game.scale_factor
-	var x := rect.end.x+8
-	if x+dims.x > game.size.x-8: x = rect.position.x-dims.x-8
-	detail.position = Vector2(clampf(x,8,game.size.x-dims.x-8),clampf(rect.position.y-dims.y-8,game.origin.y+162*game.scale_factor,game.size.y-dims.y-8))
 
 func _draw() -> void:
 	if not active(): return
@@ -301,22 +251,93 @@ func _draw() -> void:
 				draw_string(FONT,p+Vector2(62,43),"已满",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("ffbf66"))
 	_draw_damage_numbers()
 
+func damage_rows(n: Dictionary, reduced: bool) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	var pop := 1.0 if reduced else 1+0.15*pow(1-clampf(float(n.age)/0.12,0,1),3)
+	if n.actual > 0:
+		var healing: bool = n.effect == "heal"
+		rows.append({"text":("+" if healing else "−")+str(int(n.actual)),"font":int(round((22 if healing else 28 if n.special else 24)*pop)),
+			"tint":HEAL_COLOR if healing else DAMAGE_COLOR,"shield":false,"source":"" if healing else n.source,"followup":not healing and n.get("followup",false)})
+	if n.blocked > 0:
+		rows.append({"text":"−"+str(int(n.blocked)),"font":int(round(20*pop)),"tint":SHIELD_COLOR,"shield":true,"source":n.source,"followup":n.actual <= 0 and n.get("followup",false)})
+	for row in rows:
+		row.height = FONT.get_height(row.font)+2
+		row.text_width = FONT.get_string_size(row.text,HORIZONTAL_ALIGNMENT_LEFT,-1,row.font).x
+		row.prefix = 22 if row.shield else 0
+		row.followup_width = FONT.get_string_size(FOLLOWUP_TEXT,HORIZONTAL_ALIGNMENT_LEFT,-1,FOLLOWUP_FONT_SIZE).x if row.followup else 0
+		row.width = row.prefix+row.text_width+(26 if not row.source.is_empty() else 0)+(6+row.followup_width if row.followup else 0)
+	return rows
+
+func _damage_rect(base: Rect2, occupied: Array[Rect2]) -> Rect2:
+	var safe := Rect2(16,174,1248,430)
+	var best := Rect2(base.position.clamp(safe.position,safe.end-base.size),base.size)
+	var best_score := INF
+	var candidates: Array[Vector2] = []
+	for dy in [0,-40,40,-80,80]:
+		for dx in [0,-base.size.x-24,base.size.x+18,-148,148]:
+			candidates.append(base.position+Vector2(dx,dy))
+	# A long followup tag can land between grid samples; include nearby obstacle edges.
+	for other in occupied:
+		if not other.grow(8).intersects(base): continue
+		candidates.append(Vector2(other.position.x-base.size.x-6,base.position.y))
+		candidates.append(Vector2(other.end.x+6,base.position.y))
+		candidates.append(Vector2(base.position.x,other.position.y-base.size.y-6))
+		candidates.append(Vector2(base.position.x,other.end.y+6))
+	for point in candidates:
+		var at := point.clamp(safe.position,safe.end-base.size)
+		var candidate := Rect2(at,base.size)
+		var score := at.distance_squared_to(base.position)
+		for other in occupied:
+			if other.intersects(candidate): score += candidate.intersection(other).get_area()*10000
+		if score < best_score: best = candidate; best_score = score
+	return best
+
 func _draw_damage_numbers() -> void:
+	damage_bounds.clear()
+	damage_source_bounds.clear()
+	followup_bounds.clear()
+	var reduced: bool = is_instance_valid(game.code_panel) and game.code_panel.code_fx.reduced_motion
+	var occupied: Array[Rect2] = []
+	for rect in status_rects.values(): occupied.append(rect.grow(3))
+	if is_instance_valid(game.code_panel) and is_instance_valid(game.code_panel.activity):
+		for rect in game.code_panel.activity.name_bounds: occupied.append(rect.grow(3))
+	for u in game.units:
+		if u.hp <= 0: continue
+		occupied.append(Rect2(game._unit_center(u)+Vector2(-26,-102),Vector2(52,46)))
+		if u.side == 1: occupied.append(Rect2(_bubble_position(u),Vector2(32,36)).grow(3))
 	for n in damage_numbers:
-		var alpha := clampf((0.75-float(n.age))/0.2,0,1)
-		var at: Vector2 = n.at+Vector2(8+int(n.lane)*14,-48-int(n.lane)*50-12*(1-pow(1-float(n.age)/0.75,2)))
-		if at.y < 132: at.y = n.at.y-40+int(n.lane)*34
-		var font_size := 20 if n.special else 17
-		var label := "%s%d" % ["+" if n.effect == "heal" else "−",int(n.actual)]
-		if n.actual > 0:
-			draw_string_outline(FONT,at,label,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,3,Color(0.04,0.06,0.08,alpha))
-			draw_string(FONT,at,label,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,Color(0.5,1,0.6,alpha) if n.effect == "heal" else Color(1,0.95,0.84,alpha))
-			at.y += 18
-		if n.blocked > 0:
-			StatusArt.draw(self,"intent_shield",Rect2(at+Vector2(-15,-12),Vector2(13,13)),Color(0.8,0.6,1,alpha))
-			label = "−%d" % int(n.blocked)
-			draw_string_outline(FONT,at,label,HORIZONTAL_ALIGNMENT_LEFT,-1,15,3,Color(0.04,0.06,0.08,alpha))
-			draw_string(FONT,at,label,HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color(0.8,0.6,1,alpha))
+		var rows := damage_rows(n,reduced)
+		if rows.is_empty(): continue
+		var extent := Vector2.ZERO
+		for row in rows:
+			extent.x = maxf(extent.x,row.width)
+			extent.y += row.height
+		var lift := 0.0 if reduced else 24*(1-pow(1-clampf(float(n.age)/DAMAGE_SECONDS,0,1),2))
+		var base := Rect2(n.at+Vector2(8+int(n.lane)*12,-90-int(n.lane)*42-lift),extent)
+		var bounds := _damage_rect(base,occupied)
+		damage_bounds.append(bounds)
+		occupied.append(bounds.grow(3))
+		var alpha := clampf((DAMAGE_SECONDS-float(n.age))/0.25,0,1)
+		var y := bounds.position.y
+		for row in rows:
+			var tint := Color(row.tint,alpha)
+			var baseline := Vector2(bounds.position.x+row.prefix,y+FONT.get_ascent(row.font))
+			if row.shield:
+				StatusArt.draw(self,"intent_shield",Rect2(Vector2(bounds.position.x,y+(row.height-18)/2),Vector2(18,18)),tint)
+			draw_string_outline(FONT,baseline+Vector2(1,2),row.text,HORIZONTAL_ALIGNMENT_LEFT,-1,row.font,6,Color(0.02,0.04,0.06,0.28*alpha))
+			draw_string_outline(FONT,baseline,row.text,HORIZONTAL_ALIGNMENT_LEFT,-1,row.font,4,Color(0.035,0.055,0.075,alpha))
+			draw_string(FONT,baseline,row.text,HORIZONTAL_ALIGNMENT_LEFT,-1,row.font,tint)
+			if not row.source.is_empty():
+				var icon := Rect2(Vector2(baseline.x+row.text_width+6,y+(row.height-20)/2),Vector2(20,20))
+				StatusArt.draw_damage_source(self,row.source,icon,tint)
+				damage_source_bounds.append({"kind":row.source,"rect":icon,"text_end":baseline.x+row.text_width})
+				if row.followup:
+					var tag := Rect2(Vector2(icon.end.x+6,y+(row.height-FONT.get_height(FOLLOWUP_FONT_SIZE))/2),Vector2(row.followup_width,FONT.get_height(FOLLOWUP_FONT_SIZE)))
+					var tag_at := tag.position+Vector2(0,FONT.get_ascent(FOLLOWUP_FONT_SIZE))
+					draw_string_outline(FONT,tag_at,FOLLOWUP_TEXT,HORIZONTAL_ALIGNMENT_LEFT,-1,FOLLOWUP_FONT_SIZE,3,Color(0.035,0.055,0.075,alpha))
+					draw_string(FONT,tag_at,FOLLOWUP_TEXT,HORIZONTAL_ALIGNMENT_LEFT,-1,FOLLOWUP_FONT_SIZE,Color(Color("e7ccc0"),alpha*0.86))
+					followup_bounds.append({"rect":tag,"icon_end":icon.end.x,"font":FOLLOWUP_FONT_SIZE})
+			y += row.height
 
 func _bubble_position(u: Dictionary) -> Vector2:
 	return (game._unit_center(u)+Vector2(38,-70)).clamp(Vector2(16,174),Vector2(1232,570))

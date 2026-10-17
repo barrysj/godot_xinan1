@@ -1,7 +1,6 @@
 extends "res://scenes/battle_demo/battle_demo.gd"
 const BATTLE_MENU_RECT := Rect2(1188,16,64,32)
 const BATTLE_TEAM_RECT := Rect2(1112,16,64,32)
-const BATTLE_TIME_RECT := Rect2(832,16,64,32)
 
 ## View adapter for the shared combat simulation; existing art remains provisional.
 
@@ -168,6 +167,7 @@ func _start() -> void:
 	if phase == "battle" and is_instance_valid(deployment): deployment.cancel()
 
 func _build_units() -> void:
+	if is_instance_valid(battle_status_layer): battle_status_layer._clear_feedback()
 	if is_instance_valid(code_panel) and is_instance_valid(code_panel.activity): code_panel.activity.reset_journal()
 	if is_instance_valid(code_panel) and is_instance_valid(code_panel.code_fx): code_panel.code_fx.particles.clear()
 	_clear_battle_presentations()
@@ -660,16 +660,12 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("253a36"))
 	draw_set_transform(origin, 0, Vector2.ONE * scale_factor)
 	_campus()
-	if phase == "battle":
-		var header_surface := _compact_button_style()
-
-		draw_style_box(header_surface,BATTLE_TIME_RECT)
-	else: draw_rect(Rect2(0,0,1280,80),Color("0d1b28",0.72))
-	var state_text = "战前整备" if phase == "prepare" else ("胜利" if phase == "result" and result_won else "失败" if phase == "result" else "已暂停" if paused else "")
-	if phase == "battle" and not state_text.is_empty():
-		draw_style_box(_compact_button_style(),Rect2(416,16,80,32))
-	_text(Vector2(428,37) if phase == "battle" else Vector2(28,46),state_text,PAPER,14)
-	_text(Vector2(841,37) if phase == "battle" else Vector2(748,45),("部署 %d/%d" % [6-formation.count(-1),_deployment_limit()]) if phase == "prepare" else ("%02d:%02d" % [int(elapsed)/60,int(elapsed)%60]),PAPER,14)
+	if phase != "battle":
+		draw_rect(Rect2(0,0,1280,80),Color("0d1b28",0.72))
+		var state_text := "战前整备" if phase == "prepare" else "胜利" if result_won else "失败"
+		_text(Vector2(28,46),state_text,PAPER,14)
+		var time_text := ("部署 %d/%d" % [6-formation.count(-1),_deployment_limit()]) if phase == "prepare" else ("%02d:%02d" % [int(elapsed)/60,int(elapsed)%60])
+		_text(Vector2(748,45),time_text,PAPER,14)
 	var menu_style := _compact_button_style()
 	draw_style_box(menu_style,BATTLE_MENU_RECT)
 	_center(BATTLE_MENU_RECT.get_center()+Vector2(0,5),"菜单",PAPER,14)

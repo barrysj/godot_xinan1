@@ -296,10 +296,12 @@ func _target_tie_precedes(actor: Dictionary, candidate: Dictionary, current: Dic
 			return candidate_distance < current_distance
 	return int(candidate.id) < int(current.id)
 
-func _event(events: Array[Dictionary], actor: Dictionary, target: Dictionary, kind: String, value: float, special: bool = false) -> void:
+func _event(events: Array[Dictionary], actor: Dictionary, target: Dictionary, kind: String, value: float, special: bool = false, damage_source: String = "", is_followup: bool = false) -> void:
 	if not target.is_empty():
 		events.append({"actor": actor, "target": target, "kind": kind, "value": value,
-			"special": special, "action_id": active_action_id, "origin": actor.position,
+			"special": special, "damage_source":damage_source if not damage_source.is_empty() else "skill" if special else "attack",
+			"is_followup":is_followup,
+			"action_id": active_action_id, "origin": actor.position,
 			"ordinal": events.size()})
 
 
@@ -462,7 +464,7 @@ func _resolve(due: Array[Dictionary]) -> void:
 	for e in due:
 		if not e.valid: continue
 		_emit("impact", e.actor, e.target, e.action_id, {"effect": e.kind, "value": e.value,
-			"actual": e.actual, "special": e.special, "program_effect":e.get("program_effect",false), "from": e.get("origin", e.actor.position),
+			"actual": e.actual, "special": e.special, "damage_source":e.get("damage_source","skill" if e.special else "attack"), "is_followup":e.get("is_followup",false), "program_effect":e.get("program_effect",false), "from": e.get("origin", e.actor.position),
 			"blocked": e.blocked, "shield_break": e.get("shield_break", false),
 			"hp": maxf(0, e.target.hp), "max_hp": e.target.max_hp, "shield": e.target.shield})
 	_after_impact_batch(due)

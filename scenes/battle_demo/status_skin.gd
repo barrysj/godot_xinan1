@@ -47,3 +47,16 @@ static func intent_icon(unit: Dictionary,intent: Dictionary) -> String:
 		if effect.kind == "heal": return "intent_heal"
 		if effect.kind == "shield": return "intent_shield"
 	return "intent_charge"
+
+const DAMAGE_SOURCE_HINT := "伤害图标\n剑：普通攻击\n星芒：技能，含破解与护盾爆炸\n追击！：额外追加的攻击"
+static func draw_damage_source(canvas: CanvasItem, source: String, rect: Rect2, tint: Color) -> void:
+	var center := rect.get_center()
+	var radius := rect.size.x*0.5
+	canvas.draw_circle(center,radius,Color(0.035,0.065,0.09,0.92*tint.a))
+	if source == "attack":
+		draw(canvas,"intent_attack",rect.grow(-2),tint)
+	else:
+		var points := PackedVector2Array()
+		for i in range(8):
+			points.append(center+Vector2.from_angle(-PI/2+i*PI/4)*(radius*0.75 if i%2 == 0 else radius*0.28))
+		canvas.draw_colored_polygon(points,tint)

@@ -17,12 +17,15 @@ func _ready() -> void:
 	add_child(game)
 	await get_tree().process_frame
 	game.storage_ready = false
+	game.tutorial_guide.skipped = true
+	game.tutorial_guide.hide()
 	game.set_process(false)
 	game._begin_region("library","prologue")
 	game._guard()
 	game.formation = [0,-1,3,2,1,-1]
 	game._start()
 	var hud = game.battle_status_layer
+	var ui = game.inspector
 	var panel = game.code_panel
 	panel._process(0)
 	var sim = game.simulation
@@ -36,15 +39,15 @@ func _ready() -> void:
 		await get_tree().process_frame
 		game._process(0)
 		panel._process(0)
-		hud._process(0)
+		hud._process(0); ui._process(0)
 		await get_tree().process_frame
-		var right := 0.0
+		var stock_rects: Array[Rect2] = []
 		for sockets in panel.bank_labels.values():
 			var rect: Rect2 = sockets.get_global_rect()
-			verify(rect.size.x >= 128*game.scale_factor-1,"Stock is legible at native HUD scale")
-			verify(rect.position.x >= right,"Stock cards do not overlap")
-			right = rect.end.x
-		verify(panel.bank_labels.red.get_global_rect().end.y < panel.programs.get_global_rect().position.y,"Auxiliary stock stays above primary program controls")
+			verify(rect.size.x >= 94*game.scale_factor-1,"Stock is legible at native HUD scale")
+			for other in stock_rects: verify(not rect.intersects(other),"Stock cards do not overlap")
+			stock_rects.append(rect)
+		verify(panel.bank_labels.red.get_global_rect().end.x < panel.programs.get_global_rect().position.x,"Auxiliary stock stays left of primary program controls")
 		verify(panel.bank_labels.purple.absorbed == 48,"Purple displays shared absorbed remainder")
 		verify(sim.attack_counts[red.id] == 2,"HUD never consumes generation counters")
 		verify(not hud.intents.is_empty(),"Every living enemy has an intent hit target")
@@ -52,61 +55,61 @@ func _ready() -> void:
 			verify(rect.size.x >= 32*game.scale_factor,"Smaller intent art retains a generous mouse hit target")
 		await capture("battle")
 		var id: int = hud.intents.keys()[0]
-		hud.pointer = hud.intents[id].get_center()
-		hud._process(0)
-		verify(hud.detail.visible and panel.hover_paused(),"Intent hover opens detail and pauses through shared input boundary")
-		verify(hud.detail_text.text.contains(sim.unit(id).name),"Names remain available through intent details")
-		verify(get_viewport().get_visible_rect().encloses(Rect2(hud.detail.position,hud.detail.size*hud.detail.scale)),"Intent detail fits viewport")
+		ui.pointer = ui.canvas.get_global_transform().affine_inverse() * hud.intents[id].get_center()
+		hud._process(0); ui._process(0)
+		verify(ui.panel.visible and panel.hover_paused(),"Intent hover opens detail and pauses through shared input boundary")
+		verify(ui.heading.text.contains(sim.unit(id).name),"Names remain available through intent details")
+		verify(get_viewport().get_visible_rect().encloses(ui.panel.get_global_rect()),"Intent detail fits viewport")
 		var elapsed: float = sim.elapsed
 		game._process(0.2)
 		verify(sim.elapsed == elapsed,"Hover freezes real simulation")
 		await capture("intent")
-		hud.pointer = Vector2(-1000,-1000)
-		hud._process(0)
-		verify(not hud.detail.visible and not hud.hover_paused(),"Leaving intent closes detail and relinquishes pause")
-	hud.pointer = hud.hit_rects[red.id].get_center()
-	hud._process(0)
-	verify(hud.detail.visible and hud.detail_text.text.contains("普攻产码 2/3"),"Exact personal progress remains available on compact HUD hover")
-	verify(hud.detail_text.text.contains("生命") and hud.detail_text.text.contains("护盾"),"Hidden exact vitals remain available in details")
+		ui.pointer = ui.canvas.get_global_transform().affine_inverse() * Vector2(-1000,-1000)
+		hud._process(0); ui._process(0)
+		verify(not ui.panel.visible and not hud.hover_paused(),"Leaving intent closes detail and relinquishes pause")
+	ui.pointer = ui.canvas.get_global_transform().affine_inverse() * hud.hit_rects[red.id].get_center()
+	hud._process(0); ui._process(0)
+	verify(ui.panel.visible and ui.generation.text.contains("普攻产码 2/3"),"Exact personal progress remains available on compact HUD hover")
+	verify(not ui.summary.text.is_empty() and not ui.shield_value.text.is_empty(),"Hidden exact vitals remain available in details")
 	verify(panel.hover_paused(),"Allied status details retain operation pause")
 	await capture("ally-detail")
 	var purple: Dictionary = sim.units.filter(func(u): return u.side == 0 and u.code_type == "purple")[0]
-	hud.pointer = hud.hit_rects[purple.id].get_center()
-	hud._process(0)
-	verify(hud.detail_text.text.contains("全队吸收 48/80") and not hud.detail_text.text.contains("普攻产码"),"Purple compact detail preserves team absorption semantics")
-	hud.pointer = Vector2(-1000,-1000)
-	hud._process(0)
+	ui.pointer = ui.canvas.get_global_transform().affine_inverse() * hud.hit_rects[purple.id].get_center()
+	hud._process(0); ui._process(0)
+	verify(ui.generation.text.contains("全队吸收 48/80") and not ui.generation.text.contains("普攻产码"),"Purple compact detail preserves team absorption semantics")
+	ui.pointer = ui.canvas.get_global_transform().affine_inverse() * Vector2(-1000,-1000)
+	hud._process(0); ui._process(0)
 	# Let the original campaign run naturally into a real enemy cast.
 	for step in range(230):
 		game._process(0.05)
 		if not sim.warnings.is_empty(): break
 	panel._process(0)
-	hud._process(0)
+	hud._process(0); ui._process(0)
 	verify(not sim.warnings.is_empty(),"Natural enemy timer starts a real cast")
 	if not sim.warnings.is_empty():
 		var caster: int = sim.warnings.keys()[0]
 		verify(sim.action_timing(caster).kind == "cast","Action strip reads real cast phase")
-		hud.pointer = hud.intents[caster].get_center()
-		hud._process(0)
-		verify(hud.detail_text.text.contains(sim.intent_for(caster).label),"Cast hover uses the actual skill description")
-		verify(hud.detail_text.text.contains("目标：其他存活敌人"),"Shield broadcast describes recipients, not its attack target")
+		ui.pointer = ui.canvas.get_global_transform().affine_inverse() * hud.intents[caster].get_center()
+		hud._process(0); ui._process(0)
+		verify(ui.action_name.text.contains(sim.intent_for(caster).label),"Cast hover uses the actual skill description")
+		verify(ui.action_target.text.contains("目标：其他存活敌人"),"Shield broadcast describes recipients, not its attack target")
 		await capture("cast")
 		for pressed in [true,false]:
 			var click := InputEventMouseButton.new()
-			click.position = hud.pointer
+			click.position = ui.canvas.get_global_transform()*ui.pointer
 			click.button_index = MOUSE_BUTTON_LEFT
 			click.pressed = pressed
 			get_viewport().push_input(click,true)
-		verify(hud.pinned_id == caster,"Real mouse click pins enemy intent")
+		verify(ui.pinned and ui.observed.id == caster,"Real mouse click pins enemy intent")
 		var escape := InputEventKey.new()
 		escape.keycode = KEY_ESCAPE
 		escape.pressed = true
 		get_viewport().push_input(escape,true)
-		hud._process(0)
-		verify(hud.pinned_id == -1 and not game.paused,"Escape closes only intent, retaining manual pause ownership")
+		hud._process(0); ui._process(0)
+		verify(not ui.pinned and not game.paused,"Escape closes only intent, retaining manual pause ownership")
 	var before: int = sim.blocks.red
 	panel.bank_labels.red.pulse = 0
-	panel.consume({"kind":"code_generated","code_type":"red","actual":0,"actor_id":red.id,"from":red.position,"to":red.position,"reason":"普攻"})
+	panel.consume({"kind":"code_generated","code_type":"red","actual":0,"actor_id":red.id,"target_id":red.id,"from":red.position,"to":red.position,"reason":"普攻"})
 	verify(panel.bank_labels.red.pulse == 0,"Overflow does not fake a gained-code pulse")
 	hud.consume({"kind":"code_generated","code_type":"red","actual":1,"actor_id":red.id,"reason":"普攻产出"})
 	verify(hud.pulses.has(red.id) and sim.blocks.red == before,"Feedback is bounded and visual only")
@@ -115,7 +118,7 @@ func _ready() -> void:
 		hud.consume({"kind":"code_generated","code_type":"purple","actual":1,"actor_id":red.id,"reason":reason})
 		verify(not hud.pulses.has(red.id),"Shared and item generation cannot flash personal attack progress")
 	# Deliberately adjacent rows, same depth, with shields on every ally.
-	hud.pointer = Vector2(-1000,-1000)
+	ui.pointer = ui.canvas.get_global_transform().affine_inverse() * Vector2(-1000,-1000)
 	var row := 1
 	for ally in sim.units:
 		if ally.side != 0: continue
@@ -129,7 +132,7 @@ func _ready() -> void:
 	panel.code_fx.particles.clear()
 	game._update_battle_presentations()
 	game._process(0)
-	hud._process(0)
+	hud._process(0); ui._process(0)
 	var rects: Array = hud.status_rects.values()
 	for i in range(rects.size()):
 		for j in range(i+1,rects.size()):
@@ -145,13 +148,13 @@ func _ready() -> void:
 	red.max_hp = 100
 	red.hp = 50
 	red.shield = 30
-	hud._process(0)
+	hud._process(0); ui._process(0)
 	await capture("vitals-example")
 	game.paused = false
-	hud.pinned_id = hud.intents.keys()[0]
+	ui.show_unit(sim.unit(hud.intents.keys()[0]),true)
 	game.screen = "report"
-	hud._process(0)
-	verify(not hud.visible and not hud.detail.visible and hud.pinned_id == -1,"Screen exit clears status and pinned intent")
+	hud._process(0); ui._process(0)
+	verify(not hud.visible and not ui.panel.visible and not ui.pinned,"Screen exit clears status and pinned intent")
 	verify(not panel.hover_paused(),"Hidden status cannot retain operation pause")
 	print("Status HUD checks: %d / failures: %d" % [checks,failures])
 	game.free()

@@ -1,5 +1,6 @@
 extends Control
 ## Contextual information and equipment exchange; no persistent side notebook.
+const Codes = preload("res://game/combat/code_catalog.gd")
 const Icon = preload("res://scenes/team/object_icon.gd")
 var game: Control
 var canvas: Control
@@ -17,9 +18,16 @@ var skill_icon: TextureRect
 var combat_stats: Label
 var attack_value: Label
 var shield_value: Label
+var allegiance: Label
+var action_section: VBoxContainer
+var action_name: Label
+var action_target: Label
+var generation: Label
+var card_style: StyleBoxFlat
 var gear_row: HBoxContainer
 var gear_button: Button
 var gear_name: Label
+var hover_blocked_id := -1
 var pinned := false
 var focus_side := -1
 var focus_key := -1
@@ -51,15 +59,22 @@ func _ready() -> void:
 	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(canvas)
 	panel = _panel(Vector2(300, 0))
+	card_style = panel.get_theme_stylebox("panel") as StyleBoxFlat
 	canvas.add_child(panel)
 	var column = _column(panel)
 	var top = HBoxContainer.new()
 	column.add_child(top)
 	face = _image(top,"health",40)
+	var identity := VBoxContainer.new()
+	identity.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	identity.add_theme_constant_override("separation",0)
+	top.add_child(identity)
 	heading = _label("", 19)
-	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(heading)
-	var close = _button("收起", close_info)
+	heading.clip_text = true
+	identity.add_child(heading)
+	allegiance = _label("",10)
+	identity.add_child(allegiance)
+	var close = _button("收起", close_info.bind(true))
 	top.add_child(close)
 	var stats_row := HBoxContainer.new()
 	stats_row.add_theme_constant_override("separation",12)
@@ -82,6 +97,20 @@ func _ready() -> void:
 	bond_tags = preload("res://scenes/ui/glossary_text.gd").make("",14)
 	bond_tags.custom_minimum_size.x = 264
 	bond_section.add_child(bond_tags)
+	action_section = VBoxContainer.new()
+	action_section.add_theme_constant_override("separation",3)
+	column.add_child(action_section)
+	action_section.add_child(HSeparator.new())
+	action_name = _label("",13)
+	action_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	action_section.add_child(action_name)
+	action_target = _label("",11)
+	action_target.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	action_target.modulate = Color("b7c8d3")
+	action_section.add_child(action_target)
+	generation = _label("",11)
+	generation.modulate = Color("b7c8d3")
+	action_section.add_child(generation)
 	skill_section = VBoxContainer.new()
 	skill_section.add_theme_constant_override("separation",5)
 	column.add_child(skill_section)
@@ -157,8 +186,11 @@ func _panel(minimum: Vector2) -> PanelContainer:
 	var style = StyleBoxFlat.new()
 	style.bg_color = theme_surface
 	style.border_color = theme_accent
-	style.set_border_width_all(2)
+	style.set_border_width_all(1)
+	style.border_width_top = 2
 	style.set_corner_radius_all(6)
+	style.shadow_color = Color(0.02,0.04,0.06,0.28)
+	style.shadow_size = 5
 	style.content_margin_left = 10
 	style.content_margin_right = 10
 	style.content_margin_top = 8
@@ -215,6 +247,19 @@ func _process(_delta: float) -> void:
 	refresh()
 
 func pick(point: Vector2) -> Dictionary:
+	var unit := _pick_unit(point)
+	if hover_blocked_id >= 0:
+		if not unit.is_empty() and unit.id == hover_blocked_id: return {}
+		hover_blocked_id = -1
+	return unit
+
+func _pick_unit(point: Vector2) -> Dictionary:
+	var status = game.battle_status_layer
+	if game.phase == "battle" and is_instance_valid(status):
+		var screen_point: Vector2 = canvas.get_global_transform()*point
+		for id in status.hit_rects:
+			if status.hit_rects[id].has_point(screen_point) or (status.intents.has(id) and status.intents[id].has_point(screen_point)):
+				return game.simulation.unit(id)
 	var ordered = game.units.duplicate()
 	ordered.sort_custom(func(a,b): return game._unit_center(a).y > game._unit_center(b).y)
 	for unit in ordered:
@@ -233,15 +278,24 @@ func show_unit(unit: Dictionary, detailed: bool) -> void:
 		if unit.side == 0: game.selected = unit.role
 	refresh()
 
-func close_info() -> void:
+func close_info(block_hover := false) -> void:
+	if block_hover and not observed.is_empty(): hover_blocked_id = observed.id
 	pinned = false
 	observed = {}
 	if panel != null: panel.hide()
+	if hover_blocked_id < 0: pointer = Vector2(-1000,-1000)
+
+func hover_paused() -> bool:
+	return active() and game.phase == "battle" and panel.visible and not observed.is_empty()
 
 func refresh() -> void:
 	panel.visible = not observed.is_empty()
 	if observed.is_empty(): return
 	heading.text = observed.name
+	var tint := Color("82dfcc") if observed.side == 0 else Color("f5ae94")
+	allegiance.text = "%s · %d号位" % ["友方" if observed.side == 0 else "敌方",int(observed.slot)+1]
+	allegiance.modulate = tint
+	card_style.border_color = tint.darkened(0.45)
 	face.texture = observed.portrait
 	summary.text = "%d / %d" % [maxi(0,observed.hp),observed.max_hp]
 	attack_value.text = "%d" % observed.atk
@@ -250,9 +304,23 @@ func refresh() -> void:
 	bond_section.visible = not tags.is_empty()
 	bond_tags.visible = bond_section.visible
 	bond_tags.set_copy(tags)
+	action_section.visible = game.phase == "battle"
+	if action_section.visible:
+		var sim = game.simulation
+		var intent: Dictionary = sim.intent_for(observed.id)
+		var timing: Dictionary = sim.action_timing(observed.id)
+		var target: Dictionary = sim.unit(int(intent.get("target_id",-1)))
+		var label: String = "接近目标" if timing.get("waiting_target",false) else str(intent.get("label","待机"))
+		action_name.text = "%s · %.1f 秒" % [label,float(intent.get("remaining",0))]
+		action_name.modulate = Color("efca8b") if intent.get("kind","") == "cast" else Color("bce0ea")
+		action_target.text = "目标："+str(intent.get("target_description",target.get("name","进入射程后选定")))
+		generation.visible = observed.side == 0
+		generation.text = ("全队吸收 %d/%d" % [sim.absorbed,Codes.RULES.shield_per_block]) if observed.get("code_type","") == "purple" else ("普攻产码 %d/%d" % [sim.attack_counts.get(observed.id,0),Codes.RULES.attacks_per_block])
 	skill_section.visible = pinned
 	skill_name.text = observed.skill.display_name
 	skill_trigger.text = "自动技能  ·  每 %d 次普攻触发" % observed.skill.attacks_to_trigger
+	if observed.side == 1 and game.simulation._enemy_rule(observed) in ["radio","board","colossus"]:
+		skill_trigger.text = "特殊技能 · 预警后释放"
 	skill_icon.texture = preload("res://scenes/battle_demo/status_skin.gd").TEXTURES[preload("res://scenes/battle_demo/status_skin.gd").intent_icon(observed,{"kind":"skill"})]
 	description.set_copy(observed.skill.description)
 	combat_stats.text = "攻击间隔 %.2f 秒    射程 %.1f 格" % [observed.interval,observed.attack_range]
@@ -282,9 +350,9 @@ func blocks_event(event: InputEvent) -> bool:
 func _input(event: InputEvent) -> void:
 	if not active(): return
 	if bond_tags.pinned and event.is_action_pressed("ui_cancel"): return
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and (pinned or bag.visible):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and (panel.visible or bag.visible):
 		if bag.visible: close_bag()
-		else: close_info()
+		else: close_info(true)
 		get_viewport().set_input_as_handled()
 		return
 	if not (event is InputEventMouseMotion or event is InputEventMouseButton): return
@@ -302,6 +370,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and not pinned:
 		show_unit(pick(point), false)
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		hover_blocked_id = -1
 		var unit = pick(point)
 		if unit.is_empty(): close_info()
 		else:

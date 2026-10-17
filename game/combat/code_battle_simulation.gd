@@ -146,7 +146,7 @@ func _verify(actor: Dictionary, target: Dictionary) -> void:
 		_gain(actor, "blue", 1, "漏洞验证")
 
 func _followup(actor: Dictionary, target: Dictionary, scale: float, label: String) -> void:
-	_event(reactions, actor, target, "damage", actor.atk * scale, true)
+	_event(reactions, actor, target, "damage", actor.atk * scale, true, "skill", true)
 	_emit("chain_followup", actor, target, -1, {"label":label})
 	_note(actor.name + " · " + label)
 
@@ -476,7 +476,7 @@ func _append_blast(due: Array[Dictionary], blast: Dictionary) -> void:
 	var program = Codes.program("redirect")
 	for foe in _living(1):
 		if foe.position.distance_to(blast.position) <= program.radius:
-			_event(due, blast.actor, foe, "damage", program.damage + _program_reward_bonus(program.id, "program_damage_bonus"), true)
+			_event(due, blast.actor, foe, "damage", program.damage + _program_reward_bonus(program.id, "program_damage_bonus"), true, "skill")
 	_emit("recoil_burst", blast.actor, blast.actor, -1, {"from":blast.position, "reason":blast.reason, "radius":program.radius})
 	_note(blast.actor.name + " · 反冲爆炸")
 

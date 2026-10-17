@@ -11,6 +11,7 @@ var buff_button: Button
 var buff_details: RichTextLabel
 var dock: PanelContainer
 var playback: VBoxContainer
+var clock: Label
 var pause_control: Button
 var speed_control: HBoxContainer
 var speed_down: Button
@@ -55,6 +56,9 @@ var hud_dirty := true
 var hud_time := -1.0
 var hud_pause := false
 var hud_hover_pause := false
+var top_row: HBoxContainer
+var journal_stack: VBoxContainer
+var warning_surface: PanelContainer
 var warning_row: HBoxContainer
 var warning_text: Label
 var warning_progress: ProgressBar
@@ -93,7 +97,7 @@ func _ready() -> void:
 	canvas.add_child(dock)
 	var dock_row := HBoxContainer.new()
 	dock_row.mouse_filter = MOUSE_FILTER_IGNORE
-	dock_row.add_theme_constant_override("separation",24)
+	dock_row.add_theme_constant_override("separation",18)
 	dock.add_child(dock_row)
 	var stock_group := _dock_group(dock_row,"代码",Color("7eb8ec"))
 	var bank := GridContainer.new()
@@ -116,19 +120,31 @@ func _ready() -> void:
 	gap.size_flags_horizontal = SIZE_EXPAND_FILL
 	dock_row.add_child(gap)
 	playback = VBoxContainer.new()
-	playback.add_theme_constant_override("separation",6)
+	playback.add_theme_constant_override("separation",4)
 	playback.size_flags_vertical = SIZE_SHRINK_CENTER
 	dock_row.add_child(playback)
+	var timing_row := HBoxContainer.new()
+	timing_row.add_theme_constant_override("separation",4)
+	timing_row.custom_minimum_size = Vector2(88,18)
+	playback.add_child(timing_row)
+	clock = _label(timing_row,"00:00",12)
+	clock.size_flags_horizontal = SIZE_EXPAND_FILL
+	clock.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	clock.tooltip_text = "本场战斗用时"
+	summary = _label(timing_row,"进行中",10)
+	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	pause_control = _playback_button(playback,"Ⅱ",Color("6cddc2"))
+	pause_control.custom_minimum_size = Vector2(88,24)
 	pause_control.tooltip_text = "暂停 / 继续（P）"
 	pause_control.pressed.connect(func(): game._toggle_manual_pause())
 	speed_control = HBoxContainer.new()
-	speed_control.custom_minimum_size = Vector2(64,28)
+	speed_control.custom_minimum_size = Vector2(88,24)
 	speed_control.add_theme_constant_override("separation",0)
 	playback.add_child(speed_control)
 	speed_down = _speed_button("−",-1)
 	var speed_surface := PanelContainer.new()
-	speed_surface.custom_minimum_size = Vector2(28,28)
+	speed_surface.custom_minimum_size = Vector2(52,24)
 	var speed_style := StyleBoxFlat.new()
 	speed_style.bg_color = Color("e9c183")
 	speed_surface.add_theme_stylebox_override("panel",speed_style)
@@ -139,15 +155,19 @@ func _ready() -> void:
 	speed_value.add_theme_color_override("font_color",Color("10232d"))
 	speed_up = _speed_button("+",1)
 
-	summary = _label(canvas,"",12)
-	summary.position = Vector2(36,66)
-	summary.size = Vector2(420,18)
-	summary.clip_text = true
-	summary.add_theme_font_size_override("font_size",11)
+	top_row = HBoxContainer.new()
+	top_row.set_anchors_and_offsets_preset(PRESET_TOP_WIDE)
+	top_row.offset_left = 28
+	top_row.offset_right = -28
+	top_row.offset_top = 62
+	top_row.offset_bottom = 118
+	top_row.add_theme_constant_override("separation",16)
+	top_row.mouse_filter = MOUSE_FILTER_IGNORE
+	canvas.add_child(top_row)
 	bond_panel = PanelContainer.new()
-	bond_panel.position = Vector2(908,58)
+	bond_panel.size_flags_vertical = SIZE_SHRINK_BEGIN
 	bond_panel.z_index = 20
-	bond_panel.custom_minimum_size = Vector2(116,40)
+	bond_panel.custom_minimum_size = Vector2(244,40)
 	var bond_style := StyleBoxFlat.new()
 	bond_style.bg_color = Color("132533",0.96)
 	bond_style.set_content_margin_all(4)
@@ -155,7 +175,7 @@ func _ready() -> void:
 	bond_style.set_border_width_all(1)
 	bond_style.set_corner_radius_all(4)
 	bond_panel.add_theme_stylebox_override("panel",bond_style)
-	canvas.add_child(bond_panel)
+	top_row.add_child(bond_panel)
 	bond_list = VBoxContainer.new()
 	bond_list.add_theme_constant_override("separation",0)
 	bond_panel.add_child(bond_list)
@@ -175,12 +195,39 @@ func _ready() -> void:
 		members.add_theme_constant_override("separation",2)
 		row.add_child(members)
 		bond_members[definition.id] = members
+	var left_gap := Control.new()
+	left_gap.mouse_filter = MOUSE_FILTER_IGNORE
+	left_gap.size_flags_horizontal = SIZE_EXPAND_FILL
+	top_row.add_child(left_gap)
+	var warning_slot := Control.new()
+	warning_slot.custom_minimum_size = Vector2(450,32)
+	warning_slot.mouse_filter = MOUSE_FILTER_IGNORE
+	warning_slot.size_flags_vertical = SIZE_SHRINK_BEGIN
+	top_row.add_child(warning_slot)
+	warning_surface = PanelContainer.new()
+	warning_surface.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	warning_surface.mouse_filter = MOUSE_FILTER_IGNORE
+	var warning_style: StyleBoxFlat = game._compact_button_style()
+	warning_style.bg_color = Color("2e2525",0.96)
+	warning_style.border_color = Color("ae785e")
+	warning_style.border_width_left = 3
+	warning_style.set_content_margin_all(7)
+	warning_surface.add_theme_stylebox_override("panel",warning_style)
+	warning_slot.add_child(warning_surface)
 	warning_row = HBoxContainer.new()
-	canvas.add_child(warning_row)
-	warning_row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	warning_row.position = Vector2(28,94)
-	warning_row.size = Vector2(320,22)
 	warning_row.mouse_filter = MOUSE_FILTER_IGNORE
+	warning_surface.add_child(warning_row)
+	var right_gap := Control.new()
+	right_gap.mouse_filter = MOUSE_FILTER_IGNORE
+	right_gap.size_flags_horizontal = SIZE_EXPAND_FILL
+	top_row.add_child(right_gap)
+	journal_stack = VBoxContainer.new()
+	journal_stack.z_index = 35
+	journal_stack.custom_minimum_size.x = 302
+	journal_stack.size_flags_vertical = SIZE_SHRINK_BEGIN
+	journal_stack.add_theme_constant_override("separation",6)
+	journal_stack.mouse_filter = MOUSE_FILTER_IGNORE
+	top_row.add_child(journal_stack)
 	warning_text = _label(warning_row,"",12)
 	warning_text.modulate = Color("ffad87")
 	warning_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -422,12 +469,13 @@ func _process(_delta: float) -> void:
 		for controls in program_controls.values(): controls.button.reset_readiness()
 	var battle_started: bool = not running and game.phase == "battle"
 	running = game.phase == "battle"
-	if not running: _hide_program_preview(); warning_row.hide()
+	if not running: _hide_program_preview(); warning_row.hide(); warning_surface.hide()
 	if not running and not selected_item.is_empty(): _select_item("")
 	var factor: float = minf(game.size.x/1280.0,game.size.y/720.0)
 	canvas.scale = Vector2.ONE*factor
 	canvas.position = (game.size-Vector2(1280,720)*factor)/2
 	dock.visible = running
+	journal_stack.visible = running
 	playback.visible = running
 	pause_control.text = "▶" if game.paused else "Ⅱ"
 	_refresh_speed_controls()
@@ -652,6 +700,7 @@ func _update_hud() -> void:
 	var warnings: Array = sim.warnings.keys().filter(func(id): return sim.unit(id).hp > 0)
 	warnings.sort_custom(func(a,b): return sim.warnings[a].fire_at < sim.warnings[b].fire_at)
 	warning_row.visible = running and not warnings.is_empty()
+	warning_surface.visible = warning_row.visible
 	if warning_row.visible:
 		var id: int = warnings[0]
 		var remaining: float = maxf(0,sim.warnings[id].fire_at-sim.elapsed)
@@ -731,7 +780,10 @@ func _update_hud() -> void:
 		controls.icon.remaining = sim.items.get(id,0)
 		controls.icon.tooltip_text = Codes.item(id).display_name+" · 点击查看"
 		controls.icon.queue_redraw()
-	summary.text = "查看中 · 战斗暂停" if hover_paused() and not game.paused else ""
+	clock.text = "%02d:%02d" % [int(sim.elapsed)/60,int(sim.elapsed)%60]
+	summary.text = "已暂停" if game.paused else "查看中" if hover_paused() else "进行中"
+	summary.tooltip_text = "查看中 · 战斗暂停" if hover_paused() and not game.paused else summary.text
+	summary.modulate = Color("e9c183") if game.paused else Color("82dfcc") if hover_paused() else Color("a4b5bf")
 
 func _update_bonds() -> void:
 	var counts := {}
@@ -875,7 +927,7 @@ func preview_recipients() -> Array[Dictionary]:
 
 func _speed_button(caption: String, direction: int) -> Button:
 	var button := _playback_button(speed_control,caption,Color("e9c183"))
-	button.custom_minimum_size = Vector2(18,28)
+	button.custom_minimum_size = Vector2(18,24)
 	button.add_theme_font_size_override("font_size",13)
 	button.tooltip_text = "减慢速度" if direction < 0 else "加快速度"
 	for state in ["normal","hover","pressed","disabled"]:
